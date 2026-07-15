@@ -1,0 +1,421 @@
+"use client";
+
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  ArrowLeft,
+  MapPin,
+  Bathtub,
+  Bed,
+  Ruler,
+  ShieldCheck,
+  Car,
+  SwimmingPool,
+  SecurityCamera,
+  Park,
+  Star,
+  Phone,
+  PaperPlaneTilt,
+  Camera,
+  CaretRight,
+  PencilSimple,
+} from "@phosphor-icons/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+
+const propertyImages = [
+  {
+    src: "https://picsum.photos/seed/villa-river-main/1200/800",
+    alt: "Biet thu ven song - anh ngoai canh",
+    span: "md:col-span-2 md:row-span-2",
+  },
+  {
+    src: "https://picsum.photos/seed/villa-living-room/800/600",
+    alt: "Phong khach",
+    span: "",
+  },
+  {
+    src: "https://picsum.photos/seed/villa-bedroom/800/600",
+    alt: "Phong ngu chinh",
+    span: "",
+  },
+  {
+    src: "https://picsum.photos/seed/villa-kitchen/800/600",
+    alt: "Bep",
+    span: "",
+  },
+  {
+    src: "https://picsum.photos/seed/villa-pool/800/600",
+    alt: "Ho boi",
+    span: "",
+  },
+];
+
+const specs = [
+  { icon: Ruler, label: "Dien tich", value: "227 m2" },
+  { icon: Bed, label: "Phong ngu", value: "4" },
+  { icon: Bathtub, label: "Phong tam", value: "4" },
+  { icon: ShieldCheck, label: "Phap ly", value: "So hong", accent: true },
+];
+
+const highlights = [
+  { icon: Car, title: "Gara o to rong rai", desc: "Suc chua 2 xe SUV lon" },
+  { icon: SwimmingPool, title: "Ho boi rieng", desc: "Thiet ke vo cuc, he thong loc muoi" },
+  { icon: SecurityCamera, title: "An ninh 24/7", desc: "Camera giam sat, bao ve tuan tra" },
+  { icon: Park, title: "View song truc dien", desc: "Tam nhin vinh vien khong bi che khuat" },
+];
+
+const similarListings = [
+  {
+    name: "Biet thu song lap Holm Residences",
+    location: "Thao Dien, Quan 2",
+    price: "38 Ty",
+    area: "200m2",
+    beds: "4",
+    baths: "3",
+    image: "https://picsum.photos/seed/holm-residences/800/600",
+    badge: null as string | null,
+  },
+  {
+    name: "Penthouse Dao Kim Cuong",
+    location: "Binh Trung Tay, Quan 2",
+    price: "52 Ty",
+    area: "320m2",
+    beds: "5",
+    baths: "5",
+    image: "https://picsum.photos/seed/penthouse-kim-cuong/800/600",
+    badge: "Premium",
+  },
+  {
+    name: "Villa compound Saroma Sala",
+    location: "An Loi Dong, Quan 2",
+    price: "85 Ty",
+    area: "350m2",
+    beds: "5",
+    baths: "6",
+    image: "https://picsum.photos/seed/saroma-sala/800/600",
+    badge: null as string | null,
+  },
+];
+
+export default function PropertyDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    phone: "",
+    message: "Toi quan tam den bat dong san nay...",
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Contact form:", contactForm);
+  };
+
+  return (
+    <div className="flex flex-col gap-6">
+      {/* Back button + Edit */}
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => router.push("/properties")}
+          className="group inline-flex items-center gap-2 text-sm font-medium text-foreground-muted transition-colors hover:text-foreground"
+        >
+          <span className="inline-flex size-8 items-center justify-center rounded-lg bg-surface-muted transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:-translate-x-0.5">
+            <ArrowLeft size={14} />
+          </span>
+          Quay lai danh sach
+        </button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => router.push(`/properties/${params.id}/edit`)}
+        >
+          <PencilSimple size={14} />
+          Chinh sua
+        </Button>
+      </div>
+
+      {/* Breadcrumbs & Header */}
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-2 text-sm text-foreground-muted">
+          <Link href="/properties" className="transition-colors hover:text-foreground">
+            Bat dong san
+          </Link>
+          <CaretRight size={12} />
+          <span>Ho Chi Minh</span>
+          <CaretRight size={12} />
+          <span>Quan 2</span>
+        </div>
+
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div className="flex flex-col gap-2">
+            <h1 className="font-serif text-2xl font-medium tracking-tight text-foreground md:text-4xl">
+              Biet thu ven song cao cap The River Thao Dien
+            </h1>
+            <p className="flex items-center gap-2 text-sm text-foreground-muted md:text-base">
+              <MapPin size={16} className="text-primary" />
+              Nguyen Van Huong, Phuong Thao Dien, Quan 2, TP.HCM
+            </p>
+          </div>
+          <div className="flex flex-col items-start gap-1 md:items-end">
+            <span className="font-serif text-3xl font-medium text-primary md:text-4xl">
+              45.5 Ty
+            </span>
+            <span className="text-sm text-foreground-muted">~ 200 Trieu/m2</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Image Gallery Grid */}
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-4 h-[400px] md:h-[500px] rounded-lg overflow-hidden">
+        {propertyImages.map((img, i) => (
+          <div
+            key={i}
+            className={`relative group cursor-pointer ${img.span} ${i >= 1 ? "hidden md:block" : ""}`}
+          >
+            <img
+              src={img.src}
+              alt={img.alt}
+              className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-transparent" />
+            {i === 0 && (
+              <div className="absolute top-4 right-4 rounded-lg bg-primary/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white backdrop-blur-sm">
+                Premium
+              </div>
+            )}
+            {i === 4 && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40 transition-colors group-hover:bg-black/20">
+                <span className="font-serif text-xl font-medium text-white">+12 Anh</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Main Layout: Content + Sidebar */}
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+        {/* Left Column: Details */}
+        <div className="flex-grow space-y-10 w-full lg:w-2/3">
+          {/* Key Specs Grid */}
+          <section className="grid grid-cols-2 gap-4 rounded-lg border border-border bg-surface p-6 md:grid-cols-4">
+            {specs.map((spec) => {
+              const Icon = spec.icon;
+              return (
+                <div key={spec.label} className="flex flex-col gap-2">
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-foreground-muted">
+                    {spec.label}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <Icon size={20} weight="duotone" className={spec.accent ? "text-accent-green-text" : "text-primary"} />
+                    <span className="font-serif text-xl font-medium text-foreground">
+                      {spec.value}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </section>
+
+          {/* Description */}
+          <section className="flex flex-col gap-4">
+            <h2 className="font-serif text-xl font-medium tracking-tight text-foreground border-b border-border pb-3">
+              Mo ta chi tiet
+            </h2>
+            <div className="flex flex-col gap-4 text-base leading-relaxed text-foreground-muted">
+              <p>
+                Co hoi hiem co so huu can biet thu ven song dang cap tai khu vuc Thao Dien,
+                Quan 2. Voi thiet ke hien dai, toi uu hoa khong gian song va tan dung toi da
+                anh sang tu nhien, can biet thu mang den mot trai nghiem song hoan hao cho
+                gioi thuong luu.
+              </p>
+              <p>
+                Nam trong khu compound an ninh 24/7, cu dan se duoc tan huong su rieng tu
+                tuyet doi cung he thong tien ich noi khu vuot troi bao gom ho boi vo cuc,
+                phong gym chuan quoc te, va cong vien ven song xanh mat.
+              </p>
+              <p>
+                Kien truc mang dam phong cach duong dai voi noi that nhap khau tu cac
+                thuong hieu danh tieng. San vuon rong rai, ly tuong cho cac buoi tiec ngoai
+                troi hay khong gian thu gian gia dinh cuoi tuan.
+              </p>
+            </div>
+          </section>
+
+          {/* Highlights / Features */}
+          <section className="flex flex-col gap-4">
+            <h2 className="font-serif text-xl font-medium tracking-tight text-foreground border-b border-border pb-3">
+              Dac diem noi bat
+            </h2>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {highlights.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.title}
+                    className="flex items-center gap-4 rounded-lg border border-border bg-surface p-4 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-primary/20 hover:shadow-[0_4px_16px_-8px_rgba(45,95,63,0.12)]"
+                  >
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                      <Icon size={20} weight="duotone" className="text-primary" />
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <h3 className="text-sm font-semibold text-foreground">{item.title}</h3>
+                      <p className="text-xs text-foreground-muted">{item.desc}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Map Section */}
+          <section className="flex flex-col gap-4">
+            <h2 className="font-serif text-xl font-medium tracking-tight text-foreground border-b border-border pb-3">
+              Vi tri
+            </h2>
+            <div className="h-80 w-full overflow-hidden rounded-lg border border-border bg-surface-muted">
+              <div className="flex h-full w-full items-center justify-center bg-surface-muted/50">
+                <div className="flex flex-col items-center gap-2 text-foreground-muted">
+                  <MapPin size={32} weight="duotone" className="text-primary" />
+                  <p className="text-sm">Ban do se hien thi tai day</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        {/* Right Column: Contact Sidebar */}
+        <div className="w-full lg:w-1/3 lg:sticky lg:top-24">
+          <div className="flex flex-col gap-6 rounded-lg border border-border bg-surface p-6 shadow-[0_1px_3px_rgba(42,37,32,0.02),0_8px_24px_-12px_rgba(45,95,63,0.06)]">
+            {/* Agent Info */}
+            <div className="flex items-center gap-4 border-b border-border pb-6">
+              <div className="size-16 overflow-hidden rounded-lg border-2 border-primary/20">
+                <img
+                  src="https://picsum.photos/seed/agent-tran-huu-kien/200/200"
+                  alt="Tran Huu Kien"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <h3 className="text-base font-semibold text-foreground">Tran Huu Kien</h3>
+                <p className="text-xs text-foreground-muted">Chuyen vien Tu van Cap cao</p>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <Star size={12} weight="fill" className="text-primary" />
+                  <span className="text-[11px] font-medium text-foreground-muted">
+                    4.9 (120 Danh gia)
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Form */}
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <h4 className="font-serif text-lg font-medium text-foreground">Lien he ngay</h4>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="contact-name">Ho va ten</Label>
+                <Input
+                  id="contact-name"
+                  placeholder="Nhap ho va ten..."
+                  value={contactForm.name}
+                  onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="contact-phone">So dien thoai</Label>
+                <Input
+                  id="contact-phone"
+                  type="tel"
+                  placeholder="Nhap so dien thoai..."
+                  value={contactForm.phone}
+                  onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="contact-message">Loi nhan</Label>
+                <Textarea
+                  id="contact-message"
+                  placeholder="Toi quan tam den bat dong san nay..."
+                  rows={3}
+                  value={contactForm.message}
+                  onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                />
+              </div>
+
+              <Button type="submit" className="w-full">
+                <PaperPlaneTilt size={14} />
+                Gui yeu cau
+              </Button>
+
+              <Button type="button" variant="outline" className="w-full">
+                <Phone size={14} />
+                0901 234 567
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {/* Similar Listings */}
+      <section className="flex flex-col gap-6 border-t border-border pt-10">
+        <h2 className="font-serif text-2xl font-medium tracking-tight text-foreground md:text-3xl">
+          Bat dong san tuong tu
+        </h2>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {similarListings.map((listing) => (
+            <div
+              key={listing.name}
+              className="group flex flex-col gap-3 overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[2px] hover:shadow-[0_8px_24px_-12px_rgba(45,95,63,0.12)]"
+            >
+              <div className="relative h-48 overflow-hidden">
+                <img
+                  src={listing.image}
+                  alt={listing.name}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                {listing.badge && (
+                  <div className="absolute top-3 right-3 rounded-lg bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white">
+                    {listing.badge}
+                  </div>
+                )}
+                <div className="absolute top-3 left-3 flex items-center gap-1 rounded-lg bg-black/40 px-2.5 py-1 text-[10px] font-medium text-white backdrop-blur-sm">
+                  <Camera size={10} />
+                  8
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3 p-4">
+                <h3 className="text-base font-semibold tracking-tight text-foreground line-clamp-1">
+                  {listing.name}
+                </h3>
+                <p className="flex items-center gap-1.5 text-sm text-foreground-muted">
+                  <MapPin size={14} className="text-primary" />
+                  {listing.location}
+                </p>
+                <div className="font-serif text-xl font-medium text-primary">
+                  {listing.price}
+                </div>
+                <div className="flex items-center gap-4 border-t border-border pt-3 text-xs text-foreground-muted">
+                  <span className="flex items-center gap-1">
+                    <Ruler size={12} /> {listing.area}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Bed size={12} /> {listing.beds}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Bathtub size={12} /> {listing.baths}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}

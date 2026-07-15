@@ -1,0 +1,75 @@
+import { cn } from "@/lib/utils/cn";
+import type { ReactNode } from "react";
+
+interface FormSectionProps {
+  title: string;
+  description?: string;
+  children: ReactNode;
+  className?: string;
+}
+
+export function FormSection({
+  title,
+  description,
+  children,
+  className,
+}: FormSectionProps) {
+  return (
+    <div
+      className={cn(
+        "flex flex-col gap-4 rounded-lg border border-border bg-surface p-6",
+        className
+      )}
+    >
+      <div className="flex flex-col gap-1">
+        <h3 className="text-base font-semibold tracking-tight">{title}</h3>
+        {description && (
+          <p className="text-sm text-foreground-muted">{description}</p>
+        )}
+      </div>
+      <div className="flex flex-col gap-4">{children}</div>
+    </div>
+  );
+}
+
+interface FormFieldProps {
+  label: string;
+  htmlFor?: string;
+  error?: string;
+  helper?: string;
+  children: ReactNode;
+  required?: boolean;
+}
+
+export function FormField({
+  label,
+  htmlFor,
+  error,
+  helper,
+  children,
+  required,
+}: FormFieldProps) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label
+        htmlFor={htmlFor}
+        className="text-xs font-semibold tracking-wide text-foreground-muted"
+      >
+        {label}
+        {required && <span className="ml-0.5 text-accent-red-text">*</span>}
+      </label>
+      {children}
+      {helper && !error && (
+        <p className="text-xs text-foreground-muted">{helper}</p>
+      )}
+      {error && (
+        <p
+          id={htmlFor ? `${htmlFor}-error` : undefined}
+          className="text-xs text-accent-red-text"
+        >
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}

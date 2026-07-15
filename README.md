@@ -1,36 +1,161 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RealHub Frontend
 
-## Getting Started
+Nền tảng Bất động sản đa tenant — Frontend Next.js 16 + React 19 + Tailwind CSS 4.
 
-First, run the development server:
+## Tech Stack
+
+| Layer | Công nghệ |
+|-------|-----------|
+| Framework | Next.js 16 (App Router) |
+| UI Library | React 19 |
+| Styling | Tailwind CSS 4 |
+| Components | Radix UI primitives + custom components |
+| State Management | Zustand (global) + TanStack Query v5 (server state) |
+| Forms | React Hook Form + Zod |
+| Table/DataGrid | TanStack Table v8 |
+| Charts | Recharts |
+| Icons | Phosphor Icons |
+| File Upload | react-dropzone |
+| Date | date-fns |
+| Maps | Leaflet + react-leaflet |
+| Animation | Framer Motion (motion/react) + tw-animate-css |
+
+## Quick Start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Install dependencies
+pnpm install
+
+# Copy env
+cp .env.example .env.local
+
+# Start dev server
 pnpm dev
-# or
-bun dev
+# → http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
+NEXT_PUBLIC_TENANT_CODE=DEMO
+NEXT_PUBLIC_SWAGGER_URL=http://localhost:3001/api/docs
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Seed Accounts (Dev)
 
-## Learn More
+| Email | Password | Role |
+|-------|----------|------|
+| `admin@demo.realhub.local` | `Admin@123456` | SUPER_ADMIN |
+| `sales@demo.realhub.local` | `Sales@123456` | SALES |
 
-To learn more about Next.js, take a look at the following resources:
+**Tenant code (dev):** `DEMO`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── (auth)/             # Auth pages (login, register)
+│   ├── (dashboard)/        # Protected pages
+│   │   ├── layout.tsx      # Dashboard layout (sidebar + topbar)
+│   │   ├── page.tsx        # Dashboard home
+│   │   ├── properties/     # Bất động sản
+│   │   ├── customers/      # Khách hàng
+│   │   ├── leads/          # Leads (Kanban)
+│   │   ├── appointments/   # Lịch hẹn
+│   │   ├── deals/          # Giao dịch
+│   │   ├── commission/     # Hoa hồng
+│   │   └── settings/       # Cài đặt
+│   ├── layout.tsx          # Root layout
+│   └── globals.css         # Global styles + CSS variables
+├── components/
+│   ├── ui/                 # Base primitives (button, card, input, ...)
+│   ├── layout/             # Layout components (sidebar, topbar, footer)
+│   └── shared/             # Shared business components
+├── lib/
+│   ├── api/                # API client, interceptors, endpoints
+│   ├── stores/             # Zustand stores (auth, ui, tenant)
+│   ├── hooks/              # Custom hooks
+│   ├── utils/              # Utilities (cn, formatters, ...)
+│   └── types/              # TypeScript types & enums
+├── providers/              # Context providers
+└── config/                 # App config (nav items, env, constants)
+```
 
-## Deploy on Vercel
+## API Integration
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Base URL & Prefix
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+Base URL:     http://localhost:3001/api
+Swagger:      http://localhost:3001/api/docs
+```
+
+### Authentication
+
+```
+Authorization: Bearer <access_token>
+x-tenant-code: DEMO
+```
+
+- Access token TTL: 15 phút
+- Refresh token TTL: 7 ngày
+- Auto-refresh via axios interceptor on 401
+
+### Key API Routes
+
+| Module | Endpoint | Permission |
+|--------|----------|------------|
+| Auth | `POST /api/auth/login` | - |
+| Users | `GET /api/users/me` | `users:read` |
+| Properties | `GET /api/properties` | `properties:read` |
+| Customers | `GET /api/customers` | `customers:read` |
+| Leads | `GET /api/leads` | `leads:read` |
+| Appointments | `GET /api/appointments` | `appointments:read` |
+| Deals | `GET /api/deals` | `deals:read` |
+| Commission | `GET /api/commission/plans` | `commission:read` |
+| Files | `POST /api/files/upload` | `files:write` |
+
+### Pagination
+
+Tất cả endpoint list dùng `limit` + `offset` (không phải page/pageSize).
+
+### Soft Delete
+
+DELETE endpoint chỉ set `status: 'INACTIVE'`. UI ẩn item đã xóa.
+
+### Data Masking
+
+BE tự động mask dữ liệu nhạy cảm (phone, price, address). FE chỉ hiển thị đúng dữ liệu nhận được, không cần unmask.
+
+## Design System
+
+Xem chi tiết tại [`design.md`](./design.md) — nguồn sự thật duy nhất cho phong cách UI/UX toàn app.
+
+### Tóm tắt
+
+- **Archetype**: Editorial Luxury + Soft Structuralism + Premium Minimalism
+- **Color**: Warm monochrome (cream/espresso) + muted pastel accents
+- **Typography**: Geist (sans) + Newsreader (serif heading) + Geist Mono (data)
+- **Layout**: Asymmetric bento grid, editorial split, generous whitespace
+- **Motion**: Spring physics, cubic-bezier, scroll reveal, subtle hover
+- **Icons**: Phosphor Icons (regular/duotone weight)
+
+## Scripts
+
+```bash
+pnpm dev      # Dev server
+pnpm build    # Production build
+pnpm start    # Start production server
+pnpm lint     # ESLint
+```
+
+## Key Notes
+
+1. **Tenant header bắt buộc** — Mọi API request (trừ public routes) phải gửi `x-tenant-code`
+2. **Token expiry** — Access token hết hạn sau 15 phút, cần auto-refresh interceptor
+3. **Dynamic fields** — Form tạo/sửa property render động từ API, không hardcode
+4. **Workflow states** — Deal/Lead status fetch từ `/api/workflows`, không hardcode
+5. **Permission-based UI** — Ẩn/hiện button, menu dựa trên permission từ `GET /api/users/me`
+6. **Pagination** — Dùng `limit` + `offset`, không có total count — dùng infinite scroll
