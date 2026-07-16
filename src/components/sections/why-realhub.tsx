@@ -32,7 +32,7 @@ const features = [
 
 export function WhyRealHub() {
   return (
-    <section className="py-32 md:py-40">
+    <section className="py-16 md:py-24">
       <div className="mx-auto grid max-w-[1400px] items-start gap-20 px-6 md:px-8 lg:grid-cols-2 lg:gap-28 lg:px-12">
         {/* Left — sticky image with Double-Bezel overlay */}
         <motion.div

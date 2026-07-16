@@ -38,7 +38,7 @@ export function UserPathways() {
   const [customer, owner, sales] = pathways;
 
   return (
-    <section className="py-32 md:py-40">
+    <section className="py-16 md:py-24">
       <div className="mx-auto max-w-[1400px] px-6 md:px-8 lg:px-12">
         {/* Header */}
         <div className="mb-16 flex flex-col gap-4">

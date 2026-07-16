@@ -13,7 +13,7 @@ const stats = [
 
 export function StatsBar() {
   return (
-    <section className="border-y border-border bg-surface-muted/40 py-20 md:py-28">
+    <section className="border-y border-border bg-surface-muted/40 py-12 md:py-16">
       <div className="mx-auto max-w-[1400px] px-6 md:px-8 lg:px-12">
         <div className="grid grid-cols-2 md:grid-cols-4">
           {stats.map((stat, i) => (

@@ -82,10 +82,10 @@ const properties = [
 
 export function FeaturedProperties() {
   return (
-    <section className="py-32 md:py-40">
+    <section className="py-16 md:py-24">
       <div className="mx-auto max-w-[1400px] px-6 md:px-8 lg:px-12">
         {/* Header — editorial style */}
-        <div className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="flex flex-col gap-4">
             <span className="w-fit rounded-full bg-primary/8 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-primary">
               Bất động sản

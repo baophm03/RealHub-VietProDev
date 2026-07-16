@@ -7,7 +7,7 @@ import { ArrowRight, Phone } from "@phosphor-icons/react";
 
 export function CtaSection() {
   return (
-    <section className="px-6 py-32 md:px-8 md:py-40 lg:px-12">
+    <section className="px-6 py-16 md:px-8 md:py-24 lg:px-12">
       <motion.div
         initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
         whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}

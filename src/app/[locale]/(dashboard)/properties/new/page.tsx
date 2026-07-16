@@ -131,7 +131,7 @@ export default function PropertyFormPage() {
                 <Input id="price" type="number" placeholder="5000000000" {...register("price")} />
               </FormField>
               <FormField label="Don vi tien">
-                <Select defaultValue="VND" onValueChange={(v) => setValue("priceUnit", v)}>
+                <Select defaultValue="VND" onValueChange={(v) => setValue("priceUnit", v ?? "")}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>

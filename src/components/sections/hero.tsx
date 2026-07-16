@@ -34,7 +34,7 @@ export function Hero() {
   const [activeTab, setActiveTab] = useState("sale");
 
   return (
-    <section className="relative overflow-hidden bg-background">
+    <section className="relative overflow-hidden bg-background -mt-20 lg:-mt-28">
       {/* Background image — real estate architecture */}
       <div
         className="absolute inset-0 bg-cover bg-center"

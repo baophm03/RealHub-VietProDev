@@ -62,7 +62,11 @@ export function PublicHeader() {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  const isActive = (href: string) => pathname === href;
+  const isActive = (href: string) => {
+    if (href === "/projects") return pathname.startsWith("/projects");
+    if (href === "/news") return pathname.startsWith("/news");
+    return pathname === href;
+  };
   const isListingsActive = pathname.startsWith("/listings");
 
   return (
@@ -70,8 +74,8 @@ export function PublicHeader() {
       {/* Top Strip — hotline + tagline + locale */}
       <div
         className={cn(
-          "hidden overflow-hidden border-b border-primary-foreground/10 bg-primary transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] lg:block",
-          scrolled ? "max-h-0 opacity-0" : "max-h-12 opacity-100"
+          "hidden overflow-hidden bg-primary transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] lg:block",
+          scrolled ? "max-h-0 py-0 opacity-0 border-transparent" : "max-h-12 opacity-100 border-b border-primary-foreground/10"
         )}
       >
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-8 py-2 lg:px-12">
@@ -214,6 +218,8 @@ export function PublicHeader() {
 
             {/* Regular Nav Links */}
             {[
+              { label: "Dự án", href: "/projects" },
+              { label: "Tin tức", href: "/news" },
               { label: t("about"), href: "/about" },
               { label: t("contact"), href: "/contact" },
             ].map((link) => (
@@ -369,6 +375,8 @@ export function PublicHeader() {
           </div>
 
           {[
+            { label: "Dự án", href: "/projects" },
+            { label: "Tin tức", href: "/news" },
             { label: t("about"), href: "/about" },
             { label: t("contact"), href: "/contact" },
           ].map((link) => (
