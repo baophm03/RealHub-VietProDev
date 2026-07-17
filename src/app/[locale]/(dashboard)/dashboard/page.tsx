@@ -59,7 +59,7 @@ export default function DashboardPage() {
         <h1 className="font-serif text-3xl font-medium tracking-tight md:text-4xl">
           Dashboard
         </h1>
-        <p className="text-sm text-foreground-muted leading-relaxed max-w-[60ch]">
+        <p className="text-sm text-foreground-muted leading-relaxed max-w-[60ch] md:max-w-none">
           Tong quan hoat dong bat dong san, khach hang va giao dich
         </p>
       </div>
@@ -71,11 +71,11 @@ export default function DashboardPage() {
           return (
             <div
               key={stat.label}
-              className="group flex flex-col gap-4 rounded-[1.25rem] border border-border bg-surface p-6 shadow-[0_1px_3px_rgba(42,37,32,0.02),0_8px_24px_-12px_rgba(45,95,63,0.06)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[2px] hover:shadow-[0_4px_12px_rgba(45,95,63,0.06),0_16px_40px_-12px_rgba(45,95,63,0.12)]"
+              className="group flex flex-col gap-3 rounded-xl border border-border bg-surface p-4 shadow-[0_1px_3px_rgba(42,37,32,0.02),0_8px_24px_-12px_rgba(45,95,63,0.06)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[2px] hover:shadow-[0_4px_12px_rgba(45,95,63,0.06),0_16px_40px_-12px_rgba(45,95,63,0.12)] md:gap-4 md:p-6 md:rounded-[1.25rem]"
             >
               <div className="flex items-center justify-between">
-                <div className="flex size-11 items-center justify-center rounded-lg bg-primary/10">
-                  <Icon size={20} weight="duotone" className="text-primary" />
+                <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 md:size-11">
+                  <Icon size={18} weight="duotone" className="text-primary md:size-5" />
                 </div>
                 <span
                   className={`flex items-center gap-1 text-xs font-medium tabular-nums ${
@@ -87,7 +87,7 @@ export default function DashboardPage() {
                 </span>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-3xl font-semibold tabular-nums tracking-tight">
+                <span className="text-2xl font-semibold tabular-nums tracking-tight md:text-3xl">
                   {stat.value}
                 </span>
                 <span className="text-xs text-foreground-muted">{stat.label}</span>
@@ -99,11 +99,11 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 animate-fade-up-delay-2">
         <Card className="lg:col-span-2">
-          <CardHeader className="flex-row items-center justify-between">
+          <CardHeader className="flex-row items-center justify-between gap-2">
             <CardTitle>Leads gan day</CardTitle>
             <a
               href="/leads"
-              className="group inline-flex items-center gap-1.5 text-xs font-medium text-foreground-muted transition-colors hover:text-foreground"
+              className="group inline-flex items-center gap-1.5 text-xs font-medium text-foreground-muted transition-colors hover:text-foreground shrink-0"
             >
               Xem tat ca
               <span className="inline-flex size-5 items-center justify-center rounded-lg bg-surface-muted transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
@@ -116,7 +116,7 @@ export default function DashboardPage() {
               {recentLeads.map((lead) => (
                 <div
                   key={lead.name}
-                  className="group flex items-center justify-between py-3.5 first:pt-0 last:pb-0 transition-colors"
+                  className="group flex flex-col gap-2 py-3.5 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between transition-colors"
                 >
                   <div className="flex flex-col gap-0.5">
                     <span className="text-sm font-medium">{lead.name}</span>
@@ -124,7 +124,7 @@ export default function DashboardPage() {
                       {lead.phone} · {lead.property}
                     </span>
                   </div>
-                  <Badge variant={lead.statusVariant}>{lead.status}</Badge>
+                  <Badge variant={lead.statusVariant} className="self-start sm:self-auto">{lead.status}</Badge>
                 </div>
               ))}
             </div>
@@ -136,7 +136,7 @@ export default function DashboardPage() {
             <CardTitle>Hoat dong</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-4">
               {activities.map((activity, i) => (
                 <div key={i} className="flex flex-col gap-0.5 border-l-2 border-border pl-4">
                   <span className="text-sm leading-snug">{activity.text}</span>

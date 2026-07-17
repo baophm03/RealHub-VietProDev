@@ -62,7 +62,7 @@ function formatPrice(price: number): string {
 const columns: ColumnDef<PropertyRow>[] = [
   {
     accessorKey: "propertyCode",
-    header: "Ma BÄS",
+    header: "Ma BDS",
     cell: ({ row }) => (
       <span className="font-mono text-xs tabular-nums">{row.original.propertyCode}</span>
     ),
@@ -125,82 +125,83 @@ export default function PropertiesPage() {
   );
 
   return (
-          <div className="flex flex-col gap-6">
-        <PageHeader
-          eyebrow="Bat dong san"
-          title="Danh sach bat dong san"
-          description="Quan ly toan bo bat dong san trong he thong"
-          actions={
-            hasPermission("properties:write") && (
-              <Button onClick={() => router.push("/properties/new")}>
-                <Plus size={16} />
-                Them BÄS
-              </Button>
-            )
-          }
-        />
-
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex flex-1 items-center gap-2">
-            <Input
-              type="search"
-              placeholder="Tim kiem theo ten hoac ma BÄS..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="max-w-sm"
-            />
-            <Button variant="outline" size="icon" aria-label="Bo loc">
-              <Funnel size={16} />
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        eyebrow="Bat dong san"
+        title="Danh sach bat dong san"
+        description="Quan ly toan bo bat dong san trong he thong"
+        actions={
+          hasPermission("properties:write") && (
+            <Button onClick={() => router.push("/properties/new")}>
+              <Plus size={16} />
+              Them BDS
             </Button>
-          </div>
-          <div className="flex items-center gap-1 rounded-md border border-border p-1">
-            <button
-              onClick={() => setView("list")}
-              className={`rounded-sm p-1.5 ${view === "list" ? "bg-surface-muted" : "text-foreground-muted"}`}
-              aria-label="Xem danh sach"
-            >
-              <ListIcon size={16} />
-            </button>
-            <button
-              onClick={() => setView("map")}
-              className={`rounded-sm p-1.5 ${view === "map" ? "bg-surface-muted" : "text-foreground-muted"}`}
-              aria-label="Xem ban do"
-            >
-              <MapTrifold size={16} />
-            </button>
+          )
+        }
+      />
+
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2">
+          <Input
+            type="search"
+            placeholder="Tim kiem..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full sm:w-auto min-w-0"
+          />
+          <Button variant="outline" size="icon" aria-label="Bo loc" className="shrink-0">
+            <Funnel size={16} />
+          </Button>
+        </div>
+        <div className="flex items-center gap-1 rounded-md border border-border p-1">
+          <button
+            onClick={() => setView("list")}
+            className={`rounded-sm p-1.5 ${view === "list" ? "bg-surface-muted" : "text-foreground-muted"}`}
+            aria-label="Xem danh sach"
+          >
+            <ListIcon size={16} />
+          </button>
+          <button
+            onClick={() => setView("map")}
+            className={`rounded-sm p-1.5 ${view === "map" ? "bg-surface-muted" : "text-foreground-muted"}`}
+            aria-label="Xem ban do"
+          >
+            <MapTrifold size={16} />
+          </button>
+        </div>
+      </div>
+
+      {view === "list" ? (
+        filtered.length > 0 ? (
+          <DataTable
+            columns={columns}
+            data={filtered}
+            onRowClick={(row) => router.push(`/properties/${row.id}`)}
+            emptyMessage="Khong tim thay bat dong san nao"
+          />
+        ) : (
+          <EmptyState
+            icon={<Buildings size={24} />}
+            title="Chua co bat dong san"
+            description="Tao bat dong san dau tien de bat dau ban hang"
+            action={
+              hasPermission("properties:write") && (
+                <Button onClick={() => router.push("/properties/new")}>
+                  <Plus size={16} />
+                  Them BDS
+                </Button>
+              )
+            }
+          />
+        )
+      ) : (
+        <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted/30 p-8 md:min-h-[400px]">
+          <div className="flex flex-col items-center gap-2 text-foreground-muted">
+            <MapTrifold size={32} />
+            <p className="text-sm">Ban do se hien thi tai day</p>
           </div>
         </div>
-
-        {view === "list" ? (
-          filtered.length > 0 ? (
-            <DataTable
-              columns={columns}
-              data={filtered}
-              onRowClick={(row) => router.push(`/properties/${row.id}`)}
-              emptyMessage="Khong tim thay bat dong san nao"
-            />
-          ) : (
-            <EmptyState
-              icon={<Buildings size={24} />}
-              title="Chua co bat dong san"
-              description="Tao bat dong san dau tien de bat dau ban hang"
-              action={
-                hasPermission("properties:write") && (
-                  <Button onClick={() => router.push("/properties/new")}>
-                    <Plus size={16} />
-                    Them BÄS
-                  </Button>
-                )
-              }
-            />
-          )
-        ) : (
-          <div className="flex min-h-[400px] items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted/30">
-            <div className="flex flex-col items-center gap-2 text-foreground-muted">
-              <MapTrifold size={32} />
-              <p className="text-sm">Ban do se hien thi tai day</p>
-            </div>
-          </div>
-        )}
-      </div>  );
+      )}
+    </div>
+  );
 }

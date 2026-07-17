@@ -36,11 +36,11 @@ export function KanbanBoard<T extends { id: string }>({
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
   return (
-    <div className="flex gap-4 overflow-x-auto pb-4">
+    <div className="relative flex gap-3 overflow-x-auto pb-4 scrollbar-none">
       {columns.map((column) => (
         <div
           key={column.id}
-          className="flex w-72 shrink-0 flex-col gap-3"
+          className="flex w-72 shrink-0 flex-col gap-3 max-[768px]:w-64"
           onDragOver={(e) => {
             e.preventDefault();
             setDragOverColumn(column.id);
@@ -100,6 +100,8 @@ export function KanbanBoard<T extends { id: string }>({
           </div>
         </div>
       ))}
+      {/* Scroll fade indicator for mobile */}
+      <div className="absolute right-0 top-0 h-full w-8 bg-linear-to-l from-surface to-transparent pointer-events-none hidden max-[768px]:block" />
     </div>
   );
 }

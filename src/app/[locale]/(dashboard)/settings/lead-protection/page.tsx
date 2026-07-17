@@ -48,12 +48,12 @@ export default function LeadProtectionPage() {
             <div className="flex flex-col gap-3">
               {disputes.map((d) => (
                 <Card key={d.id}>
-                  <CardContent className="flex items-center justify-between py-4">
+                  <CardContent className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex flex-col gap-1">
                       <span className="text-sm font-medium">Lead: {d.leadName}</span>
                       <span className="text-xs text-foreground-muted">{d.claimant} vs {d.defendant} Â· {d.createdAt}</span>
                     </div>
-                    <Badge variant={d.status === "PENDING" ? "yellow" : "green"}>
+                    <Badge variant={d.status === "PENDING" ? "yellow" : "green"} className="shrink-0 self-start sm:self-auto">
                       {d.status === "PENDING" ? "Cho xu ly" : "Da giai quyet"}
                     </Badge>
                   </CardContent>

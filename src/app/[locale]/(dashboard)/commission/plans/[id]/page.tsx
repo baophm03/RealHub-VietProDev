@@ -82,17 +82,17 @@ export default function CommissionPlanFormPage() {
           <FormSection title="Phan chia hoa hong" description="Dinh nghia ty le phan chia cho tung vai tro">
             <div className="flex flex-col gap-3">
               {splits.map((split) => (
-                <div key={split.id} className="flex items-center gap-3">
-                  <Input placeholder="Vai tro (vd: Sales chinh)" defaultValue={split.role} className="flex-1" />
+                <div key={split.id} className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <Input placeholder="Vai tro (vd: Sales chinh)" defaultValue={split.role} className="w-full sm:flex-1" />
                   <Select defaultValue={split.type}>
-                    <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="w-full sm:w-32"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="PERCENT">Theo %</SelectItem>
                       <SelectItem value="FIXED">Co dinh</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Input type="number" placeholder="60" defaultValue={split.value} className="w-24" />
-                  <Button type="button" variant="ghost" size="icon" onClick={() => removeSplit(split.id)} aria-label="Xoa">
+                  <Input type="number" placeholder="60" defaultValue={split.value} className="w-full sm:w-24" />
+                  <Button type="button" variant="ghost" size="icon" onClick={() => removeSplit(split.id)} aria-label="Xoa" className="self-end sm:self-auto">
                     <Trash size={16} />
                   </Button>
                 </div>

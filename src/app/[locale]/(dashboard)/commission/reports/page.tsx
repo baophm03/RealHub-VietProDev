@@ -72,8 +72,8 @@ export default function CommissionReportsPage() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-border bg-surface">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-lg border border-border bg-surface">
+        <table className="w-full text-sm min-w-[600px]">
           <thead>
             <tr className="border-b border-border bg-surface-muted/50 text-left text-xs font-medium uppercase tracking-wide text-foreground-muted">
               <th className="px-4 py-3">Giao dịch</th>

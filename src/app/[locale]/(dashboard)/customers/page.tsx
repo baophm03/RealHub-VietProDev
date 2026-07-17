@@ -50,7 +50,7 @@ const columns: ColumnDef<CustomerRow>[] = [
   {
     accessorKey: "email",
     header: "Email",
-    cell: ({ row }) => <span className="text-sm text-foreground-muted">{row.original.email}</span>,
+    cell: ({ row }) => <span className="text-sm text-foreground-muted truncate max-w-[180px] block">{row.original.email}</span>,
   },
   {
     accessorKey: "type",
@@ -79,12 +79,48 @@ export default function CustomersPage() {
   );
 
   return (
-          <div className="flex flex-col gap-6">
-        <PageHeader
-          eyebrow="CRM"
-          title="Khach hang"
-          description="Quan ly danh sach khach hang"
-          actions={
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        eyebrow="CRM"
+        title="Khach hang"
+        description="Quan ly danh sach khach hang"
+        actions={
+          hasPermission("customers:write") && (
+            <Button onClick={() => router.push("/customers/new")}>
+              <Plus size={16} />
+              Them khach hang
+            </Button>
+          )
+        }
+      />
+
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="flex items-center gap-2">
+          <Input
+            type="search"
+            placeholder="Tim kiem..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full sm:w-auto min-w-0"
+          />
+          <Button variant="outline" size="icon" aria-label="Bo loc" className="shrink-0">
+            <Funnel size={16} />
+          </Button>
+        </div>
+      </div>
+
+      {filtered.length > 0 ? (
+        <DataTable
+          columns={columns}
+          data={filtered}
+          onRowClick={(row) => router.push(`/customers/${row.id}`)}
+        />
+      ) : (
+        <EmptyState
+          icon={<Users size={24} />}
+          title="Chua co khach hang"
+          description="Them khach hang dau tien de bat dau quan ly CRM"
+          action={
             hasPermission("customers:write") && (
               <Button onClick={() => router.push("/customers/new")}>
                 <Plus size={16} />
@@ -93,40 +129,7 @@ export default function CustomersPage() {
             )
           }
         />
-
-        <div className="flex items-center gap-2">
-          <Input
-            type="search"
-            placeholder="Tim kiem theo ten hoac so dien thoai..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="max-w-sm"
-          />
-          <Button variant="outline" size="icon" aria-label="Bo loc">
-            <Funnel size={16} />
-          </Button>
-        </div>
-
-        {filtered.length > 0 ? (
-          <DataTable
-            columns={columns}
-            data={filtered}
-            onRowClick={(row) => router.push(`/customers/${row.id}`)}
-          />
-        ) : (
-          <EmptyState
-            icon={<Users size={24} />}
-            title="Chua co khach hang"
-            description="Them khach hang dau tien de bat dau quan ly CRM"
-            action={
-              hasPermission("customers:write") && (
-                <Button onClick={() => router.push("/customers/new")}>
-                  <Plus size={16} />
-                  Them khach hang
-                </Button>
-              )
-            }
-          />
-        )}
-      </div>  );
+      )}
+    </div>
+  );
 }

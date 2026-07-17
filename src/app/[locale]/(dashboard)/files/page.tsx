@@ -63,41 +63,42 @@ export default function FilesPage() {
   });
 
   return (
-          <div className="flex flex-col gap-6">
-        <PageHeader eyebrow="Tap tin" title="Quan ly tap tin" description="Upload va quan ly tap tin, hinh anh, tai lieu" />
+    <div className="flex flex-col gap-6">
+      <PageHeader eyebrow="Tap tin" title="Quan ly tap tin" description="Upload va quan ly tap tin, hinh anh, tai lieu" />
 
-        <div
-          {...getRootProps()}
-          className={`flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed py-12 transition-colors ${
-            isDragActive ? "border-border-strong bg-surface-muted/50" : "border-border bg-surface"
-          }`}
-        >
-          <input {...getInputProps()} />
-          <div className="flex size-12 items-center justify-center rounded-lg bg-surface-muted">
-            <UploadSimple size={24} className="text-foreground-muted" />
-          </div>
-          <div className="text-center">
-            <p className="text-sm font-medium">{isDragActive ? "Tha file vao day" : "Keo tha file hoac click de chon"}</p>
-            <p className="mt-1 text-xs text-foreground-muted">Toi da 10 file, 50MB/file Â· JPG, PNG, WebP, GIF, PDF, MP4</p>
-          </div>
+      <div
+        {...getRootProps()}
+        className={`flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed py-10 px-4 transition-colors ${
+          isDragActive ? "border-border-strong bg-surface-muted/50" : "border-border bg-surface"
+        }`}
+      >
+        <input {...getInputProps()} />
+        <div className="flex size-12 items-center justify-center rounded-lg bg-surface-muted">
+          <UploadSimple size={24} className="text-foreground-muted" />
         </div>
+        <div className="text-center">
+          <p className="text-sm font-medium">{isDragActive ? "Tha file vao day" : "Keo tha file hoac click de chon"}</p>
+          <p className="mt-1 text-xs text-foreground-muted">Toi da 10 file, 50MB/file - JPG, PNG, WebP, GIF, PDF, MP4</p>
+        </div>
+      </div>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {files.map((file) => {
-            const Icon = getFileIcon(file.type);
-            return (
-              <div key={file.id} className="flex items-center gap-3 rounded-lg border border-border bg-surface p-4 transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-                <div className="flex size-10 items-center justify-center rounded-lg bg-surface-muted">
-                  <Icon size={20} className="text-foreground-muted" />
-                </div>
-                <div className="flex flex-1 flex-col gap-0.5 min-w-0">
-                  <span className="truncate text-sm font-medium">{file.name}</span>
-                  <span className="text-xs text-foreground-muted tabular-nums">{formatSize(file.size)}</span>
-                </div>
-                <Badge variant={visibilityVariant[file.visibility] ?? "default"}>{file.visibility}</Badge>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {files.map((file) => {
+          const Icon = getFileIcon(file.type);
+          return (
+            <div key={file.id} className="flex items-center gap-3 rounded-lg border border-border bg-surface p-3 transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-surface-muted">
+                <Icon size={20} className="text-foreground-muted" />
               </div>
-            );
-          })}
-        </div>
-      </div>  );
+              <div className="flex flex-1 flex-col gap-0.5 min-w-0">
+                <span className="truncate text-sm font-medium">{file.name}</span>
+                <span className="text-xs text-foreground-muted tabular-nums">{formatSize(file.size)}</span>
+              </div>
+              <Badge variant={visibilityVariant[file.visibility] ?? "default"} className="shrink-0 hidden sm:inline-flex">{file.visibility}</Badge>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 }

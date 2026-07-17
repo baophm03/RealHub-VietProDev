@@ -57,83 +57,84 @@ export default function LeadsPage() {
   }));
 
   return (
-          <div className="flex flex-col gap-6">
-        <PageHeader
-          eyebrow="CRM"
-          title="Leads"
-          description="Quan ly lead theo trang thai"
-          actions={
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 rounded-md border border-border p-1">
-                <button onClick={() => setView("kanban")} className={`rounded-sm p-1.5 ${view === "kanban" ? "bg-surface-muted" : "text-foreground-muted"}`} aria-label="Kanban">
-                  <Kanban size={16} />
-                </button>
-                <button onClick={() => setView("list")} className={`rounded-sm p-1.5 ${view === "list" ? "bg-surface-muted" : "text-foreground-muted"}`} aria-label="Danh sach">
-                  <ListIcon size={16} />
-                </button>
-              </div>
-              {hasPermission("leads:write") && (
-                <Button onClick={() => router.push("/leads/new")}>
-                  <Plus size={16} />
-                  Them lead
-                </Button>
-              )}
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        eyebrow="CRM"
+        title="Leads"
+        description="Quan ly lead theo trang thai"
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1 rounded-md border border-border p-1">
+              <button onClick={() => setView("kanban")} className={`rounded-sm p-1.5 ${view === "kanban" ? "bg-surface-muted" : "text-foreground-muted"}`} aria-label="Kanban">
+                <Kanban size={16} />
+              </button>
+              <button onClick={() => setView("list")} className={`rounded-sm p-1.5 ${view === "list" ? "bg-surface-muted" : "text-foreground-muted"}`} aria-label="Danh sach">
+                <ListIcon size={16} />
+              </button>
             </div>
-          }
-        />
-
-        {view === "kanban" ? (
-          <KanbanBoard
-            columns={columns}
-            onCardClick={(lead) => router.push(`/leads/${lead.id}`)}
-            onDrop={(lead, targetStatus) => {
-              console.log("Move lead", lead.id, "to", targetStatus);
-            }}
-            renderCard={(lead) => (
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{lead.customerName}</span>
-                  <Badge variant="default">{lead.source}</Badge>
-                </div>
-                <span className="text-xs text-foreground-muted tabular-nums">{lead.phone}</span>
-                <span className="text-xs text-foreground-muted">{lead.property}</span>
-                <div className="flex items-center justify-between pt-1 border-t border-border">
-                  <span className="text-xs font-medium tabular-nums">{formatPrice(lead.price)}</span>
-                  <span className="text-xs text-foreground-muted">{lead.createdAt}</span>
-                </div>
-              </div>
+            {hasPermission("leads:write") && (
+              <Button onClick={() => router.push("/leads/new")}>
+                <Plus size={16} />
+                Them lead
+              </Button>
             )}
-          />
-        ) : (
-          <div className="overflow-x-auto rounded-lg border border-border">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border bg-surface-muted/50">
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Khach hang</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Dien thoai</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">BÄS</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Gia</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Trang thai</th>
-                </tr>
-              </thead>
-              <tbody>
-                {mockLeads.map((lead) => {
-                  const status = statusConfig.find((s) => s.id === lead.status);
-                  return (
-                    <tr key={lead.id} onClick={() => router.push(`/leads/${lead.id}`)} className="cursor-pointer border-b border-border hover:bg-surface-muted/30">
-                      <td className="px-4 py-3 font-medium">{lead.customerName}</td>
-                      <td className="px-4 py-3 tabular-nums text-foreground-muted">{lead.phone}</td>
-                      <td className="px-4 py-3 text-foreground-muted">{lead.property}</td>
-                      <td className="px-4 py-3 tabular-nums font-medium">{formatPrice(lead.price)}</td>
-                      <td className="px-4 py-3"><Badge variant={status?.variant ?? "default"}>{status?.title}</Badge></td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
           </div>
-        )}
-      </div>  );
+        }
+      />
+
+      {view === "kanban" ? (
+        <KanbanBoard
+          columns={columns}
+          onCardClick={(lead) => router.push(`/leads/${lead.id}`)}
+          onDrop={(lead, targetStatus) => {
+            console.log("Move lead", lead.id, "to", targetStatus);
+          }}
+          renderCard={(lead) => (
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-medium truncate">{lead.customerName}</span>
+                <Badge variant="default" className="shrink-0">{lead.source}</Badge>
+              </div>
+              <span className="text-xs text-foreground-muted tabular-nums">{lead.phone}</span>
+              <span className="text-xs text-foreground-muted truncate">{lead.property}</span>
+              <div className="flex items-center justify-between pt-1 border-t border-border">
+                <span className="text-xs font-medium tabular-nums">{formatPrice(lead.price)}</span>
+                <span className="text-xs text-foreground-muted">{lead.createdAt}</span>
+              </div>
+            </div>
+          )}
+        />
+      ) : (
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-sm min-w-[600px]">
+            <thead>
+              <tr className="border-b border-border bg-surface-muted/50">
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Khach hang</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Dien thoai</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">BDS</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Gia</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Trang thai</th>
+              </tr>
+            </thead>
+            <tbody>
+              {mockLeads.map((lead) => {
+                const status = statusConfig.find((s) => s.id === lead.status);
+                return (
+                  <tr key={lead.id} onClick={() => router.push(`/leads/${lead.id}`)} className="cursor-pointer border-b border-border hover:bg-surface-muted/30">
+                    <td className="px-4 py-3 font-medium">{lead.customerName}</td>
+                    <td className="px-4 py-3 tabular-nums text-foreground-muted">{lead.phone}</td>
+                    <td className="px-4 py-3 text-foreground-muted truncate max-w-[150px]">{lead.property}</td>
+                    <td className="px-4 py-3 tabular-nums font-medium">{formatPrice(lead.price)}</td>
+                    <td className="px-4 py-3"><Badge variant={status?.variant ?? "default"}>{status?.title}</Badge></td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
 }
 
 void UserCircle;

@@ -55,77 +55,78 @@ export default function DealsPage() {
   }));
 
   return (
-          <div className="flex flex-col gap-6">
-        <PageHeader
-          eyebrow="Giao dich"
-          title="Giao dich"
-          description="Quan ly giao dich theo workflow"
-          actions={
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 rounded-md border border-border p-1">
-                <button onClick={() => setView("kanban")} className={`rounded-sm p-1.5 ${view === "kanban" ? "bg-surface-muted" : "text-foreground-muted"}`} aria-label="Kanban">
-                  <Kanban size={16} />
-                </button>
-                <button onClick={() => setView("list")} className={`rounded-sm p-1.5 ${view === "list" ? "bg-surface-muted" : "text-foreground-muted"}`} aria-label="Danh sach">
-                  <ListIcon size={16} />
-                </button>
-              </div>
-              {hasPermission("deals:write") && (
-                <Button onClick={() => router.push("/deals/new")}>
-                  <Plus size={16} />
-                  Them giao dich
-                </Button>
-              )}
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        eyebrow="Giao dich"
+        title="Giao dich"
+        description="Quan ly giao dich theo workflow"
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1 rounded-md border border-border p-1">
+              <button onClick={() => setView("kanban")} className={`rounded-sm p-1.5 ${view === "kanban" ? "bg-surface-muted" : "text-foreground-muted"}`} aria-label="Kanban">
+                <Kanban size={16} />
+              </button>
+              <button onClick={() => setView("list")} className={`rounded-sm p-1.5 ${view === "list" ? "bg-surface-muted" : "text-foreground-muted"}`} aria-label="Danh sach">
+                <ListIcon size={16} />
+              </button>
             </div>
-          }
-        />
-
-        {view === "kanban" ? (
-          <KanbanBoard
-            columns={columns}
-            onCardClick={(deal) => router.push(`/deals/${deal.id}`)}
-            onDrop={(deal, targetStatus) => {
-              console.log("Move deal", deal.id, "to", targetStatus);
-            }}
-            renderCard={(deal) => (
-              <div className="flex flex-col gap-2">
-                <span className="text-sm font-medium">{deal.title}</span>
-                <span className="text-xs text-foreground-muted">{deal.customerName} Â· {deal.propertyName}</span>
-                <div className="flex items-center justify-between pt-1 border-t border-border">
-                  <span className="text-xs font-medium tabular-nums">{formatPrice(deal.transactionValue)}</span>
-                  <Badge variant="default">{deal.transactionType}</Badge>
-                </div>
-              </div>
+            {hasPermission("deals:write") && (
+              <Button onClick={() => router.push("/deals/new")}>
+                <Plus size={16} />
+                Them giao dich
+              </Button>
             )}
-          />
-        ) : (
-          <div className="overflow-x-auto rounded-lg border border-border">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border bg-surface-muted/50">
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Tieu de</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Khach hang</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Gia tri</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Trang thai</th>
-                </tr>
-              </thead>
-              <tbody>
-                {mockDeals.map((deal) => {
-                  const status = statusConfig.find((s) => s.id === deal.status);
-                  return (
-                    <tr key={deal.id} onClick={() => router.push(`/deals/${deal.id}`)} className="cursor-pointer border-b border-border hover:bg-surface-muted/30">
-                      <td className="px-4 py-3 font-medium">{deal.title}</td>
-                      <td className="px-4 py-3 text-foreground-muted">{deal.customerName}</td>
-                      <td className="px-4 py-3 tabular-nums font-medium">{formatPrice(deal.transactionValue)}</td>
-                      <td className="px-4 py-3"><Badge variant={status?.variant ?? "default"}>{status?.title}</Badge></td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
           </div>
-        )}
-      </div>  );
+        }
+      />
+
+      {view === "kanban" ? (
+        <KanbanBoard
+          columns={columns}
+          onCardClick={(deal) => router.push(`/deals/${deal.id}`)}
+          onDrop={(deal, targetStatus) => {
+            console.log("Move deal", deal.id, "to", targetStatus);
+          }}
+          renderCard={(deal) => (
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-medium line-clamp-2">{deal.title}</span>
+              <span className="text-xs text-foreground-muted truncate">{deal.customerName}</span>
+              <div className="flex items-center justify-between pt-1 border-t border-border">
+                <span className="text-xs font-medium tabular-nums">{formatPrice(deal.transactionValue)}</span>
+                <Badge variant="default" className="text-[10px]">{deal.transactionType}</Badge>
+              </div>
+            </div>
+          )}
+        />
+      ) : (
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-sm min-w-[600px]">
+            <thead>
+              <tr className="border-b border-border bg-surface-muted/50">
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Tieu de</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Khach hang</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Gia tri</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Trang thai</th>
+              </tr>
+            </thead>
+            <tbody>
+              {mockDeals.map((deal) => {
+                const status = statusConfig.find((s) => s.id === deal.status);
+                return (
+                  <tr key={deal.id} onClick={() => router.push(`/deals/${deal.id}`)} className="cursor-pointer border-b border-border hover:bg-surface-muted/30">
+                    <td className="px-4 py-3 font-medium">{deal.title}</td>
+                    <td className="px-4 py-3 text-foreground-muted">{deal.customerName}</td>
+                    <td className="px-4 py-3 tabular-nums font-medium">{formatPrice(deal.transactionValue)}</td>
+                    <td className="px-4 py-3"><Badge variant={status?.variant ?? "default"}>{status?.title}</Badge></td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
 }
 
 void Handshake;
