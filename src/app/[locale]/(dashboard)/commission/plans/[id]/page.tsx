@@ -1,113 +1,163 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, Trash } from "@phosphor-icons/react";
+import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft, Pencil } from "@phosphor-icons/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { FormSection, FormField } from "@/components/shared/form-section";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { useGetApiCommissionPlanId } from "@/lib/api/endpoints/commission";
 
-interface SplitRow {
+interface CommissionPlan {
   id: string;
-  role: string;
-  type: string;
-  value: string;
+  name: string;
+  description?: string;
+  status: string;
+  priority?: number;
+  effectiveFrom: string;
+  effectiveTo?: string;
+  version?: number;
+  rules?: Array<{
+    name: string;
+    calculationType: string;
+    calculationValue: number;
+    calculationBase: string;
+    splits?: Array<{
+      receiverType: string;
+      receiverRole?: string;
+      splitType: string;
+      splitValue: number;
+    }>;
+  }>;
 }
 
-export default function CommissionPlanFormPage() {
+const statusVariant: Record<string, "green" | "yellow" | "default" | "red"> = {
+  ACTIVE: "green",
+  PENDING_APPROVAL: "yellow",
+  DRAFT: "default",
+  ARCHIVED: "default",
+};
+
+const statusLabel: Record<string, string> = {
+  ACTIVE: "Hoat dong",
+  PENDING_APPROVAL: "Cho duyet",
+  DRAFT: "Ban nhap",
+  ARCHIVED: "Luu tru",
+};
+
+export default function CommissionPlanDetailPage() {
+  const params = useParams();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [splits, setSplits] = useState<SplitRow[]>([
-    { id: "1", role: "Sales chinh", type: "PERCENT", value: "60" },
-    { id: "2", role: "Truong nhom", type: "PERCENT", value: "25" },
-  ]);
+  const id = params.id as string;
 
-  const addSplit = () => setSplits([...splits, { id: Date.now().toString(), role: "", type: "PERCENT", value: "" }]);
-  const removeSplit = (id: string) => setSplits(splits.filter((s) => s.id !== id));
+  const { data: planData, isLoading } = useGetApiCommissionPlanId(id);
+  const plan = (planData as unknown as { data: CommissionPlan })?.data;
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      router.push("/commission/plans");
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 animate-pulse rounded-md bg-surface-muted" />
+          <div className="h-8 w-64 animate-pulse rounded-lg bg-surface-muted" />
+        </div>
+        <div className="h-96 animate-pulse rounded-lg bg-surface-muted" />
+      </div>
+    );
+  }
 
-  return (
-          <div className="flex flex-col gap-6">
+  if (!plan) {
+    return (
+      <div className="flex flex-col gap-6">
         <div className="flex items-center gap-3">
           <button onClick={() => router.push("/commission/plans")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
             <ArrowLeft size={20} />
           </button>
-          <PageHeader eyebrow="Hoa hong" title="Tao ke hoach hoa hong" />
+          <PageHeader eyebrow="Hoa hong" title="Khong tim thay" />
         </div>
+      </div>
+    );
+  }
 
-        <form onSubmit={onSubmit} className="flex flex-col gap-4">
-          <FormSection title="Thong tin co ban">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField label="Ten ke hoach" required>
-                <Input placeholder="Hoa hong ban nha dat - 2025" />
-              </FormField>
-              <FormField label="Loai tinh" required>
-                <Select defaultValue="PERCENT">
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="PERCENT">Theo %</SelectItem>
-                    <SelectItem value="FIXED">Co dinh</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormField>
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField label="Co so tinh" required>
-                <Select defaultValue="ACTUAL_VALUE">
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="EXPECTED_VALUE">Gia tri du kien</SelectItem>
-                    <SelectItem value="ACTUAL_VALUE">Gia tri thuc te</SelectItem>
-                    <SelectItem value="NET_VALUE">Gia tri rong</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormField>
-              <FormField label="Ty le co ban (%)" required>
-                <Input type="number" placeholder="3" />
-              </FormField>
-            </div>
-          </FormSection>
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <button onClick={() => router.push("/commission/plans")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
+          <ArrowLeft size={20} />
+        </button>
+        <PageHeader
+          eyebrow="Hoa hong"
+          title={plan.name}
+          actions={
+            <Button variant="outline" onClick={() => router.push(`/commission/plans/${id}/edit`)}>
+              <Pencil size={16} />
+              Chinh sua
+            </Button>
+          }
+        />
+      </div>
 
-          <FormSection title="Phan chia hoa hong" description="Dinh nghia ty le phan chia cho tung vai tro">
-            <div className="flex flex-col gap-3">
-              {splits.map((split) => (
-                <div key={split.id} className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                  <Input placeholder="Vai tro (vd: Sales chinh)" defaultValue={split.role} className="w-full sm:flex-1" />
-                  <Select defaultValue={split.type}>
-                    <SelectTrigger className="w-full sm:w-32"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="PERCENT">Theo %</SelectItem>
-                      <SelectItem value="FIXED">Co dinh</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Input type="number" placeholder="60" defaultValue={split.value} className="w-full sm:w-24" />
-                  <Button type="button" variant="ghost" size="icon" onClick={() => removeSplit(split.id)} aria-label="Xoa" className="self-end sm:self-auto">
-                    <Trash size={16} />
-                  </Button>
-                </div>
-              ))}
-              <Button type="button" variant="secondary" onClick={addSplit} className="w-fit">
-                <Plus size={16} />
-                Them phan chia
-              </Button>
-            </div>
-          </FormSection>
-
-          <div className="flex items-center justify-end gap-2">
-            <Button type="button" variant="secondary" onClick={() => router.push("/commission/plans")}>Huy</Button>
-            <Button type="submit" disabled={loading}>{loading ? "Dang luu..." : "Luu ke hoach"}</Button>
+      <div className="rounded-lg border border-border bg-surface p-6">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap gap-2">
+            <Badge variant={statusVariant[plan.status] ?? "default"}>
+              {statusLabel[plan.status] ?? plan.status}
+            </Badge>
+            {plan.priority != null && (
+              <Badge variant="default">Uu tien: {plan.priority}</Badge>
+            )}
           </div>
-        </form>
-      </div>  );
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Ngay hieu luc</span>
+              <p className="text-sm tabular-nums">{plan.effectiveFrom ? new Date(plan.effectiveFrom).toLocaleDateString("vi-VN") : "-"}</p>
+            </div>
+            <div>
+              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Ngay ket thuc</span>
+              <p className="text-sm tabular-nums">{plan.effectiveTo ? new Date(plan.effectiveTo).toLocaleDateString("vi-VN") : "-"}</p>
+            </div>
+            {plan.version != null && (
+              <div>
+                <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Phien ban</span>
+                <p className="text-sm">{plan.version}</p>
+              </div>
+            )}
+          </div>
+          {plan.description && (
+            <div>
+              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Mo ta</span>
+              <p className="text-sm whitespace-pre-wrap">{plan.description}</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {plan.rules && plan.rules.length > 0 && (
+        <div className="rounded-lg border border-border bg-surface p-6">
+          <h3 className="text-sm font-semibold mb-4">Quy tac hoa hong</h3>
+          <div className="flex flex-col gap-4">
+            {plan.rules.map((rule, i) => (
+              <div key={i} className="border-b border-border pb-4 last:border-0 last:pb-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-sm font-medium">{rule.name}</span>
+                  <Badge variant="blue">{rule.calculationType}</Badge>
+                  <span className="text-xs text-foreground-muted">{rule.calculationBase}</span>
+                </div>
+                {rule.splits && rule.splits.length > 0 && (
+                  <div className="ml-4 flex flex-col gap-1">
+                    {rule.splits.map((split, j) => (
+                      <div key={j} className="flex items-center justify-between text-sm">
+                        <span className="text-foreground-muted">{split.receiverRole || split.receiverType}</span>
+                        <span className="tabular-nums font-medium">
+                          {split.splitType === "PERCENT" ? `${split.splitValue}%` : split.splitValue.toLocaleString("vi-VN")}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

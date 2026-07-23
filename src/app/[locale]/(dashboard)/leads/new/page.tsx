@@ -12,13 +12,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FormSection, FormField } from "@/components/shared/form-section";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { usePostApiLead } from "@/lib/api/endpoints/leads";
 
 const leadSchema = z.object({
-  customerId: z.string().min(1, "Vui long chon khach hang"),
+  customerId: z.string().optional(),
   propertyId: z.string().optional(),
   source: z.enum(["WEBSITE", "PROPERTY_DETAIL", "OWNER_PAGE", "SALES_LINK", "CTV_LINK", "AGENCY_MARKETING", "MANUAL_INPUT", "LEAD_POOL", "IMPORT"]),
   status: z.enum(["NEW", "CONTACTED", "INTERESTED", "NEGOTIATING", "CONVERTED", "LOST", "RECYCLED"]),
-  note: z.string().optional(),
+  assignedSalesId: z.string().optional(),
 });
 
 type LeadFormData = z.infer<typeof leadSchema>;
@@ -26,6 +27,10 @@ type LeadFormData = z.infer<typeof leadSchema>;
 export default function LeadFormPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const { mutate: createLead } = usePostApiLead();
+
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<LeadFormData>({
     resolver: zodResolver(leadSchema),
     defaultValues: { source: "MANUAL_INPUT", status: "NEW" },
@@ -33,74 +38,84 @@ export default function LeadFormPage() {
 
   const onSubmit = async (data: LeadFormData) => {
     setLoading(true);
+    setError(null);
     try {
-      console.log(data);
+      await createLead({ data });
       router.push("/leads");
+    } catch (err) {
+      setError("Co loi xay ra khi tao lead. Vui long thu lai.");
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-          <div className="flex flex-col gap-6">
-        <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/leads")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
-            <ArrowLeft size={20} />
-          </button>
-          <PageHeader eyebrow="CRM" title="Them lead" />
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <button onClick={() => router.push("/leads")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
+          <ArrowLeft size={20} />
+        </button>
+        <PageHeader eyebrow="CRM" title="Them lead" />
+      </div>
+
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          {error}
         </div>
+      )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <FormSection title="Thong tin lead">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField label="Khach hang" htmlFor="customerId" required error={errors.customerId?.message}>
-                <Input id="customerId" placeholder="Chon khach hang" {...register("customerId")} />
-              </FormField>
-              <FormField label="BÄS quan tam">
-                <Input placeholder="Chon BÄS (tuong tac)" {...register("propertyId")} />
-              </FormField>
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField label="Nguon lead" required>
-                <Select defaultValue="MANUAL_INPUT" onValueChange={(v) => setValue("source", v as LeadFormData["source"])}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="WEBSITE">Website</SelectItem>
-                    <SelectItem value="PROPERTY_DETAIL">Trang BÄS</SelectItem>
-                    <SelectItem value="OWNER_PAGE">Trang chu</SelectItem>
-                    <SelectItem value="SALES_LINK">Link sales</SelectItem>
-                    <SelectItem value="CTV_LINK">Link CTV</SelectItem>
-                    <SelectItem value="AGENCY_MARKETING">Marketing</SelectItem>
-                    <SelectItem value="MANUAL_INPUT">Nhap tay</SelectItem>
-                    <SelectItem value="LEAD_POOL">Lead pool</SelectItem>
-                    <SelectItem value="IMPORT">Nhap file</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormField>
-              <FormField label="Trang thai">
-                <Select defaultValue="NEW" onValueChange={(v) => setValue("status", v as LeadFormData["status"])}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="NEW">Moi</SelectItem>
-                    <SelectItem value="CONTACTED">Da lien he</SelectItem>
-                    <SelectItem value="INTERESTED">Quan tam</SelectItem>
-                    <SelectItem value="NEGOTIATING">Dam phan</SelectItem>
-                    <SelectItem value="CONVERTED">Chuyen doi</SelectItem>
-                    <SelectItem value="LOST">Mat</SelectItem>
-                    <SelectItem value="RECYCLED">Tai che</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormField>
-            </div>
-            <FormField label="Ghi chu" htmlFor="note">
-              <Textarea id="note" placeholder="Ghi chu ve lead..." {...register("note")} />
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <FormSection title="Thong tin lead">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField label="Khach hang" htmlFor="customerId" error={errors.customerId?.message}>
+              <Input id="customerId" placeholder="Chon khach hang" {...register("customerId")} />
             </FormField>
-          </FormSection>
-
-          <div className="flex items-center justify-end gap-2">
-            <Button type="button" variant="secondary" onClick={() => router.push("/leads")}>Huy</Button>
-            <Button type="submit" disabled={loading}>{loading ? "Dang luu..." : "Luu lead"}</Button>
+            <FormField label="BÄS quan tam">
+              <Input placeholder="Chon BÄS (tuong tac)" {...register("propertyId")} />
+            </FormField>
           </div>
-        </form>
-      </div>  );
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField label="Nguon lead" required>
+              <Select defaultValue="MANUAL_INPUT" onValueChange={(v) => setValue("source", v as LeadFormData["source"])}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="WEBSITE">Website</SelectItem>
+                  <SelectItem value="PROPERTY_DETAIL">Trang BÄS</SelectItem>
+                  <SelectItem value="OWNER_PAGE">Trang chu</SelectItem>
+                  <SelectItem value="SALES_LINK">Link sales</SelectItem>
+                  <SelectItem value="CTV_LINK">Link CTV</SelectItem>
+                  <SelectItem value="AGENCY_MARKETING">Marketing</SelectItem>
+                  <SelectItem value="MANUAL_INPUT">Nhap tay</SelectItem>
+                  <SelectItem value="LEAD_POOL">Lead pool</SelectItem>
+                  <SelectItem value="IMPORT">Nhap file</SelectItem>
+                </SelectContent>
+              </Select>
+            </FormField>
+            <FormField label="Trang thai">
+              <Select defaultValue="NEW" onValueChange={(v) => setValue("status", v as LeadFormData["status"])}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="NEW">Moi</SelectItem>
+                  <SelectItem value="CONTACTED">Da lien he</SelectItem>
+                  <SelectItem value="INTERESTED">Quan tam</SelectItem>
+                  <SelectItem value="NEGOTIATING">Dam phan</SelectItem>
+                  <SelectItem value="CONVERTED">Chuyen doi</SelectItem>
+                  <SelectItem value="LOST">Mat</SelectItem>
+                  <SelectItem value="RECYCLED">Tai che</SelectItem>
+                </SelectContent>
+              </Select>
+            </FormField>
+          </div>
+          <FormField label="Ghi chu" htmlFor="assignedSalesId">
+            <Input id="assignedSalesId" placeholder="ID sales phu trach" {...register("assignedSalesId")} />
+          </FormField>
+        </FormSection>
+
+        <div className="flex items-center justify-end gap-2">
+          <Button type="button" variant="secondary" onClick={() => router.push("/leads")}>Huy</Button>
+          <Button type="submit" disabled={loading}>{loading ? "Dang luu..." : "Luu lead"}</Button>
+        </div>
+      </form>
+    </div>);
 }

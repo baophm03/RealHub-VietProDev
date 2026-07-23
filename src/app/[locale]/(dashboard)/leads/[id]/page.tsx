@@ -1,106 +1,158 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { ArrowLeft } from "@phosphor-icons/react";
+import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft, Pencil } from "@phosphor-icons/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { FormSection, FormField } from "@/components/shared/form-section";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { useGetApiLeadId } from "@/lib/api/endpoints/leads";
 
-const leadSchema = z.object({
-  customerId: z.string().min(1, "Vui long chon khach hang"),
-  propertyId: z.string().optional(),
-  source: z.enum(["WEBSITE", "PROPERTY_DETAIL", "OWNER_PAGE", "SALES_LINK", "CTV_LINK", "AGENCY_MARKETING", "MANUAL_INPUT", "LEAD_POOL", "IMPORT"]),
-  status: z.enum(["NEW", "CONTACTED", "INTERESTED", "NEGOTIATING", "CONVERTED", "LOST", "RECYCLED"]),
-  note: z.string().optional(),
-});
+interface Lead {
+  id: string;
+  customerId?: string;
+  propertyId?: string;
+  source: string;
+  status: string;
+  assignedSalesId?: string;
+  phoneNormalized?: string;
+  createdAt?: string;
+}
 
-type LeadFormData = z.infer<typeof leadSchema>;
+const statusVariant: Record<string, "blue" | "yellow" | "purple" | "default" | "green" | "red"> = {
+  NEW: "blue",
+  CONTACTED: "yellow",
+  INTERESTED: "purple",
+  NEGOTIATING: "default",
+  CONVERTED: "green",
+  LOST: "red",
+  RECYCLED: "default",
+};
 
-export default function LeadFormPage() {
+const statusLabel: Record<string, string> = {
+  NEW: "Moi",
+  CONTACTED: "Da lien he",
+  INTERESTED: "Quan tam",
+  NEGOTIATING: "Dam phan",
+  CONVERTED: "Chuyen doi",
+  LOST: "Mat",
+  RECYCLED: "Tai che",
+};
+
+const sourceLabel: Record<string, string> = {
+  WEBSITE: "Website",
+  PROPERTY_DETAIL: "Trang BDS",
+  OWNER_PAGE: "Trang chu",
+  SALES_LINK: "Link sales",
+  CTV_LINK: "Link CTV",
+  AGENCY_MARKETING: "Marketing",
+  MANUAL_INPUT: "Nhap tay",
+  LEAD_POOL: "Lead pool",
+  IMPORT: "Nhap file",
+};
+
+export default function LeadDetailPage() {
+  const params = useParams();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<LeadFormData>({
-    resolver: zodResolver(leadSchema),
-    defaultValues: { source: "MANUAL_INPUT", status: "NEW" },
-  });
+  const id = params.id as string;
 
-  const onSubmit = async (data: LeadFormData) => {
-    setLoading(true);
-    try {
-      console.log(data);
-      router.push("/leads");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: leadData, isLoading } = useGetApiLeadId(id);
+  const lead = (leadData as unknown as { data: Lead })?.data;
 
-  return (
-          <div className="flex flex-col gap-6">
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 animate-pulse rounded-md bg-surface-muted" />
+          <div className="h-8 w-64 animate-pulse rounded-lg bg-surface-muted" />
+        </div>
+        <div className="h-96 animate-pulse rounded-lg bg-surface-muted" />
+      </div>
+    );
+  }
+
+  if (!lead) {
+    return (
+      <div className="flex flex-col gap-6">
         <div className="flex items-center gap-3">
           <button onClick={() => router.push("/leads")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
             <ArrowLeft size={20} />
           </button>
-          <PageHeader eyebrow="CRM" title="Them lead" />
+          <PageHeader eyebrow="CRM" title="Khong tim thay" />
         </div>
+      </div>
+    );
+  }
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <FormSection title="Thong tin lead">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField label="Khach hang" htmlFor="customerId" required error={errors.customerId?.message}>
-                <Input id="customerId" placeholder="Chon khach hang" {...register("customerId")} />
-              </FormField>
-              <FormField label="BÄS quan tam">
-                <Input placeholder="Chon BÄS (tuong tac)" {...register("propertyId")} />
-              </FormField>
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField label="Nguon lead" required>
-                <Select defaultValue="MANUAL_INPUT" onValueChange={(v) => setValue("source", v as LeadFormData["source"])}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="WEBSITE">Website</SelectItem>
-                    <SelectItem value="PROPERTY_DETAIL">Trang BÄS</SelectItem>
-                    <SelectItem value="OWNER_PAGE">Trang chu</SelectItem>
-                    <SelectItem value="SALES_LINK">Link sales</SelectItem>
-                    <SelectItem value="CTV_LINK">Link CTV</SelectItem>
-                    <SelectItem value="AGENCY_MARKETING">Marketing</SelectItem>
-                    <SelectItem value="MANUAL_INPUT">Nhap tay</SelectItem>
-                    <SelectItem value="LEAD_POOL">Lead pool</SelectItem>
-                    <SelectItem value="IMPORT">Nhap file</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormField>
-              <FormField label="Trang thai">
-                <Select defaultValue="NEW" onValueChange={(v) => setValue("status", v as LeadFormData["status"])}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="NEW">Moi</SelectItem>
-                    <SelectItem value="CONTACTED">Da lien he</SelectItem>
-                    <SelectItem value="INTERESTED">Quan tam</SelectItem>
-                    <SelectItem value="NEGOTIATING">Dam phan</SelectItem>
-                    <SelectItem value="CONVERTED">Chuyen doi</SelectItem>
-                    <SelectItem value="LOST">Mat</SelectItem>
-                    <SelectItem value="RECYCLED">Tai che</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormField>
-            </div>
-            <FormField label="Ghi chu" htmlFor="note">
-              <Textarea id="note" placeholder="Ghi chu ve lead..." {...register("note")} />
-            </FormField>
-          </FormSection>
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <button onClick={() => router.push("/leads")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
+          <ArrowLeft size={20} />
+        </button>
+        <PageHeader
+          eyebrow="CRM"
+          title={`Lead #${lead.id.slice(0, 8)}`}
+          actions={
+            <Button variant="outline" onClick={() => router.push(`/leads/${id}/edit`)}>
+              <Pencil size={16} />
+              Chinh sua
+            </Button>
+          }
+        />
+      </div>
 
-          <div className="flex items-center justify-end gap-2">
-            <Button type="button" variant="secondary" onClick={() => router.push("/leads")}>Huy</Button>
-            <Button type="submit" disabled={loading}>{loading ? "Dang luu..." : "Luu lead"}</Button>
+      <div className="rounded-lg border border-border bg-surface p-6">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap gap-2">
+            <Badge variant={statusVariant[lead.status] ?? "default"}>
+              {statusLabel[lead.status] ?? lead.status}
+            </Badge>
+            <Badge variant="blue">{sourceLabel[lead.source] ?? lead.source}</Badge>
           </div>
-        </form>
-      </div>  );
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {lead.customerId && (
+              <div>
+                <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Khach hang</span>
+                <button
+                  onClick={() => router.push(`/customers/${lead.customerId}`)}
+                  className="block text-sm text-primary hover:underline"
+                >
+                  {lead.customerId}
+                </button>
+              </div>
+            )}
+            {lead.propertyId && (
+              <div>
+                <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">BDS</span>
+                <button
+                  onClick={() => router.push(`/properties/${lead.propertyId}`)}
+                  className="block text-sm text-primary hover:underline"
+                >
+                  {lead.propertyId}
+                </button>
+              </div>
+            )}
+            {lead.assignedSalesId && (
+              <div>
+                <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Sales phu trach</span>
+                <p className="text-sm">{lead.assignedSalesId}</p>
+              </div>
+            )}
+            {lead.phoneNormalized && (
+              <div>
+                <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Dien thoai</span>
+                <p className="text-sm tabular-nums">{lead.phoneNormalized}</p>
+              </div>
+            )}
+            {lead.createdAt && (
+              <div>
+                <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Ngay tao</span>
+                <p className="text-sm tabular-nums">{new Date(lead.createdAt).toLocaleDateString("vi-VN")}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
