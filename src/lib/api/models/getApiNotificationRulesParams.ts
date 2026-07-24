@@ -7,5 +7,5 @@
  */
 
 export type GetApiNotificationRulesParams = {
-eventCode: string;
+eventCode?: string;
 };

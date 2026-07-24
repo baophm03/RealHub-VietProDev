@@ -57,17 +57,17 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type postApiTenantResponse201 = {
-  data: void
-  status: 201
+export type postApiTenantResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiTenantResponseSuccess = (postApiTenantResponse201) & {
+;
+export type postApiTenantResponseError = (postApiTenantResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiTenantResponse = (postApiTenantResponseSuccess)
+export type postApiTenantResponse = (postApiTenantResponseError)
 
 export const getPostApiTenantUrl = () => {
 
@@ -139,17 +139,17 @@ export const usePostApiTenant = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiTenantMutationOptions(options), queryClient);
     }
-    export type getApiTenantIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiTenantIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiTenantIdResponseSuccess = (getApiTenantIdResponse200) & {
+;
+export type getApiTenantIdResponseError = (getApiTenantIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiTenantIdResponse = (getApiTenantIdResponseSuccess)
+export type getApiTenantIdResponse = (getApiTenantIdResponseError)
 
 export const getGetApiTenantIdUrl = (id: string,) => {
 
@@ -352,17 +352,17 @@ export const prefetchGetApiTenantIdQuery = async <TData = Awaited<ReturnType<typ
 
 
 
-export type getApiTenantByDomainResponse200 = {
-  data: void
-  status: 200
+export type getApiTenantByDomainResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiTenantByDomainResponseSuccess = (getApiTenantByDomainResponse200) & {
+;
+export type getApiTenantByDomainResponseError = (getApiTenantByDomainResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiTenantByDomainResponse = (getApiTenantByDomainResponseSuccess)
+export type getApiTenantByDomainResponse = (getApiTenantByDomainResponseError)
 
 export const getGetApiTenantByDomainUrl = (domain: string,) => {
 
@@ -565,17 +565,17 @@ export const prefetchGetApiTenantByDomainQuery = async <TData = Awaited<ReturnTy
 
 
 
-export type getApiTenantSettingsResponse200 = {
-  data: void
-  status: 200
+export type getApiTenantSettingsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiTenantSettingsResponseSuccess = (getApiTenantSettingsResponse200) & {
+;
+export type getApiTenantSettingsResponseError = (getApiTenantSettingsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiTenantSettingsResponse = (getApiTenantSettingsResponseSuccess)
+export type getApiTenantSettingsResponse = (getApiTenantSettingsResponseError)
 
 export const getGetApiTenantSettingsUrl = (id: string,) => {
 
@@ -778,17 +778,17 @@ export const prefetchGetApiTenantSettingsQuery = async <TData = Awaited<ReturnTy
 
 
 
-export type patchApiTenantSettingResponse200 = {
-  data: void
-  status: 200
+export type patchApiTenantSettingResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiTenantSettingResponseSuccess = (patchApiTenantSettingResponse200) & {
+;
+export type patchApiTenantSettingResponseError = (patchApiTenantSettingResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiTenantSettingResponse = (patchApiTenantSettingResponseSuccess)
+export type patchApiTenantSettingResponse = (patchApiTenantSettingResponseError)
 
 export const getPatchApiTenantSettingUrl = (id: string,) => {
 
@@ -860,17 +860,17 @@ export const usePatchApiTenantSetting = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPatchApiTenantSettingMutationOptions(options), queryClient);
     }
-    export type getApiTenantFeaturesResponse200 = {
-  data: void
-  status: 200
+    export type getApiTenantFeaturesResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiTenantFeaturesResponseSuccess = (getApiTenantFeaturesResponse200) & {
+;
+export type getApiTenantFeaturesResponseError = (getApiTenantFeaturesResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiTenantFeaturesResponse = (getApiTenantFeaturesResponseSuccess)
+export type getApiTenantFeaturesResponse = (getApiTenantFeaturesResponseError)
 
 export const getGetApiTenantFeaturesUrl = (id: string,) => {
 
@@ -1073,17 +1073,17 @@ export const prefetchGetApiTenantFeaturesQuery = async <TData = Awaited<ReturnTy
 
 
 
-export type patchApiTenantFeatureResponse200 = {
-  data: void
-  status: 200
+export type patchApiTenantFeatureResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiTenantFeatureResponseSuccess = (patchApiTenantFeatureResponse200) & {
+;
+export type patchApiTenantFeatureResponseError = (patchApiTenantFeatureResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiTenantFeatureResponse = (patchApiTenantFeatureResponseSuccess)
+export type patchApiTenantFeatureResponse = (patchApiTenantFeatureResponseError)
 
 export const getPatchApiTenantFeatureUrl = (id: string,) => {
 

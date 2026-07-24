@@ -7,12 +7,12 @@
  */
 
 export type GetApiAuditLogsParams = {
-userId: string;
-action: string;
-entityType: string;
-entityId: string;
-startDate: string;
-endDate: string;
-page: string;
-pageSize: string;
+userId?: string;
+action?: string;
+entityType?: string;
+entityId?: string;
+startDate?: string;
+endDate?: string;
+page?: string;
+pageSize?: string;
 };

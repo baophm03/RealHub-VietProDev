@@ -5,5 +5,11 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { UpdateRevalidationPolicyDtoStatus } from './updateRevalidationPolicyDtoStatus';
 
-export interface UpdateRevalidationPolicyDto { [key: string]: unknown }
+export interface UpdateRevalidationPolicyDto {
+  revalidateAfterDays?: number;
+  expireIfNoResponseDays?: number;
+  status?: UpdateRevalidationPolicyDtoStatus;
+  notifyRolesJson?: string;
+}

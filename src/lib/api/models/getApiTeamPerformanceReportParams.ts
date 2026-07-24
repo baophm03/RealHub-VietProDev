@@ -7,6 +7,6 @@
  */
 
 export type GetApiTeamPerformanceReportParams = {
-startDate: string;
-endDate: string;
+startDate?: string;
+endDate?: string;
 };

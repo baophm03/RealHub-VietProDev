@@ -5,14 +5,16 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiLeadsSource } from './getApiLeadsSource';
+import type { GetApiLeadsStatus } from './getApiLeadsStatus';
 
 export type GetApiLeadsParams = {
-status: string;
-source: string;
-assignedSalesId: string;
-customerId: string;
-propertyId: string;
-search: string;
-limit: string;
-offset: string;
+status?: GetApiLeadsStatus;
+source?: GetApiLeadsSource;
+assignedSalesId?: string;
+customerId?: string;
+propertyId?: string;
+search?: string;
+limit?: string;
+offset?: string;
 };

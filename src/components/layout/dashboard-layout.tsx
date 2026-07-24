@@ -21,7 +21,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         />
         <div
           className={cn(
-            "fixed left-0 top-0 z-40 h-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] lg:static lg:translate-x-0",
+            "fixed left-0 top-0 z-40 h-[100dvh] transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] lg:sticky lg:top-0 lg:translate-x-0",
             mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
           )}
         >

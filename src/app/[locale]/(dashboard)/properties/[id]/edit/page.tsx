@@ -9,7 +9,6 @@ import { ArrowLeft } from "@phosphor-icons/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { FormSection, FormField } from "@/components/shared/form-section";
 import {
   Select,
@@ -18,27 +17,67 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useGetApiPropertyId, usePatchApiProperty } from "@/lib/api/endpoints/properties";
+import { useGetApiPropertyId, usePatchApiProperty, useGetApiPropertyTypes } from "@/lib/api/endpoints/properties";
+import { useGetApiLocations } from "@/lib/api/endpoints/locations";
 import { Property } from "@/lib/api/types/properties";
+import type { Location } from "@/lib/api/types/locations";
+
+type PropertyType = {
+  id: string;
+  name: string;
+  code: string;
+  group?: string | null;
+};
+
+const transactionTypeLabels: Record<string, string> = {
+  SALE: "Bán",
+  RENT: "Cho thuê",
+  TRANSFER: "Chuyển nhượng",
+  INVESTMENT: "Đầu tư",
+};
+
+const sellingModeLabels: Record<string, string> = {
+  SELF_SELL: "Bán tự hành",
+  SALES_DISTRIBUTION: "Phân phối bán",
+  HYBRID: "Kết hợp",
+};
+
+const businessStatusLabels: Record<string, string> = {
+  AVAILABLE: "Sẵn có",
+  RESERVED: "Đặt cọc",
+  SOLD: "Đã bán",
+  RENTED: "Đã thuê",
+  OFF_MARKET: "Không còn",
+};
+
+const publicationStatusLabels: Record<string, string> = {
+  PRIVATE: "Riêng tư",
+  PUBLIC: "Công khai",
+  ARCHIVED: "Lưu trữ",
+};
+
+const priceUnitLabels: Record<string, string> = {
+  VND: "VND",
+  USD: "USD",
+};
 
 const propertySchema = z.object({
-  propertyCode: z.string().min(1, "Vui long nhap ma BÄS"),
-  title: z.string().min(5, "Tieu de phai co it nhat 5 ky tu"),
+  propertyCode: z.string().min(1, "Vui lòng nhập mã BĐS"),
+  title: z.string().min(5, "Tiêu đề phải có ít nhất 5 ký tự"),
   slug: z.string().optional(),
-  propertyTypeId: z.string().min(1, "Vui long chon loai BÄS"),
+  propertyTypeId: z.string().min(1, "Vui lòng chọn loại BĐS"),
   transactionType: z.enum(["SALE", "RENT", "TRANSFER", "INVESTMENT"]),
   sellingMode: z.enum(["SELF_SELL", "SALES_DISTRIBUTION", "HYBRID"]),
   provinceId: z.string().optional(),
   districtId: z.string().optional(),
-  price: z.number().min(0, "Gia phai lon hon 0"),
+  price: z.number().min(0, "Giá phải lớn hơn 0"),
   priceUnit: z.string(),
-  area: z.number().min(0, "Dien tich phai lon hon 0"),
+  area: z.number().min(0, "Diện tích phải lớn hơn 0"),
   areaUnit: z.string(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
   publicationStatus: z.enum(["PRIVATE", "PUBLIC", "ARCHIVED"]),
   businessStatus: z.enum(["AVAILABLE", "RESERVED", "SOLD", "RENTED", "OFF_MARKET"]),
-  description: z.string().optional(),
 });
 
 type PropertyFormData = z.infer<typeof propertySchema>;
@@ -49,6 +88,7 @@ export default function PropertyEditPage() {
   const id = params.id as string;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedProvinceId, setSelectedProvinceId] = useState<string | undefined>(undefined);
 
   const { data: propertyData, isLoading } = useGetApiPropertyId(id);
   const property = (propertyData as unknown as { data: Property })?.data;
@@ -56,11 +96,28 @@ export default function PropertyEditPage() {
   // mutation
   const { mutate: updateProperty } = usePatchApiProperty();
 
+  // property types
+  const { data: propertyTypesData, isLoading: propertyTypesLoading } = useGetApiPropertyTypes();
+  const propertyTypes = (propertyTypesData?.data as unknown as PropertyType[]) || [];
+  const propertyTypeItems = Object.fromEntries(propertyTypes.map((t) => [t.id, t.name]));
+
+  // locations
+  const { data: provincesData, isLoading: provincesLoading } = useGetApiLocations({ type: "PROVINCE", limit: 100 });
+  const provinces = (provincesData?.data as unknown as Location[]) || [];
+  const provinceItems = Object.fromEntries(provinces.map((p) => [p.id, p.name]));
+
+  const { data: districtsData, isLoading: districtsLoading } = useGetApiLocations(
+    selectedProvinceId ? { type: "WARD", parentId: selectedProvinceId, limit: 100 } : undefined,
+  );
+  const districts = (districtsData?.data as unknown as Location[]) || [];
+  const districtItems = Object.fromEntries(districts.map((d) => [d.id, d.name]));
+
   const {
     register,
     handleSubmit,
     setValue,
     reset,
+    watch,
     formState: { errors },
   } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
@@ -74,8 +131,15 @@ export default function PropertyEditPage() {
     },
   });
 
+  const watchedPropertyTypeId = watch("propertyTypeId");
+  const watchedProvinceId = watch("provinceId");
+  const watchedDistrictId = watch("districtId");
+
   useEffect(() => {
     if (property) {
+      const provinceId = (property as any).provinceId || "";
+      const districtId = (property as any).districtId || "";
+      setSelectedProvinceId(provinceId || undefined);
       reset({
         propertyCode: property.propertyCode || "",
         title: property.title || "",
@@ -83,15 +147,14 @@ export default function PropertyEditPage() {
         propertyTypeId: property.propertyType?.id || "",
         transactionType: (property.transactionType as PropertyFormData["transactionType"]) || "SALE",
         sellingMode: (property.sellingMode as PropertyFormData["sellingMode"]) || "SELF_SELL",
-        provinceId: "",
-        districtId: "",
+        provinceId,
+        districtId,
         price: Number(property.price) || 0,
         priceUnit: property.priceUnit || "VND",
         area: property.area || 0,
         areaUnit: property.areaUnit || "SQM",
         publicationStatus: (property.publicationStatus as PropertyFormData["publicationStatus"]) || "PRIVATE",
         businessStatus: (property.businessStatus as PropertyFormData["businessStatus"]) || "AVAILABLE",
-        description: "",
       });
     }
   }, [property, reset]);
@@ -133,9 +196,9 @@ export default function PropertyEditPage() {
           <ArrowLeft size={20} />
         </button>
         <PageHeader
-          eyebrow="Bat dong san"
-          title="Chinh sua bat dong san"
-          description="Cap nhat thong tin bat dong san"
+          eyebrow="Bất động sản"
+          title="Chỉnh sửa bất động sản"
+          description="Cập nhật thông tin bất động sản"
         />
       </div>
 
@@ -146,68 +209,82 @@ export default function PropertyEditPage() {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <FormSection title="Thong tin co ban" description="Nhap thong tin chinh cua bat dong san">
+        <FormSection title="Thông tin cơ bản" description="Nhập thông tin chính của bất động sản">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Ma BÄS" htmlFor="propertyCode" required error={errors.propertyCode?.message}>
+            <FormField label="Mã BĐS" htmlFor="propertyCode" required error={errors.propertyCode?.message}>
               <Input id="propertyCode" placeholder="PROP-001" {...register("propertyCode")} />
             </FormField>
-            <FormField label="Tieu de" htmlFor="title" required error={errors.title?.message}>
+            <FormField label="Tiêu đề" htmlFor="title" required error={errors.title?.message}>
               <Input id="title" placeholder="Vinhomes Central Park - 2PN" {...register("title")} />
             </FormField>
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Loai giao dich" required>
+            <FormField label="Loại giao dịch" required>
               <Select
-                defaultValue="SALE"
+                value={watch("transactionType")}
+                items={transactionTypeLabels}
                 onValueChange={(v) => setValue("transactionType", v as PropertyFormData["transactionType"])}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Chon loai giao dich" />
+                  <SelectValue placeholder="Chọn loại giao dịch" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="SALE">Ban</SelectItem>
-                  <SelectItem value="RENT">Cho thue</SelectItem>
-                  <SelectItem value="TRANSFER">Chuyen nhuong</SelectItem>
-                  <SelectItem value="INVESTMENT">Dau tu</SelectItem>
+                  <SelectItem value="SALE">Bán</SelectItem>
+                  <SelectItem value="RENT">Cho thuê</SelectItem>
+                  <SelectItem value="TRANSFER">Chuyển nhượng</SelectItem>
+                  <SelectItem value="INVESTMENT">Đầu tư</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
-            <FormField label="Loai BÄS" htmlFor="propertyTypeId" required error={errors.propertyTypeId?.message}>
-              <Input id="propertyTypeId" placeholder="Chon loai BÄS" {...register("propertyTypeId")} />
+            <FormField label="Loại BĐS" required error={errors.propertyTypeId?.message}>
+              <Select
+                value={watchedPropertyTypeId ?? ""}
+                items={propertyTypeItems}
+                onValueChange={(v) => setValue("propertyTypeId", v as string)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={propertyTypesLoading ? "Đang tải..." : "Chọn loại BĐS"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {propertyTypes.map((t) => (
+                    <SelectItem key={t.id} value={t.id}>
+                      {t.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </FormField>
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Hinh thuc ban" required>
+            <FormField label="Hình thức bán" required>
               <Select
-                defaultValue="SELF_SELL"
+                value={watch("sellingMode")}
+                items={sellingModeLabels}
                 onValueChange={(v) => setValue("sellingMode", v as PropertyFormData["sellingMode"])}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Chon hinh thuc ban" />
+                  <SelectValue placeholder="Chọn hình thức bán" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="SELF_SELL">Ban tu hanh</SelectItem>
-                  <SelectItem value="SALES_DISTRIBUTION">Phan phoi ban</SelectItem>
-                  <SelectItem value="HYBRID">Ket hop</SelectItem>
+                  <SelectItem value="SELF_SELL">Bán tự hành</SelectItem>
+                  <SelectItem value="SALES_DISTRIBUTION">Phân phối bán</SelectItem>
+                  <SelectItem value="HYBRID">Kết hợp</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
           </div>
 
-          <FormField label="Mo ta" htmlFor="description">
-            <Textarea id="description" placeholder="Mo ta chi tiet ve bat dong san..." {...register("description")} />
-          </FormField>
         </FormSection>
 
-        <FormSection title="Gia & Dien tich" description="Thong tin gia va kich thuoc">
+        <FormSection title="Giá & Diện tích" description="Thông tin giá và kích thước">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Gia" htmlFor="price" required error={errors.price?.message}>
-              <Input id="price" type="number" placeholder="5000000000" {...register("price")} />
+            <FormField label="Giá" htmlFor="price" required error={errors.price?.message}>
+              <Input id="price" type="number" placeholder="5000000000" {...register("price", { setValueAs: (v) => v === "" ? undefined : Number(v) })} />
             </FormField>
-            <FormField label="Don vi tien">
-              <Select defaultValue="VND" onValueChange={(v) => setValue("priceUnit", v ?? "")}>
+            <FormField label="Đơn vị tiền">
+              <Select value={watch("priceUnit")} items={priceUnitLabels} onValueChange={(v) => setValue("priceUnit", v ?? "")}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -219,71 +296,115 @@ export default function PropertyEditPage() {
             </FormField>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Dien tich (m2)" htmlFor="area" required error={errors.area?.message}>
-              <Input id="area" type="number" placeholder="80" {...register("area")} />
+            <FormField label="Diện tích (m2)" htmlFor="area" required error={errors.area?.message}>
+              <Input id="area" type="number" placeholder="80" {...register("area", { setValueAs: (v) => v === "" ? undefined : Number(v) })} />
             </FormField>
           </div>
         </FormSection>
 
-        <FormSection title="Vi tri" description="Dia diem cua bat dong san">
+        <FormSection title="Vị trí" description="Địa điểm của bất động sản">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Tinh/Thanh pho">
-              <Input placeholder="Chon tinh" {...register("provinceId")} />
-            </FormField>
-            <FormField label="Quan/Huyen">
-              <Input placeholder="Chon quan" {...register("districtId")} />
-            </FormField>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Vi do">
-              <Input type="number" step="any" placeholder="10.7769" {...register("latitude")} />
-            </FormField>
-            <FormField label="Kinh do">
-              <Input type="number" step="any" placeholder="106.7009" {...register("longitude")} />
-            </FormField>
-          </div>
-        </FormSection>
-
-        <FormSection title="Trang thai" description="Trang thai kinh doanh va xuat ban">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Trang thai kinh doanh">
+            <FormField label="Tỉnh/Thành phố">
               <Select
-                defaultValue="AVAILABLE"
+                value={watchedProvinceId ?? ""}
+                items={provinceItems}
+                onValueChange={(v) => {
+                  const val = v as string;
+                  setValue("provinceId", val);
+                  setSelectedProvinceId(val);
+                  setValue("districtId", "");
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={provincesLoading ? "Đang tải..." : "Chọn tỉnh/thành phố"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {provinces.map((loc) => (
+                    <SelectItem key={loc.id} value={loc.id}>
+                      {loc.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormField>
+            <FormField label="Phường/Xã">
+              <Select
+                value={watchedDistrictId ?? ""}
+                items={districtItems}
+                disabled={!selectedProvinceId}
+                onValueChange={(v) => setValue("districtId", v as string)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={
+                    !selectedProvinceId
+                      ? "Chọn tỉnh/thành phố trước"
+                      : districtsLoading
+                        ? "Đang tải..."
+                        : "Chọn phường/xã"
+                  } />
+                </SelectTrigger>
+                <SelectContent>
+                  {districts.map((loc) => (
+                    <SelectItem key={loc.id} value={loc.id}>
+                      {loc.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormField>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField label="Vĩ độ">
+              <Input type="number" step="any" placeholder="10.7769" {...register("latitude", { setValueAs: (v) => v === "" ? undefined : Number(v) })} />
+            </FormField>
+            <FormField label="Kinh độ">
+              <Input type="number" step="any" placeholder="106.7009" {...register("longitude", { setValueAs: (v) => v === "" ? undefined : Number(v) })} />
+            </FormField>
+          </div>
+        </FormSection>
+
+        <FormSection title="Trạng thái" description="Trạng thái kinh doanh và xuất bản">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField label="Trạng thái kinh doanh">
+              <Select
+                value={watch("businessStatus")}
+                items={businessStatusLabels}
                 onValueChange={(v) => setValue("businessStatus", v as PropertyFormData["businessStatus"])}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="AVAILABLE">San co</SelectItem>
-                  <SelectItem value="RESERVED">Dat coc</SelectItem>
-                  <SelectItem value="SOLD">Da ban</SelectItem>
-                  <SelectItem value="RENTED">Da thue</SelectItem>
-                  <SelectItem value="OFF_MARKET">Khoi ban</SelectItem>
+                  <SelectItem value="AVAILABLE">Sẵn có</SelectItem>
+                  <SelectItem value="RESERVED">Đặt cọc</SelectItem>
+                  <SelectItem value="SOLD">Đã bán</SelectItem>
+                  <SelectItem value="RENTED">Đã thuê</SelectItem>
+                  <SelectItem value="OFF_MARKET">Không còn</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
-            <FormField label="Trang thai xuat ban">
+            <FormField label="Trạng thái xuất bản">
               <Select
-                defaultValue="PRIVATE"
+                value={watch("publicationStatus")}
+                items={publicationStatusLabels}
                 onValueChange={(v) => setValue("publicationStatus", v as PropertyFormData["publicationStatus"])}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="PRIVATE">Rieng tu</SelectItem>
-                  <SelectItem value="PUBLIC">Cong khai</SelectItem>
-                  <SelectItem value="ARCHIVED">Luu tru</SelectItem>
+                  <SelectItem value="PRIVATE">Riêng tư</SelectItem>
+                  <SelectItem value="PUBLIC">Công khai</SelectItem>
+                  <SelectItem value="ARCHIVED">Lưu trữ</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
           </div>
         </FormSection>
 
-        <FormSection title="Truong dong" description="Truong duoc render dong tu FormSchema API">
+        <FormSection title="Trường động" description="Trường được render động từ FormSchema API">
           <p className="text-sm text-foreground-muted">
-            Cac truong dong se tu dong hien thi tai day sau khi fetch tu{" "}
+            Các trường động sẽ tự động hiển thị tại đây sau khi fetch từ{" "}
             <code className="rounded bg-surface-muted px-1.5 py-0.5 font-mono text-xs">
               /api/dynamic-fields/form-schemas?entityType=PROPERTY
             </code>
@@ -292,10 +413,10 @@ export default function PropertyEditPage() {
 
         <div className="flex items-center justify-end gap-2">
           <Button type="button" variant="secondary" onClick={() => router.push(`/properties/${id}`)}>
-            Huy
+            Hủy
           </Button>
           <Button type="submit" disabled={loading}>
-            {loading ? "Dang luu..." : "Cap nhat bat dong san"}
+            {loading ? "Đang lưu..." : "Cập nhật bất động sản"}
           </Button>
         </div>
       </form>

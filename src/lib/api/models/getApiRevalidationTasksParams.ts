@@ -5,9 +5,10 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiRevalidationTasksStatus } from './getApiRevalidationTasksStatus';
 
 export type GetApiRevalidationTasksParams = {
-propertyId: string;
-status: string;
-assignedTo: string;
+propertyId?: string;
+status?: GetApiRevalidationTasksStatus;
+assignedTo?: string;
 };

@@ -54,19 +54,19 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiAuditLogsResponse200 = {
-  data: void
-  status: 200
+export type getApiAuditLogsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiAuditLogsResponseSuccess = (getApiAuditLogsResponse200) & {
+;
+export type getApiAuditLogsResponseError = (getApiAuditLogsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiAuditLogsResponse = (getApiAuditLogsResponseSuccess)
+export type getApiAuditLogsResponse = (getApiAuditLogsResponseError)
 
-export const getGetApiAuditLogsUrl = (params: GetApiAuditLogsParams,) => {
+export const getGetApiAuditLogsUrl = (params?: GetApiAuditLogsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -84,7 +84,7 @@ export const getGetApiAuditLogsUrl = (params: GetApiAuditLogsParams,) => {
 /**
  * @summary Query audit logs with filters
  */
-export const getApiAuditLogs = async (params: GetApiAuditLogsParams, options?: RequestInit): Promise<getApiAuditLogsResponse> => {
+export const getApiAuditLogs = async (params?: GetApiAuditLogsParams, options?: RequestInit): Promise<getApiAuditLogsResponse> => {
 
   return useCustomClient<getApiAuditLogsResponse>(getGetApiAuditLogsUrl(params),
   {
@@ -112,7 +112,7 @@ export const getGetApiAuditLogsQueryKey = (params?: GetApiAuditLogsParams,) => {
     }
 
 
-export const getGetApiAuditLogsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAuditLogs>>>, TError = ErrorType<unknown>>(params: GetApiAuditLogsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiAuditLogsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAuditLogs>>>, TError = ErrorType<unknown>>(params?: GetApiAuditLogsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -135,7 +135,7 @@ export type GetApiAuditLogsInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiAuditLogsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAuditLogs>>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>> & Pick<
+ params: undefined |  GetApiAuditLogsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAuditLogs>>,
           TError,
@@ -145,7 +145,7 @@ export function useGetApiAuditLogsInfinite<TData = InfiniteData<Awaited<ReturnTy
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAuditLogsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAuditLogs>>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>> & Pick<
+ params?: GetApiAuditLogsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAuditLogs>>,
           TError,
@@ -155,7 +155,7 @@ export function useGetApiAuditLogsInfinite<TData = InfiniteData<Awaited<ReturnTy
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAuditLogsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAuditLogs>>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAuditLogsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -163,7 +163,7 @@ export function useGetApiAuditLogsInfinite<TData = InfiniteData<Awaited<ReturnTy
  */
 
 export function useGetApiAuditLogsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAuditLogs>>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAuditLogsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -178,7 +178,7 @@ export function useGetApiAuditLogsInfinite<TData = InfiniteData<Awaited<ReturnTy
  * @summary Query audit logs with filters
  */
 export const prefetchGetApiAuditLogsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiAuditLogs>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiAuditLogsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiAuditLogsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -193,7 +193,7 @@ export const prefetchGetApiAuditLogsInfiniteQuery = async <TData = Awaited<Retur
 
 
 
-export const getGetApiAuditLogsQueryOptions = <TData = Awaited<ReturnType<typeof getApiAuditLogs>>, TError = ErrorType<unknown>>(params: GetApiAuditLogsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiAuditLogsQueryOptions = <TData = Awaited<ReturnType<typeof getApiAuditLogs>>, TError = ErrorType<unknown>>(params?: GetApiAuditLogsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -216,7 +216,7 @@ export type GetApiAuditLogsQueryError = ErrorType<unknown>
 
 
 export function useGetApiAuditLogs<TData = Awaited<ReturnType<typeof getApiAuditLogs>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>> & Pick<
+ params: undefined |  GetApiAuditLogsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAuditLogs>>,
           TError,
@@ -226,7 +226,7 @@ export function useGetApiAuditLogs<TData = Awaited<ReturnType<typeof getApiAudit
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAuditLogs<TData = Awaited<ReturnType<typeof getApiAuditLogs>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>> & Pick<
+ params?: GetApiAuditLogsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAuditLogs>>,
           TError,
@@ -236,7 +236,7 @@ export function useGetApiAuditLogs<TData = Awaited<ReturnType<typeof getApiAudit
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAuditLogs<TData = Awaited<ReturnType<typeof getApiAuditLogs>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAuditLogsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -244,7 +244,7 @@ export function useGetApiAuditLogs<TData = Awaited<ReturnType<typeof getApiAudit
  */
 
 export function useGetApiAuditLogs<TData = Awaited<ReturnType<typeof getApiAuditLogs>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAuditLogsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -259,7 +259,7 @@ export function useGetApiAuditLogs<TData = Awaited<ReturnType<typeof getApiAudit
  * @summary Query audit logs with filters
  */
 export const prefetchGetApiAuditLogsQuery = async <TData = Awaited<ReturnType<typeof getApiAuditLogs>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiAuditLogsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiAuditLogsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -286,7 +286,7 @@ export type getApiAuditLogSummaryResponseSuccess = (getApiAuditLogSummaryRespons
 
 export type getApiAuditLogSummaryResponse = (getApiAuditLogSummaryResponseSuccess)
 
-export const getGetApiAuditLogSummaryUrl = (params: GetApiAuditLogSummaryParams,) => {
+export const getGetApiAuditLogSummaryUrl = (params?: GetApiAuditLogSummaryParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -304,7 +304,7 @@ export const getGetApiAuditLogSummaryUrl = (params: GetApiAuditLogSummaryParams,
 /**
  * @summary Get audit log action summary
  */
-export const getApiAuditLogSummary = async (params: GetApiAuditLogSummaryParams, options?: RequestInit): Promise<getApiAuditLogSummaryResponse> => {
+export const getApiAuditLogSummary = async (params?: GetApiAuditLogSummaryParams, options?: RequestInit): Promise<getApiAuditLogSummaryResponse> => {
 
   return useCustomClient<getApiAuditLogSummaryResponse>(getGetApiAuditLogSummaryUrl(params),
   {
@@ -332,7 +332,7 @@ export const getGetApiAuditLogSummaryQueryKey = (params?: GetApiAuditLogSummaryP
     }
 
 
-export const getGetApiAuditLogSummaryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAuditLogSummary>>>, TError = ErrorType<unknown>>(params: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiAuditLogSummaryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAuditLogSummary>>>, TError = ErrorType<unknown>>(params?: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -355,7 +355,7 @@ export type GetApiAuditLogSummaryInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiAuditLogSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAuditLogSummary>>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogSummaryParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>> & Pick<
+ params: undefined |  GetApiAuditLogSummaryParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAuditLogSummary>>,
           TError,
@@ -365,7 +365,7 @@ export function useGetApiAuditLogSummaryInfinite<TData = InfiniteData<Awaited<Re
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAuditLogSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAuditLogSummary>>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>> & Pick<
+ params?: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAuditLogSummary>>,
           TError,
@@ -375,7 +375,7 @@ export function useGetApiAuditLogSummaryInfinite<TData = InfiniteData<Awaited<Re
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAuditLogSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAuditLogSummary>>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -383,7 +383,7 @@ export function useGetApiAuditLogSummaryInfinite<TData = InfiniteData<Awaited<Re
  */
 
 export function useGetApiAuditLogSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAuditLogSummary>>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -398,7 +398,7 @@ export function useGetApiAuditLogSummaryInfinite<TData = InfiniteData<Awaited<Re
  * @summary Get audit log action summary
  */
 export const prefetchGetApiAuditLogSummaryInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -413,7 +413,7 @@ export const prefetchGetApiAuditLogSummaryInfiniteQuery = async <TData = Awaited
 
 
 
-export const getGetApiAuditLogSummaryQueryOptions = <TData = Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError = ErrorType<unknown>>(params: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiAuditLogSummaryQueryOptions = <TData = Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError = ErrorType<unknown>>(params?: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -436,7 +436,7 @@ export type GetApiAuditLogSummaryQueryError = ErrorType<unknown>
 
 
 export function useGetApiAuditLogSummary<TData = Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogSummaryParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>> & Pick<
+ params: undefined |  GetApiAuditLogSummaryParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAuditLogSummary>>,
           TError,
@@ -446,7 +446,7 @@ export function useGetApiAuditLogSummary<TData = Awaited<ReturnType<typeof getAp
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAuditLogSummary<TData = Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>> & Pick<
+ params?: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAuditLogSummary>>,
           TError,
@@ -456,7 +456,7 @@ export function useGetApiAuditLogSummary<TData = Awaited<ReturnType<typeof getAp
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAuditLogSummary<TData = Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -464,7 +464,7 @@ export function useGetApiAuditLogSummary<TData = Awaited<ReturnType<typeof getAp
  */
 
 export function useGetApiAuditLogSummary<TData = Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError = ErrorType<unknown>>(
- params: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -479,7 +479,7 @@ export function useGetApiAuditLogSummary<TData = Awaited<ReturnType<typeof getAp
  * @summary Get audit log action summary
  */
 export const prefetchGetApiAuditLogSummaryQuery = async <TData = Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiAuditLogSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuditLogSummary>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 

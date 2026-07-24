@@ -96,7 +96,7 @@ export default function CustomerEditPage() {
         <button onClick={() => router.push("/customers")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
           <ArrowLeft size={20} />
         </button>
-        <PageHeader eyebrow="CRM" title="Chinh sua khach hang" />
+        <PageHeader eyebrow="CRM" title="Chỉnh sửa khach hang" />
       </div>
 
       {error && (
@@ -108,10 +108,10 @@ export default function CustomerEditPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <FormSection title="Thong tin khach hang">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Ho va ten" htmlFor="fullName" required error={errors.fullName?.message}>
+            <FormField label="Họ và tên" htmlFor="fullName" required error={errors.fullName?.message}>
               <Input id="fullName" placeholder="Nguyen Van An" {...register("fullName")} />
             </FormField>
-            <FormField label="So dien thoai" htmlFor="phone" error={errors.phone?.message}>
+            <FormField label="Số điện thoại" htmlFor="phone" error={errors.phone?.message}>
               <Input id="phone" placeholder="0901234567" {...register("phone")} />
             </FormField>
           </div>

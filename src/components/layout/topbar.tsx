@@ -86,14 +86,14 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
               className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-foreground-muted hover:bg-surface-muted cursor-pointer outline-none transition-colors"
             >
               <UserCircle size={16} />
-              <span>Ho so ca nhan</span>
+              <span>Hồ sơ cá nhân</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => { logout(); router.push("/login"); }}
               className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-accent-red-text hover:bg-accent-red/10 cursor-pointer outline-none transition-colors"
             >
               <SignOut size={16} />
-              <span>Dang xuat</span>
+              <span>Đăng xuất</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

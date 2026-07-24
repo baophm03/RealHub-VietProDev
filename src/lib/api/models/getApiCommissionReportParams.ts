@@ -7,6 +7,6 @@
  */
 
 export type GetApiCommissionReportParams = {
-startDate: string;
-endDate: string;
+startDate?: string;
+endDate?: string;
 };

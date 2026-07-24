@@ -61,19 +61,19 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiCommissionPlansResponse200 = {
-  data: void
-  status: 200
+export type getApiCommissionPlansResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiCommissionPlansResponseSuccess = (getApiCommissionPlansResponse200) & {
+;
+export type getApiCommissionPlansResponseError = (getApiCommissionPlansResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiCommissionPlansResponse = (getApiCommissionPlansResponseSuccess)
+export type getApiCommissionPlansResponse = (getApiCommissionPlansResponseError)
 
-export const getGetApiCommissionPlansUrl = (params: GetApiCommissionPlansParams,) => {
+export const getGetApiCommissionPlansUrl = (params?: GetApiCommissionPlansParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -91,7 +91,7 @@ export const getGetApiCommissionPlansUrl = (params: GetApiCommissionPlansParams,
 /**
  * @summary List commission plans
  */
-export const getApiCommissionPlans = async (params: GetApiCommissionPlansParams, options?: RequestInit): Promise<getApiCommissionPlansResponse> => {
+export const getApiCommissionPlans = async (params?: GetApiCommissionPlansParams, options?: RequestInit): Promise<getApiCommissionPlansResponse> => {
 
   return useCustomClient<getApiCommissionPlansResponse>(getGetApiCommissionPlansUrl(params),
   {
@@ -119,7 +119,7 @@ export const getGetApiCommissionPlansQueryKey = (params?: GetApiCommissionPlansP
     }
 
 
-export const getGetApiCommissionPlansInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCommissionPlans>>>, TError = ErrorType<unknown>>(params: GetApiCommissionPlansParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiCommissionPlansInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCommissionPlans>>>, TError = ErrorType<unknown>>(params?: GetApiCommissionPlansParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -142,7 +142,7 @@ export type GetApiCommissionPlansInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiCommissionPlansInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommissionPlans>>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionPlansParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>> & Pick<
+ params: undefined |  GetApiCommissionPlansParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCommissionPlans>>,
           TError,
@@ -152,7 +152,7 @@ export function useGetApiCommissionPlansInfinite<TData = InfiniteData<Awaited<Re
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCommissionPlansInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommissionPlans>>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionPlansParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>> & Pick<
+ params?: GetApiCommissionPlansParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCommissionPlans>>,
           TError,
@@ -162,7 +162,7 @@ export function useGetApiCommissionPlansInfinite<TData = InfiniteData<Awaited<Re
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCommissionPlansInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommissionPlans>>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionPlansParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCommissionPlansParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -170,7 +170,7 @@ export function useGetApiCommissionPlansInfinite<TData = InfiniteData<Awaited<Re
  */
 
 export function useGetApiCommissionPlansInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommissionPlans>>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionPlansParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCommissionPlansParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -185,7 +185,7 @@ export function useGetApiCommissionPlansInfinite<TData = InfiniteData<Awaited<Re
  * @summary List commission plans
  */
 export const prefetchGetApiCommissionPlansInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiCommissionPlans>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiCommissionPlansParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiCommissionPlansParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -200,7 +200,7 @@ export const prefetchGetApiCommissionPlansInfiniteQuery = async <TData = Awaited
 
 
 
-export const getGetApiCommissionPlansQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommissionPlans>>, TError = ErrorType<unknown>>(params: GetApiCommissionPlansParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiCommissionPlansQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommissionPlans>>, TError = ErrorType<unknown>>(params?: GetApiCommissionPlansParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -223,7 +223,7 @@ export type GetApiCommissionPlansQueryError = ErrorType<unknown>
 
 
 export function useGetApiCommissionPlans<TData = Awaited<ReturnType<typeof getApiCommissionPlans>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionPlansParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>> & Pick<
+ params: undefined |  GetApiCommissionPlansParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCommissionPlans>>,
           TError,
@@ -233,7 +233,7 @@ export function useGetApiCommissionPlans<TData = Awaited<ReturnType<typeof getAp
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCommissionPlans<TData = Awaited<ReturnType<typeof getApiCommissionPlans>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionPlansParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>> & Pick<
+ params?: GetApiCommissionPlansParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCommissionPlans>>,
           TError,
@@ -243,7 +243,7 @@ export function useGetApiCommissionPlans<TData = Awaited<ReturnType<typeof getAp
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCommissionPlans<TData = Awaited<ReturnType<typeof getApiCommissionPlans>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionPlansParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCommissionPlansParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -251,7 +251,7 @@ export function useGetApiCommissionPlans<TData = Awaited<ReturnType<typeof getAp
  */
 
 export function useGetApiCommissionPlans<TData = Awaited<ReturnType<typeof getApiCommissionPlans>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionPlansParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCommissionPlansParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -266,7 +266,7 @@ export function useGetApiCommissionPlans<TData = Awaited<ReturnType<typeof getAp
  * @summary List commission plans
  */
 export const prefetchGetApiCommissionPlansQuery = async <TData = Awaited<ReturnType<typeof getApiCommissionPlans>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiCommissionPlansParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiCommissionPlansParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionPlans>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -281,17 +281,17 @@ export const prefetchGetApiCommissionPlansQuery = async <TData = Awaited<ReturnT
 
 
 
-export type postApiCommissionPlanResponse201 = {
-  data: void
-  status: 201
+export type postApiCommissionPlanResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiCommissionPlanResponseSuccess = (postApiCommissionPlanResponse201) & {
+;
+export type postApiCommissionPlanResponseError = (postApiCommissionPlanResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiCommissionPlanResponse = (postApiCommissionPlanResponseSuccess)
+export type postApiCommissionPlanResponse = (postApiCommissionPlanResponseError)
 
 export const getPostApiCommissionPlanUrl = () => {
 
@@ -363,17 +363,17 @@ export const usePostApiCommissionPlan = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiCommissionPlanMutationOptions(options), queryClient);
     }
-    export type getApiCommissionPlanIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiCommissionPlanIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiCommissionPlanIdResponseSuccess = (getApiCommissionPlanIdResponse200) & {
+;
+export type getApiCommissionPlanIdResponseError = (getApiCommissionPlanIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiCommissionPlanIdResponse = (getApiCommissionPlanIdResponseSuccess)
+export type getApiCommissionPlanIdResponse = (getApiCommissionPlanIdResponseError)
 
 export const getGetApiCommissionPlanIdUrl = (id: string,) => {
 
@@ -576,17 +576,17 @@ export const prefetchGetApiCommissionPlanIdQuery = async <TData = Awaited<Return
 
 
 
-export type patchApiCommissionPlanStatusResponse200 = {
-  data: void
-  status: 200
+export type patchApiCommissionPlanStatusResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiCommissionPlanStatusResponseSuccess = (patchApiCommissionPlanStatusResponse200) & {
+;
+export type patchApiCommissionPlanStatusResponseError = (patchApiCommissionPlanStatusResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiCommissionPlanStatusResponse = (patchApiCommissionPlanStatusResponseSuccess)
+export type patchApiCommissionPlanStatusResponse = (patchApiCommissionPlanStatusResponseError)
 
 export const getPatchApiCommissionPlanStatusUrl = (id: string,) => {
 
@@ -659,19 +659,19 @@ export const usePatchApiCommissionPlanStatus = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPatchApiCommissionPlanStatusMutationOptions(options), queryClient);
     }
-    export type getApiDealCommissionsResponse200 = {
-  data: void
-  status: 200
+    export type getApiDealCommissionsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiDealCommissionsResponseSuccess = (getApiDealCommissionsResponse200) & {
+;
+export type getApiDealCommissionsResponseError = (getApiDealCommissionsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiDealCommissionsResponse = (getApiDealCommissionsResponseSuccess)
+export type getApiDealCommissionsResponse = (getApiDealCommissionsResponseError)
 
-export const getGetApiDealCommissionsUrl = (params: GetApiDealCommissionsParams,) => {
+export const getGetApiDealCommissionsUrl = (params?: GetApiDealCommissionsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -689,7 +689,7 @@ export const getGetApiDealCommissionsUrl = (params: GetApiDealCommissionsParams,
 /**
  * @summary List deal commissions
  */
-export const getApiDealCommissions = async (params: GetApiDealCommissionsParams, options?: RequestInit): Promise<getApiDealCommissionsResponse> => {
+export const getApiDealCommissions = async (params?: GetApiDealCommissionsParams, options?: RequestInit): Promise<getApiDealCommissionsResponse> => {
 
   return useCustomClient<getApiDealCommissionsResponse>(getGetApiDealCommissionsUrl(params),
   {
@@ -717,7 +717,7 @@ export const getGetApiDealCommissionsQueryKey = (params?: GetApiDealCommissionsP
     }
 
 
-export const getGetApiDealCommissionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiDealCommissions>>>, TError = ErrorType<unknown>>(params: GetApiDealCommissionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiDealCommissionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiDealCommissions>>>, TError = ErrorType<unknown>>(params?: GetApiDealCommissionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -740,7 +740,7 @@ export type GetApiDealCommissionsInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiDealCommissionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDealCommissions>>>, TError = ErrorType<unknown>>(
- params: GetApiDealCommissionsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>> & Pick<
+ params: undefined |  GetApiDealCommissionsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiDealCommissions>>,
           TError,
@@ -750,7 +750,7 @@ export function useGetApiDealCommissionsInfinite<TData = InfiniteData<Awaited<Re
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiDealCommissionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDealCommissions>>>, TError = ErrorType<unknown>>(
- params: GetApiDealCommissionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>> & Pick<
+ params?: GetApiDealCommissionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiDealCommissions>>,
           TError,
@@ -760,7 +760,7 @@ export function useGetApiDealCommissionsInfinite<TData = InfiniteData<Awaited<Re
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiDealCommissionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDealCommissions>>>, TError = ErrorType<unknown>>(
- params: GetApiDealCommissionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiDealCommissionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -768,7 +768,7 @@ export function useGetApiDealCommissionsInfinite<TData = InfiniteData<Awaited<Re
  */
 
 export function useGetApiDealCommissionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDealCommissions>>>, TError = ErrorType<unknown>>(
- params: GetApiDealCommissionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiDealCommissionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -783,7 +783,7 @@ export function useGetApiDealCommissionsInfinite<TData = InfiniteData<Awaited<Re
  * @summary List deal commissions
  */
 export const prefetchGetApiDealCommissionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiDealCommissions>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiDealCommissionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiDealCommissionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -798,7 +798,7 @@ export const prefetchGetApiDealCommissionsInfiniteQuery = async <TData = Awaited
 
 
 
-export const getGetApiDealCommissionsQueryOptions = <TData = Awaited<ReturnType<typeof getApiDealCommissions>>, TError = ErrorType<unknown>>(params: GetApiDealCommissionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiDealCommissionsQueryOptions = <TData = Awaited<ReturnType<typeof getApiDealCommissions>>, TError = ErrorType<unknown>>(params?: GetApiDealCommissionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -821,7 +821,7 @@ export type GetApiDealCommissionsQueryError = ErrorType<unknown>
 
 
 export function useGetApiDealCommissions<TData = Awaited<ReturnType<typeof getApiDealCommissions>>, TError = ErrorType<unknown>>(
- params: GetApiDealCommissionsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>> & Pick<
+ params: undefined |  GetApiDealCommissionsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiDealCommissions>>,
           TError,
@@ -831,7 +831,7 @@ export function useGetApiDealCommissions<TData = Awaited<ReturnType<typeof getAp
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiDealCommissions<TData = Awaited<ReturnType<typeof getApiDealCommissions>>, TError = ErrorType<unknown>>(
- params: GetApiDealCommissionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>> & Pick<
+ params?: GetApiDealCommissionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiDealCommissions>>,
           TError,
@@ -841,7 +841,7 @@ export function useGetApiDealCommissions<TData = Awaited<ReturnType<typeof getAp
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiDealCommissions<TData = Awaited<ReturnType<typeof getApiDealCommissions>>, TError = ErrorType<unknown>>(
- params: GetApiDealCommissionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiDealCommissionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -849,7 +849,7 @@ export function useGetApiDealCommissions<TData = Awaited<ReturnType<typeof getAp
  */
 
 export function useGetApiDealCommissions<TData = Awaited<ReturnType<typeof getApiDealCommissions>>, TError = ErrorType<unknown>>(
- params: GetApiDealCommissionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiDealCommissionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -864,7 +864,7 @@ export function useGetApiDealCommissions<TData = Awaited<ReturnType<typeof getAp
  * @summary List deal commissions
  */
 export const prefetchGetApiDealCommissionsQuery = async <TData = Awaited<ReturnType<typeof getApiDealCommissions>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiDealCommissionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiDealCommissionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealCommissions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -879,17 +879,17 @@ export const prefetchGetApiDealCommissionsQuery = async <TData = Awaited<ReturnT
 
 
 
-export type getApiDealCommissionIdResponse200 = {
-  data: void
-  status: 200
+export type getApiDealCommissionIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiDealCommissionIdResponseSuccess = (getApiDealCommissionIdResponse200) & {
+;
+export type getApiDealCommissionIdResponseError = (getApiDealCommissionIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiDealCommissionIdResponse = (getApiDealCommissionIdResponseSuccess)
+export type getApiDealCommissionIdResponse = (getApiDealCommissionIdResponseError)
 
 export const getGetApiDealCommissionIdUrl = (id: string,) => {
 
@@ -1092,17 +1092,17 @@ export const prefetchGetApiDealCommissionIdQuery = async <TData = Awaited<Return
 
 
 
-export type postApiEstimateCommissionResponse201 = {
-  data: void
-  status: 201
+export type postApiEstimateCommissionResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiEstimateCommissionResponseSuccess = (postApiEstimateCommissionResponse201) & {
+;
+export type postApiEstimateCommissionResponseError = (postApiEstimateCommissionResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiEstimateCommissionResponse = (postApiEstimateCommissionResponseSuccess)
+export type postApiEstimateCommissionResponse = (postApiEstimateCommissionResponseError)
 
 export const getPostApiEstimateCommissionUrl = () => {
 

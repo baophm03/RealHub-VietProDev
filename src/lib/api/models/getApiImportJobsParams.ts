@@ -5,7 +5,8 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiImportJobsStatus } from './getApiImportJobsStatus';
 
 export type GetApiImportJobsParams = {
-status: string;
+status?: GetApiImportJobsStatus;
 };

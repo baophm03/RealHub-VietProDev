@@ -84,7 +84,7 @@ export default function AppointmentDetailPage() {
           actions={
             <Button variant="outline" onClick={() => router.push(`/appointments/${id}/edit`)}>
               <Pencil size={16} />
-              Chinh sua
+              Chỉnh sửa
             </Button>
           }
         />

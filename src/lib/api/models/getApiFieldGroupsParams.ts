@@ -5,7 +5,8 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiFieldGroupsEntityType } from './getApiFieldGroupsEntityType';
 
 export type GetApiFieldGroupsParams = {
-entityType: string;
+entityType?: GetApiFieldGroupsEntityType;
 };

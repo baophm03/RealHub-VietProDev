@@ -7,12 +7,19 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useGetApiCustomerId } from "@/lib/api/endpoints/customers";
 
+interface CustomerType {
+  id: string;
+  tenantId: string;
+  customerId: string;
+  type: string;
+}
+
 interface Customer {
   id: string;
   fullName: string;
   phone?: string;
   email?: string;
-  types?: string[];
+  types?: CustomerType[];
   createdAt?: string;
 }
 
@@ -61,7 +68,7 @@ export default function CustomerDetailPage() {
           actions={
             <Button variant="outline" onClick={() => router.push(`/customers/${id}/edit`)}>
               <Pencil size={16} />
-              Chinh sua
+              Chỉnh sửa
             </Button>
           }
         />
@@ -71,16 +78,16 @@ export default function CustomerDetailPage() {
         <div className="flex flex-col gap-4">
           <div className="flex flex-wrap gap-2">
             {(customer.types || []).map((t) => (
-              <Badge key={t} variant="blue">{t}</Badge>
+              <Badge key={t.id} variant="blue">{t.type}</Badge>
             ))}
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Ho va ten</span>
+              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Họ và tên</span>
               <p className="text-sm font-medium">{customer.fullName}</p>
             </div>
             <div>
-              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">So dien thoai</span>
+              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Số điện thoại</span>
               <p className="text-sm tabular-nums">{customer.phone || "-"}</p>
             </div>
             <div>
@@ -88,7 +95,7 @@ export default function CustomerDetailPage() {
               <p className="text-sm">{customer.email || "-"}</p>
             </div>
             <div>
-              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Ngay tao</span>
+              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Ngày tạo</span>
               <p className="text-sm tabular-nums">{customer.createdAt ? new Date(customer.createdAt).toLocaleDateString("vi-VN") : "-"}</p>
             </div>
           </div>

@@ -58,17 +58,17 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type postApiRegisterResponse201 = {
-  data: void
-  status: 201
+export type postApiRegisterResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiRegisterResponseSuccess = (postApiRegisterResponse201) & {
+;
+export type postApiRegisterResponseError = (postApiRegisterResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiRegisterResponse = (postApiRegisterResponseSuccess)
+export type postApiRegisterResponse = (postApiRegisterResponseError)
 
 export const getPostApiRegisterUrl = () => {
 
@@ -140,17 +140,17 @@ export const usePostApiRegister = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiRegisterMutationOptions(options), queryClient);
     }
-    export type postApiLoginResponse201 = {
-  data: void
-  status: 201
+    export type postApiLoginResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiLoginResponseSuccess = (postApiLoginResponse201) & {
+;
+export type postApiLoginResponseError = (postApiLoginResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiLoginResponse = (postApiLoginResponseSuccess)
+export type postApiLoginResponse = (postApiLoginResponseError)
 
 export const getPostApiLoginUrl = () => {
 
@@ -222,17 +222,17 @@ export const usePostApiLogin = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiLoginMutationOptions(options), queryClient);
     }
-    export type postApiRefreshTokenResponse201 = {
-  data: void
-  status: 201
+    export type postApiRefreshTokenResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiRefreshTokenResponseSuccess = (postApiRefreshTokenResponse201) & {
+;
+export type postApiRefreshTokenResponseError = (postApiRefreshTokenResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiRefreshTokenResponse = (postApiRefreshTokenResponseSuccess)
+export type postApiRefreshTokenResponse = (postApiRefreshTokenResponseError)
 
 export const getPostApiRefreshTokenUrl = () => {
 
@@ -304,17 +304,17 @@ export const usePostApiRefreshToken = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiRefreshTokenMutationOptions(options), queryClient);
     }
-    export type getApiMeResponse200 = {
-  data: void
-  status: 200
+    export type getApiMeResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiMeResponseSuccess = (getApiMeResponse200) & {
+;
+export type getApiMeResponseError = (getApiMeResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiMeResponse = (getApiMeResponseSuccess)
+export type getApiMeResponse = (getApiMeResponseError)
 
 export const getGetApiMeUrl = () => {
 
@@ -517,17 +517,17 @@ export const prefetchGetApiMeQuery = async <TData = Awaited<ReturnType<typeof ge
 
 
 
-export type postApiLogoutResponse201 = {
-  data: void
-  status: 201
+export type postApiLogoutResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiLogoutResponseSuccess = (postApiLogoutResponse201) & {
+;
+export type postApiLogoutResponseError = (postApiLogoutResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiLogoutResponse = (postApiLogoutResponseSuccess)
+export type postApiLogoutResponse = (postApiLogoutResponseError)
 
 export const getPostApiLogoutUrl = () => {
 
@@ -599,17 +599,17 @@ export const usePostApiLogout = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiLogoutMutationOptions(options), queryClient);
     }
-    export type postApiSwitchTenantResponse201 = {
-  data: void
-  status: 201
+    export type postApiSwitchTenantResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiSwitchTenantResponseSuccess = (postApiSwitchTenantResponse201) & {
+;
+export type postApiSwitchTenantResponseError = (postApiSwitchTenantResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiSwitchTenantResponse = (postApiSwitchTenantResponseSuccess)
+export type postApiSwitchTenantResponse = (postApiSwitchTenantResponseError)
 
 export const getPostApiSwitchTenantUrl = (tenantId: string,) => {
 
@@ -681,17 +681,17 @@ export const usePostApiSwitchTenant = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiSwitchTenantMutationOptions(options), queryClient);
     }
-    export type postApiRevokeAllTokensResponse201 = {
-  data: void
-  status: 201
+    export type postApiRevokeAllTokensResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiRevokeAllTokensResponseSuccess = (postApiRevokeAllTokensResponse201) & {
+;
+export type postApiRevokeAllTokensResponseError = (postApiRevokeAllTokensResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiRevokeAllTokensResponse = (postApiRevokeAllTokensResponseSuccess)
+export type postApiRevokeAllTokensResponse = (postApiRevokeAllTokensResponseError)
 
 export const getPostApiRevokeAllTokensUrl = () => {
 

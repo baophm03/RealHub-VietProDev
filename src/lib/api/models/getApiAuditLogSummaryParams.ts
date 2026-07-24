@@ -7,6 +7,6 @@
  */
 
 export type GetApiAuditLogSummaryParams = {
-startDate: string;
-endDate: string;
+startDate?: string;
+endDate?: string;
 };

@@ -6,4 +6,8 @@
  * OpenAPI spec version: v1
  */
 
-export interface CreateRevalidationTaskDto { [key: string]: unknown }
+export interface CreateRevalidationTaskDto {
+  propertyId: string;
+  assignedTo?: string;
+  dueAt: string;
+}

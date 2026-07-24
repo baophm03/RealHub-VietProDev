@@ -5,7 +5,8 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiLeadDisputesStatus } from './getApiLeadDisputesStatus';
 
 export type GetApiLeadDisputesParams = {
-status: string;
+status?: GetApiLeadDisputesStatus;
 };

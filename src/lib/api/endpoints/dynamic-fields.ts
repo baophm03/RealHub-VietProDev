@@ -62,19 +62,19 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiFieldGroupsResponse200 = {
-  data: void
-  status: 200
+export type getApiFieldGroupsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiFieldGroupsResponseSuccess = (getApiFieldGroupsResponse200) & {
+;
+export type getApiFieldGroupsResponseError = (getApiFieldGroupsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiFieldGroupsResponse = (getApiFieldGroupsResponseSuccess)
+export type getApiFieldGroupsResponse = (getApiFieldGroupsResponseError)
 
-export const getGetApiFieldGroupsUrl = (params: GetApiFieldGroupsParams,) => {
+export const getGetApiFieldGroupsUrl = (params?: GetApiFieldGroupsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -92,7 +92,7 @@ export const getGetApiFieldGroupsUrl = (params: GetApiFieldGroupsParams,) => {
 /**
  * @summary List field groups for tenant
  */
-export const getApiFieldGroups = async (params: GetApiFieldGroupsParams, options?: RequestInit): Promise<getApiFieldGroupsResponse> => {
+export const getApiFieldGroups = async (params?: GetApiFieldGroupsParams, options?: RequestInit): Promise<getApiFieldGroupsResponse> => {
 
   return useCustomClient<getApiFieldGroupsResponse>(getGetApiFieldGroupsUrl(params),
   {
@@ -120,7 +120,7 @@ export const getGetApiFieldGroupsQueryKey = (params?: GetApiFieldGroupsParams,) 
     }
 
 
-export const getGetApiFieldGroupsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFieldGroups>>>, TError = ErrorType<unknown>>(params: GetApiFieldGroupsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiFieldGroupsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFieldGroups>>>, TError = ErrorType<unknown>>(params?: GetApiFieldGroupsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -143,7 +143,7 @@ export type GetApiFieldGroupsInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiFieldGroupsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFieldGroups>>>, TError = ErrorType<unknown>>(
- params: GetApiFieldGroupsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>> & Pick<
+ params: undefined |  GetApiFieldGroupsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFieldGroups>>,
           TError,
@@ -153,7 +153,7 @@ export function useGetApiFieldGroupsInfinite<TData = InfiniteData<Awaited<Return
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFieldGroupsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFieldGroups>>>, TError = ErrorType<unknown>>(
- params: GetApiFieldGroupsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>> & Pick<
+ params?: GetApiFieldGroupsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFieldGroups>>,
           TError,
@@ -163,7 +163,7 @@ export function useGetApiFieldGroupsInfinite<TData = InfiniteData<Awaited<Return
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFieldGroupsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFieldGroups>>>, TError = ErrorType<unknown>>(
- params: GetApiFieldGroupsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFieldGroupsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -171,7 +171,7 @@ export function useGetApiFieldGroupsInfinite<TData = InfiniteData<Awaited<Return
  */
 
 export function useGetApiFieldGroupsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFieldGroups>>>, TError = ErrorType<unknown>>(
- params: GetApiFieldGroupsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFieldGroupsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -186,7 +186,7 @@ export function useGetApiFieldGroupsInfinite<TData = InfiniteData<Awaited<Return
  * @summary List field groups for tenant
  */
 export const prefetchGetApiFieldGroupsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiFieldGroups>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiFieldGroupsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiFieldGroupsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -201,7 +201,7 @@ export const prefetchGetApiFieldGroupsInfiniteQuery = async <TData = Awaited<Ret
 
 
 
-export const getGetApiFieldGroupsQueryOptions = <TData = Awaited<ReturnType<typeof getApiFieldGroups>>, TError = ErrorType<unknown>>(params: GetApiFieldGroupsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiFieldGroupsQueryOptions = <TData = Awaited<ReturnType<typeof getApiFieldGroups>>, TError = ErrorType<unknown>>(params?: GetApiFieldGroupsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -224,7 +224,7 @@ export type GetApiFieldGroupsQueryError = ErrorType<unknown>
 
 
 export function useGetApiFieldGroups<TData = Awaited<ReturnType<typeof getApiFieldGroups>>, TError = ErrorType<unknown>>(
- params: GetApiFieldGroupsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>> & Pick<
+ params: undefined |  GetApiFieldGroupsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFieldGroups>>,
           TError,
@@ -234,7 +234,7 @@ export function useGetApiFieldGroups<TData = Awaited<ReturnType<typeof getApiFie
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFieldGroups<TData = Awaited<ReturnType<typeof getApiFieldGroups>>, TError = ErrorType<unknown>>(
- params: GetApiFieldGroupsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>> & Pick<
+ params?: GetApiFieldGroupsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFieldGroups>>,
           TError,
@@ -244,7 +244,7 @@ export function useGetApiFieldGroups<TData = Awaited<ReturnType<typeof getApiFie
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFieldGroups<TData = Awaited<ReturnType<typeof getApiFieldGroups>>, TError = ErrorType<unknown>>(
- params: GetApiFieldGroupsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFieldGroupsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -252,7 +252,7 @@ export function useGetApiFieldGroups<TData = Awaited<ReturnType<typeof getApiFie
  */
 
 export function useGetApiFieldGroups<TData = Awaited<ReturnType<typeof getApiFieldGroups>>, TError = ErrorType<unknown>>(
- params: GetApiFieldGroupsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFieldGroupsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -267,7 +267,7 @@ export function useGetApiFieldGroups<TData = Awaited<ReturnType<typeof getApiFie
  * @summary List field groups for tenant
  */
 export const prefetchGetApiFieldGroupsQuery = async <TData = Awaited<ReturnType<typeof getApiFieldGroups>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiFieldGroupsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiFieldGroupsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldGroups>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -282,17 +282,17 @@ export const prefetchGetApiFieldGroupsQuery = async <TData = Awaited<ReturnType<
 
 
 
-export type postApiFieldGroupResponse201 = {
-  data: void
-  status: 201
+export type postApiFieldGroupResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiFieldGroupResponseSuccess = (postApiFieldGroupResponse201) & {
+;
+export type postApiFieldGroupResponseError = (postApiFieldGroupResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiFieldGroupResponse = (postApiFieldGroupResponseSuccess)
+export type postApiFieldGroupResponse = (postApiFieldGroupResponseError)
 
 export const getPostApiFieldGroupUrl = () => {
 
@@ -364,19 +364,19 @@ export const usePostApiFieldGroup = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiFieldGroupMutationOptions(options), queryClient);
     }
-    export type getApiFieldDefinitionsResponse200 = {
-  data: void
-  status: 200
+    export type getApiFieldDefinitionsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiFieldDefinitionsResponseSuccess = (getApiFieldDefinitionsResponse200) & {
+;
+export type getApiFieldDefinitionsResponseError = (getApiFieldDefinitionsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiFieldDefinitionsResponse = (getApiFieldDefinitionsResponseSuccess)
+export type getApiFieldDefinitionsResponse = (getApiFieldDefinitionsResponseError)
 
-export const getGetApiFieldDefinitionsUrl = (params: GetApiFieldDefinitionsParams,) => {
+export const getGetApiFieldDefinitionsUrl = (params?: GetApiFieldDefinitionsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -394,7 +394,7 @@ export const getGetApiFieldDefinitionsUrl = (params: GetApiFieldDefinitionsParam
 /**
  * @summary List field definitions for tenant
  */
-export const getApiFieldDefinitions = async (params: GetApiFieldDefinitionsParams, options?: RequestInit): Promise<getApiFieldDefinitionsResponse> => {
+export const getApiFieldDefinitions = async (params?: GetApiFieldDefinitionsParams, options?: RequestInit): Promise<getApiFieldDefinitionsResponse> => {
 
   return useCustomClient<getApiFieldDefinitionsResponse>(getGetApiFieldDefinitionsUrl(params),
   {
@@ -422,7 +422,7 @@ export const getGetApiFieldDefinitionsQueryKey = (params?: GetApiFieldDefinition
     }
 
 
-export const getGetApiFieldDefinitionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFieldDefinitions>>>, TError = ErrorType<unknown>>(params: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiFieldDefinitionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFieldDefinitions>>>, TError = ErrorType<unknown>>(params?: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -445,7 +445,7 @@ export type GetApiFieldDefinitionsInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiFieldDefinitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFieldDefinitions>>>, TError = ErrorType<unknown>>(
- params: GetApiFieldDefinitionsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>> & Pick<
+ params: undefined |  GetApiFieldDefinitionsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFieldDefinitions>>,
           TError,
@@ -455,7 +455,7 @@ export function useGetApiFieldDefinitionsInfinite<TData = InfiniteData<Awaited<R
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFieldDefinitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFieldDefinitions>>>, TError = ErrorType<unknown>>(
- params: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>> & Pick<
+ params?: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFieldDefinitions>>,
           TError,
@@ -465,7 +465,7 @@ export function useGetApiFieldDefinitionsInfinite<TData = InfiniteData<Awaited<R
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFieldDefinitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFieldDefinitions>>>, TError = ErrorType<unknown>>(
- params: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -473,7 +473,7 @@ export function useGetApiFieldDefinitionsInfinite<TData = InfiniteData<Awaited<R
  */
 
 export function useGetApiFieldDefinitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFieldDefinitions>>>, TError = ErrorType<unknown>>(
- params: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -488,7 +488,7 @@ export function useGetApiFieldDefinitionsInfinite<TData = InfiniteData<Awaited<R
  * @summary List field definitions for tenant
  */
 export const prefetchGetApiFieldDefinitionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -503,7 +503,7 @@ export const prefetchGetApiFieldDefinitionsInfiniteQuery = async <TData = Awaite
 
 
 
-export const getGetApiFieldDefinitionsQueryOptions = <TData = Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError = ErrorType<unknown>>(params: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiFieldDefinitionsQueryOptions = <TData = Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError = ErrorType<unknown>>(params?: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -526,7 +526,7 @@ export type GetApiFieldDefinitionsQueryError = ErrorType<unknown>
 
 
 export function useGetApiFieldDefinitions<TData = Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError = ErrorType<unknown>>(
- params: GetApiFieldDefinitionsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>> & Pick<
+ params: undefined |  GetApiFieldDefinitionsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFieldDefinitions>>,
           TError,
@@ -536,7 +536,7 @@ export function useGetApiFieldDefinitions<TData = Awaited<ReturnType<typeof getA
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFieldDefinitions<TData = Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError = ErrorType<unknown>>(
- params: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>> & Pick<
+ params?: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFieldDefinitions>>,
           TError,
@@ -546,7 +546,7 @@ export function useGetApiFieldDefinitions<TData = Awaited<ReturnType<typeof getA
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFieldDefinitions<TData = Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError = ErrorType<unknown>>(
- params: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -554,7 +554,7 @@ export function useGetApiFieldDefinitions<TData = Awaited<ReturnType<typeof getA
  */
 
 export function useGetApiFieldDefinitions<TData = Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError = ErrorType<unknown>>(
- params: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -569,7 +569,7 @@ export function useGetApiFieldDefinitions<TData = Awaited<ReturnType<typeof getA
  * @summary List field definitions for tenant
  */
 export const prefetchGetApiFieldDefinitionsQuery = async <TData = Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiFieldDefinitionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFieldDefinitions>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -584,17 +584,17 @@ export const prefetchGetApiFieldDefinitionsQuery = async <TData = Awaited<Return
 
 
 
-export type postApiFieldDefinitionResponse201 = {
-  data: void
-  status: 201
+export type postApiFieldDefinitionResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiFieldDefinitionResponseSuccess = (postApiFieldDefinitionResponse201) & {
+;
+export type postApiFieldDefinitionResponseError = (postApiFieldDefinitionResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiFieldDefinitionResponse = (postApiFieldDefinitionResponseSuccess)
+export type postApiFieldDefinitionResponse = (postApiFieldDefinitionResponseError)
 
 export const getPostApiFieldDefinitionUrl = () => {
 
@@ -666,17 +666,17 @@ export const usePostApiFieldDefinition = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiFieldDefinitionMutationOptions(options), queryClient);
     }
-    export type patchApiFieldDefinitionResponse200 = {
-  data: void
-  status: 200
+    export type patchApiFieldDefinitionResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiFieldDefinitionResponseSuccess = (patchApiFieldDefinitionResponse200) & {
+;
+export type patchApiFieldDefinitionResponseError = (patchApiFieldDefinitionResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiFieldDefinitionResponse = (patchApiFieldDefinitionResponseSuccess)
+export type patchApiFieldDefinitionResponse = (patchApiFieldDefinitionResponseError)
 
 export const getPatchApiFieldDefinitionUrl = (id: string,) => {
 
@@ -748,19 +748,19 @@ export const usePatchApiFieldDefinition = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPatchApiFieldDefinitionMutationOptions(options), queryClient);
     }
-    export type getApiFormSchemasResponse200 = {
-  data: void
-  status: 200
+    export type getApiFormSchemasResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiFormSchemasResponseSuccess = (getApiFormSchemasResponse200) & {
+;
+export type getApiFormSchemasResponseError = (getApiFormSchemasResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiFormSchemasResponse = (getApiFormSchemasResponseSuccess)
+export type getApiFormSchemasResponse = (getApiFormSchemasResponseError)
 
-export const getGetApiFormSchemasUrl = (params: GetApiFormSchemasParams,) => {
+export const getGetApiFormSchemasUrl = (params?: GetApiFormSchemasParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -778,7 +778,7 @@ export const getGetApiFormSchemasUrl = (params: GetApiFormSchemasParams,) => {
 /**
  * @summary List form schemas for tenant
  */
-export const getApiFormSchemas = async (params: GetApiFormSchemasParams, options?: RequestInit): Promise<getApiFormSchemasResponse> => {
+export const getApiFormSchemas = async (params?: GetApiFormSchemasParams, options?: RequestInit): Promise<getApiFormSchemasResponse> => {
 
   return useCustomClient<getApiFormSchemasResponse>(getGetApiFormSchemasUrl(params),
   {
@@ -806,7 +806,7 @@ export const getGetApiFormSchemasQueryKey = (params?: GetApiFormSchemasParams,) 
     }
 
 
-export const getGetApiFormSchemasInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFormSchemas>>>, TError = ErrorType<unknown>>(params: GetApiFormSchemasParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiFormSchemasInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFormSchemas>>>, TError = ErrorType<unknown>>(params?: GetApiFormSchemasParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -829,7 +829,7 @@ export type GetApiFormSchemasInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiFormSchemasInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFormSchemas>>>, TError = ErrorType<unknown>>(
- params: GetApiFormSchemasParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>> & Pick<
+ params: undefined |  GetApiFormSchemasParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFormSchemas>>,
           TError,
@@ -839,7 +839,7 @@ export function useGetApiFormSchemasInfinite<TData = InfiniteData<Awaited<Return
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFormSchemasInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFormSchemas>>>, TError = ErrorType<unknown>>(
- params: GetApiFormSchemasParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>> & Pick<
+ params?: GetApiFormSchemasParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFormSchemas>>,
           TError,
@@ -849,7 +849,7 @@ export function useGetApiFormSchemasInfinite<TData = InfiniteData<Awaited<Return
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFormSchemasInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFormSchemas>>>, TError = ErrorType<unknown>>(
- params: GetApiFormSchemasParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFormSchemasParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -857,7 +857,7 @@ export function useGetApiFormSchemasInfinite<TData = InfiniteData<Awaited<Return
  */
 
 export function useGetApiFormSchemasInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFormSchemas>>>, TError = ErrorType<unknown>>(
- params: GetApiFormSchemasParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFormSchemasParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -872,7 +872,7 @@ export function useGetApiFormSchemasInfinite<TData = InfiniteData<Awaited<Return
  * @summary List form schemas for tenant
  */
 export const prefetchGetApiFormSchemasInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiFormSchemas>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiFormSchemasParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiFormSchemasParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -887,7 +887,7 @@ export const prefetchGetApiFormSchemasInfiniteQuery = async <TData = Awaited<Ret
 
 
 
-export const getGetApiFormSchemasQueryOptions = <TData = Awaited<ReturnType<typeof getApiFormSchemas>>, TError = ErrorType<unknown>>(params: GetApiFormSchemasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiFormSchemasQueryOptions = <TData = Awaited<ReturnType<typeof getApiFormSchemas>>, TError = ErrorType<unknown>>(params?: GetApiFormSchemasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -910,7 +910,7 @@ export type GetApiFormSchemasQueryError = ErrorType<unknown>
 
 
 export function useGetApiFormSchemas<TData = Awaited<ReturnType<typeof getApiFormSchemas>>, TError = ErrorType<unknown>>(
- params: GetApiFormSchemasParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>> & Pick<
+ params: undefined |  GetApiFormSchemasParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFormSchemas>>,
           TError,
@@ -920,7 +920,7 @@ export function useGetApiFormSchemas<TData = Awaited<ReturnType<typeof getApiFor
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFormSchemas<TData = Awaited<ReturnType<typeof getApiFormSchemas>>, TError = ErrorType<unknown>>(
- params: GetApiFormSchemasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>> & Pick<
+ params?: GetApiFormSchemasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFormSchemas>>,
           TError,
@@ -930,7 +930,7 @@ export function useGetApiFormSchemas<TData = Awaited<ReturnType<typeof getApiFor
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFormSchemas<TData = Awaited<ReturnType<typeof getApiFormSchemas>>, TError = ErrorType<unknown>>(
- params: GetApiFormSchemasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFormSchemasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -938,7 +938,7 @@ export function useGetApiFormSchemas<TData = Awaited<ReturnType<typeof getApiFor
  */
 
 export function useGetApiFormSchemas<TData = Awaited<ReturnType<typeof getApiFormSchemas>>, TError = ErrorType<unknown>>(
- params: GetApiFormSchemasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFormSchemasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -953,7 +953,7 @@ export function useGetApiFormSchemas<TData = Awaited<ReturnType<typeof getApiFor
  * @summary List form schemas for tenant
  */
 export const prefetchGetApiFormSchemasQuery = async <TData = Awaited<ReturnType<typeof getApiFormSchemas>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiFormSchemasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiFormSchemasParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFormSchemas>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -968,17 +968,17 @@ export const prefetchGetApiFormSchemasQuery = async <TData = Awaited<ReturnType<
 
 
 
-export type postApiFormSchemaResponse201 = {
-  data: void
-  status: 201
+export type postApiFormSchemaResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiFormSchemaResponseSuccess = (postApiFormSchemaResponse201) & {
+;
+export type postApiFormSchemaResponseError = (postApiFormSchemaResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiFormSchemaResponse = (postApiFormSchemaResponseSuccess)
+export type postApiFormSchemaResponse = (postApiFormSchemaResponseError)
 
 export const getPostApiFormSchemaUrl = () => {
 

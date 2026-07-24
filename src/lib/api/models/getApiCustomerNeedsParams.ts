@@ -7,5 +7,5 @@
  */
 
 export type GetApiCustomerNeedsParams = {
-customerId: string;
+customerId?: string;
 };

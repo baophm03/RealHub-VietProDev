@@ -5,11 +5,13 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiCustomersStatus } from './getApiCustomersStatus';
+import type { GetApiCustomersType } from './getApiCustomersType';
 
 export type GetApiCustomersParams = {
-search: string;
-type: string;
-status: string;
-limit: string;
-offset: string;
+search?: string;
+type?: GetApiCustomersType;
+status?: GetApiCustomersStatus;
+limit?: string;
+offset?: string;
 };

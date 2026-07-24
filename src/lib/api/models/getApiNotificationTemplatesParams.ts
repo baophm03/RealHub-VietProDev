@@ -5,7 +5,8 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiNotificationTemplatesChannel } from './getApiNotificationTemplatesChannel';
 
 export type GetApiNotificationTemplatesParams = {
-channel: string;
+channel?: GetApiNotificationTemplatesChannel;
 };

@@ -5,7 +5,8 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiWorkflowsEntityType } from './getApiWorkflowsEntityType';
 
 export type GetApiWorkflowsParams = {
-entityType: string;
+entityType?: GetApiWorkflowsEntityType;
 };

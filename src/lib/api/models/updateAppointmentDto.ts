@@ -5,5 +5,16 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { UpdateAppointmentDtoStatus } from './updateAppointmentDtoStatus';
+import type { UpdateAppointmentDtoType } from './updateAppointmentDtoType';
 
-export interface UpdateAppointmentDto { [key: string]: unknown }
+export interface UpdateAppointmentDto {
+  title?: string;
+  description?: string;
+  type?: UpdateAppointmentDtoType;
+  locationText?: string;
+  scheduledAt?: string;
+  endTime?: string;
+  status?: UpdateAppointmentDtoStatus;
+  resultNote?: string;
+}

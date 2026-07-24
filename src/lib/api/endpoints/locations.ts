@@ -32,7 +32,8 @@ import type {
 import type {
   CreateLocationDto,
   GetApiLocationTreeParams,
-  GetApiLocationsParams
+  GetApiLocationsParams,
+  UpdateLocationDto
 } from '../models';
 
 import { useCustomClient } from '../mutator/custom-client';
@@ -59,17 +60,17 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiLocationsResponse200 = {
-  data: void
-  status: 200
+export type getApiLocationsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiLocationsResponseSuccess = (getApiLocationsResponse200) & {
+;
+export type getApiLocationsResponseError = (getApiLocationsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiLocationsResponse = (getApiLocationsResponseSuccess)
+export type getApiLocationsResponse = (getApiLocationsResponseError)
 
 export const getGetApiLocationsUrl = (params?: GetApiLocationsParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -279,17 +280,17 @@ export const prefetchGetApiLocationsQuery = async <TData = Awaited<ReturnType<ty
 
 
 
-export type postApiLocationResponse201 = {
-  data: void
-  status: 201
+export type postApiLocationResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiLocationResponseSuccess = (postApiLocationResponse201) & {
+;
+export type postApiLocationResponseError = (postApiLocationResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiLocationResponse = (postApiLocationResponseSuccess)
+export type postApiLocationResponse = (postApiLocationResponseError)
 
 export const getPostApiLocationUrl = () => {
 
@@ -361,19 +362,19 @@ export const usePostApiLocation = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiLocationMutationOptions(options), queryClient);
     }
-    export type getApiLocationTreeResponse200 = {
-  data: void
-  status: 200
+    export type getApiLocationTreeResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiLocationTreeResponseSuccess = (getApiLocationTreeResponse200) & {
+;
+export type getApiLocationTreeResponseError = (getApiLocationTreeResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiLocationTreeResponse = (getApiLocationTreeResponseSuccess)
+export type getApiLocationTreeResponse = (getApiLocationTreeResponseError)
 
-export const getGetApiLocationTreeUrl = (params: GetApiLocationTreeParams,) => {
+export const getGetApiLocationTreeUrl = (params?: GetApiLocationTreeParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -391,7 +392,7 @@ export const getGetApiLocationTreeUrl = (params: GetApiLocationTreeParams,) => {
 /**
  * @summary Get location tree
  */
-export const getApiLocationTree = async (params: GetApiLocationTreeParams, options?: RequestInit): Promise<getApiLocationTreeResponse> => {
+export const getApiLocationTree = async (params?: GetApiLocationTreeParams, options?: RequestInit): Promise<getApiLocationTreeResponse> => {
 
   return useCustomClient<getApiLocationTreeResponse>(getGetApiLocationTreeUrl(params),
   {
@@ -419,7 +420,7 @@ export const getGetApiLocationTreeQueryKey = (params?: GetApiLocationTreeParams,
     }
 
 
-export const getGetApiLocationTreeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiLocationTree>>>, TError = ErrorType<unknown>>(params: GetApiLocationTreeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiLocationTreeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiLocationTree>>>, TError = ErrorType<unknown>>(params?: GetApiLocationTreeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -442,7 +443,7 @@ export type GetApiLocationTreeInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiLocationTreeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLocationTree>>>, TError = ErrorType<unknown>>(
- params: GetApiLocationTreeParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>> & Pick<
+ params: undefined |  GetApiLocationTreeParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiLocationTree>>,
           TError,
@@ -452,7 +453,7 @@ export function useGetApiLocationTreeInfinite<TData = InfiniteData<Awaited<Retur
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiLocationTreeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLocationTree>>>, TError = ErrorType<unknown>>(
- params: GetApiLocationTreeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>> & Pick<
+ params?: GetApiLocationTreeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiLocationTree>>,
           TError,
@@ -462,7 +463,7 @@ export function useGetApiLocationTreeInfinite<TData = InfiniteData<Awaited<Retur
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiLocationTreeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLocationTree>>>, TError = ErrorType<unknown>>(
- params: GetApiLocationTreeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiLocationTreeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -470,7 +471,7 @@ export function useGetApiLocationTreeInfinite<TData = InfiniteData<Awaited<Retur
  */
 
 export function useGetApiLocationTreeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLocationTree>>>, TError = ErrorType<unknown>>(
- params: GetApiLocationTreeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiLocationTreeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -485,7 +486,7 @@ export function useGetApiLocationTreeInfinite<TData = InfiniteData<Awaited<Retur
  * @summary Get location tree
  */
 export const prefetchGetApiLocationTreeInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiLocationTree>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiLocationTreeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiLocationTreeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -500,7 +501,7 @@ export const prefetchGetApiLocationTreeInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getGetApiLocationTreeQueryOptions = <TData = Awaited<ReturnType<typeof getApiLocationTree>>, TError = ErrorType<unknown>>(params: GetApiLocationTreeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiLocationTreeQueryOptions = <TData = Awaited<ReturnType<typeof getApiLocationTree>>, TError = ErrorType<unknown>>(params?: GetApiLocationTreeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -523,7 +524,7 @@ export type GetApiLocationTreeQueryError = ErrorType<unknown>
 
 
 export function useGetApiLocationTree<TData = Awaited<ReturnType<typeof getApiLocationTree>>, TError = ErrorType<unknown>>(
- params: GetApiLocationTreeParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>> & Pick<
+ params: undefined |  GetApiLocationTreeParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiLocationTree>>,
           TError,
@@ -533,7 +534,7 @@ export function useGetApiLocationTree<TData = Awaited<ReturnType<typeof getApiLo
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiLocationTree<TData = Awaited<ReturnType<typeof getApiLocationTree>>, TError = ErrorType<unknown>>(
- params: GetApiLocationTreeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>> & Pick<
+ params?: GetApiLocationTreeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiLocationTree>>,
           TError,
@@ -543,7 +544,7 @@ export function useGetApiLocationTree<TData = Awaited<ReturnType<typeof getApiLo
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiLocationTree<TData = Awaited<ReturnType<typeof getApiLocationTree>>, TError = ErrorType<unknown>>(
- params: GetApiLocationTreeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiLocationTreeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -551,7 +552,7 @@ export function useGetApiLocationTree<TData = Awaited<ReturnType<typeof getApiLo
  */
 
 export function useGetApiLocationTree<TData = Awaited<ReturnType<typeof getApiLocationTree>>, TError = ErrorType<unknown>>(
- params: GetApiLocationTreeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiLocationTreeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -566,7 +567,7 @@ export function useGetApiLocationTree<TData = Awaited<ReturnType<typeof getApiLo
  * @summary Get location tree
  */
 export const prefetchGetApiLocationTreeQuery = async <TData = Awaited<ReturnType<typeof getApiLocationTree>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiLocationTreeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiLocationTreeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLocationTree>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -581,17 +582,17 @@ export const prefetchGetApiLocationTreeQuery = async <TData = Awaited<ReturnType
 
 
 
-export type getApiLocationIdResponse200 = {
-  data: void
-  status: 200
+export type getApiLocationIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiLocationIdResponseSuccess = (getApiLocationIdResponse200) & {
+;
+export type getApiLocationIdResponseError = (getApiLocationIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiLocationIdResponse = (getApiLocationIdResponseSuccess)
+export type getApiLocationIdResponse = (getApiLocationIdResponseError)
 
 export const getGetApiLocationIdUrl = (id: string,) => {
 
@@ -794,17 +795,17 @@ export const prefetchGetApiLocationIdQuery = async <TData = Awaited<ReturnType<t
 
 
 
-export type patchApiLocationResponse200 = {
-  data: void
-  status: 200
+export type patchApiLocationResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiLocationResponseSuccess = (patchApiLocationResponse200) & {
+;
+export type patchApiLocationResponseError = (patchApiLocationResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiLocationResponse = (patchApiLocationResponseSuccess)
+export type patchApiLocationResponse = (patchApiLocationResponseError)
 
 export const getPatchApiLocationUrl = (id: string,) => {
 
@@ -817,14 +818,15 @@ export const getPatchApiLocationUrl = (id: string,) => {
 /**
  * @summary Update a location
  */
-export const patchApiLocation = async (id: string, options?: RequestInit): Promise<patchApiLocationResponse> => {
+export const patchApiLocation = async (id: string,
+    updateLocationDto: UpdateLocationDto, options?: RequestInit): Promise<patchApiLocationResponse> => {
 
   return useCustomClient<patchApiLocationResponse>(getPatchApiLocationUrl(id),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateLocationDto)
   }
 );}
 
@@ -833,8 +835,8 @@ export const patchApiLocation = async (id: string, options?: RequestInit): Promi
 
 
 export const getPatchApiLocationMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiLocation>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiLocation>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiLocation>>, TError,{id: string;data: BodyType<UpdateLocationDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiLocation>>, TError,{id: string;data: BodyType<UpdateLocationDto>}, TContext> => {
 
 const mutationKey = ['patchApiLocation'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -846,10 +848,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiLocation>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiLocation>>, {id: string;data: BodyType<UpdateLocationDto>}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiLocation(id,requestOptions)
+          return  patchApiLocation(id,data,requestOptions)
         }
 
 
@@ -860,33 +862,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiLocationMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiLocation>>>
-
+    export type PatchApiLocationMutationBody = BodyType<UpdateLocationDto>
     export type PatchApiLocationMutationError = ErrorType<unknown>
 
     /**
  * @summary Update a location
  */
 export const usePatchApiLocation = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiLocation>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiLocation>>, TError,{id: string;data: BodyType<UpdateLocationDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiLocation>>,
         TError,
-        {id: string},
+        {id: string;data: BodyType<UpdateLocationDto>},
         TContext
       > => {
       return useMutation(getPatchApiLocationMutationOptions(options), queryClient);
     }
-    export type deleteApiLocationResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiLocationResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiLocationResponseSuccess = (deleteApiLocationResponse200) & {
+;
+export type deleteApiLocationResponseError = (deleteApiLocationResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiLocationResponse = (deleteApiLocationResponseSuccess)
+export type deleteApiLocationResponse = (deleteApiLocationResponseError)
 
 export const getDeleteApiLocationUrl = (id: string,) => {
 

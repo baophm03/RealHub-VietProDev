@@ -100,7 +100,7 @@ export default function DealEditPage() {
         <button onClick={() => router.push("/deals")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
           <ArrowLeft size={20} />
         </button>
-        <PageHeader eyebrow="Giao dich" title="Chinh sua giao dich" />
+        <PageHeader eyebrow="Giao dich" title="Chỉnh sửa giao dich" />
       </div>
 
       {error && (

@@ -30,13 +30,17 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  CreateNotificationRuleDto,
+  CreateNotificationTemplateDto,
   GetApiNotificationRulesParams,
   GetApiNotificationTemplatesParams,
-  GetApiNotificationsParams
+  GetApiNotificationsParams,
+  UpdateNotificationRuleDto,
+  UpdateNotificationTemplateDto
 } from '../models';
 
 import { useCustomClient } from '../mutator/custom-client';
-import type { ErrorType } from '../mutator/custom-client';
+import type { ErrorType , BodyType } from '../mutator/custom-client';
 
 
 
@@ -59,19 +63,19 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiNotificationsResponse200 = {
-  data: void
-  status: 200
+export type getApiNotificationsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiNotificationsResponseSuccess = (getApiNotificationsResponse200) & {
+;
+export type getApiNotificationsResponseError = (getApiNotificationsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiNotificationsResponse = (getApiNotificationsResponseSuccess)
+export type getApiNotificationsResponse = (getApiNotificationsResponseError)
 
-export const getGetApiNotificationsUrl = (params: GetApiNotificationsParams,) => {
+export const getGetApiNotificationsUrl = (params?: GetApiNotificationsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -89,7 +93,7 @@ export const getGetApiNotificationsUrl = (params: GetApiNotificationsParams,) =>
 /**
  * @summary List my notifications
  */
-export const getApiNotifications = async (params: GetApiNotificationsParams, options?: RequestInit): Promise<getApiNotificationsResponse> => {
+export const getApiNotifications = async (params?: GetApiNotificationsParams, options?: RequestInit): Promise<getApiNotificationsResponse> => {
 
   return useCustomClient<getApiNotificationsResponse>(getGetApiNotificationsUrl(params),
   {
@@ -117,7 +121,7 @@ export const getGetApiNotificationsQueryKey = (params?: GetApiNotificationsParam
     }
 
 
-export const getGetApiNotificationsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiNotifications>>>, TError = ErrorType<unknown>>(params: GetApiNotificationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiNotificationsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiNotifications>>>, TError = ErrorType<unknown>>(params?: GetApiNotificationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -140,7 +144,7 @@ export type GetApiNotificationsInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiNotificationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNotifications>>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>> & Pick<
+ params: undefined |  GetApiNotificationsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiNotifications>>,
           TError,
@@ -150,7 +154,7 @@ export function useGetApiNotificationsInfinite<TData = InfiniteData<Awaited<Retu
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiNotificationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNotifications>>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>> & Pick<
+ params?: GetApiNotificationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiNotifications>>,
           TError,
@@ -160,7 +164,7 @@ export function useGetApiNotificationsInfinite<TData = InfiniteData<Awaited<Retu
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiNotificationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNotifications>>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiNotificationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -168,7 +172,7 @@ export function useGetApiNotificationsInfinite<TData = InfiniteData<Awaited<Retu
  */
 
 export function useGetApiNotificationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNotifications>>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiNotificationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -183,7 +187,7 @@ export function useGetApiNotificationsInfinite<TData = InfiniteData<Awaited<Retu
  * @summary List my notifications
  */
 export const prefetchGetApiNotificationsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiNotifications>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiNotificationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiNotificationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -198,7 +202,7 @@ export const prefetchGetApiNotificationsInfiniteQuery = async <TData = Awaited<R
 
 
 
-export const getGetApiNotificationsQueryOptions = <TData = Awaited<ReturnType<typeof getApiNotifications>>, TError = ErrorType<unknown>>(params: GetApiNotificationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiNotificationsQueryOptions = <TData = Awaited<ReturnType<typeof getApiNotifications>>, TError = ErrorType<unknown>>(params?: GetApiNotificationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -221,7 +225,7 @@ export type GetApiNotificationsQueryError = ErrorType<unknown>
 
 
 export function useGetApiNotifications<TData = Awaited<ReturnType<typeof getApiNotifications>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>> & Pick<
+ params: undefined |  GetApiNotificationsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiNotifications>>,
           TError,
@@ -231,7 +235,7 @@ export function useGetApiNotifications<TData = Awaited<ReturnType<typeof getApiN
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiNotifications<TData = Awaited<ReturnType<typeof getApiNotifications>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>> & Pick<
+ params?: GetApiNotificationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiNotifications>>,
           TError,
@@ -241,7 +245,7 @@ export function useGetApiNotifications<TData = Awaited<ReturnType<typeof getApiN
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiNotifications<TData = Awaited<ReturnType<typeof getApiNotifications>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiNotificationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -249,7 +253,7 @@ export function useGetApiNotifications<TData = Awaited<ReturnType<typeof getApiN
  */
 
 export function useGetApiNotifications<TData = Awaited<ReturnType<typeof getApiNotifications>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiNotificationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -264,7 +268,7 @@ export function useGetApiNotifications<TData = Awaited<ReturnType<typeof getApiN
  * @summary List my notifications
  */
 export const prefetchGetApiNotificationsQuery = async <TData = Awaited<ReturnType<typeof getApiNotifications>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiNotificationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiNotificationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotifications>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -279,17 +283,17 @@ export const prefetchGetApiNotificationsQuery = async <TData = Awaited<ReturnTyp
 
 
 
-export type getApiUnreadNotificationCountResponse200 = {
-  data: void
-  status: 200
+export type getApiUnreadNotificationCountResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiUnreadNotificationCountResponseSuccess = (getApiUnreadNotificationCountResponse200) & {
+;
+export type getApiUnreadNotificationCountResponseError = (getApiUnreadNotificationCountResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiUnreadNotificationCountResponse = (getApiUnreadNotificationCountResponseSuccess)
+export type getApiUnreadNotificationCountResponse = (getApiUnreadNotificationCountResponseError)
 
 export const getGetApiUnreadNotificationCountUrl = () => {
 
@@ -492,17 +496,17 @@ export const prefetchGetApiUnreadNotificationCountQuery = async <TData = Awaited
 
 
 
-export type patchApiMarkNotificationReadResponse200 = {
-  data: void
-  status: 200
+export type patchApiMarkNotificationReadResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiMarkNotificationReadResponseSuccess = (patchApiMarkNotificationReadResponse200) & {
+;
+export type patchApiMarkNotificationReadResponseError = (patchApiMarkNotificationReadResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiMarkNotificationReadResponse = (patchApiMarkNotificationReadResponseSuccess)
+export type patchApiMarkNotificationReadResponse = (patchApiMarkNotificationReadResponseError)
 
 export const getPatchApiMarkNotificationReadUrl = (id: string,) => {
 
@@ -574,17 +578,17 @@ export const usePatchApiMarkNotificationRead = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPatchApiMarkNotificationReadMutationOptions(options), queryClient);
     }
-    export type postApiMarkAllNotificationsReadResponse201 = {
-  data: void
-  status: 201
+    export type postApiMarkAllNotificationsReadResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiMarkAllNotificationsReadResponseSuccess = (postApiMarkAllNotificationsReadResponse201) & {
+;
+export type postApiMarkAllNotificationsReadResponseError = (postApiMarkAllNotificationsReadResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiMarkAllNotificationsReadResponse = (postApiMarkAllNotificationsReadResponseSuccess)
+export type postApiMarkAllNotificationsReadResponse = (postApiMarkAllNotificationsReadResponseError)
 
 export const getPostApiMarkAllNotificationsReadUrl = () => {
 
@@ -656,19 +660,19 @@ export const usePostApiMarkAllNotificationsRead = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiMarkAllNotificationsReadMutationOptions(options), queryClient);
     }
-    export type getApiNotificationRulesResponse200 = {
-  data: void
-  status: 200
+    export type getApiNotificationRulesResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiNotificationRulesResponseSuccess = (getApiNotificationRulesResponse200) & {
+;
+export type getApiNotificationRulesResponseError = (getApiNotificationRulesResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiNotificationRulesResponse = (getApiNotificationRulesResponseSuccess)
+export type getApiNotificationRulesResponse = (getApiNotificationRulesResponseError)
 
-export const getGetApiNotificationRulesUrl = (params: GetApiNotificationRulesParams,) => {
+export const getGetApiNotificationRulesUrl = (params?: GetApiNotificationRulesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -686,7 +690,7 @@ export const getGetApiNotificationRulesUrl = (params: GetApiNotificationRulesPar
 /**
  * @summary List notification rules
  */
-export const getApiNotificationRules = async (params: GetApiNotificationRulesParams, options?: RequestInit): Promise<getApiNotificationRulesResponse> => {
+export const getApiNotificationRules = async (params?: GetApiNotificationRulesParams, options?: RequestInit): Promise<getApiNotificationRulesResponse> => {
 
   return useCustomClient<getApiNotificationRulesResponse>(getGetApiNotificationRulesUrl(params),
   {
@@ -714,7 +718,7 @@ export const getGetApiNotificationRulesQueryKey = (params?: GetApiNotificationRu
     }
 
 
-export const getGetApiNotificationRulesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiNotificationRules>>>, TError = ErrorType<unknown>>(params: GetApiNotificationRulesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiNotificationRulesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiNotificationRules>>>, TError = ErrorType<unknown>>(params?: GetApiNotificationRulesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -737,7 +741,7 @@ export type GetApiNotificationRulesInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiNotificationRulesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNotificationRules>>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationRulesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>> & Pick<
+ params: undefined |  GetApiNotificationRulesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiNotificationRules>>,
           TError,
@@ -747,7 +751,7 @@ export function useGetApiNotificationRulesInfinite<TData = InfiniteData<Awaited<
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiNotificationRulesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNotificationRules>>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationRulesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>> & Pick<
+ params?: GetApiNotificationRulesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiNotificationRules>>,
           TError,
@@ -757,7 +761,7 @@ export function useGetApiNotificationRulesInfinite<TData = InfiniteData<Awaited<
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiNotificationRulesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNotificationRules>>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationRulesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiNotificationRulesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -765,7 +769,7 @@ export function useGetApiNotificationRulesInfinite<TData = InfiniteData<Awaited<
  */
 
 export function useGetApiNotificationRulesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNotificationRules>>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationRulesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiNotificationRulesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -780,7 +784,7 @@ export function useGetApiNotificationRulesInfinite<TData = InfiniteData<Awaited<
  * @summary List notification rules
  */
 export const prefetchGetApiNotificationRulesInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiNotificationRules>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiNotificationRulesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiNotificationRulesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -795,7 +799,7 @@ export const prefetchGetApiNotificationRulesInfiniteQuery = async <TData = Await
 
 
 
-export const getGetApiNotificationRulesQueryOptions = <TData = Awaited<ReturnType<typeof getApiNotificationRules>>, TError = ErrorType<unknown>>(params: GetApiNotificationRulesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiNotificationRulesQueryOptions = <TData = Awaited<ReturnType<typeof getApiNotificationRules>>, TError = ErrorType<unknown>>(params?: GetApiNotificationRulesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -818,7 +822,7 @@ export type GetApiNotificationRulesQueryError = ErrorType<unknown>
 
 
 export function useGetApiNotificationRules<TData = Awaited<ReturnType<typeof getApiNotificationRules>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationRulesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>> & Pick<
+ params: undefined |  GetApiNotificationRulesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiNotificationRules>>,
           TError,
@@ -828,7 +832,7 @@ export function useGetApiNotificationRules<TData = Awaited<ReturnType<typeof get
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiNotificationRules<TData = Awaited<ReturnType<typeof getApiNotificationRules>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationRulesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>> & Pick<
+ params?: GetApiNotificationRulesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiNotificationRules>>,
           TError,
@@ -838,7 +842,7 @@ export function useGetApiNotificationRules<TData = Awaited<ReturnType<typeof get
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiNotificationRules<TData = Awaited<ReturnType<typeof getApiNotificationRules>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationRulesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiNotificationRulesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -846,7 +850,7 @@ export function useGetApiNotificationRules<TData = Awaited<ReturnType<typeof get
  */
 
 export function useGetApiNotificationRules<TData = Awaited<ReturnType<typeof getApiNotificationRules>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationRulesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiNotificationRulesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -861,7 +865,7 @@ export function useGetApiNotificationRules<TData = Awaited<ReturnType<typeof get
  * @summary List notification rules
  */
 export const prefetchGetApiNotificationRulesQuery = async <TData = Awaited<ReturnType<typeof getApiNotificationRules>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiNotificationRulesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiNotificationRulesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationRules>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -876,17 +880,17 @@ export const prefetchGetApiNotificationRulesQuery = async <TData = Awaited<Retur
 
 
 
-export type postApiNotificationRuleResponse201 = {
-  data: void
-  status: 201
+export type postApiNotificationRuleResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiNotificationRuleResponseSuccess = (postApiNotificationRuleResponse201) & {
+;
+export type postApiNotificationRuleResponseError = (postApiNotificationRuleResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiNotificationRuleResponse = (postApiNotificationRuleResponseSuccess)
+export type postApiNotificationRuleResponse = (postApiNotificationRuleResponseError)
 
 export const getPostApiNotificationRuleUrl = () => {
 
@@ -899,14 +903,14 @@ export const getPostApiNotificationRuleUrl = () => {
 /**
  * @summary Create a notification rule
  */
-export const postApiNotificationRule = async ( options?: RequestInit): Promise<postApiNotificationRuleResponse> => {
+export const postApiNotificationRule = async (createNotificationRuleDto: CreateNotificationRuleDto, options?: RequestInit): Promise<postApiNotificationRuleResponse> => {
 
   return useCustomClient<postApiNotificationRuleResponse>(getPostApiNotificationRuleUrl(),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(createNotificationRuleDto)
   }
 );}
 
@@ -915,8 +919,8 @@ export const postApiNotificationRule = async ( options?: RequestInit): Promise<p
 
 
 export const getPostApiNotificationRuleMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiNotificationRule>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiNotificationRule>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiNotificationRule>>, TError,{data: BodyType<CreateNotificationRuleDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiNotificationRule>>, TError,{data: BodyType<CreateNotificationRuleDto>}, TContext> => {
 
 const mutationKey = ['postApiNotificationRule'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -928,10 +932,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiNotificationRule>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiNotificationRule>>, {data: BodyType<CreateNotificationRuleDto>}> = (props) => {
+          const {data} = props ?? {};
 
-
-          return  postApiNotificationRule(requestOptions)
+          return  postApiNotificationRule(data,requestOptions)
         }
 
 
@@ -942,33 +946,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiNotificationRuleMutationResult = NonNullable<Awaited<ReturnType<typeof postApiNotificationRule>>>
-
+    export type PostApiNotificationRuleMutationBody = BodyType<CreateNotificationRuleDto>
     export type PostApiNotificationRuleMutationError = ErrorType<unknown>
 
     /**
  * @summary Create a notification rule
  */
 export const usePostApiNotificationRule = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiNotificationRule>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiNotificationRule>>, TError,{data: BodyType<CreateNotificationRuleDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiNotificationRule>>,
         TError,
-        void,
+        {data: BodyType<CreateNotificationRuleDto>},
         TContext
       > => {
       return useMutation(getPostApiNotificationRuleMutationOptions(options), queryClient);
     }
-    export type getApiNotificationRuleIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiNotificationRuleIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiNotificationRuleIdResponseSuccess = (getApiNotificationRuleIdResponse200) & {
+;
+export type getApiNotificationRuleIdResponseError = (getApiNotificationRuleIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiNotificationRuleIdResponse = (getApiNotificationRuleIdResponseSuccess)
+export type getApiNotificationRuleIdResponse = (getApiNotificationRuleIdResponseError)
 
 export const getGetApiNotificationRuleIdUrl = (id: string,) => {
 
@@ -1171,17 +1175,17 @@ export const prefetchGetApiNotificationRuleIdQuery = async <TData = Awaited<Retu
 
 
 
-export type patchApiNotificationRuleResponse200 = {
-  data: void
-  status: 200
+export type patchApiNotificationRuleResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiNotificationRuleResponseSuccess = (patchApiNotificationRuleResponse200) & {
+;
+export type patchApiNotificationRuleResponseError = (patchApiNotificationRuleResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiNotificationRuleResponse = (patchApiNotificationRuleResponseSuccess)
+export type patchApiNotificationRuleResponse = (patchApiNotificationRuleResponseError)
 
 export const getPatchApiNotificationRuleUrl = (id: string,) => {
 
@@ -1194,14 +1198,15 @@ export const getPatchApiNotificationRuleUrl = (id: string,) => {
 /**
  * @summary Update a notification rule
  */
-export const patchApiNotificationRule = async (id: string, options?: RequestInit): Promise<patchApiNotificationRuleResponse> => {
+export const patchApiNotificationRule = async (id: string,
+    updateNotificationRuleDto: UpdateNotificationRuleDto, options?: RequestInit): Promise<patchApiNotificationRuleResponse> => {
 
   return useCustomClient<patchApiNotificationRuleResponse>(getPatchApiNotificationRuleUrl(id),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateNotificationRuleDto)
   }
 );}
 
@@ -1210,8 +1215,8 @@ export const patchApiNotificationRule = async (id: string, options?: RequestInit
 
 
 export const getPatchApiNotificationRuleMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiNotificationRule>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiNotificationRule>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiNotificationRule>>, TError,{id: string;data: BodyType<UpdateNotificationRuleDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiNotificationRule>>, TError,{id: string;data: BodyType<UpdateNotificationRuleDto>}, TContext> => {
 
 const mutationKey = ['patchApiNotificationRule'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1223,10 +1228,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiNotificationRule>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiNotificationRule>>, {id: string;data: BodyType<UpdateNotificationRuleDto>}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiNotificationRule(id,requestOptions)
+          return  patchApiNotificationRule(id,data,requestOptions)
         }
 
 
@@ -1237,33 +1242,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiNotificationRuleMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiNotificationRule>>>
-
+    export type PatchApiNotificationRuleMutationBody = BodyType<UpdateNotificationRuleDto>
     export type PatchApiNotificationRuleMutationError = ErrorType<unknown>
 
     /**
  * @summary Update a notification rule
  */
 export const usePatchApiNotificationRule = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiNotificationRule>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiNotificationRule>>, TError,{id: string;data: BodyType<UpdateNotificationRuleDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiNotificationRule>>,
         TError,
-        {id: string},
+        {id: string;data: BodyType<UpdateNotificationRuleDto>},
         TContext
       > => {
       return useMutation(getPatchApiNotificationRuleMutationOptions(options), queryClient);
     }
-    export type deleteApiNotificationRuleResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiNotificationRuleResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiNotificationRuleResponseSuccess = (deleteApiNotificationRuleResponse200) & {
+;
+export type deleteApiNotificationRuleResponseError = (deleteApiNotificationRuleResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiNotificationRuleResponse = (deleteApiNotificationRuleResponseSuccess)
+export type deleteApiNotificationRuleResponse = (deleteApiNotificationRuleResponseError)
 
 export const getDeleteApiNotificationRuleUrl = (id: string,) => {
 
@@ -1335,19 +1340,19 @@ export const useDeleteApiNotificationRule = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getDeleteApiNotificationRuleMutationOptions(options), queryClient);
     }
-    export type getApiNotificationTemplatesResponse200 = {
-  data: void
-  status: 200
+    export type getApiNotificationTemplatesResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiNotificationTemplatesResponseSuccess = (getApiNotificationTemplatesResponse200) & {
+;
+export type getApiNotificationTemplatesResponseError = (getApiNotificationTemplatesResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiNotificationTemplatesResponse = (getApiNotificationTemplatesResponseSuccess)
+export type getApiNotificationTemplatesResponse = (getApiNotificationTemplatesResponseError)
 
-export const getGetApiNotificationTemplatesUrl = (params: GetApiNotificationTemplatesParams,) => {
+export const getGetApiNotificationTemplatesUrl = (params?: GetApiNotificationTemplatesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -1365,7 +1370,7 @@ export const getGetApiNotificationTemplatesUrl = (params: GetApiNotificationTemp
 /**
  * @summary List notification templates
  */
-export const getApiNotificationTemplates = async (params: GetApiNotificationTemplatesParams, options?: RequestInit): Promise<getApiNotificationTemplatesResponse> => {
+export const getApiNotificationTemplates = async (params?: GetApiNotificationTemplatesParams, options?: RequestInit): Promise<getApiNotificationTemplatesResponse> => {
 
   return useCustomClient<getApiNotificationTemplatesResponse>(getGetApiNotificationTemplatesUrl(params),
   {
@@ -1393,7 +1398,7 @@ export const getGetApiNotificationTemplatesQueryKey = (params?: GetApiNotificati
     }
 
 
-export const getGetApiNotificationTemplatesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiNotificationTemplates>>>, TError = ErrorType<unknown>>(params: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiNotificationTemplatesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiNotificationTemplates>>>, TError = ErrorType<unknown>>(params?: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1416,7 +1421,7 @@ export type GetApiNotificationTemplatesInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiNotificationTemplatesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNotificationTemplates>>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationTemplatesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>> & Pick<
+ params: undefined |  GetApiNotificationTemplatesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiNotificationTemplates>>,
           TError,
@@ -1426,7 +1431,7 @@ export function useGetApiNotificationTemplatesInfinite<TData = InfiniteData<Awai
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiNotificationTemplatesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNotificationTemplates>>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>> & Pick<
+ params?: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiNotificationTemplates>>,
           TError,
@@ -1436,7 +1441,7 @@ export function useGetApiNotificationTemplatesInfinite<TData = InfiniteData<Awai
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiNotificationTemplatesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNotificationTemplates>>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1444,7 +1449,7 @@ export function useGetApiNotificationTemplatesInfinite<TData = InfiniteData<Awai
  */
 
 export function useGetApiNotificationTemplatesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNotificationTemplates>>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1459,7 +1464,7 @@ export function useGetApiNotificationTemplatesInfinite<TData = InfiniteData<Awai
  * @summary List notification templates
  */
 export const prefetchGetApiNotificationTemplatesInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -1474,7 +1479,7 @@ export const prefetchGetApiNotificationTemplatesInfiniteQuery = async <TData = A
 
 
 
-export const getGetApiNotificationTemplatesQueryOptions = <TData = Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError = ErrorType<unknown>>(params: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiNotificationTemplatesQueryOptions = <TData = Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError = ErrorType<unknown>>(params?: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1497,7 +1502,7 @@ export type GetApiNotificationTemplatesQueryError = ErrorType<unknown>
 
 
 export function useGetApiNotificationTemplates<TData = Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationTemplatesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>> & Pick<
+ params: undefined |  GetApiNotificationTemplatesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiNotificationTemplates>>,
           TError,
@@ -1507,7 +1512,7 @@ export function useGetApiNotificationTemplates<TData = Awaited<ReturnType<typeof
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiNotificationTemplates<TData = Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>> & Pick<
+ params?: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiNotificationTemplates>>,
           TError,
@@ -1517,7 +1522,7 @@ export function useGetApiNotificationTemplates<TData = Awaited<ReturnType<typeof
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiNotificationTemplates<TData = Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1525,7 +1530,7 @@ export function useGetApiNotificationTemplates<TData = Awaited<ReturnType<typeof
  */
 
 export function useGetApiNotificationTemplates<TData = Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError = ErrorType<unknown>>(
- params: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1540,7 +1545,7 @@ export function useGetApiNotificationTemplates<TData = Awaited<ReturnType<typeof
  * @summary List notification templates
  */
 export const prefetchGetApiNotificationTemplatesQuery = async <TData = Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiNotificationTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNotificationTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -1555,17 +1560,17 @@ export const prefetchGetApiNotificationTemplatesQuery = async <TData = Awaited<R
 
 
 
-export type postApiNotificationTemplateResponse201 = {
-  data: void
-  status: 201
+export type postApiNotificationTemplateResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiNotificationTemplateResponseSuccess = (postApiNotificationTemplateResponse201) & {
+;
+export type postApiNotificationTemplateResponseError = (postApiNotificationTemplateResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiNotificationTemplateResponse = (postApiNotificationTemplateResponseSuccess)
+export type postApiNotificationTemplateResponse = (postApiNotificationTemplateResponseError)
 
 export const getPostApiNotificationTemplateUrl = () => {
 
@@ -1578,14 +1583,14 @@ export const getPostApiNotificationTemplateUrl = () => {
 /**
  * @summary Create a notification template
  */
-export const postApiNotificationTemplate = async ( options?: RequestInit): Promise<postApiNotificationTemplateResponse> => {
+export const postApiNotificationTemplate = async (createNotificationTemplateDto: CreateNotificationTemplateDto, options?: RequestInit): Promise<postApiNotificationTemplateResponse> => {
 
   return useCustomClient<postApiNotificationTemplateResponse>(getPostApiNotificationTemplateUrl(),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(createNotificationTemplateDto)
   }
 );}
 
@@ -1594,8 +1599,8 @@ export const postApiNotificationTemplate = async ( options?: RequestInit): Promi
 
 
 export const getPostApiNotificationTemplateMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiNotificationTemplate>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiNotificationTemplate>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiNotificationTemplate>>, TError,{data: BodyType<CreateNotificationTemplateDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiNotificationTemplate>>, TError,{data: BodyType<CreateNotificationTemplateDto>}, TContext> => {
 
 const mutationKey = ['postApiNotificationTemplate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1607,10 +1612,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiNotificationTemplate>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiNotificationTemplate>>, {data: BodyType<CreateNotificationTemplateDto>}> = (props) => {
+          const {data} = props ?? {};
 
-
-          return  postApiNotificationTemplate(requestOptions)
+          return  postApiNotificationTemplate(data,requestOptions)
         }
 
 
@@ -1621,33 +1626,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiNotificationTemplateMutationResult = NonNullable<Awaited<ReturnType<typeof postApiNotificationTemplate>>>
-
+    export type PostApiNotificationTemplateMutationBody = BodyType<CreateNotificationTemplateDto>
     export type PostApiNotificationTemplateMutationError = ErrorType<unknown>
 
     /**
  * @summary Create a notification template
  */
 export const usePostApiNotificationTemplate = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiNotificationTemplate>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiNotificationTemplate>>, TError,{data: BodyType<CreateNotificationTemplateDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiNotificationTemplate>>,
         TError,
-        void,
+        {data: BodyType<CreateNotificationTemplateDto>},
         TContext
       > => {
       return useMutation(getPostApiNotificationTemplateMutationOptions(options), queryClient);
     }
-    export type getApiNotificationTemplateIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiNotificationTemplateIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiNotificationTemplateIdResponseSuccess = (getApiNotificationTemplateIdResponse200) & {
+;
+export type getApiNotificationTemplateIdResponseError = (getApiNotificationTemplateIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiNotificationTemplateIdResponse = (getApiNotificationTemplateIdResponseSuccess)
+export type getApiNotificationTemplateIdResponse = (getApiNotificationTemplateIdResponseError)
 
 export const getGetApiNotificationTemplateIdUrl = (id: string,) => {
 
@@ -1850,17 +1855,17 @@ export const prefetchGetApiNotificationTemplateIdQuery = async <TData = Awaited<
 
 
 
-export type patchApiNotificationTemplateResponse200 = {
-  data: void
-  status: 200
+export type patchApiNotificationTemplateResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiNotificationTemplateResponseSuccess = (patchApiNotificationTemplateResponse200) & {
+;
+export type patchApiNotificationTemplateResponseError = (patchApiNotificationTemplateResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiNotificationTemplateResponse = (patchApiNotificationTemplateResponseSuccess)
+export type patchApiNotificationTemplateResponse = (patchApiNotificationTemplateResponseError)
 
 export const getPatchApiNotificationTemplateUrl = (id: string,) => {
 
@@ -1873,14 +1878,15 @@ export const getPatchApiNotificationTemplateUrl = (id: string,) => {
 /**
  * @summary Update a notification template
  */
-export const patchApiNotificationTemplate = async (id: string, options?: RequestInit): Promise<patchApiNotificationTemplateResponse> => {
+export const patchApiNotificationTemplate = async (id: string,
+    updateNotificationTemplateDto: UpdateNotificationTemplateDto, options?: RequestInit): Promise<patchApiNotificationTemplateResponse> => {
 
   return useCustomClient<patchApiNotificationTemplateResponse>(getPatchApiNotificationTemplateUrl(id),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateNotificationTemplateDto)
   }
 );}
 
@@ -1889,8 +1895,8 @@ export const patchApiNotificationTemplate = async (id: string, options?: Request
 
 
 export const getPatchApiNotificationTemplateMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiNotificationTemplate>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiNotificationTemplate>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiNotificationTemplate>>, TError,{id: string;data: BodyType<UpdateNotificationTemplateDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiNotificationTemplate>>, TError,{id: string;data: BodyType<UpdateNotificationTemplateDto>}, TContext> => {
 
 const mutationKey = ['patchApiNotificationTemplate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1902,10 +1908,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiNotificationTemplate>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiNotificationTemplate>>, {id: string;data: BodyType<UpdateNotificationTemplateDto>}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiNotificationTemplate(id,requestOptions)
+          return  patchApiNotificationTemplate(id,data,requestOptions)
         }
 
 
@@ -1916,33 +1922,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiNotificationTemplateMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiNotificationTemplate>>>
-
+    export type PatchApiNotificationTemplateMutationBody = BodyType<UpdateNotificationTemplateDto>
     export type PatchApiNotificationTemplateMutationError = ErrorType<unknown>
 
     /**
  * @summary Update a notification template
  */
 export const usePatchApiNotificationTemplate = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiNotificationTemplate>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiNotificationTemplate>>, TError,{id: string;data: BodyType<UpdateNotificationTemplateDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiNotificationTemplate>>,
         TError,
-        {id: string},
+        {id: string;data: BodyType<UpdateNotificationTemplateDto>},
         TContext
       > => {
       return useMutation(getPatchApiNotificationTemplateMutationOptions(options), queryClient);
     }
-    export type deleteApiNotificationTemplateResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiNotificationTemplateResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiNotificationTemplateResponseSuccess = (deleteApiNotificationTemplateResponse200) & {
+;
+export type deleteApiNotificationTemplateResponseError = (deleteApiNotificationTemplateResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiNotificationTemplateResponse = (deleteApiNotificationTemplateResponseSuccess)
+export type deleteApiNotificationTemplateResponse = (deleteApiNotificationTemplateResponseError)
 
 export const getDeleteApiNotificationTemplateUrl = (id: string,) => {
 

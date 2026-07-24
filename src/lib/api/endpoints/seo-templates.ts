@@ -30,12 +30,14 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  CreateSeoTemplateDto,
   GetApiResolveSeoMetaParams,
-  GetApiSeoTemplatesParams
+  GetApiSeoTemplatesParams,
+  UpdateSeoTemplateDto
 } from '../models';
 
 import { useCustomClient } from '../mutator/custom-client';
-import type { ErrorType } from '../mutator/custom-client';
+import type { ErrorType , BodyType } from '../mutator/custom-client';
 
 
 
@@ -58,19 +60,19 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiSeoTemplatesResponse200 = {
-  data: void
-  status: 200
+export type getApiSeoTemplatesResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiSeoTemplatesResponseSuccess = (getApiSeoTemplatesResponse200) & {
+;
+export type getApiSeoTemplatesResponseError = (getApiSeoTemplatesResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiSeoTemplatesResponse = (getApiSeoTemplatesResponseSuccess)
+export type getApiSeoTemplatesResponse = (getApiSeoTemplatesResponseError)
 
-export const getGetApiSeoTemplatesUrl = (params: GetApiSeoTemplatesParams,) => {
+export const getGetApiSeoTemplatesUrl = (params?: GetApiSeoTemplatesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -88,7 +90,7 @@ export const getGetApiSeoTemplatesUrl = (params: GetApiSeoTemplatesParams,) => {
 /**
  * @summary List SEO templates
  */
-export const getApiSeoTemplates = async (params: GetApiSeoTemplatesParams, options?: RequestInit): Promise<getApiSeoTemplatesResponse> => {
+export const getApiSeoTemplates = async (params?: GetApiSeoTemplatesParams, options?: RequestInit): Promise<getApiSeoTemplatesResponse> => {
 
   return useCustomClient<getApiSeoTemplatesResponse>(getGetApiSeoTemplatesUrl(params),
   {
@@ -116,7 +118,7 @@ export const getGetApiSeoTemplatesQueryKey = (params?: GetApiSeoTemplatesParams,
     }
 
 
-export const getGetApiSeoTemplatesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiSeoTemplates>>>, TError = ErrorType<unknown>>(params: GetApiSeoTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiSeoTemplatesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiSeoTemplates>>>, TError = ErrorType<unknown>>(params?: GetApiSeoTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -139,7 +141,7 @@ export type GetApiSeoTemplatesInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiSeoTemplatesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSeoTemplates>>>, TError = ErrorType<unknown>>(
- params: GetApiSeoTemplatesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>> & Pick<
+ params: undefined |  GetApiSeoTemplatesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSeoTemplates>>,
           TError,
@@ -149,7 +151,7 @@ export function useGetApiSeoTemplatesInfinite<TData = InfiniteData<Awaited<Retur
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSeoTemplatesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSeoTemplates>>>, TError = ErrorType<unknown>>(
- params: GetApiSeoTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>> & Pick<
+ params?: GetApiSeoTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSeoTemplates>>,
           TError,
@@ -159,7 +161,7 @@ export function useGetApiSeoTemplatesInfinite<TData = InfiniteData<Awaited<Retur
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSeoTemplatesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSeoTemplates>>>, TError = ErrorType<unknown>>(
- params: GetApiSeoTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiSeoTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -167,7 +169,7 @@ export function useGetApiSeoTemplatesInfinite<TData = InfiniteData<Awaited<Retur
  */
 
 export function useGetApiSeoTemplatesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSeoTemplates>>>, TError = ErrorType<unknown>>(
- params: GetApiSeoTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiSeoTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -182,7 +184,7 @@ export function useGetApiSeoTemplatesInfinite<TData = InfiniteData<Awaited<Retur
  * @summary List SEO templates
  */
 export const prefetchGetApiSeoTemplatesInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiSeoTemplates>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiSeoTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiSeoTemplatesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -197,7 +199,7 @@ export const prefetchGetApiSeoTemplatesInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getGetApiSeoTemplatesQueryOptions = <TData = Awaited<ReturnType<typeof getApiSeoTemplates>>, TError = ErrorType<unknown>>(params: GetApiSeoTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiSeoTemplatesQueryOptions = <TData = Awaited<ReturnType<typeof getApiSeoTemplates>>, TError = ErrorType<unknown>>(params?: GetApiSeoTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -220,7 +222,7 @@ export type GetApiSeoTemplatesQueryError = ErrorType<unknown>
 
 
 export function useGetApiSeoTemplates<TData = Awaited<ReturnType<typeof getApiSeoTemplates>>, TError = ErrorType<unknown>>(
- params: GetApiSeoTemplatesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>> & Pick<
+ params: undefined |  GetApiSeoTemplatesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSeoTemplates>>,
           TError,
@@ -230,7 +232,7 @@ export function useGetApiSeoTemplates<TData = Awaited<ReturnType<typeof getApiSe
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSeoTemplates<TData = Awaited<ReturnType<typeof getApiSeoTemplates>>, TError = ErrorType<unknown>>(
- params: GetApiSeoTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>> & Pick<
+ params?: GetApiSeoTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSeoTemplates>>,
           TError,
@@ -240,7 +242,7 @@ export function useGetApiSeoTemplates<TData = Awaited<ReturnType<typeof getApiSe
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSeoTemplates<TData = Awaited<ReturnType<typeof getApiSeoTemplates>>, TError = ErrorType<unknown>>(
- params: GetApiSeoTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiSeoTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -248,7 +250,7 @@ export function useGetApiSeoTemplates<TData = Awaited<ReturnType<typeof getApiSe
  */
 
 export function useGetApiSeoTemplates<TData = Awaited<ReturnType<typeof getApiSeoTemplates>>, TError = ErrorType<unknown>>(
- params: GetApiSeoTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiSeoTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -263,7 +265,7 @@ export function useGetApiSeoTemplates<TData = Awaited<ReturnType<typeof getApiSe
  * @summary List SEO templates
  */
 export const prefetchGetApiSeoTemplatesQuery = async <TData = Awaited<ReturnType<typeof getApiSeoTemplates>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiSeoTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiSeoTemplatesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSeoTemplates>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -278,17 +280,17 @@ export const prefetchGetApiSeoTemplatesQuery = async <TData = Awaited<ReturnType
 
 
 
-export type postApiSeoTemplateResponse201 = {
-  data: void
-  status: 201
+export type postApiSeoTemplateResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiSeoTemplateResponseSuccess = (postApiSeoTemplateResponse201) & {
+;
+export type postApiSeoTemplateResponseError = (postApiSeoTemplateResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiSeoTemplateResponse = (postApiSeoTemplateResponseSuccess)
+export type postApiSeoTemplateResponse = (postApiSeoTemplateResponseError)
 
 export const getPostApiSeoTemplateUrl = () => {
 
@@ -301,14 +303,14 @@ export const getPostApiSeoTemplateUrl = () => {
 /**
  * @summary Create an SEO template
  */
-export const postApiSeoTemplate = async ( options?: RequestInit): Promise<postApiSeoTemplateResponse> => {
+export const postApiSeoTemplate = async (createSeoTemplateDto: CreateSeoTemplateDto, options?: RequestInit): Promise<postApiSeoTemplateResponse> => {
 
   return useCustomClient<postApiSeoTemplateResponse>(getPostApiSeoTemplateUrl(),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(createSeoTemplateDto)
   }
 );}
 
@@ -317,8 +319,8 @@ export const postApiSeoTemplate = async ( options?: RequestInit): Promise<postAp
 
 
 export const getPostApiSeoTemplateMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSeoTemplate>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiSeoTemplate>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSeoTemplate>>, TError,{data: BodyType<CreateSeoTemplateDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiSeoTemplate>>, TError,{data: BodyType<CreateSeoTemplateDto>}, TContext> => {
 
 const mutationKey = ['postApiSeoTemplate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -330,10 +332,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiSeoTemplate>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiSeoTemplate>>, {data: BodyType<CreateSeoTemplateDto>}> = (props) => {
+          const {data} = props ?? {};
 
-
-          return  postApiSeoTemplate(requestOptions)
+          return  postApiSeoTemplate(data,requestOptions)
         }
 
 
@@ -344,33 +346,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiSeoTemplateMutationResult = NonNullable<Awaited<ReturnType<typeof postApiSeoTemplate>>>
-
+    export type PostApiSeoTemplateMutationBody = BodyType<CreateSeoTemplateDto>
     export type PostApiSeoTemplateMutationError = ErrorType<unknown>
 
     /**
  * @summary Create an SEO template
  */
 export const usePostApiSeoTemplate = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSeoTemplate>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSeoTemplate>>, TError,{data: BodyType<CreateSeoTemplateDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiSeoTemplate>>,
         TError,
-        void,
+        {data: BodyType<CreateSeoTemplateDto>},
         TContext
       > => {
       return useMutation(getPostApiSeoTemplateMutationOptions(options), queryClient);
     }
-    export type getApiSeoTemplateIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiSeoTemplateIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiSeoTemplateIdResponseSuccess = (getApiSeoTemplateIdResponse200) & {
+;
+export type getApiSeoTemplateIdResponseError = (getApiSeoTemplateIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiSeoTemplateIdResponse = (getApiSeoTemplateIdResponseSuccess)
+export type getApiSeoTemplateIdResponse = (getApiSeoTemplateIdResponseError)
 
 export const getGetApiSeoTemplateIdUrl = (id: string,) => {
 
@@ -573,17 +575,17 @@ export const prefetchGetApiSeoTemplateIdQuery = async <TData = Awaited<ReturnTyp
 
 
 
-export type patchApiSeoTemplateResponse200 = {
-  data: void
-  status: 200
+export type patchApiSeoTemplateResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiSeoTemplateResponseSuccess = (patchApiSeoTemplateResponse200) & {
+;
+export type patchApiSeoTemplateResponseError = (patchApiSeoTemplateResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiSeoTemplateResponse = (patchApiSeoTemplateResponseSuccess)
+export type patchApiSeoTemplateResponse = (patchApiSeoTemplateResponseError)
 
 export const getPatchApiSeoTemplateUrl = (id: string,) => {
 
@@ -596,14 +598,15 @@ export const getPatchApiSeoTemplateUrl = (id: string,) => {
 /**
  * @summary Update an SEO template
  */
-export const patchApiSeoTemplate = async (id: string, options?: RequestInit): Promise<patchApiSeoTemplateResponse> => {
+export const patchApiSeoTemplate = async (id: string,
+    updateSeoTemplateDto: UpdateSeoTemplateDto, options?: RequestInit): Promise<patchApiSeoTemplateResponse> => {
 
   return useCustomClient<patchApiSeoTemplateResponse>(getPatchApiSeoTemplateUrl(id),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateSeoTemplateDto)
   }
 );}
 
@@ -612,8 +615,8 @@ export const patchApiSeoTemplate = async (id: string, options?: RequestInit): Pr
 
 
 export const getPatchApiSeoTemplateMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiSeoTemplate>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiSeoTemplate>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiSeoTemplate>>, TError,{id: string;data: BodyType<UpdateSeoTemplateDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiSeoTemplate>>, TError,{id: string;data: BodyType<UpdateSeoTemplateDto>}, TContext> => {
 
 const mutationKey = ['patchApiSeoTemplate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -625,10 +628,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiSeoTemplate>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiSeoTemplate>>, {id: string;data: BodyType<UpdateSeoTemplateDto>}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiSeoTemplate(id,requestOptions)
+          return  patchApiSeoTemplate(id,data,requestOptions)
         }
 
 
@@ -639,33 +642,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiSeoTemplateMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiSeoTemplate>>>
-
+    export type PatchApiSeoTemplateMutationBody = BodyType<UpdateSeoTemplateDto>
     export type PatchApiSeoTemplateMutationError = ErrorType<unknown>
 
     /**
  * @summary Update an SEO template
  */
 export const usePatchApiSeoTemplate = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiSeoTemplate>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiSeoTemplate>>, TError,{id: string;data: BodyType<UpdateSeoTemplateDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiSeoTemplate>>,
         TError,
-        {id: string},
+        {id: string;data: BodyType<UpdateSeoTemplateDto>},
         TContext
       > => {
       return useMutation(getPatchApiSeoTemplateMutationOptions(options), queryClient);
     }
-    export type deleteApiSeoTemplateResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiSeoTemplateResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiSeoTemplateResponseSuccess = (deleteApiSeoTemplateResponse200) & {
+;
+export type deleteApiSeoTemplateResponseError = (deleteApiSeoTemplateResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiSeoTemplateResponse = (deleteApiSeoTemplateResponseSuccess)
+export type deleteApiSeoTemplateResponse = (deleteApiSeoTemplateResponseError)
 
 export const getDeleteApiSeoTemplateUrl = (id: string,) => {
 
@@ -737,17 +740,17 @@ export const useDeleteApiSeoTemplate = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getDeleteApiSeoTemplateMutationOptions(options), queryClient);
     }
-    export type getApiResolveSeoMetaResponse200 = {
-  data: void
-  status: 200
+    export type getApiResolveSeoMetaResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiResolveSeoMetaResponseSuccess = (getApiResolveSeoMetaResponse200) & {
+;
+export type getApiResolveSeoMetaResponseError = (getApiResolveSeoMetaResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiResolveSeoMetaResponse = (getApiResolveSeoMetaResponseSuccess)
+export type getApiResolveSeoMetaResponse = (getApiResolveSeoMetaResponseError)
 
 export const getGetApiResolveSeoMetaUrl = (params: GetApiResolveSeoMetaParams,) => {
   const normalizedParams = new URLSearchParams();

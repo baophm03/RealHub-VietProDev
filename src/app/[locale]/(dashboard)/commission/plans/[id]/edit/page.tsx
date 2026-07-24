@@ -73,7 +73,7 @@ export default function CommissionPlanEditPage() {
         <button onClick={() => router.push(`/commission/plans/${id}`)} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
           <ArrowLeft size={20} />
         </button>
-        <PageHeader eyebrow="Hoa hong" title="Chinh sua ke hoach" />
+        <PageHeader eyebrow="Hoa hong" title="Chỉnh sửa ke hoach" />
       </div>
 
       {error && (

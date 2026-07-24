@@ -164,7 +164,7 @@ export default function PropertyDetailPage() {
           onClick={() => router.push(`/properties/${params.id}/edit`)}
         >
           <PencilSimple size={14} />
-          Chinh sua
+          Chỉnh sửa
         </Button>
       </div>
 
@@ -348,21 +348,21 @@ export default function PropertyDetailPage() {
               <h4 className="font-serif text-lg font-medium text-foreground">Lien he ngay</h4>
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="contact-name">Ho va ten</Label>
+                <Label htmlFor="contact-name">Họ và tên</Label>
                 <Input
                   id="contact-name"
-                  placeholder="Nhap ho va ten..."
+                  placeholder="Nhap Họ và tên..."
                   value={contactForm.name}
                   onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
                 />
               </div>
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="contact-phone">So dien thoai</Label>
+                <Label htmlFor="contact-phone">Số điện thoại</Label>
                 <Input
                   id="contact-phone"
                   type="tel"
-                  placeholder="Nhap so dien thoai..."
+                  placeholder="Nhap Số điện thoại..."
                   value={contactForm.phone}
                   onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
                 />

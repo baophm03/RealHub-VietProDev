@@ -30,7 +30,10 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  CreatePropertyDto
+  CreatePropertyDto,
+  CreatePropertyTypeDto,
+  GetApiPropertiesParams,
+  UpdatePropertyDto
 } from '../models';
 
 import { useCustomClient } from '../mutator/custom-client';
@@ -57,32 +60,39 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiPropertiesResponse200 = {
-  data: void
-  status: 200
+export type getApiPropertiesResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiPropertiesResponseSuccess = (getApiPropertiesResponse200) & {
+;
+export type getApiPropertiesResponseError = (getApiPropertiesResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiPropertiesResponse = (getApiPropertiesResponseSuccess)
+export type getApiPropertiesResponse = (getApiPropertiesResponseError)
 
-export const getGetApiPropertiesUrl = () => {
+export const getGetApiPropertiesUrl = (params?: GetApiPropertiesParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/v1/properties`
+  return stringifiedParams.length > 0 ? `/api/v1/properties?${stringifiedParams}` : `/api/v1/properties`
 }
 
 /**
  * @summary List properties with filters
  */
-export const getApiProperties = async ( options?: RequestInit): Promise<getApiPropertiesResponse> => {
+export const getApiProperties = async (params?: GetApiPropertiesParams, options?: RequestInit): Promise<getApiPropertiesResponse> => {
 
-  return useCustomClient<getApiPropertiesResponse>(getGetApiPropertiesUrl(),
+  return useCustomClient<getApiPropertiesResponse>(getGetApiPropertiesUrl(params),
   {
     ...options,
     method: 'GET'
@@ -95,29 +105,29 @@ export const getApiProperties = async ( options?: RequestInit): Promise<getApiPr
 
 
 
-export const getGetApiPropertiesInfiniteQueryKey = () => {
+export const getGetApiPropertiesInfiniteQueryKey = (params?: GetApiPropertiesParams,) => {
     return [
-    'infinite', `/api/v1/properties`
+    'infinite', `/api/v1/properties`, ...(params ? [params] : [])
     ] as const;
     }
 
-export const getGetApiPropertiesQueryKey = () => {
+export const getGetApiPropertiesQueryKey = (params?: GetApiPropertiesParams,) => {
     return [
-    `/api/v1/properties`
+    `/api/v1/properties`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getGetApiPropertiesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiProperties>>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiPropertiesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiProperties>>>, TError = ErrorType<unknown>>(params?: GetApiPropertiesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiPropertiesInfiniteQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPropertiesInfiniteQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiProperties>>> = ({ signal }) => getApiProperties({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiProperties>>> = ({ signal }) => getApiProperties(params, { signal, ...requestOptions });
 
 
 
@@ -131,7 +141,7 @@ export type GetApiPropertiesInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiPropertiesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProperties>>>, TError = ErrorType<unknown>>(
-  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>> & Pick<
+ params: undefined |  GetApiPropertiesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiProperties>>,
           TError,
@@ -141,7 +151,7 @@ export function useGetApiPropertiesInfinite<TData = InfiniteData<Awaited<ReturnT
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiPropertiesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProperties>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>> & Pick<
+ params?: GetApiPropertiesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiProperties>>,
           TError,
@@ -151,7 +161,7 @@ export function useGetApiPropertiesInfinite<TData = InfiniteData<Awaited<ReturnT
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiPropertiesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProperties>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiPropertiesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -159,11 +169,11 @@ export function useGetApiPropertiesInfinite<TData = InfiniteData<Awaited<ReturnT
  */
 
 export function useGetApiPropertiesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProperties>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiPropertiesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiPropertiesInfiniteQueryOptions(options)
+  const queryOptions = getGetApiPropertiesInfiniteQueryOptions(params,options)
 
   const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -174,11 +184,11 @@ export function useGetApiPropertiesInfinite<TData = InfiniteData<Awaited<ReturnT
  * @summary List properties with filters
  */
 export const prefetchGetApiPropertiesInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiProperties>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient,  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiPropertiesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
-  const queryOptions = getGetApiPropertiesInfiniteQueryOptions(options)
+  const queryOptions = getGetApiPropertiesInfiniteQueryOptions(params,options)
 
   await queryClient.prefetchInfiniteQuery(queryOptions);
 
@@ -189,16 +199,16 @@ export const prefetchGetApiPropertiesInfiniteQuery = async <TData = Awaited<Retu
 
 
 
-export const getGetApiPropertiesQueryOptions = <TData = Awaited<ReturnType<typeof getApiProperties>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiPropertiesQueryOptions = <TData = Awaited<ReturnType<typeof getApiProperties>>, TError = ErrorType<unknown>>(params?: GetApiPropertiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiPropertiesQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPropertiesQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiProperties>>> = ({ signal }) => getApiProperties({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiProperties>>> = ({ signal }) => getApiProperties(params, { signal, ...requestOptions });
 
 
 
@@ -212,7 +222,7 @@ export type GetApiPropertiesQueryError = ErrorType<unknown>
 
 
 export function useGetApiProperties<TData = Awaited<ReturnType<typeof getApiProperties>>, TError = ErrorType<unknown>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>> & Pick<
+ params: undefined |  GetApiPropertiesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiProperties>>,
           TError,
@@ -222,7 +232,7 @@ export function useGetApiProperties<TData = Awaited<ReturnType<typeof getApiProp
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiProperties<TData = Awaited<ReturnType<typeof getApiProperties>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>> & Pick<
+ params?: GetApiPropertiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiProperties>>,
           TError,
@@ -232,7 +242,7 @@ export function useGetApiProperties<TData = Awaited<ReturnType<typeof getApiProp
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiProperties<TData = Awaited<ReturnType<typeof getApiProperties>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiPropertiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -240,11 +250,11 @@ export function useGetApiProperties<TData = Awaited<ReturnType<typeof getApiProp
  */
 
 export function useGetApiProperties<TData = Awaited<ReturnType<typeof getApiProperties>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiPropertiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiPropertiesQueryOptions(options)
+  const queryOptions = getGetApiPropertiesQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -255,11 +265,11 @@ export function useGetApiProperties<TData = Awaited<ReturnType<typeof getApiProp
  * @summary List properties with filters
  */
 export const prefetchGetApiPropertiesQuery = async <TData = Awaited<ReturnType<typeof getApiProperties>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient,  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiPropertiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
-  const queryOptions = getGetApiPropertiesQueryOptions(options)
+  const queryOptions = getGetApiPropertiesQueryOptions(params,options)
 
   await queryClient.prefetchQuery(queryOptions);
 
@@ -270,17 +280,17 @@ export const prefetchGetApiPropertiesQuery = async <TData = Awaited<ReturnType<t
 
 
 
-export type postApiPropertyResponse201 = {
-  data: void
-  status: 201
+export type postApiPropertyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiPropertyResponseSuccess = (postApiPropertyResponse201) & {
+;
+export type postApiPropertyResponseError = (postApiPropertyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiPropertyResponse = (postApiPropertyResponseSuccess)
+export type postApiPropertyResponse = (postApiPropertyResponseError)
 
 export const getPostApiPropertyUrl = () => {
 
@@ -352,17 +362,17 @@ export const usePostApiProperty = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiPropertyMutationOptions(options), queryClient);
     }
-    export type getApiPropertyTypesResponse200 = {
-  data: void
-  status: 200
+    export type getApiPropertyTypesResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiPropertyTypesResponseSuccess = (getApiPropertyTypesResponse200) & {
+;
+export type getApiPropertyTypesResponseError = (getApiPropertyTypesResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiPropertyTypesResponse = (getApiPropertyTypesResponseSuccess)
+export type getApiPropertyTypesResponse = (getApiPropertyTypesResponseError)
 
 export const getGetApiPropertyTypesUrl = () => {
 
@@ -565,17 +575,17 @@ export const prefetchGetApiPropertyTypesQuery = async <TData = Awaited<ReturnTyp
 
 
 
-export type postApiPropertyTypeResponse201 = {
-  data: void
-  status: 201
+export type postApiPropertyTypeResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiPropertyTypeResponseSuccess = (postApiPropertyTypeResponse201) & {
+;
+export type postApiPropertyTypeResponseError = (postApiPropertyTypeResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiPropertyTypeResponse = (postApiPropertyTypeResponseSuccess)
+export type postApiPropertyTypeResponse = (postApiPropertyTypeResponseError)
 
 export const getPostApiPropertyTypeUrl = () => {
 
@@ -588,14 +598,14 @@ export const getPostApiPropertyTypeUrl = () => {
 /**
  * @summary Create a property type
  */
-export const postApiPropertyType = async ( options?: RequestInit): Promise<postApiPropertyTypeResponse> => {
+export const postApiPropertyType = async (createPropertyTypeDto: CreatePropertyTypeDto, options?: RequestInit): Promise<postApiPropertyTypeResponse> => {
 
   return useCustomClient<postApiPropertyTypeResponse>(getPostApiPropertyTypeUrl(),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(createPropertyTypeDto)
   }
 );}
 
@@ -604,8 +614,8 @@ export const postApiPropertyType = async ( options?: RequestInit): Promise<postA
 
 
 export const getPostApiPropertyTypeMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiPropertyType>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiPropertyType>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiPropertyType>>, TError,{data: BodyType<CreatePropertyTypeDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiPropertyType>>, TError,{data: BodyType<CreatePropertyTypeDto>}, TContext> => {
 
 const mutationKey = ['postApiPropertyType'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -617,10 +627,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiPropertyType>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiPropertyType>>, {data: BodyType<CreatePropertyTypeDto>}> = (props) => {
+          const {data} = props ?? {};
 
-
-          return  postApiPropertyType(requestOptions)
+          return  postApiPropertyType(data,requestOptions)
         }
 
 
@@ -631,33 +641,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiPropertyTypeMutationResult = NonNullable<Awaited<ReturnType<typeof postApiPropertyType>>>
-
+    export type PostApiPropertyTypeMutationBody = BodyType<CreatePropertyTypeDto>
     export type PostApiPropertyTypeMutationError = ErrorType<unknown>
 
     /**
  * @summary Create a property type
  */
 export const usePostApiPropertyType = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiPropertyType>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiPropertyType>>, TError,{data: BodyType<CreatePropertyTypeDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiPropertyType>>,
         TError,
-        void,
+        {data: BodyType<CreatePropertyTypeDto>},
         TContext
       > => {
       return useMutation(getPostApiPropertyTypeMutationOptions(options), queryClient);
     }
-    export type getApiPropertyIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiPropertyIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiPropertyIdResponseSuccess = (getApiPropertyIdResponse200) & {
+;
+export type getApiPropertyIdResponseError = (getApiPropertyIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiPropertyIdResponse = (getApiPropertyIdResponseSuccess)
+export type getApiPropertyIdResponse = (getApiPropertyIdResponseError)
 
 export const getGetApiPropertyIdUrl = (id: string,) => {
 
@@ -860,17 +870,17 @@ export const prefetchGetApiPropertyIdQuery = async <TData = Awaited<ReturnType<t
 
 
 
-export type patchApiPropertyResponse200 = {
-  data: void
-  status: 200
+export type patchApiPropertyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiPropertyResponseSuccess = (patchApiPropertyResponse200) & {
+;
+export type patchApiPropertyResponseError = (patchApiPropertyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiPropertyResponse = (patchApiPropertyResponseSuccess)
+export type patchApiPropertyResponse = (patchApiPropertyResponseError)
 
 export const getPatchApiPropertyUrl = (id: string,) => {
 
@@ -883,14 +893,15 @@ export const getPatchApiPropertyUrl = (id: string,) => {
 /**
  * @summary Update a property
  */
-export const patchApiProperty = async (id: string, options?: RequestInit): Promise<patchApiPropertyResponse> => {
+export const patchApiProperty = async (id: string,
+    updatePropertyDto: UpdatePropertyDto, options?: RequestInit): Promise<patchApiPropertyResponse> => {
 
   return useCustomClient<patchApiPropertyResponse>(getPatchApiPropertyUrl(id),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updatePropertyDto)
   }
 );}
 
@@ -899,8 +910,8 @@ export const patchApiProperty = async (id: string, options?: RequestInit): Promi
 
 
 export const getPatchApiPropertyMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiProperty>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiProperty>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiProperty>>, TError,{id: string;data: BodyType<UpdatePropertyDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiProperty>>, TError,{id: string;data: BodyType<UpdatePropertyDto>}, TContext> => {
 
 const mutationKey = ['patchApiProperty'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -912,10 +923,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiProperty>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiProperty>>, {id: string;data: BodyType<UpdatePropertyDto>}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiProperty(id,requestOptions)
+          return  patchApiProperty(id,data,requestOptions)
         }
 
 
@@ -926,33 +937,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiPropertyMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiProperty>>>
-
+    export type PatchApiPropertyMutationBody = BodyType<UpdatePropertyDto>
     export type PatchApiPropertyMutationError = ErrorType<unknown>
 
     /**
  * @summary Update a property
  */
 export const usePatchApiProperty = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiProperty>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiProperty>>, TError,{id: string;data: BodyType<UpdatePropertyDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiProperty>>,
         TError,
-        {id: string},
+        {id: string;data: BodyType<UpdatePropertyDto>},
         TContext
       > => {
       return useMutation(getPatchApiPropertyMutationOptions(options), queryClient);
     }
-    export type deleteApiPropertyResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiPropertyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiPropertyResponseSuccess = (deleteApiPropertyResponse200) & {
+;
+export type deleteApiPropertyResponseError = (deleteApiPropertyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiPropertyResponse = (deleteApiPropertyResponseSuccess)
+export type deleteApiPropertyResponse = (deleteApiPropertyResponseError)
 
 export const getDeleteApiPropertyUrl = (id: string,) => {
 

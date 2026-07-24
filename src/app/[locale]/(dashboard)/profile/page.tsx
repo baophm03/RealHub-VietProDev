@@ -30,7 +30,7 @@ export default function ProfilePage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader eyebrow="Tai khoan" title="Ho so ca nhan" description="Thong tin tai khoan va mat khau" />
+      <PageHeader eyebrow="Tài khoản" title="Hồ sơ cá nhân" description="Thông tin tài khoản và mật khẩu" />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card>
@@ -49,25 +49,25 @@ export default function ProfilePage() {
         </Card>
 
         <Card className="lg:col-span-2">
-          <CardHeader><CardTitle>Thong tin ca nhan</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Thông tin cá nhân</CardTitle></CardHeader>
           <CardContent>
             <form onSubmit={onSubmit} className="flex flex-col gap-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormField label="Ho va ten">
+                <FormField label="Họ và tên">
                   <Input defaultValue={user?.fullName ?? ""} />
                 </FormField>
                 <FormField label="Email">
                   <Input defaultValue={user?.email ?? ""} disabled />
                 </FormField>
-                <FormField label="So dien thoai">
+                <FormField label="Số điện thoại">
                   <Input defaultValue={user?.phone ?? ""} placeholder="0901234567" />
                 </FormField>
-                <FormField label="Anh dai dien URL">
+                <FormField label="Ảnh đại diện URL">
                   <Input defaultValue={user?.avatarUrl ?? ""} placeholder="https://..." />
                 </FormField>
               </div>
               <div className="flex justify-end">
-                <Button type="submit" disabled={loading}>{loading ? "Dang luu..." : "Luu thay doi"}</Button>
+                <Button type="submit" disabled={loading}>{loading ? "Đang lưu..." : "Lưu thay đổi"}</Button>
               </div>
             </form>
           </CardContent>
@@ -75,22 +75,22 @@ export default function ProfilePage() {
       </div>
 
       <Card>
-        <CardHeader><CardTitle>Doi mat khau</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Đổi mật khẩu</CardTitle></CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <FormField label="Mat khau hien tai" required>
-                <Input type="password" placeholder="Nhap mat khau hien tai" />
+              <FormField label="Mật khẩu hiện tại" required>
+                <Input type="password" placeholder="Nhập mật khẩu hiện tại" />
               </FormField>
-              <FormField label="Mat khau moi" required>
-                <Input type="password" placeholder="Nhap mat khau moi" />
+              <FormField label="Mật khẩu mới" required>
+                <Input type="password" placeholder="Nhập mật khẩu mới" />
               </FormField>
-              <FormField label="Xac nhan mat khau" required>
-                <Input type="password" placeholder="Nhap lai mat khau moi" />
+              <FormField label="Xác nhận mật khẩu" required>
+                <Input type="password" placeholder="Nhập lại mật khẩu mới" />
               </FormField>
             </div>
             <div className="flex justify-end">
-              <Button type="submit" variant="secondary" disabled={loading}>Doi mat khau</Button>
+              <Button type="submit" variant="secondary" disabled={loading}>Đổi mật khẩu</Button>
             </div>
           </form>
         </CardContent>

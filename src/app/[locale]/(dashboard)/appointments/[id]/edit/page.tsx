@@ -100,7 +100,7 @@ export default function AppointmentEditPage() {
         <button onClick={() => router.push("/appointments")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
           <ArrowLeft size={20} />
         </button>
-        <PageHeader eyebrow="Lich hen" title="Chinh sua lich hen" />
+        <PageHeader eyebrow="Lich hen" title="Chỉnh sửa lich hen" />
       </div>
 
       {error && (

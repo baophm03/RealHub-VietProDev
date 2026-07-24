@@ -7,5 +7,5 @@
  */
 
 export type GetApiLocationTreeParams = {
-parentId: string;
+parentId?: string;
 };

@@ -61,17 +61,17 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiRevalidationPoliciesResponse200 = {
-  data: void
-  status: 200
+export type getApiRevalidationPoliciesResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiRevalidationPoliciesResponseSuccess = (getApiRevalidationPoliciesResponse200) & {
+;
+export type getApiRevalidationPoliciesResponseError = (getApiRevalidationPoliciesResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiRevalidationPoliciesResponse = (getApiRevalidationPoliciesResponseSuccess)
+export type getApiRevalidationPoliciesResponse = (getApiRevalidationPoliciesResponseError)
 
 export const getGetApiRevalidationPoliciesUrl = () => {
 
@@ -274,17 +274,17 @@ export const prefetchGetApiRevalidationPoliciesQuery = async <TData = Awaited<Re
 
 
 
-export type postApiRevalidationPolicyResponse201 = {
-  data: void
-  status: 201
+export type postApiRevalidationPolicyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiRevalidationPolicyResponseSuccess = (postApiRevalidationPolicyResponse201) & {
+;
+export type postApiRevalidationPolicyResponseError = (postApiRevalidationPolicyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiRevalidationPolicyResponse = (postApiRevalidationPolicyResponseSuccess)
+export type postApiRevalidationPolicyResponse = (postApiRevalidationPolicyResponseError)
 
 export const getPostApiRevalidationPolicyUrl = () => {
 
@@ -356,17 +356,17 @@ export const usePostApiRevalidationPolicy = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiRevalidationPolicyMutationOptions(options), queryClient);
     }
-    export type getApiRevalidationPolicyIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiRevalidationPolicyIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiRevalidationPolicyIdResponseSuccess = (getApiRevalidationPolicyIdResponse200) & {
+;
+export type getApiRevalidationPolicyIdResponseError = (getApiRevalidationPolicyIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiRevalidationPolicyIdResponse = (getApiRevalidationPolicyIdResponseSuccess)
+export type getApiRevalidationPolicyIdResponse = (getApiRevalidationPolicyIdResponseError)
 
 export const getGetApiRevalidationPolicyIdUrl = (id: string,) => {
 
@@ -569,17 +569,17 @@ export const prefetchGetApiRevalidationPolicyIdQuery = async <TData = Awaited<Re
 
 
 
-export type patchApiRevalidationPolicyResponse200 = {
-  data: void
-  status: 200
+export type patchApiRevalidationPolicyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiRevalidationPolicyResponseSuccess = (patchApiRevalidationPolicyResponse200) & {
+;
+export type patchApiRevalidationPolicyResponseError = (patchApiRevalidationPolicyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiRevalidationPolicyResponse = (patchApiRevalidationPolicyResponseSuccess)
+export type patchApiRevalidationPolicyResponse = (patchApiRevalidationPolicyResponseError)
 
 export const getPatchApiRevalidationPolicyUrl = (id: string,) => {
 
@@ -652,17 +652,17 @@ export const usePatchApiRevalidationPolicy = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPatchApiRevalidationPolicyMutationOptions(options), queryClient);
     }
-    export type deleteApiRevalidationPolicyResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiRevalidationPolicyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiRevalidationPolicyResponseSuccess = (deleteApiRevalidationPolicyResponse200) & {
+;
+export type deleteApiRevalidationPolicyResponseError = (deleteApiRevalidationPolicyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiRevalidationPolicyResponse = (deleteApiRevalidationPolicyResponseSuccess)
+export type deleteApiRevalidationPolicyResponse = (deleteApiRevalidationPolicyResponseError)
 
 export const getDeleteApiRevalidationPolicyUrl = (id: string,) => {
 
@@ -734,19 +734,19 @@ export const useDeleteApiRevalidationPolicy = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getDeleteApiRevalidationPolicyMutationOptions(options), queryClient);
     }
-    export type getApiRevalidationTasksResponse200 = {
-  data: void
-  status: 200
+    export type getApiRevalidationTasksResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiRevalidationTasksResponseSuccess = (getApiRevalidationTasksResponse200) & {
+;
+export type getApiRevalidationTasksResponseError = (getApiRevalidationTasksResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiRevalidationTasksResponse = (getApiRevalidationTasksResponseSuccess)
+export type getApiRevalidationTasksResponse = (getApiRevalidationTasksResponseError)
 
-export const getGetApiRevalidationTasksUrl = (params: GetApiRevalidationTasksParams,) => {
+export const getGetApiRevalidationTasksUrl = (params?: GetApiRevalidationTasksParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -764,7 +764,7 @@ export const getGetApiRevalidationTasksUrl = (params: GetApiRevalidationTasksPar
 /**
  * @summary List revalidation tasks
  */
-export const getApiRevalidationTasks = async (params: GetApiRevalidationTasksParams, options?: RequestInit): Promise<getApiRevalidationTasksResponse> => {
+export const getApiRevalidationTasks = async (params?: GetApiRevalidationTasksParams, options?: RequestInit): Promise<getApiRevalidationTasksResponse> => {
 
   return useCustomClient<getApiRevalidationTasksResponse>(getGetApiRevalidationTasksUrl(params),
   {
@@ -792,7 +792,7 @@ export const getGetApiRevalidationTasksQueryKey = (params?: GetApiRevalidationTa
     }
 
 
-export const getGetApiRevalidationTasksInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiRevalidationTasks>>>, TError = ErrorType<unknown>>(params: GetApiRevalidationTasksParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiRevalidationTasksInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiRevalidationTasks>>>, TError = ErrorType<unknown>>(params?: GetApiRevalidationTasksParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -815,7 +815,7 @@ export type GetApiRevalidationTasksInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiRevalidationTasksInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiRevalidationTasks>>>, TError = ErrorType<unknown>>(
- params: GetApiRevalidationTasksParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>> & Pick<
+ params: undefined |  GetApiRevalidationTasksParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiRevalidationTasks>>,
           TError,
@@ -825,7 +825,7 @@ export function useGetApiRevalidationTasksInfinite<TData = InfiniteData<Awaited<
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiRevalidationTasksInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiRevalidationTasks>>>, TError = ErrorType<unknown>>(
- params: GetApiRevalidationTasksParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>> & Pick<
+ params?: GetApiRevalidationTasksParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiRevalidationTasks>>,
           TError,
@@ -835,7 +835,7 @@ export function useGetApiRevalidationTasksInfinite<TData = InfiniteData<Awaited<
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiRevalidationTasksInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiRevalidationTasks>>>, TError = ErrorType<unknown>>(
- params: GetApiRevalidationTasksParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiRevalidationTasksParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -843,7 +843,7 @@ export function useGetApiRevalidationTasksInfinite<TData = InfiniteData<Awaited<
  */
 
 export function useGetApiRevalidationTasksInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiRevalidationTasks>>>, TError = ErrorType<unknown>>(
- params: GetApiRevalidationTasksParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiRevalidationTasksParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -858,7 +858,7 @@ export function useGetApiRevalidationTasksInfinite<TData = InfiniteData<Awaited<
  * @summary List revalidation tasks
  */
 export const prefetchGetApiRevalidationTasksInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiRevalidationTasksParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiRevalidationTasksParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -873,7 +873,7 @@ export const prefetchGetApiRevalidationTasksInfiniteQuery = async <TData = Await
 
 
 
-export const getGetApiRevalidationTasksQueryOptions = <TData = Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError = ErrorType<unknown>>(params: GetApiRevalidationTasksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiRevalidationTasksQueryOptions = <TData = Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError = ErrorType<unknown>>(params?: GetApiRevalidationTasksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -896,7 +896,7 @@ export type GetApiRevalidationTasksQueryError = ErrorType<unknown>
 
 
 export function useGetApiRevalidationTasks<TData = Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError = ErrorType<unknown>>(
- params: GetApiRevalidationTasksParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>> & Pick<
+ params: undefined |  GetApiRevalidationTasksParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiRevalidationTasks>>,
           TError,
@@ -906,7 +906,7 @@ export function useGetApiRevalidationTasks<TData = Awaited<ReturnType<typeof get
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiRevalidationTasks<TData = Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError = ErrorType<unknown>>(
- params: GetApiRevalidationTasksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>> & Pick<
+ params?: GetApiRevalidationTasksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiRevalidationTasks>>,
           TError,
@@ -916,7 +916,7 @@ export function useGetApiRevalidationTasks<TData = Awaited<ReturnType<typeof get
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiRevalidationTasks<TData = Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError = ErrorType<unknown>>(
- params: GetApiRevalidationTasksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiRevalidationTasksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -924,7 +924,7 @@ export function useGetApiRevalidationTasks<TData = Awaited<ReturnType<typeof get
  */
 
 export function useGetApiRevalidationTasks<TData = Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError = ErrorType<unknown>>(
- params: GetApiRevalidationTasksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiRevalidationTasksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -939,7 +939,7 @@ export function useGetApiRevalidationTasks<TData = Awaited<ReturnType<typeof get
  * @summary List revalidation tasks
  */
 export const prefetchGetApiRevalidationTasksQuery = async <TData = Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiRevalidationTasksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiRevalidationTasksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRevalidationTasks>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -954,17 +954,17 @@ export const prefetchGetApiRevalidationTasksQuery = async <TData = Awaited<Retur
 
 
 
-export type postApiRevalidationTaskResponse201 = {
-  data: void
-  status: 201
+export type postApiRevalidationTaskResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiRevalidationTaskResponseSuccess = (postApiRevalidationTaskResponse201) & {
+;
+export type postApiRevalidationTaskResponseError = (postApiRevalidationTaskResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiRevalidationTaskResponse = (postApiRevalidationTaskResponseSuccess)
+export type postApiRevalidationTaskResponse = (postApiRevalidationTaskResponseError)
 
 export const getPostApiRevalidationTaskUrl = () => {
 
@@ -1036,17 +1036,17 @@ export const usePostApiRevalidationTask = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiRevalidationTaskMutationOptions(options), queryClient);
     }
-    export type getApiRevalidationTaskIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiRevalidationTaskIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiRevalidationTaskIdResponseSuccess = (getApiRevalidationTaskIdResponse200) & {
+;
+export type getApiRevalidationTaskIdResponseError = (getApiRevalidationTaskIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiRevalidationTaskIdResponse = (getApiRevalidationTaskIdResponseSuccess)
+export type getApiRevalidationTaskIdResponse = (getApiRevalidationTaskIdResponseError)
 
 export const getGetApiRevalidationTaskIdUrl = (id: string,) => {
 
@@ -1249,17 +1249,17 @@ export const prefetchGetApiRevalidationTaskIdQuery = async <TData = Awaited<Retu
 
 
 
-export type patchApiCompleteRevalidationTaskResponse200 = {
-  data: void
-  status: 200
+export type patchApiCompleteRevalidationTaskResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiCompleteRevalidationTaskResponseSuccess = (patchApiCompleteRevalidationTaskResponse200) & {
+;
+export type patchApiCompleteRevalidationTaskResponseError = (patchApiCompleteRevalidationTaskResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiCompleteRevalidationTaskResponse = (patchApiCompleteRevalidationTaskResponseSuccess)
+export type patchApiCompleteRevalidationTaskResponse = (patchApiCompleteRevalidationTaskResponseError)
 
 export const getPatchApiCompleteRevalidationTaskUrl = (id: string,) => {
 
@@ -1332,17 +1332,17 @@ export const usePatchApiCompleteRevalidationTask = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPatchApiCompleteRevalidationTaskMutationOptions(options), queryClient);
     }
-    export type postApiExpireOverdueRevalidationTasksResponse201 = {
-  data: void
-  status: 201
+    export type postApiExpireOverdueRevalidationTasksResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiExpireOverdueRevalidationTasksResponseSuccess = (postApiExpireOverdueRevalidationTasksResponse201) & {
+;
+export type postApiExpireOverdueRevalidationTasksResponseError = (postApiExpireOverdueRevalidationTasksResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiExpireOverdueRevalidationTasksResponse = (postApiExpireOverdueRevalidationTasksResponseSuccess)
+export type postApiExpireOverdueRevalidationTasksResponse = (postApiExpireOverdueRevalidationTasksResponseError)
 
 export const getPostApiExpireOverdueRevalidationTasksUrl = () => {
 
@@ -1414,17 +1414,17 @@ export const usePostApiExpireOverdueRevalidationTasks = <TError = ErrorType<unkn
       > => {
       return useMutation(getPostApiExpireOverdueRevalidationTasksMutationOptions(options), queryClient);
     }
-    export type getApiPropertyPriceHistoryResponse200 = {
-  data: void
-  status: 200
+    export type getApiPropertyPriceHistoryResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiPropertyPriceHistoryResponseSuccess = (getApiPropertyPriceHistoryResponse200) & {
+;
+export type getApiPropertyPriceHistoryResponseError = (getApiPropertyPriceHistoryResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiPropertyPriceHistoryResponse = (getApiPropertyPriceHistoryResponseSuccess)
+export type getApiPropertyPriceHistoryResponse = (getApiPropertyPriceHistoryResponseError)
 
 export const getGetApiPropertyPriceHistoryUrl = (propertyId: string,) => {
 
@@ -1627,17 +1627,17 @@ export const prefetchGetApiPropertyPriceHistoryQuery = async <TData = Awaited<Re
 
 
 
-export type getApiPropertyStatusHistoryResponse200 = {
-  data: void
-  status: 200
+export type getApiPropertyStatusHistoryResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiPropertyStatusHistoryResponseSuccess = (getApiPropertyStatusHistoryResponse200) & {
+;
+export type getApiPropertyStatusHistoryResponseError = (getApiPropertyStatusHistoryResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiPropertyStatusHistoryResponse = (getApiPropertyStatusHistoryResponseSuccess)
+export type getApiPropertyStatusHistoryResponse = (getApiPropertyStatusHistoryResponseError)
 
 export const getGetApiPropertyStatusHistoryUrl = (propertyId: string,) => {
 

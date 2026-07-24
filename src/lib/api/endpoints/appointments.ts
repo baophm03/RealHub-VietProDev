@@ -59,19 +59,19 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiAppointmentsResponse200 = {
-  data: void
-  status: 200
+export type getApiAppointmentsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiAppointmentsResponseSuccess = (getApiAppointmentsResponse200) & {
+;
+export type getApiAppointmentsResponseError = (getApiAppointmentsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiAppointmentsResponse = (getApiAppointmentsResponseSuccess)
+export type getApiAppointmentsResponse = (getApiAppointmentsResponseError)
 
-export const getGetApiAppointmentsUrl = (params: GetApiAppointmentsParams,) => {
+export const getGetApiAppointmentsUrl = (params?: GetApiAppointmentsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -89,7 +89,7 @@ export const getGetApiAppointmentsUrl = (params: GetApiAppointmentsParams,) => {
 /**
  * @summary List appointments
  */
-export const getApiAppointments = async (params: GetApiAppointmentsParams, options?: RequestInit): Promise<getApiAppointmentsResponse> => {
+export const getApiAppointments = async (params?: GetApiAppointmentsParams, options?: RequestInit): Promise<getApiAppointmentsResponse> => {
 
   return useCustomClient<getApiAppointmentsResponse>(getGetApiAppointmentsUrl(params),
   {
@@ -117,7 +117,7 @@ export const getGetApiAppointmentsQueryKey = (params?: GetApiAppointmentsParams,
     }
 
 
-export const getGetApiAppointmentsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAppointments>>>, TError = ErrorType<unknown>>(params: GetApiAppointmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiAppointmentsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAppointments>>>, TError = ErrorType<unknown>>(params?: GetApiAppointmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -140,7 +140,7 @@ export type GetApiAppointmentsInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiAppointmentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAppointments>>>, TError = ErrorType<unknown>>(
- params: GetApiAppointmentsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>> & Pick<
+ params: undefined |  GetApiAppointmentsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAppointments>>,
           TError,
@@ -150,7 +150,7 @@ export function useGetApiAppointmentsInfinite<TData = InfiniteData<Awaited<Retur
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAppointmentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAppointments>>>, TError = ErrorType<unknown>>(
- params: GetApiAppointmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>> & Pick<
+ params?: GetApiAppointmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAppointments>>,
           TError,
@@ -160,7 +160,7 @@ export function useGetApiAppointmentsInfinite<TData = InfiniteData<Awaited<Retur
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAppointmentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAppointments>>>, TError = ErrorType<unknown>>(
- params: GetApiAppointmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAppointmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -168,7 +168,7 @@ export function useGetApiAppointmentsInfinite<TData = InfiniteData<Awaited<Retur
  */
 
 export function useGetApiAppointmentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAppointments>>>, TError = ErrorType<unknown>>(
- params: GetApiAppointmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAppointmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -183,7 +183,7 @@ export function useGetApiAppointmentsInfinite<TData = InfiniteData<Awaited<Retur
  * @summary List appointments
  */
 export const prefetchGetApiAppointmentsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiAppointments>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiAppointmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiAppointmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -198,7 +198,7 @@ export const prefetchGetApiAppointmentsInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getGetApiAppointmentsQueryOptions = <TData = Awaited<ReturnType<typeof getApiAppointments>>, TError = ErrorType<unknown>>(params: GetApiAppointmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiAppointmentsQueryOptions = <TData = Awaited<ReturnType<typeof getApiAppointments>>, TError = ErrorType<unknown>>(params?: GetApiAppointmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -221,7 +221,7 @@ export type GetApiAppointmentsQueryError = ErrorType<unknown>
 
 
 export function useGetApiAppointments<TData = Awaited<ReturnType<typeof getApiAppointments>>, TError = ErrorType<unknown>>(
- params: GetApiAppointmentsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>> & Pick<
+ params: undefined |  GetApiAppointmentsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAppointments>>,
           TError,
@@ -231,7 +231,7 @@ export function useGetApiAppointments<TData = Awaited<ReturnType<typeof getApiAp
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAppointments<TData = Awaited<ReturnType<typeof getApiAppointments>>, TError = ErrorType<unknown>>(
- params: GetApiAppointmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>> & Pick<
+ params?: GetApiAppointmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAppointments>>,
           TError,
@@ -241,7 +241,7 @@ export function useGetApiAppointments<TData = Awaited<ReturnType<typeof getApiAp
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAppointments<TData = Awaited<ReturnType<typeof getApiAppointments>>, TError = ErrorType<unknown>>(
- params: GetApiAppointmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAppointmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -249,7 +249,7 @@ export function useGetApiAppointments<TData = Awaited<ReturnType<typeof getApiAp
  */
 
 export function useGetApiAppointments<TData = Awaited<ReturnType<typeof getApiAppointments>>, TError = ErrorType<unknown>>(
- params: GetApiAppointmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAppointmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -264,7 +264,7 @@ export function useGetApiAppointments<TData = Awaited<ReturnType<typeof getApiAp
  * @summary List appointments
  */
 export const prefetchGetApiAppointmentsQuery = async <TData = Awaited<ReturnType<typeof getApiAppointments>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiAppointmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiAppointmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -279,17 +279,17 @@ export const prefetchGetApiAppointmentsQuery = async <TData = Awaited<ReturnType
 
 
 
-export type postApiAppointmentResponse201 = {
-  data: void
-  status: 201
+export type postApiAppointmentResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiAppointmentResponseSuccess = (postApiAppointmentResponse201) & {
+;
+export type postApiAppointmentResponseError = (postApiAppointmentResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiAppointmentResponse = (postApiAppointmentResponseSuccess)
+export type postApiAppointmentResponse = (postApiAppointmentResponseError)
 
 export const getPostApiAppointmentUrl = () => {
 
@@ -361,17 +361,17 @@ export const usePostApiAppointment = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiAppointmentMutationOptions(options), queryClient);
     }
-    export type getApiAppointmentIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiAppointmentIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiAppointmentIdResponseSuccess = (getApiAppointmentIdResponse200) & {
+;
+export type getApiAppointmentIdResponseError = (getApiAppointmentIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiAppointmentIdResponse = (getApiAppointmentIdResponseSuccess)
+export type getApiAppointmentIdResponse = (getApiAppointmentIdResponseError)
 
 export const getGetApiAppointmentIdUrl = (id: string,) => {
 
@@ -574,17 +574,17 @@ export const prefetchGetApiAppointmentIdQuery = async <TData = Awaited<ReturnTyp
 
 
 
-export type patchApiAppointmentResponse200 = {
-  data: void
-  status: 200
+export type patchApiAppointmentResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiAppointmentResponseSuccess = (patchApiAppointmentResponse200) & {
+;
+export type patchApiAppointmentResponseError = (patchApiAppointmentResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiAppointmentResponse = (patchApiAppointmentResponseSuccess)
+export type patchApiAppointmentResponse = (patchApiAppointmentResponseError)
 
 export const getPatchApiAppointmentUrl = (id: string,) => {
 
@@ -657,17 +657,17 @@ export const usePatchApiAppointment = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPatchApiAppointmentMutationOptions(options), queryClient);
     }
-    export type deleteApiAppointmentResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiAppointmentResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiAppointmentResponseSuccess = (deleteApiAppointmentResponse200) & {
+;
+export type deleteApiAppointmentResponseError = (deleteApiAppointmentResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiAppointmentResponse = (deleteApiAppointmentResponseSuccess)
+export type deleteApiAppointmentResponse = (deleteApiAppointmentResponseError)
 
 export const getDeleteApiAppointmentUrl = (id: string,) => {
 

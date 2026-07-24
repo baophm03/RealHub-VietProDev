@@ -89,7 +89,7 @@ export default function CommissionPlanDetailPage() {
           actions={
             <Button variant="outline" onClick={() => router.push(`/commission/plans/${id}/edit`)}>
               <Pencil size={16} />
-              Chinh sua
+              Chỉnh sửa
             </Button>
           }
         />

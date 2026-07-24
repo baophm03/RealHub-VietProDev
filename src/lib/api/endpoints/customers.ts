@@ -61,19 +61,19 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiCustomersResponse200 = {
-  data: void
-  status: 200
+export type getApiCustomersResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiCustomersResponseSuccess = (getApiCustomersResponse200) & {
+;
+export type getApiCustomersResponseError = (getApiCustomersResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiCustomersResponse = (getApiCustomersResponseSuccess)
+export type getApiCustomersResponse = (getApiCustomersResponseError)
 
-export const getGetApiCustomersUrl = (params: GetApiCustomersParams,) => {
+export const getGetApiCustomersUrl = (params?: GetApiCustomersParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -91,7 +91,7 @@ export const getGetApiCustomersUrl = (params: GetApiCustomersParams,) => {
 /**
  * @summary List customers with filters
  */
-export const getApiCustomers = async (params: GetApiCustomersParams, options?: RequestInit): Promise<getApiCustomersResponse> => {
+export const getApiCustomers = async (params?: GetApiCustomersParams, options?: RequestInit): Promise<getApiCustomersResponse> => {
 
   return useCustomClient<getApiCustomersResponse>(getGetApiCustomersUrl(params),
   {
@@ -119,7 +119,7 @@ export const getGetApiCustomersQueryKey = (params?: GetApiCustomersParams,) => {
     }
 
 
-export const getGetApiCustomersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomers>>>, TError = ErrorType<unknown>>(params: GetApiCustomersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiCustomersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomers>>>, TError = ErrorType<unknown>>(params?: GetApiCustomersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -142,7 +142,7 @@ export type GetApiCustomersInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiCustomersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomers>>>, TError = ErrorType<unknown>>(
- params: GetApiCustomersParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>> & Pick<
+ params: undefined |  GetApiCustomersParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCustomers>>,
           TError,
@@ -152,7 +152,7 @@ export function useGetApiCustomersInfinite<TData = InfiniteData<Awaited<ReturnTy
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCustomersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomers>>>, TError = ErrorType<unknown>>(
- params: GetApiCustomersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>> & Pick<
+ params?: GetApiCustomersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCustomers>>,
           TError,
@@ -162,7 +162,7 @@ export function useGetApiCustomersInfinite<TData = InfiniteData<Awaited<ReturnTy
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCustomersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomers>>>, TError = ErrorType<unknown>>(
- params: GetApiCustomersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCustomersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -170,7 +170,7 @@ export function useGetApiCustomersInfinite<TData = InfiniteData<Awaited<ReturnTy
  */
 
 export function useGetApiCustomersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomers>>>, TError = ErrorType<unknown>>(
- params: GetApiCustomersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCustomersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -185,7 +185,7 @@ export function useGetApiCustomersInfinite<TData = InfiniteData<Awaited<ReturnTy
  * @summary List customers with filters
  */
 export const prefetchGetApiCustomersInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiCustomers>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiCustomersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiCustomersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -200,7 +200,7 @@ export const prefetchGetApiCustomersInfiniteQuery = async <TData = Awaited<Retur
 
 
 
-export const getGetApiCustomersQueryOptions = <TData = Awaited<ReturnType<typeof getApiCustomers>>, TError = ErrorType<unknown>>(params: GetApiCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiCustomersQueryOptions = <TData = Awaited<ReturnType<typeof getApiCustomers>>, TError = ErrorType<unknown>>(params?: GetApiCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -223,7 +223,7 @@ export type GetApiCustomersQueryError = ErrorType<unknown>
 
 
 export function useGetApiCustomers<TData = Awaited<ReturnType<typeof getApiCustomers>>, TError = ErrorType<unknown>>(
- params: GetApiCustomersParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>> & Pick<
+ params: undefined |  GetApiCustomersParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCustomers>>,
           TError,
@@ -233,7 +233,7 @@ export function useGetApiCustomers<TData = Awaited<ReturnType<typeof getApiCusto
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCustomers<TData = Awaited<ReturnType<typeof getApiCustomers>>, TError = ErrorType<unknown>>(
- params: GetApiCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>> & Pick<
+ params?: GetApiCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCustomers>>,
           TError,
@@ -243,7 +243,7 @@ export function useGetApiCustomers<TData = Awaited<ReturnType<typeof getApiCusto
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCustomers<TData = Awaited<ReturnType<typeof getApiCustomers>>, TError = ErrorType<unknown>>(
- params: GetApiCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -251,7 +251,7 @@ export function useGetApiCustomers<TData = Awaited<ReturnType<typeof getApiCusto
  */
 
 export function useGetApiCustomers<TData = Awaited<ReturnType<typeof getApiCustomers>>, TError = ErrorType<unknown>>(
- params: GetApiCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -266,7 +266,7 @@ export function useGetApiCustomers<TData = Awaited<ReturnType<typeof getApiCusto
  * @summary List customers with filters
  */
 export const prefetchGetApiCustomersQuery = async <TData = Awaited<ReturnType<typeof getApiCustomers>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomers>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -281,17 +281,17 @@ export const prefetchGetApiCustomersQuery = async <TData = Awaited<ReturnType<ty
 
 
 
-export type postApiCustomerResponse201 = {
-  data: void
-  status: 201
+export type postApiCustomerResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiCustomerResponseSuccess = (postApiCustomerResponse201) & {
+;
+export type postApiCustomerResponseError = (postApiCustomerResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiCustomerResponse = (postApiCustomerResponseSuccess)
+export type postApiCustomerResponse = (postApiCustomerResponseError)
 
 export const getPostApiCustomerUrl = () => {
 
@@ -363,17 +363,17 @@ export const usePostApiCustomer = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiCustomerMutationOptions(options), queryClient);
     }
-    export type getApiCustomerIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiCustomerIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiCustomerIdResponseSuccess = (getApiCustomerIdResponse200) & {
+;
+export type getApiCustomerIdResponseError = (getApiCustomerIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiCustomerIdResponse = (getApiCustomerIdResponseSuccess)
+export type getApiCustomerIdResponse = (getApiCustomerIdResponseError)
 
 export const getGetApiCustomerIdUrl = (id: string,) => {
 
@@ -576,17 +576,17 @@ export const prefetchGetApiCustomerIdQuery = async <TData = Awaited<ReturnType<t
 
 
 
-export type patchApiCustomerResponse200 = {
-  data: void
-  status: 200
+export type patchApiCustomerResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiCustomerResponseSuccess = (patchApiCustomerResponse200) & {
+;
+export type patchApiCustomerResponseError = (patchApiCustomerResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiCustomerResponse = (patchApiCustomerResponseSuccess)
+export type patchApiCustomerResponse = (patchApiCustomerResponseError)
 
 export const getPatchApiCustomerUrl = (id: string,) => {
 
@@ -659,17 +659,17 @@ export const usePatchApiCustomer = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPatchApiCustomerMutationOptions(options), queryClient);
     }
-    export type deleteApiCustomerResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiCustomerResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiCustomerResponseSuccess = (deleteApiCustomerResponse200) & {
+;
+export type deleteApiCustomerResponseError = (deleteApiCustomerResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiCustomerResponse = (deleteApiCustomerResponseSuccess)
+export type deleteApiCustomerResponse = (deleteApiCustomerResponseError)
 
 export const getDeleteApiCustomerUrl = (id: string,) => {
 
@@ -741,19 +741,19 @@ export const useDeleteApiCustomer = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getDeleteApiCustomerMutationOptions(options), queryClient);
     }
-    export type getApiCustomerNeedsResponse200 = {
-  data: void
-  status: 200
+    export type getApiCustomerNeedsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiCustomerNeedsResponseSuccess = (getApiCustomerNeedsResponse200) & {
+;
+export type getApiCustomerNeedsResponseError = (getApiCustomerNeedsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiCustomerNeedsResponse = (getApiCustomerNeedsResponseSuccess)
+export type getApiCustomerNeedsResponse = (getApiCustomerNeedsResponseError)
 
-export const getGetApiCustomerNeedsUrl = (params: GetApiCustomerNeedsParams,) => {
+export const getGetApiCustomerNeedsUrl = (params?: GetApiCustomerNeedsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -771,7 +771,7 @@ export const getGetApiCustomerNeedsUrl = (params: GetApiCustomerNeedsParams,) =>
 /**
  * @summary List customer needs
  */
-export const getApiCustomerNeeds = async (params: GetApiCustomerNeedsParams, options?: RequestInit): Promise<getApiCustomerNeedsResponse> => {
+export const getApiCustomerNeeds = async (params?: GetApiCustomerNeedsParams, options?: RequestInit): Promise<getApiCustomerNeedsResponse> => {
 
   return useCustomClient<getApiCustomerNeedsResponse>(getGetApiCustomerNeedsUrl(params),
   {
@@ -799,7 +799,7 @@ export const getGetApiCustomerNeedsQueryKey = (params?: GetApiCustomerNeedsParam
     }
 
 
-export const getGetApiCustomerNeedsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomerNeeds>>>, TError = ErrorType<unknown>>(params: GetApiCustomerNeedsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiCustomerNeedsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomerNeeds>>>, TError = ErrorType<unknown>>(params?: GetApiCustomerNeedsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -822,7 +822,7 @@ export type GetApiCustomerNeedsInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiCustomerNeedsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomerNeeds>>>, TError = ErrorType<unknown>>(
- params: GetApiCustomerNeedsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>> & Pick<
+ params: undefined |  GetApiCustomerNeedsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCustomerNeeds>>,
           TError,
@@ -832,7 +832,7 @@ export function useGetApiCustomerNeedsInfinite<TData = InfiniteData<Awaited<Retu
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCustomerNeedsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomerNeeds>>>, TError = ErrorType<unknown>>(
- params: GetApiCustomerNeedsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>> & Pick<
+ params?: GetApiCustomerNeedsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCustomerNeeds>>,
           TError,
@@ -842,7 +842,7 @@ export function useGetApiCustomerNeedsInfinite<TData = InfiniteData<Awaited<Retu
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCustomerNeedsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomerNeeds>>>, TError = ErrorType<unknown>>(
- params: GetApiCustomerNeedsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCustomerNeedsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -850,7 +850,7 @@ export function useGetApiCustomerNeedsInfinite<TData = InfiniteData<Awaited<Retu
  */
 
 export function useGetApiCustomerNeedsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomerNeeds>>>, TError = ErrorType<unknown>>(
- params: GetApiCustomerNeedsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCustomerNeedsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -865,7 +865,7 @@ export function useGetApiCustomerNeedsInfinite<TData = InfiniteData<Awaited<Retu
  * @summary List customer needs
  */
 export const prefetchGetApiCustomerNeedsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiCustomerNeedsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiCustomerNeedsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -880,7 +880,7 @@ export const prefetchGetApiCustomerNeedsInfiniteQuery = async <TData = Awaited<R
 
 
 
-export const getGetApiCustomerNeedsQueryOptions = <TData = Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError = ErrorType<unknown>>(params: GetApiCustomerNeedsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiCustomerNeedsQueryOptions = <TData = Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError = ErrorType<unknown>>(params?: GetApiCustomerNeedsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -903,7 +903,7 @@ export type GetApiCustomerNeedsQueryError = ErrorType<unknown>
 
 
 export function useGetApiCustomerNeeds<TData = Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError = ErrorType<unknown>>(
- params: GetApiCustomerNeedsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>> & Pick<
+ params: undefined |  GetApiCustomerNeedsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCustomerNeeds>>,
           TError,
@@ -913,7 +913,7 @@ export function useGetApiCustomerNeeds<TData = Awaited<ReturnType<typeof getApiC
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCustomerNeeds<TData = Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError = ErrorType<unknown>>(
- params: GetApiCustomerNeedsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>> & Pick<
+ params?: GetApiCustomerNeedsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCustomerNeeds>>,
           TError,
@@ -923,7 +923,7 @@ export function useGetApiCustomerNeeds<TData = Awaited<ReturnType<typeof getApiC
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCustomerNeeds<TData = Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError = ErrorType<unknown>>(
- params: GetApiCustomerNeedsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCustomerNeedsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -931,7 +931,7 @@ export function useGetApiCustomerNeeds<TData = Awaited<ReturnType<typeof getApiC
  */
 
 export function useGetApiCustomerNeeds<TData = Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError = ErrorType<unknown>>(
- params: GetApiCustomerNeedsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCustomerNeedsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -946,7 +946,7 @@ export function useGetApiCustomerNeeds<TData = Awaited<ReturnType<typeof getApiC
  * @summary List customer needs
  */
 export const prefetchGetApiCustomerNeedsQuery = async <TData = Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiCustomerNeedsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiCustomerNeedsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeeds>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -961,17 +961,17 @@ export const prefetchGetApiCustomerNeedsQuery = async <TData = Awaited<ReturnTyp
 
 
 
-export type postApiCustomerNeedResponse201 = {
-  data: void
-  status: 201
+export type postApiCustomerNeedResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiCustomerNeedResponseSuccess = (postApiCustomerNeedResponse201) & {
+;
+export type postApiCustomerNeedResponseError = (postApiCustomerNeedResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiCustomerNeedResponse = (postApiCustomerNeedResponseSuccess)
+export type postApiCustomerNeedResponse = (postApiCustomerNeedResponseError)
 
 export const getPostApiCustomerNeedUrl = () => {
 

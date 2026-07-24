@@ -5,11 +5,13 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiFilesOwnerType } from './getApiFilesOwnerType';
+import type { GetApiFilesVisibility } from './getApiFilesVisibility';
 
 export type GetApiFilesParams = {
-ownerType: string;
-ownerId: string;
-visibility: string;
-limit: string;
-offset: string;
+ownerType?: GetApiFilesOwnerType;
+ownerId?: string;
+visibility?: GetApiFilesVisibility;
+limit?: string;
+offset?: string;
 };

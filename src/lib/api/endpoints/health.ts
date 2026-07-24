@@ -49,17 +49,17 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiHealthResponse200 = {
-  data: void
-  status: 200
+export type getApiHealthResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiHealthResponseSuccess = (getApiHealthResponse200) & {
+;
+export type getApiHealthResponseError = (getApiHealthResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiHealthResponse = (getApiHealthResponseSuccess)
+export type getApiHealthResponse = (getApiHealthResponseError)
 
 export const getGetApiHealthUrl = () => {
 
@@ -262,17 +262,17 @@ export const prefetchGetApiHealthQuery = async <TData = Awaited<ReturnType<typeo
 
 
 
-export type getApiHealthLiveResponse200 = {
-  data: void
-  status: 200
+export type getApiHealthLiveResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiHealthLiveResponseSuccess = (getApiHealthLiveResponse200) & {
+;
+export type getApiHealthLiveResponseError = (getApiHealthLiveResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiHealthLiveResponse = (getApiHealthLiveResponseSuccess)
+export type getApiHealthLiveResponse = (getApiHealthLiveResponseError)
 
 export const getGetApiHealthLiveUrl = () => {
 
@@ -475,17 +475,17 @@ export const prefetchGetApiHealthLiveQuery = async <TData = Awaited<ReturnType<t
 
 
 
-export type getApiHealthReadyResponse200 = {
-  data: void
-  status: 200
+export type getApiHealthReadyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiHealthReadyResponseSuccess = (getApiHealthReadyResponse200) & {
+;
+export type getApiHealthReadyResponseError = (getApiHealthReadyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiHealthReadyResponse = (getApiHealthReadyResponseSuccess)
+export type getApiHealthReadyResponse = (getApiHealthReadyResponseError)
 
 export const getGetApiHealthReadyUrl = () => {
 
@@ -688,17 +688,17 @@ export const prefetchGetApiHealthReadyQuery = async <TData = Awaited<ReturnType<
 
 
 
-export type getApiHealthMetricsResponse200 = {
-  data: void
-  status: 200
+export type getApiHealthMetricsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiHealthMetricsResponseSuccess = (getApiHealthMetricsResponse200) & {
+;
+export type getApiHealthMetricsResponseError = (getApiHealthMetricsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiHealthMetricsResponse = (getApiHealthMetricsResponseSuccess)
+export type getApiHealthMetricsResponse = (getApiHealthMetricsResponseError)
 
 export const getGetApiHealthMetricsUrl = () => {
 

@@ -5,5 +5,14 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { UpdateDealDtoStatus } from './updateDealDtoStatus';
 
-export interface UpdateDealDto { [key: string]: unknown }
+export interface UpdateDealDto {
+  status?: UpdateDealDtoStatus;
+  currentWorkflowState?: string;
+  salesUserId?: string;
+  ownerUserId?: string;
+  expectedValue?: string;
+  finalValue?: string;
+  metadata?: string;
+}

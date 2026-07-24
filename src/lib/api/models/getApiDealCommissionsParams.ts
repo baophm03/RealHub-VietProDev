@@ -5,8 +5,9 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiDealCommissionsStatus } from './getApiDealCommissionsStatus';
 
 export type GetApiDealCommissionsParams = {
-dealId: string;
-status: string;
+dealId?: string;
+status?: GetApiDealCommissionsStatus;
 };

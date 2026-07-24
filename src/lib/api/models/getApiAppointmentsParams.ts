@@ -5,12 +5,13 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiAppointmentsStatus } from './getApiAppointmentsStatus';
 
 export type GetApiAppointmentsParams = {
-assignedUserId: string;
-status: string;
-leadId: string;
-propertyId: string;
-limit: string;
-offset: string;
+assignedUserId?: string;
+status?: GetApiAppointmentsStatus;
+leadId?: string;
+propertyId?: string;
+limit?: string;
+offset?: string;
 };

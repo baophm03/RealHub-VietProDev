@@ -28,17 +28,17 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
-export type postApiUserResponse201 = {
-  data: void
-  status: 201
+export type postApiUserResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiUserResponseSuccess = (postApiUserResponse201) & {
+;
+export type postApiUserResponseError = (postApiUserResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiUserResponse = (postApiUserResponseSuccess)
+export type postApiUserResponse = (postApiUserResponseError)
 
 export const getPostApiUserUrl = () => {
 

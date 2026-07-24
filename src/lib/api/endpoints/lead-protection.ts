@@ -30,11 +30,15 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  GetApiLeadDisputesParams
+  CreateLeadDisputeDto,
+  CreateLeadProtectionPolicyDto,
+  GetApiLeadDisputesParams,
+  ResolveLeadDisputeDto,
+  UpdateLeadProtectionPolicyDto
 } from '../models';
 
 import { useCustomClient } from '../mutator/custom-client';
-import type { ErrorType } from '../mutator/custom-client';
+import type { ErrorType , BodyType } from '../mutator/custom-client';
 
 
 
@@ -57,17 +61,17 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiLeadProtectionPoliciesResponse200 = {
-  data: void
-  status: 200
+export type getApiLeadProtectionPoliciesResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiLeadProtectionPoliciesResponseSuccess = (getApiLeadProtectionPoliciesResponse200) & {
+;
+export type getApiLeadProtectionPoliciesResponseError = (getApiLeadProtectionPoliciesResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiLeadProtectionPoliciesResponse = (getApiLeadProtectionPoliciesResponseSuccess)
+export type getApiLeadProtectionPoliciesResponse = (getApiLeadProtectionPoliciesResponseError)
 
 export const getGetApiLeadProtectionPoliciesUrl = () => {
 
@@ -270,17 +274,17 @@ export const prefetchGetApiLeadProtectionPoliciesQuery = async <TData = Awaited<
 
 
 
-export type postApiLeadProtectionPolicyResponse201 = {
-  data: void
-  status: 201
+export type postApiLeadProtectionPolicyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiLeadProtectionPolicyResponseSuccess = (postApiLeadProtectionPolicyResponse201) & {
+;
+export type postApiLeadProtectionPolicyResponseError = (postApiLeadProtectionPolicyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiLeadProtectionPolicyResponse = (postApiLeadProtectionPolicyResponseSuccess)
+export type postApiLeadProtectionPolicyResponse = (postApiLeadProtectionPolicyResponseError)
 
 export const getPostApiLeadProtectionPolicyUrl = () => {
 
@@ -293,14 +297,14 @@ export const getPostApiLeadProtectionPolicyUrl = () => {
 /**
  * @summary Create a lead protection policy
  */
-export const postApiLeadProtectionPolicy = async ( options?: RequestInit): Promise<postApiLeadProtectionPolicyResponse> => {
+export const postApiLeadProtectionPolicy = async (createLeadProtectionPolicyDto: CreateLeadProtectionPolicyDto, options?: RequestInit): Promise<postApiLeadProtectionPolicyResponse> => {
 
   return useCustomClient<postApiLeadProtectionPolicyResponse>(getPostApiLeadProtectionPolicyUrl(),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(createLeadProtectionPolicyDto)
   }
 );}
 
@@ -309,8 +313,8 @@ export const postApiLeadProtectionPolicy = async ( options?: RequestInit): Promi
 
 
 export const getPostApiLeadProtectionPolicyMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiLeadProtectionPolicy>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiLeadProtectionPolicy>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiLeadProtectionPolicy>>, TError,{data: BodyType<CreateLeadProtectionPolicyDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiLeadProtectionPolicy>>, TError,{data: BodyType<CreateLeadProtectionPolicyDto>}, TContext> => {
 
 const mutationKey = ['postApiLeadProtectionPolicy'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -322,10 +326,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiLeadProtectionPolicy>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiLeadProtectionPolicy>>, {data: BodyType<CreateLeadProtectionPolicyDto>}> = (props) => {
+          const {data} = props ?? {};
 
-
-          return  postApiLeadProtectionPolicy(requestOptions)
+          return  postApiLeadProtectionPolicy(data,requestOptions)
         }
 
 
@@ -336,33 +340,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiLeadProtectionPolicyMutationResult = NonNullable<Awaited<ReturnType<typeof postApiLeadProtectionPolicy>>>
-
+    export type PostApiLeadProtectionPolicyMutationBody = BodyType<CreateLeadProtectionPolicyDto>
     export type PostApiLeadProtectionPolicyMutationError = ErrorType<unknown>
 
     /**
  * @summary Create a lead protection policy
  */
 export const usePostApiLeadProtectionPolicy = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiLeadProtectionPolicy>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiLeadProtectionPolicy>>, TError,{data: BodyType<CreateLeadProtectionPolicyDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiLeadProtectionPolicy>>,
         TError,
-        void,
+        {data: BodyType<CreateLeadProtectionPolicyDto>},
         TContext
       > => {
       return useMutation(getPostApiLeadProtectionPolicyMutationOptions(options), queryClient);
     }
-    export type getApiLeadProtectionPolicyIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiLeadProtectionPolicyIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiLeadProtectionPolicyIdResponseSuccess = (getApiLeadProtectionPolicyIdResponse200) & {
+;
+export type getApiLeadProtectionPolicyIdResponseError = (getApiLeadProtectionPolicyIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiLeadProtectionPolicyIdResponse = (getApiLeadProtectionPolicyIdResponseSuccess)
+export type getApiLeadProtectionPolicyIdResponse = (getApiLeadProtectionPolicyIdResponseError)
 
 export const getGetApiLeadProtectionPolicyIdUrl = (id: string,) => {
 
@@ -565,17 +569,17 @@ export const prefetchGetApiLeadProtectionPolicyIdQuery = async <TData = Awaited<
 
 
 
-export type patchApiLeadProtectionPolicyResponse200 = {
-  data: void
-  status: 200
+export type patchApiLeadProtectionPolicyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiLeadProtectionPolicyResponseSuccess = (patchApiLeadProtectionPolicyResponse200) & {
+;
+export type patchApiLeadProtectionPolicyResponseError = (patchApiLeadProtectionPolicyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiLeadProtectionPolicyResponse = (patchApiLeadProtectionPolicyResponseSuccess)
+export type patchApiLeadProtectionPolicyResponse = (patchApiLeadProtectionPolicyResponseError)
 
 export const getPatchApiLeadProtectionPolicyUrl = (id: string,) => {
 
@@ -588,14 +592,15 @@ export const getPatchApiLeadProtectionPolicyUrl = (id: string,) => {
 /**
  * @summary Update a lead protection policy
  */
-export const patchApiLeadProtectionPolicy = async (id: string, options?: RequestInit): Promise<patchApiLeadProtectionPolicyResponse> => {
+export const patchApiLeadProtectionPolicy = async (id: string,
+    updateLeadProtectionPolicyDto: UpdateLeadProtectionPolicyDto, options?: RequestInit): Promise<patchApiLeadProtectionPolicyResponse> => {
 
   return useCustomClient<patchApiLeadProtectionPolicyResponse>(getPatchApiLeadProtectionPolicyUrl(id),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateLeadProtectionPolicyDto)
   }
 );}
 
@@ -604,8 +609,8 @@ export const patchApiLeadProtectionPolicy = async (id: string, options?: Request
 
 
 export const getPatchApiLeadProtectionPolicyMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiLeadProtectionPolicy>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiLeadProtectionPolicy>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiLeadProtectionPolicy>>, TError,{id: string;data: BodyType<UpdateLeadProtectionPolicyDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiLeadProtectionPolicy>>, TError,{id: string;data: BodyType<UpdateLeadProtectionPolicyDto>}, TContext> => {
 
 const mutationKey = ['patchApiLeadProtectionPolicy'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -617,10 +622,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiLeadProtectionPolicy>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiLeadProtectionPolicy>>, {id: string;data: BodyType<UpdateLeadProtectionPolicyDto>}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiLeadProtectionPolicy(id,requestOptions)
+          return  patchApiLeadProtectionPolicy(id,data,requestOptions)
         }
 
 
@@ -631,33 +636,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiLeadProtectionPolicyMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiLeadProtectionPolicy>>>
-
+    export type PatchApiLeadProtectionPolicyMutationBody = BodyType<UpdateLeadProtectionPolicyDto>
     export type PatchApiLeadProtectionPolicyMutationError = ErrorType<unknown>
 
     /**
  * @summary Update a lead protection policy
  */
 export const usePatchApiLeadProtectionPolicy = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiLeadProtectionPolicy>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiLeadProtectionPolicy>>, TError,{id: string;data: BodyType<UpdateLeadProtectionPolicyDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiLeadProtectionPolicy>>,
         TError,
-        {id: string},
+        {id: string;data: BodyType<UpdateLeadProtectionPolicyDto>},
         TContext
       > => {
       return useMutation(getPatchApiLeadProtectionPolicyMutationOptions(options), queryClient);
     }
-    export type deleteApiLeadProtectionPolicyResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiLeadProtectionPolicyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiLeadProtectionPolicyResponseSuccess = (deleteApiLeadProtectionPolicyResponse200) & {
+;
+export type deleteApiLeadProtectionPolicyResponseError = (deleteApiLeadProtectionPolicyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiLeadProtectionPolicyResponse = (deleteApiLeadProtectionPolicyResponseSuccess)
+export type deleteApiLeadProtectionPolicyResponse = (deleteApiLeadProtectionPolicyResponseError)
 
 export const getDeleteApiLeadProtectionPolicyUrl = (id: string,) => {
 
@@ -729,17 +734,17 @@ export const useDeleteApiLeadProtectionPolicy = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getDeleteApiLeadProtectionPolicyMutationOptions(options), queryClient);
     }
-    export type getApiCheckLeadProtectionResponse200 = {
-  data: void
-  status: 200
+    export type getApiCheckLeadProtectionResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiCheckLeadProtectionResponseSuccess = (getApiCheckLeadProtectionResponse200) & {
+;
+export type getApiCheckLeadProtectionResponseError = (getApiCheckLeadProtectionResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiCheckLeadProtectionResponse = (getApiCheckLeadProtectionResponseSuccess)
+export type getApiCheckLeadProtectionResponse = (getApiCheckLeadProtectionResponseError)
 
 export const getGetApiCheckLeadProtectionUrl = (leadId: string,) => {
 
@@ -942,17 +947,17 @@ export const prefetchGetApiCheckLeadProtectionQuery = async <TData = Awaited<Ret
 
 
 
-export type postApiLeadDisputeResponse201 = {
-  data: void
-  status: 201
+export type postApiLeadDisputeResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiLeadDisputeResponseSuccess = (postApiLeadDisputeResponse201) & {
+;
+export type postApiLeadDisputeResponseError = (postApiLeadDisputeResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiLeadDisputeResponse = (postApiLeadDisputeResponseSuccess)
+export type postApiLeadDisputeResponse = (postApiLeadDisputeResponseError)
 
 export const getPostApiLeadDisputeUrl = () => {
 
@@ -965,14 +970,14 @@ export const getPostApiLeadDisputeUrl = () => {
 /**
  * @summary Create a lead dispute
  */
-export const postApiLeadDispute = async ( options?: RequestInit): Promise<postApiLeadDisputeResponse> => {
+export const postApiLeadDispute = async (createLeadDisputeDto: CreateLeadDisputeDto, options?: RequestInit): Promise<postApiLeadDisputeResponse> => {
 
   return useCustomClient<postApiLeadDisputeResponse>(getPostApiLeadDisputeUrl(),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(createLeadDisputeDto)
   }
 );}
 
@@ -981,8 +986,8 @@ export const postApiLeadDispute = async ( options?: RequestInit): Promise<postAp
 
 
 export const getPostApiLeadDisputeMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiLeadDispute>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiLeadDispute>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiLeadDispute>>, TError,{data: BodyType<CreateLeadDisputeDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiLeadDispute>>, TError,{data: BodyType<CreateLeadDisputeDto>}, TContext> => {
 
 const mutationKey = ['postApiLeadDispute'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -994,10 +999,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiLeadDispute>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiLeadDispute>>, {data: BodyType<CreateLeadDisputeDto>}> = (props) => {
+          const {data} = props ?? {};
 
-
-          return  postApiLeadDispute(requestOptions)
+          return  postApiLeadDispute(data,requestOptions)
         }
 
 
@@ -1008,35 +1013,35 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiLeadDisputeMutationResult = NonNullable<Awaited<ReturnType<typeof postApiLeadDispute>>>
-
+    export type PostApiLeadDisputeMutationBody = BodyType<CreateLeadDisputeDto>
     export type PostApiLeadDisputeMutationError = ErrorType<unknown>
 
     /**
  * @summary Create a lead dispute
  */
 export const usePostApiLeadDispute = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiLeadDispute>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiLeadDispute>>, TError,{data: BodyType<CreateLeadDisputeDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiLeadDispute>>,
         TError,
-        void,
+        {data: BodyType<CreateLeadDisputeDto>},
         TContext
       > => {
       return useMutation(getPostApiLeadDisputeMutationOptions(options), queryClient);
     }
-    export type getApiLeadDisputesResponse200 = {
-  data: void
-  status: 200
+    export type getApiLeadDisputesResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiLeadDisputesResponseSuccess = (getApiLeadDisputesResponse200) & {
+;
+export type getApiLeadDisputesResponseError = (getApiLeadDisputesResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiLeadDisputesResponse = (getApiLeadDisputesResponseSuccess)
+export type getApiLeadDisputesResponse = (getApiLeadDisputesResponseError)
 
-export const getGetApiLeadDisputesUrl = (params: GetApiLeadDisputesParams,) => {
+export const getGetApiLeadDisputesUrl = (params?: GetApiLeadDisputesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -1054,7 +1059,7 @@ export const getGetApiLeadDisputesUrl = (params: GetApiLeadDisputesParams,) => {
 /**
  * @summary List lead disputes
  */
-export const getApiLeadDisputes = async (params: GetApiLeadDisputesParams, options?: RequestInit): Promise<getApiLeadDisputesResponse> => {
+export const getApiLeadDisputes = async (params?: GetApiLeadDisputesParams, options?: RequestInit): Promise<getApiLeadDisputesResponse> => {
 
   return useCustomClient<getApiLeadDisputesResponse>(getGetApiLeadDisputesUrl(params),
   {
@@ -1082,7 +1087,7 @@ export const getGetApiLeadDisputesQueryKey = (params?: GetApiLeadDisputesParams,
     }
 
 
-export const getGetApiLeadDisputesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadDisputes>>>, TError = ErrorType<unknown>>(params: GetApiLeadDisputesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiLeadDisputesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadDisputes>>>, TError = ErrorType<unknown>>(params?: GetApiLeadDisputesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1105,7 +1110,7 @@ export type GetApiLeadDisputesInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiLeadDisputesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadDisputes>>>, TError = ErrorType<unknown>>(
- params: GetApiLeadDisputesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>> & Pick<
+ params: undefined |  GetApiLeadDisputesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiLeadDisputes>>,
           TError,
@@ -1115,7 +1120,7 @@ export function useGetApiLeadDisputesInfinite<TData = InfiniteData<Awaited<Retur
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiLeadDisputesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadDisputes>>>, TError = ErrorType<unknown>>(
- params: GetApiLeadDisputesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>> & Pick<
+ params?: GetApiLeadDisputesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiLeadDisputes>>,
           TError,
@@ -1125,7 +1130,7 @@ export function useGetApiLeadDisputesInfinite<TData = InfiniteData<Awaited<Retur
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiLeadDisputesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadDisputes>>>, TError = ErrorType<unknown>>(
- params: GetApiLeadDisputesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiLeadDisputesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1133,7 +1138,7 @@ export function useGetApiLeadDisputesInfinite<TData = InfiniteData<Awaited<Retur
  */
 
 export function useGetApiLeadDisputesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadDisputes>>>, TError = ErrorType<unknown>>(
- params: GetApiLeadDisputesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiLeadDisputesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1148,7 +1153,7 @@ export function useGetApiLeadDisputesInfinite<TData = InfiniteData<Awaited<Retur
  * @summary List lead disputes
  */
 export const prefetchGetApiLeadDisputesInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiLeadDisputes>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiLeadDisputesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiLeadDisputesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -1163,7 +1168,7 @@ export const prefetchGetApiLeadDisputesInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getGetApiLeadDisputesQueryOptions = <TData = Awaited<ReturnType<typeof getApiLeadDisputes>>, TError = ErrorType<unknown>>(params: GetApiLeadDisputesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiLeadDisputesQueryOptions = <TData = Awaited<ReturnType<typeof getApiLeadDisputes>>, TError = ErrorType<unknown>>(params?: GetApiLeadDisputesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1186,7 +1191,7 @@ export type GetApiLeadDisputesQueryError = ErrorType<unknown>
 
 
 export function useGetApiLeadDisputes<TData = Awaited<ReturnType<typeof getApiLeadDisputes>>, TError = ErrorType<unknown>>(
- params: GetApiLeadDisputesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>> & Pick<
+ params: undefined |  GetApiLeadDisputesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiLeadDisputes>>,
           TError,
@@ -1196,7 +1201,7 @@ export function useGetApiLeadDisputes<TData = Awaited<ReturnType<typeof getApiLe
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiLeadDisputes<TData = Awaited<ReturnType<typeof getApiLeadDisputes>>, TError = ErrorType<unknown>>(
- params: GetApiLeadDisputesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>> & Pick<
+ params?: GetApiLeadDisputesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiLeadDisputes>>,
           TError,
@@ -1206,7 +1211,7 @@ export function useGetApiLeadDisputes<TData = Awaited<ReturnType<typeof getApiLe
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiLeadDisputes<TData = Awaited<ReturnType<typeof getApiLeadDisputes>>, TError = ErrorType<unknown>>(
- params: GetApiLeadDisputesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiLeadDisputesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1214,7 +1219,7 @@ export function useGetApiLeadDisputes<TData = Awaited<ReturnType<typeof getApiLe
  */
 
 export function useGetApiLeadDisputes<TData = Awaited<ReturnType<typeof getApiLeadDisputes>>, TError = ErrorType<unknown>>(
- params: GetApiLeadDisputesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiLeadDisputesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1229,7 +1234,7 @@ export function useGetApiLeadDisputes<TData = Awaited<ReturnType<typeof getApiLe
  * @summary List lead disputes
  */
 export const prefetchGetApiLeadDisputesQuery = async <TData = Awaited<ReturnType<typeof getApiLeadDisputes>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiLeadDisputesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiLeadDisputesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadDisputes>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -1244,17 +1249,17 @@ export const prefetchGetApiLeadDisputesQuery = async <TData = Awaited<ReturnType
 
 
 
-export type patchApiResolveLeadDisputeResponse200 = {
-  data: void
-  status: 200
+export type patchApiResolveLeadDisputeResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiResolveLeadDisputeResponseSuccess = (patchApiResolveLeadDisputeResponse200) & {
+;
+export type patchApiResolveLeadDisputeResponseError = (patchApiResolveLeadDisputeResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiResolveLeadDisputeResponse = (patchApiResolveLeadDisputeResponseSuccess)
+export type patchApiResolveLeadDisputeResponse = (patchApiResolveLeadDisputeResponseError)
 
 export const getPatchApiResolveLeadDisputeUrl = (id: string,) => {
 
@@ -1267,14 +1272,15 @@ export const getPatchApiResolveLeadDisputeUrl = (id: string,) => {
 /**
  * @summary Resolve or reject a lead dispute
  */
-export const patchApiResolveLeadDispute = async (id: string, options?: RequestInit): Promise<patchApiResolveLeadDisputeResponse> => {
+export const patchApiResolveLeadDispute = async (id: string,
+    resolveLeadDisputeDto: ResolveLeadDisputeDto, options?: RequestInit): Promise<patchApiResolveLeadDisputeResponse> => {
 
   return useCustomClient<patchApiResolveLeadDisputeResponse>(getPatchApiResolveLeadDisputeUrl(id),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(resolveLeadDisputeDto)
   }
 );}
 
@@ -1283,8 +1289,8 @@ export const patchApiResolveLeadDispute = async (id: string, options?: RequestIn
 
 
 export const getPatchApiResolveLeadDisputeMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiResolveLeadDispute>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiResolveLeadDispute>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiResolveLeadDispute>>, TError,{id: string;data: BodyType<ResolveLeadDisputeDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiResolveLeadDispute>>, TError,{id: string;data: BodyType<ResolveLeadDisputeDto>}, TContext> => {
 
 const mutationKey = ['patchApiResolveLeadDispute'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1296,10 +1302,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiResolveLeadDispute>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiResolveLeadDispute>>, {id: string;data: BodyType<ResolveLeadDisputeDto>}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiResolveLeadDispute(id,requestOptions)
+          return  patchApiResolveLeadDispute(id,data,requestOptions)
         }
 
 
@@ -1310,18 +1316,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiResolveLeadDisputeMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiResolveLeadDispute>>>
-
+    export type PatchApiResolveLeadDisputeMutationBody = BodyType<ResolveLeadDisputeDto>
     export type PatchApiResolveLeadDisputeMutationError = ErrorType<unknown>
 
     /**
  * @summary Resolve or reject a lead dispute
  */
 export const usePatchApiResolveLeadDispute = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiResolveLeadDispute>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiResolveLeadDispute>>, TError,{id: string;data: BodyType<ResolveLeadDisputeDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiResolveLeadDispute>>,
         TError,
-        {id: string},
+        {id: string;data: BodyType<ResolveLeadDisputeDto>},
         TContext
       > => {
       return useMutation(getPatchApiResolveLeadDisputeMutationOptions(options), queryClient);

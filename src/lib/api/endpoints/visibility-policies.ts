@@ -30,11 +30,14 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  GetApiVisibilityPoliciesParams
+  AddVisibilityRuleDto,
+  CreateVisibilityPolicyDto,
+  GetApiVisibilityPoliciesParams,
+  UpdateVisibilityPolicyDto
 } from '../models';
 
 import { useCustomClient } from '../mutator/custom-client';
-import type { ErrorType } from '../mutator/custom-client';
+import type { ErrorType , BodyType } from '../mutator/custom-client';
 
 
 
@@ -57,19 +60,19 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiVisibilityPoliciesResponse200 = {
-  data: void
-  status: 200
+export type getApiVisibilityPoliciesResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiVisibilityPoliciesResponseSuccess = (getApiVisibilityPoliciesResponse200) & {
+;
+export type getApiVisibilityPoliciesResponseError = (getApiVisibilityPoliciesResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiVisibilityPoliciesResponse = (getApiVisibilityPoliciesResponseSuccess)
+export type getApiVisibilityPoliciesResponse = (getApiVisibilityPoliciesResponseError)
 
-export const getGetApiVisibilityPoliciesUrl = (params: GetApiVisibilityPoliciesParams,) => {
+export const getGetApiVisibilityPoliciesUrl = (params?: GetApiVisibilityPoliciesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -87,7 +90,7 @@ export const getGetApiVisibilityPoliciesUrl = (params: GetApiVisibilityPoliciesP
 /**
  * @summary List visibility policies
  */
-export const getApiVisibilityPolicies = async (params: GetApiVisibilityPoliciesParams, options?: RequestInit): Promise<getApiVisibilityPoliciesResponse> => {
+export const getApiVisibilityPolicies = async (params?: GetApiVisibilityPoliciesParams, options?: RequestInit): Promise<getApiVisibilityPoliciesResponse> => {
 
   return useCustomClient<getApiVisibilityPoliciesResponse>(getGetApiVisibilityPoliciesUrl(params),
   {
@@ -115,7 +118,7 @@ export const getGetApiVisibilityPoliciesQueryKey = (params?: GetApiVisibilityPol
     }
 
 
-export const getGetApiVisibilityPoliciesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiVisibilityPolicies>>>, TError = ErrorType<unknown>>(params: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiVisibilityPoliciesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiVisibilityPolicies>>>, TError = ErrorType<unknown>>(params?: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -138,7 +141,7 @@ export type GetApiVisibilityPoliciesInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiVisibilityPoliciesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiVisibilityPolicies>>>, TError = ErrorType<unknown>>(
- params: GetApiVisibilityPoliciesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>> & Pick<
+ params: undefined |  GetApiVisibilityPoliciesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiVisibilityPolicies>>,
           TError,
@@ -148,7 +151,7 @@ export function useGetApiVisibilityPoliciesInfinite<TData = InfiniteData<Awaited
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiVisibilityPoliciesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiVisibilityPolicies>>>, TError = ErrorType<unknown>>(
- params: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>> & Pick<
+ params?: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiVisibilityPolicies>>,
           TError,
@@ -158,7 +161,7 @@ export function useGetApiVisibilityPoliciesInfinite<TData = InfiniteData<Awaited
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiVisibilityPoliciesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiVisibilityPolicies>>>, TError = ErrorType<unknown>>(
- params: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -166,7 +169,7 @@ export function useGetApiVisibilityPoliciesInfinite<TData = InfiniteData<Awaited
  */
 
 export function useGetApiVisibilityPoliciesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiVisibilityPolicies>>>, TError = ErrorType<unknown>>(
- params: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -181,7 +184,7 @@ export function useGetApiVisibilityPoliciesInfinite<TData = InfiniteData<Awaited
  * @summary List visibility policies
  */
 export const prefetchGetApiVisibilityPoliciesInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -196,7 +199,7 @@ export const prefetchGetApiVisibilityPoliciesInfiniteQuery = async <TData = Awai
 
 
 
-export const getGetApiVisibilityPoliciesQueryOptions = <TData = Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError = ErrorType<unknown>>(params: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiVisibilityPoliciesQueryOptions = <TData = Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError = ErrorType<unknown>>(params?: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -219,7 +222,7 @@ export type GetApiVisibilityPoliciesQueryError = ErrorType<unknown>
 
 
 export function useGetApiVisibilityPolicies<TData = Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError = ErrorType<unknown>>(
- params: GetApiVisibilityPoliciesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>> & Pick<
+ params: undefined |  GetApiVisibilityPoliciesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiVisibilityPolicies>>,
           TError,
@@ -229,7 +232,7 @@ export function useGetApiVisibilityPolicies<TData = Awaited<ReturnType<typeof ge
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiVisibilityPolicies<TData = Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError = ErrorType<unknown>>(
- params: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>> & Pick<
+ params?: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiVisibilityPolicies>>,
           TError,
@@ -239,7 +242,7 @@ export function useGetApiVisibilityPolicies<TData = Awaited<ReturnType<typeof ge
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiVisibilityPolicies<TData = Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError = ErrorType<unknown>>(
- params: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -247,7 +250,7 @@ export function useGetApiVisibilityPolicies<TData = Awaited<ReturnType<typeof ge
  */
 
 export function useGetApiVisibilityPolicies<TData = Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError = ErrorType<unknown>>(
- params: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -262,7 +265,7 @@ export function useGetApiVisibilityPolicies<TData = Awaited<ReturnType<typeof ge
  * @summary List visibility policies
  */
 export const prefetchGetApiVisibilityPoliciesQuery = async <TData = Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiVisibilityPoliciesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVisibilityPolicies>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -277,17 +280,17 @@ export const prefetchGetApiVisibilityPoliciesQuery = async <TData = Awaited<Retu
 
 
 
-export type postApiVisibilityPolicyResponse201 = {
-  data: void
-  status: 201
+export type postApiVisibilityPolicyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiVisibilityPolicyResponseSuccess = (postApiVisibilityPolicyResponse201) & {
+;
+export type postApiVisibilityPolicyResponseError = (postApiVisibilityPolicyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiVisibilityPolicyResponse = (postApiVisibilityPolicyResponseSuccess)
+export type postApiVisibilityPolicyResponse = (postApiVisibilityPolicyResponseError)
 
 export const getPostApiVisibilityPolicyUrl = () => {
 
@@ -300,14 +303,14 @@ export const getPostApiVisibilityPolicyUrl = () => {
 /**
  * @summary Create a visibility policy with rules
  */
-export const postApiVisibilityPolicy = async ( options?: RequestInit): Promise<postApiVisibilityPolicyResponse> => {
+export const postApiVisibilityPolicy = async (createVisibilityPolicyDto: CreateVisibilityPolicyDto, options?: RequestInit): Promise<postApiVisibilityPolicyResponse> => {
 
   return useCustomClient<postApiVisibilityPolicyResponse>(getPostApiVisibilityPolicyUrl(),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(createVisibilityPolicyDto)
   }
 );}
 
@@ -316,8 +319,8 @@ export const postApiVisibilityPolicy = async ( options?: RequestInit): Promise<p
 
 
 export const getPostApiVisibilityPolicyMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVisibilityPolicy>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiVisibilityPolicy>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVisibilityPolicy>>, TError,{data: BodyType<CreateVisibilityPolicyDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiVisibilityPolicy>>, TError,{data: BodyType<CreateVisibilityPolicyDto>}, TContext> => {
 
 const mutationKey = ['postApiVisibilityPolicy'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -329,10 +332,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiVisibilityPolicy>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiVisibilityPolicy>>, {data: BodyType<CreateVisibilityPolicyDto>}> = (props) => {
+          const {data} = props ?? {};
 
-
-          return  postApiVisibilityPolicy(requestOptions)
+          return  postApiVisibilityPolicy(data,requestOptions)
         }
 
 
@@ -343,33 +346,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiVisibilityPolicyMutationResult = NonNullable<Awaited<ReturnType<typeof postApiVisibilityPolicy>>>
-
+    export type PostApiVisibilityPolicyMutationBody = BodyType<CreateVisibilityPolicyDto>
     export type PostApiVisibilityPolicyMutationError = ErrorType<unknown>
 
     /**
  * @summary Create a visibility policy with rules
  */
 export const usePostApiVisibilityPolicy = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVisibilityPolicy>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVisibilityPolicy>>, TError,{data: BodyType<CreateVisibilityPolicyDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiVisibilityPolicy>>,
         TError,
-        void,
+        {data: BodyType<CreateVisibilityPolicyDto>},
         TContext
       > => {
       return useMutation(getPostApiVisibilityPolicyMutationOptions(options), queryClient);
     }
-    export type getApiVisibilityPolicyIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiVisibilityPolicyIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiVisibilityPolicyIdResponseSuccess = (getApiVisibilityPolicyIdResponse200) & {
+;
+export type getApiVisibilityPolicyIdResponseError = (getApiVisibilityPolicyIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiVisibilityPolicyIdResponse = (getApiVisibilityPolicyIdResponseSuccess)
+export type getApiVisibilityPolicyIdResponse = (getApiVisibilityPolicyIdResponseError)
 
 export const getGetApiVisibilityPolicyIdUrl = (id: string,) => {
 
@@ -572,17 +575,17 @@ export const prefetchGetApiVisibilityPolicyIdQuery = async <TData = Awaited<Retu
 
 
 
-export type patchApiVisibilityPolicyResponse200 = {
-  data: void
-  status: 200
+export type patchApiVisibilityPolicyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiVisibilityPolicyResponseSuccess = (patchApiVisibilityPolicyResponse200) & {
+;
+export type patchApiVisibilityPolicyResponseError = (patchApiVisibilityPolicyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiVisibilityPolicyResponse = (patchApiVisibilityPolicyResponseSuccess)
+export type patchApiVisibilityPolicyResponse = (patchApiVisibilityPolicyResponseError)
 
 export const getPatchApiVisibilityPolicyUrl = (id: string,) => {
 
@@ -595,14 +598,15 @@ export const getPatchApiVisibilityPolicyUrl = (id: string,) => {
 /**
  * @summary Update a visibility policy
  */
-export const patchApiVisibilityPolicy = async (id: string, options?: RequestInit): Promise<patchApiVisibilityPolicyResponse> => {
+export const patchApiVisibilityPolicy = async (id: string,
+    updateVisibilityPolicyDto: UpdateVisibilityPolicyDto, options?: RequestInit): Promise<patchApiVisibilityPolicyResponse> => {
 
   return useCustomClient<patchApiVisibilityPolicyResponse>(getPatchApiVisibilityPolicyUrl(id),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateVisibilityPolicyDto)
   }
 );}
 
@@ -611,8 +615,8 @@ export const patchApiVisibilityPolicy = async (id: string, options?: RequestInit
 
 
 export const getPatchApiVisibilityPolicyMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiVisibilityPolicy>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiVisibilityPolicy>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiVisibilityPolicy>>, TError,{id: string;data: BodyType<UpdateVisibilityPolicyDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiVisibilityPolicy>>, TError,{id: string;data: BodyType<UpdateVisibilityPolicyDto>}, TContext> => {
 
 const mutationKey = ['patchApiVisibilityPolicy'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -624,10 +628,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiVisibilityPolicy>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiVisibilityPolicy>>, {id: string;data: BodyType<UpdateVisibilityPolicyDto>}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiVisibilityPolicy(id,requestOptions)
+          return  patchApiVisibilityPolicy(id,data,requestOptions)
         }
 
 
@@ -638,33 +642,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiVisibilityPolicyMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiVisibilityPolicy>>>
-
+    export type PatchApiVisibilityPolicyMutationBody = BodyType<UpdateVisibilityPolicyDto>
     export type PatchApiVisibilityPolicyMutationError = ErrorType<unknown>
 
     /**
  * @summary Update a visibility policy
  */
 export const usePatchApiVisibilityPolicy = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiVisibilityPolicy>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiVisibilityPolicy>>, TError,{id: string;data: BodyType<UpdateVisibilityPolicyDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiVisibilityPolicy>>,
         TError,
-        {id: string},
+        {id: string;data: BodyType<UpdateVisibilityPolicyDto>},
         TContext
       > => {
       return useMutation(getPatchApiVisibilityPolicyMutationOptions(options), queryClient);
     }
-    export type deleteApiVisibilityPolicyResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiVisibilityPolicyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiVisibilityPolicyResponseSuccess = (deleteApiVisibilityPolicyResponse200) & {
+;
+export type deleteApiVisibilityPolicyResponseError = (deleteApiVisibilityPolicyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiVisibilityPolicyResponse = (deleteApiVisibilityPolicyResponseSuccess)
+export type deleteApiVisibilityPolicyResponse = (deleteApiVisibilityPolicyResponseError)
 
 export const getDeleteApiVisibilityPolicyUrl = (id: string,) => {
 
@@ -736,17 +740,17 @@ export const useDeleteApiVisibilityPolicy = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getDeleteApiVisibilityPolicyMutationOptions(options), queryClient);
     }
-    export type postApiVisibilityRuleResponse201 = {
-  data: void
-  status: 201
+    export type postApiVisibilityRuleResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiVisibilityRuleResponseSuccess = (postApiVisibilityRuleResponse201) & {
+;
+export type postApiVisibilityRuleResponseError = (postApiVisibilityRuleResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiVisibilityRuleResponse = (postApiVisibilityRuleResponseSuccess)
+export type postApiVisibilityRuleResponse = (postApiVisibilityRuleResponseError)
 
 export const getPostApiVisibilityRuleUrl = (id: string,) => {
 
@@ -759,14 +763,15 @@ export const getPostApiVisibilityRuleUrl = (id: string,) => {
 /**
  * @summary Add a field visibility rule to a policy
  */
-export const postApiVisibilityRule = async (id: string, options?: RequestInit): Promise<postApiVisibilityRuleResponse> => {
+export const postApiVisibilityRule = async (id: string,
+    addVisibilityRuleDto: AddVisibilityRuleDto, options?: RequestInit): Promise<postApiVisibilityRuleResponse> => {
 
   return useCustomClient<postApiVisibilityRuleResponse>(getPostApiVisibilityRuleUrl(id),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(addVisibilityRuleDto)
   }
 );}
 
@@ -775,8 +780,8 @@ export const postApiVisibilityRule = async (id: string, options?: RequestInit): 
 
 
 export const getPostApiVisibilityRuleMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVisibilityRule>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiVisibilityRule>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVisibilityRule>>, TError,{id: string;data: BodyType<AddVisibilityRuleDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiVisibilityRule>>, TError,{id: string;data: BodyType<AddVisibilityRuleDto>}, TContext> => {
 
 const mutationKey = ['postApiVisibilityRule'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -788,10 +793,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiVisibilityRule>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiVisibilityRule>>, {id: string;data: BodyType<AddVisibilityRuleDto>}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  postApiVisibilityRule(id,requestOptions)
+          return  postApiVisibilityRule(id,data,requestOptions)
         }
 
 
@@ -802,33 +807,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiVisibilityRuleMutationResult = NonNullable<Awaited<ReturnType<typeof postApiVisibilityRule>>>
-
+    export type PostApiVisibilityRuleMutationBody = BodyType<AddVisibilityRuleDto>
     export type PostApiVisibilityRuleMutationError = ErrorType<unknown>
 
     /**
  * @summary Add a field visibility rule to a policy
  */
 export const usePostApiVisibilityRule = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVisibilityRule>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVisibilityRule>>, TError,{id: string;data: BodyType<AddVisibilityRuleDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiVisibilityRule>>,
         TError,
-        {id: string},
+        {id: string;data: BodyType<AddVisibilityRuleDto>},
         TContext
       > => {
       return useMutation(getPostApiVisibilityRuleMutationOptions(options), queryClient);
     }
-    export type deleteApiVisibilityRuleResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiVisibilityRuleResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiVisibilityRuleResponseSuccess = (deleteApiVisibilityRuleResponse200) & {
+;
+export type deleteApiVisibilityRuleResponseError = (deleteApiVisibilityRuleResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiVisibilityRuleResponse = (deleteApiVisibilityRuleResponseSuccess)
+export type deleteApiVisibilityRuleResponse = (deleteApiVisibilityRuleResponseError)
 
 export const getDeleteApiVisibilityRuleUrl = (ruleId: string,) => {
 

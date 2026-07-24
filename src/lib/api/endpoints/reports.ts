@@ -55,19 +55,19 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiSalesReportResponse200 = {
-  data: void
-  status: 200
+export type getApiSalesReportResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiSalesReportResponseSuccess = (getApiSalesReportResponse200) & {
+;
+export type getApiSalesReportResponseError = (getApiSalesReportResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiSalesReportResponse = (getApiSalesReportResponseSuccess)
+export type getApiSalesReportResponse = (getApiSalesReportResponseError)
 
-export const getGetApiSalesReportUrl = (params: GetApiSalesReportParams,) => {
+export const getGetApiSalesReportUrl = (params?: GetApiSalesReportParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -85,7 +85,7 @@ export const getGetApiSalesReportUrl = (params: GetApiSalesReportParams,) => {
 /**
  * @summary Sales summary report (deals, leads, appointments, reservations)
  */
-export const getApiSalesReport = async (params: GetApiSalesReportParams, options?: RequestInit): Promise<getApiSalesReportResponse> => {
+export const getApiSalesReport = async (params?: GetApiSalesReportParams, options?: RequestInit): Promise<getApiSalesReportResponse> => {
 
   return useCustomClient<getApiSalesReportResponse>(getGetApiSalesReportUrl(params),
   {
@@ -113,7 +113,7 @@ export const getGetApiSalesReportQueryKey = (params?: GetApiSalesReportParams,) 
     }
 
 
-export const getGetApiSalesReportInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiSalesReport>>>, TError = ErrorType<unknown>>(params: GetApiSalesReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiSalesReportInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiSalesReport>>>, TError = ErrorType<unknown>>(params?: GetApiSalesReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -136,7 +136,7 @@ export type GetApiSalesReportInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiSalesReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSalesReport>>>, TError = ErrorType<unknown>>(
- params: GetApiSalesReportParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>> & Pick<
+ params: undefined |  GetApiSalesReportParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSalesReport>>,
           TError,
@@ -146,7 +146,7 @@ export function useGetApiSalesReportInfinite<TData = InfiniteData<Awaited<Return
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSalesReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSalesReport>>>, TError = ErrorType<unknown>>(
- params: GetApiSalesReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>> & Pick<
+ params?: GetApiSalesReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSalesReport>>,
           TError,
@@ -156,7 +156,7 @@ export function useGetApiSalesReportInfinite<TData = InfiniteData<Awaited<Return
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSalesReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSalesReport>>>, TError = ErrorType<unknown>>(
- params: GetApiSalesReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiSalesReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -164,7 +164,7 @@ export function useGetApiSalesReportInfinite<TData = InfiniteData<Awaited<Return
  */
 
 export function useGetApiSalesReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSalesReport>>>, TError = ErrorType<unknown>>(
- params: GetApiSalesReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiSalesReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -179,7 +179,7 @@ export function useGetApiSalesReportInfinite<TData = InfiniteData<Awaited<Return
  * @summary Sales summary report (deals, leads, appointments, reservations)
  */
 export const prefetchGetApiSalesReportInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiSalesReport>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiSalesReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiSalesReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -194,7 +194,7 @@ export const prefetchGetApiSalesReportInfiniteQuery = async <TData = Awaited<Ret
 
 
 
-export const getGetApiSalesReportQueryOptions = <TData = Awaited<ReturnType<typeof getApiSalesReport>>, TError = ErrorType<unknown>>(params: GetApiSalesReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiSalesReportQueryOptions = <TData = Awaited<ReturnType<typeof getApiSalesReport>>, TError = ErrorType<unknown>>(params?: GetApiSalesReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -217,7 +217,7 @@ export type GetApiSalesReportQueryError = ErrorType<unknown>
 
 
 export function useGetApiSalesReport<TData = Awaited<ReturnType<typeof getApiSalesReport>>, TError = ErrorType<unknown>>(
- params: GetApiSalesReportParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>> & Pick<
+ params: undefined |  GetApiSalesReportParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSalesReport>>,
           TError,
@@ -227,7 +227,7 @@ export function useGetApiSalesReport<TData = Awaited<ReturnType<typeof getApiSal
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSalesReport<TData = Awaited<ReturnType<typeof getApiSalesReport>>, TError = ErrorType<unknown>>(
- params: GetApiSalesReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>> & Pick<
+ params?: GetApiSalesReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSalesReport>>,
           TError,
@@ -237,7 +237,7 @@ export function useGetApiSalesReport<TData = Awaited<ReturnType<typeof getApiSal
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSalesReport<TData = Awaited<ReturnType<typeof getApiSalesReport>>, TError = ErrorType<unknown>>(
- params: GetApiSalesReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiSalesReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -245,7 +245,7 @@ export function useGetApiSalesReport<TData = Awaited<ReturnType<typeof getApiSal
  */
 
 export function useGetApiSalesReport<TData = Awaited<ReturnType<typeof getApiSalesReport>>, TError = ErrorType<unknown>>(
- params: GetApiSalesReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiSalesReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -260,7 +260,7 @@ export function useGetApiSalesReport<TData = Awaited<ReturnType<typeof getApiSal
  * @summary Sales summary report (deals, leads, appointments, reservations)
  */
 export const prefetchGetApiSalesReportQuery = async <TData = Awaited<ReturnType<typeof getApiSalesReport>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiSalesReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiSalesReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSalesReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -275,19 +275,19 @@ export const prefetchGetApiSalesReportQuery = async <TData = Awaited<ReturnType<
 
 
 
-export type getApiCommissionReportResponse200 = {
-  data: void
-  status: 200
+export type getApiCommissionReportResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiCommissionReportResponseSuccess = (getApiCommissionReportResponse200) & {
+;
+export type getApiCommissionReportResponseError = (getApiCommissionReportResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiCommissionReportResponse = (getApiCommissionReportResponseSuccess)
+export type getApiCommissionReportResponse = (getApiCommissionReportResponseError)
 
-export const getGetApiCommissionReportUrl = (params: GetApiCommissionReportParams,) => {
+export const getGetApiCommissionReportUrl = (params?: GetApiCommissionReportParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -305,7 +305,7 @@ export const getGetApiCommissionReportUrl = (params: GetApiCommissionReportParam
 /**
  * @summary Commission summary report
  */
-export const getApiCommissionReport = async (params: GetApiCommissionReportParams, options?: RequestInit): Promise<getApiCommissionReportResponse> => {
+export const getApiCommissionReport = async (params?: GetApiCommissionReportParams, options?: RequestInit): Promise<getApiCommissionReportResponse> => {
 
   return useCustomClient<getApiCommissionReportResponse>(getGetApiCommissionReportUrl(params),
   {
@@ -333,7 +333,7 @@ export const getGetApiCommissionReportQueryKey = (params?: GetApiCommissionRepor
     }
 
 
-export const getGetApiCommissionReportInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCommissionReport>>>, TError = ErrorType<unknown>>(params: GetApiCommissionReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiCommissionReportInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCommissionReport>>>, TError = ErrorType<unknown>>(params?: GetApiCommissionReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -356,7 +356,7 @@ export type GetApiCommissionReportInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiCommissionReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommissionReport>>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionReportParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>> & Pick<
+ params: undefined |  GetApiCommissionReportParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCommissionReport>>,
           TError,
@@ -366,7 +366,7 @@ export function useGetApiCommissionReportInfinite<TData = InfiniteData<Awaited<R
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCommissionReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommissionReport>>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>> & Pick<
+ params?: GetApiCommissionReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCommissionReport>>,
           TError,
@@ -376,7 +376,7 @@ export function useGetApiCommissionReportInfinite<TData = InfiniteData<Awaited<R
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCommissionReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommissionReport>>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCommissionReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -384,7 +384,7 @@ export function useGetApiCommissionReportInfinite<TData = InfiniteData<Awaited<R
  */
 
 export function useGetApiCommissionReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommissionReport>>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCommissionReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -399,7 +399,7 @@ export function useGetApiCommissionReportInfinite<TData = InfiniteData<Awaited<R
  * @summary Commission summary report
  */
 export const prefetchGetApiCommissionReportInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiCommissionReport>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiCommissionReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiCommissionReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -414,7 +414,7 @@ export const prefetchGetApiCommissionReportInfiniteQuery = async <TData = Awaite
 
 
 
-export const getGetApiCommissionReportQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommissionReport>>, TError = ErrorType<unknown>>(params: GetApiCommissionReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiCommissionReportQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommissionReport>>, TError = ErrorType<unknown>>(params?: GetApiCommissionReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -437,7 +437,7 @@ export type GetApiCommissionReportQueryError = ErrorType<unknown>
 
 
 export function useGetApiCommissionReport<TData = Awaited<ReturnType<typeof getApiCommissionReport>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionReportParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>> & Pick<
+ params: undefined |  GetApiCommissionReportParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCommissionReport>>,
           TError,
@@ -447,7 +447,7 @@ export function useGetApiCommissionReport<TData = Awaited<ReturnType<typeof getA
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCommissionReport<TData = Awaited<ReturnType<typeof getApiCommissionReport>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>> & Pick<
+ params?: GetApiCommissionReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCommissionReport>>,
           TError,
@@ -457,7 +457,7 @@ export function useGetApiCommissionReport<TData = Awaited<ReturnType<typeof getA
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCommissionReport<TData = Awaited<ReturnType<typeof getApiCommissionReport>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCommissionReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -465,7 +465,7 @@ export function useGetApiCommissionReport<TData = Awaited<ReturnType<typeof getA
  */
 
 export function useGetApiCommissionReport<TData = Awaited<ReturnType<typeof getApiCommissionReport>>, TError = ErrorType<unknown>>(
- params: GetApiCommissionReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiCommissionReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -480,7 +480,7 @@ export function useGetApiCommissionReport<TData = Awaited<ReturnType<typeof getA
  * @summary Commission summary report
  */
 export const prefetchGetApiCommissionReportQuery = async <TData = Awaited<ReturnType<typeof getApiCommissionReport>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiCommissionReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiCommissionReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommissionReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -495,17 +495,17 @@ export const prefetchGetApiCommissionReportQuery = async <TData = Awaited<Return
 
 
 
-export type getApiPropertiesReportResponse200 = {
-  data: void
-  status: 200
+export type getApiPropertiesReportResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiPropertiesReportResponseSuccess = (getApiPropertiesReportResponse200) & {
+;
+export type getApiPropertiesReportResponseError = (getApiPropertiesReportResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiPropertiesReportResponse = (getApiPropertiesReportResponseSuccess)
+export type getApiPropertiesReportResponse = (getApiPropertiesReportResponseError)
 
 export const getGetApiPropertiesReportUrl = () => {
 
@@ -708,19 +708,19 @@ export const prefetchGetApiPropertiesReportQuery = async <TData = Awaited<Return
 
 
 
-export type getApiTeamPerformanceReportResponse200 = {
-  data: void
-  status: 200
+export type getApiTeamPerformanceReportResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiTeamPerformanceReportResponseSuccess = (getApiTeamPerformanceReportResponse200) & {
+;
+export type getApiTeamPerformanceReportResponseError = (getApiTeamPerformanceReportResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiTeamPerformanceReportResponse = (getApiTeamPerformanceReportResponseSuccess)
+export type getApiTeamPerformanceReportResponse = (getApiTeamPerformanceReportResponseError)
 
-export const getGetApiTeamPerformanceReportUrl = (params: GetApiTeamPerformanceReportParams,) => {
+export const getGetApiTeamPerformanceReportUrl = (params?: GetApiTeamPerformanceReportParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -738,7 +738,7 @@ export const getGetApiTeamPerformanceReportUrl = (params: GetApiTeamPerformanceR
 /**
  * @summary Team performance report by user
  */
-export const getApiTeamPerformanceReport = async (params: GetApiTeamPerformanceReportParams, options?: RequestInit): Promise<getApiTeamPerformanceReportResponse> => {
+export const getApiTeamPerformanceReport = async (params?: GetApiTeamPerformanceReportParams, options?: RequestInit): Promise<getApiTeamPerformanceReportResponse> => {
 
   return useCustomClient<getApiTeamPerformanceReportResponse>(getGetApiTeamPerformanceReportUrl(params),
   {
@@ -766,7 +766,7 @@ export const getGetApiTeamPerformanceReportQueryKey = (params?: GetApiTeamPerfor
     }
 
 
-export const getGetApiTeamPerformanceReportInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>>, TError = ErrorType<unknown>>(params: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiTeamPerformanceReportInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>>, TError = ErrorType<unknown>>(params?: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -789,7 +789,7 @@ export type GetApiTeamPerformanceReportInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiTeamPerformanceReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>>, TError = ErrorType<unknown>>(
- params: GetApiTeamPerformanceReportParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>> & Pick<
+ params: undefined |  GetApiTeamPerformanceReportParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiTeamPerformanceReport>>,
           TError,
@@ -799,7 +799,7 @@ export function useGetApiTeamPerformanceReportInfinite<TData = InfiniteData<Awai
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiTeamPerformanceReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>>, TError = ErrorType<unknown>>(
- params: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>> & Pick<
+ params?: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiTeamPerformanceReport>>,
           TError,
@@ -809,7 +809,7 @@ export function useGetApiTeamPerformanceReportInfinite<TData = InfiniteData<Awai
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiTeamPerformanceReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>>, TError = ErrorType<unknown>>(
- params: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -817,7 +817,7 @@ export function useGetApiTeamPerformanceReportInfinite<TData = InfiniteData<Awai
  */
 
 export function useGetApiTeamPerformanceReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>>, TError = ErrorType<unknown>>(
- params: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -832,7 +832,7 @@ export function useGetApiTeamPerformanceReportInfinite<TData = InfiniteData<Awai
  * @summary Team performance report by user
  */
 export const prefetchGetApiTeamPerformanceReportInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -847,7 +847,7 @@ export const prefetchGetApiTeamPerformanceReportInfiniteQuery = async <TData = A
 
 
 
-export const getGetApiTeamPerformanceReportQueryOptions = <TData = Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError = ErrorType<unknown>>(params: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiTeamPerformanceReportQueryOptions = <TData = Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError = ErrorType<unknown>>(params?: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -870,7 +870,7 @@ export type GetApiTeamPerformanceReportQueryError = ErrorType<unknown>
 
 
 export function useGetApiTeamPerformanceReport<TData = Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError = ErrorType<unknown>>(
- params: GetApiTeamPerformanceReportParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>> & Pick<
+ params: undefined |  GetApiTeamPerformanceReportParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiTeamPerformanceReport>>,
           TError,
@@ -880,7 +880,7 @@ export function useGetApiTeamPerformanceReport<TData = Awaited<ReturnType<typeof
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiTeamPerformanceReport<TData = Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError = ErrorType<unknown>>(
- params: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>> & Pick<
+ params?: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiTeamPerformanceReport>>,
           TError,
@@ -890,7 +890,7 @@ export function useGetApiTeamPerformanceReport<TData = Awaited<ReturnType<typeof
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiTeamPerformanceReport<TData = Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError = ErrorType<unknown>>(
- params: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -898,7 +898,7 @@ export function useGetApiTeamPerformanceReport<TData = Awaited<ReturnType<typeof
  */
 
 export function useGetApiTeamPerformanceReport<TData = Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError = ErrorType<unknown>>(
- params: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -913,7 +913,7 @@ export function useGetApiTeamPerformanceReport<TData = Awaited<ReturnType<typeof
  * @summary Team performance report by user
  */
 export const prefetchGetApiTeamPerformanceReportQuery = async <TData = Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiTeamPerformanceReportParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTeamPerformanceReport>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 

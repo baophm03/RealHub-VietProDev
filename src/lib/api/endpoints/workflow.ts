@@ -58,19 +58,19 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiWorkflowsResponse200 = {
-  data: void
-  status: 200
+export type getApiWorkflowsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiWorkflowsResponseSuccess = (getApiWorkflowsResponse200) & {
+;
+export type getApiWorkflowsResponseError = (getApiWorkflowsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiWorkflowsResponse = (getApiWorkflowsResponseSuccess)
+export type getApiWorkflowsResponse = (getApiWorkflowsResponseError)
 
-export const getGetApiWorkflowsUrl = (params: GetApiWorkflowsParams,) => {
+export const getGetApiWorkflowsUrl = (params?: GetApiWorkflowsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -88,7 +88,7 @@ export const getGetApiWorkflowsUrl = (params: GetApiWorkflowsParams,) => {
 /**
  * @summary List workflow definitions
  */
-export const getApiWorkflows = async (params: GetApiWorkflowsParams, options?: RequestInit): Promise<getApiWorkflowsResponse> => {
+export const getApiWorkflows = async (params?: GetApiWorkflowsParams, options?: RequestInit): Promise<getApiWorkflowsResponse> => {
 
   return useCustomClient<getApiWorkflowsResponse>(getGetApiWorkflowsUrl(params),
   {
@@ -116,7 +116,7 @@ export const getGetApiWorkflowsQueryKey = (params?: GetApiWorkflowsParams,) => {
     }
 
 
-export const getGetApiWorkflowsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiWorkflows>>>, TError = ErrorType<unknown>>(params: GetApiWorkflowsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiWorkflowsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiWorkflows>>>, TError = ErrorType<unknown>>(params?: GetApiWorkflowsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -139,7 +139,7 @@ export type GetApiWorkflowsInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiWorkflowsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiWorkflows>>>, TError = ErrorType<unknown>>(
- params: GetApiWorkflowsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>> & Pick<
+ params: undefined |  GetApiWorkflowsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiWorkflows>>,
           TError,
@@ -149,7 +149,7 @@ export function useGetApiWorkflowsInfinite<TData = InfiniteData<Awaited<ReturnTy
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiWorkflowsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiWorkflows>>>, TError = ErrorType<unknown>>(
- params: GetApiWorkflowsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>> & Pick<
+ params?: GetApiWorkflowsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiWorkflows>>,
           TError,
@@ -159,7 +159,7 @@ export function useGetApiWorkflowsInfinite<TData = InfiniteData<Awaited<ReturnTy
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiWorkflowsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiWorkflows>>>, TError = ErrorType<unknown>>(
- params: GetApiWorkflowsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiWorkflowsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -167,7 +167,7 @@ export function useGetApiWorkflowsInfinite<TData = InfiniteData<Awaited<ReturnTy
  */
 
 export function useGetApiWorkflowsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiWorkflows>>>, TError = ErrorType<unknown>>(
- params: GetApiWorkflowsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiWorkflowsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -182,7 +182,7 @@ export function useGetApiWorkflowsInfinite<TData = InfiniteData<Awaited<ReturnTy
  * @summary List workflow definitions
  */
 export const prefetchGetApiWorkflowsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiWorkflows>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiWorkflowsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiWorkflowsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -197,7 +197,7 @@ export const prefetchGetApiWorkflowsInfiniteQuery = async <TData = Awaited<Retur
 
 
 
-export const getGetApiWorkflowsQueryOptions = <TData = Awaited<ReturnType<typeof getApiWorkflows>>, TError = ErrorType<unknown>>(params: GetApiWorkflowsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiWorkflowsQueryOptions = <TData = Awaited<ReturnType<typeof getApiWorkflows>>, TError = ErrorType<unknown>>(params?: GetApiWorkflowsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -220,7 +220,7 @@ export type GetApiWorkflowsQueryError = ErrorType<unknown>
 
 
 export function useGetApiWorkflows<TData = Awaited<ReturnType<typeof getApiWorkflows>>, TError = ErrorType<unknown>>(
- params: GetApiWorkflowsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>> & Pick<
+ params: undefined |  GetApiWorkflowsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiWorkflows>>,
           TError,
@@ -230,7 +230,7 @@ export function useGetApiWorkflows<TData = Awaited<ReturnType<typeof getApiWorkf
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiWorkflows<TData = Awaited<ReturnType<typeof getApiWorkflows>>, TError = ErrorType<unknown>>(
- params: GetApiWorkflowsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>> & Pick<
+ params?: GetApiWorkflowsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiWorkflows>>,
           TError,
@@ -240,7 +240,7 @@ export function useGetApiWorkflows<TData = Awaited<ReturnType<typeof getApiWorkf
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiWorkflows<TData = Awaited<ReturnType<typeof getApiWorkflows>>, TError = ErrorType<unknown>>(
- params: GetApiWorkflowsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiWorkflowsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -248,7 +248,7 @@ export function useGetApiWorkflows<TData = Awaited<ReturnType<typeof getApiWorkf
  */
 
 export function useGetApiWorkflows<TData = Awaited<ReturnType<typeof getApiWorkflows>>, TError = ErrorType<unknown>>(
- params: GetApiWorkflowsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiWorkflowsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -263,7 +263,7 @@ export function useGetApiWorkflows<TData = Awaited<ReturnType<typeof getApiWorkf
  * @summary List workflow definitions
  */
 export const prefetchGetApiWorkflowsQuery = async <TData = Awaited<ReturnType<typeof getApiWorkflows>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiWorkflowsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiWorkflowsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiWorkflows>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -278,17 +278,17 @@ export const prefetchGetApiWorkflowsQuery = async <TData = Awaited<ReturnType<ty
 
 
 
-export type postApiWorkflowResponse201 = {
-  data: void
-  status: 201
+export type postApiWorkflowResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiWorkflowResponseSuccess = (postApiWorkflowResponse201) & {
+;
+export type postApiWorkflowResponseError = (postApiWorkflowResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiWorkflowResponse = (postApiWorkflowResponseSuccess)
+export type postApiWorkflowResponse = (postApiWorkflowResponseError)
 
 export const getPostApiWorkflowUrl = () => {
 
@@ -360,17 +360,17 @@ export const usePostApiWorkflow = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiWorkflowMutationOptions(options), queryClient);
     }
-    export type getApiWorkflowIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiWorkflowIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiWorkflowIdResponseSuccess = (getApiWorkflowIdResponse200) & {
+;
+export type getApiWorkflowIdResponseError = (getApiWorkflowIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiWorkflowIdResponse = (getApiWorkflowIdResponseSuccess)
+export type getApiWorkflowIdResponse = (getApiWorkflowIdResponseError)
 
 export const getGetApiWorkflowIdUrl = (id: string,) => {
 
@@ -573,17 +573,17 @@ export const prefetchGetApiWorkflowIdQuery = async <TData = Awaited<ReturnType<t
 
 
 
-export type getApiWorkflowTransitionsResponse200 = {
-  data: void
-  status: 200
+export type getApiWorkflowTransitionsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiWorkflowTransitionsResponseSuccess = (getApiWorkflowTransitionsResponse200) & {
+;
+export type getApiWorkflowTransitionsResponseError = (getApiWorkflowTransitionsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiWorkflowTransitionsResponse = (getApiWorkflowTransitionsResponseSuccess)
+export type getApiWorkflowTransitionsResponse = (getApiWorkflowTransitionsResponseError)
 
 export const getGetApiWorkflowTransitionsUrl = (id: string,
     currentStateCode: string,) => {

@@ -3,6 +3,10 @@
 import { TrendUp, TrendDown, Buildings, Users, Handshake, UserCircle, ArrowUpRight } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useGetApiLeads } from "@/lib/api/endpoints/leads";
+import { useGetApiAuditLogs } from "@/lib/api/endpoints/audit-logs";
+import type { GetLeadsResponse } from "@/lib/api/types/leads";
+import type { GetAuditLogsResponse } from "@/lib/api/types/audit-logs";
 
 const stats = [
   {
@@ -35,21 +39,42 @@ const stats = [
   },
 ];
 
-const recentLeads = [
-  { name: "Nguyen Van An", phone: "090****567", status: "Moi", statusVariant: "blue" as const, property: "Vinhomes Central Park" },
-  { name: "Tran Thi Bich", phone: "098****321", status: "Da lien he", statusVariant: "yellow" as const, property: "Masteri Thao Dien" },
-  { name: "Le Minh Chau", phone: "091****890", status: "Quan tam", statusVariant: "purple" as const, property: "Sunwah Pearl" },
-  { name: "Pham Quoc Huy", phone: "093****147", status: "Chuyen doi", statusVariant: "green" as const, property: "The Metropole" },
-];
+const leadStatusConfig: Record<string, { label: string; variant: "blue" | "yellow" | "purple" | "green" | "red" | "default" }> = {
+  NEW: { label: "Moi", variant: "blue" },
+  CONTACTED: { label: "Da lien he", variant: "yellow" },
+  INTERESTED: { label: "Quan tam", variant: "purple" },
+  NEGOTIATING: { label: "Dam phan", variant: "default" },
+  CONVERTED: { label: "Chuyen doi", variant: "green" },
+  LOST: { label: "Mat", variant: "red" },
+};
 
-const activities = [
-  { text: "Le Minh Chau tao lich hen", time: "5 phut truoc" },
-  { text: "Deal #042 da duoc duyet", time: "1 gio truoc" },
-  { text: "Nguyen Van An them BDS moi", time: "2 gio truoc" },
-  { text: "Tran Thi Bich chuyen lead sang 'Quan tam'", time: "3 gio truoc" },
-];
+function formatRelativeTime(dateString: string): string {
+  const now = new Date();
+  const date = new Date(dateString);
+  const diffMs = now.getTime() - date.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+  const diffHour = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHour / 24);
+
+  if (diffMin < 1) return "Vua xong";
+  if (diffMin < 60) return `${diffMin} phut truoc`;
+  if (diffHour < 24) return `${diffHour} gio truoc`;
+  if (diffDay < 30) return `${diffDay} ngay truoc`;
+  return date.toLocaleDateString("vi-VN");
+}
 
 export default function DashboardPage() {
+  const { data: leadsData } = useGetApiLeads({
+    limit: "5",
+    offset: "0",
+  });
+  const { data: auditLogsData } = useGetApiAuditLogs({
+    pageSize: "5",
+  });
+
+  const leads = ((leadsData as unknown as GetLeadsResponse)?.items) || [];
+  const auditLogs = ((auditLogsData as unknown as GetAuditLogsResponse)?.items) || [];
+
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-2 animate-fade-up">
@@ -78,9 +103,8 @@ export default function DashboardPage() {
                   <Icon size={18} weight="duotone" className="text-primary md:size-5" />
                 </div>
                 <span
-                  className={`flex items-center gap-1 text-xs font-medium tabular-nums ${
-                    stat.trend === "up" ? "text-accent-green-text" : "text-accent-red-text"
-                  }`}
+                  className={`flex items-center gap-1 text-xs font-medium tabular-nums ${stat.trend === "up" ? "text-accent-green-text" : "text-accent-red-text"
+                    }`}
                 >
                   <TrendIcon size={12} weight="bold" />
                   {stat.change}
@@ -113,20 +137,28 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col divide-y divide-border">
-              {recentLeads.map((lead) => (
-                <div
-                  key={lead.name}
-                  className="group flex flex-col gap-2 py-3.5 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between transition-colors"
-                >
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-sm font-medium">{lead.name}</span>
-                    <span className="text-xs text-foreground-muted tabular-nums">
-                      {lead.phone} · {lead.property}
-                    </span>
-                  </div>
-                  <Badge variant={lead.statusVariant} className="self-start sm:self-auto">{lead.status}</Badge>
-                </div>
-              ))}
+              {leads.length > 0 ? (
+                leads.map((lead) => {
+                  const statusCfg = leadStatusConfig[lead.status] ?? { label: lead.status, variant: "default" as const };
+                  return (
+                    <div
+                      key={lead.id}
+                      className="group flex flex-col gap-2 py-3.5 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between transition-colors"
+                    >
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-sm font-medium">{lead.customer?.fullName ?? lead.phoneNormalized ?? "Khach vang"}</span>
+                        <span className="text-xs text-foreground-muted tabular-nums">
+                          {lead.customer?.phone ?? lead.phoneNormalized ?? "-"}
+                          {lead.property ? ` · ${lead.property.title}` : ""}
+                        </span>
+                      </div>
+                      <Badge variant={statusCfg.variant} className="self-start sm:self-auto">{statusCfg.label}</Badge>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="py-8 text-center text-sm text-foreground-muted">Chua co lead nao</div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -137,12 +169,18 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-4">
-              {activities.map((activity, i) => (
-                <div key={i} className="flex flex-col gap-0.5 border-l-2 border-border pl-4">
-                  <span className="text-sm leading-snug">{activity.text}</span>
-                  <span className="text-xs text-foreground-muted tabular-nums">{activity.time}</span>
-                </div>
-              ))}
+              {auditLogs.length > 0 ? (
+                auditLogs.map((log) => (
+                  <div key={log.id} className="flex flex-col gap-0.5 border-l-2 border-border pl-4">
+                    <span className="text-sm leading-snug">
+                      {log.user?.fullName ?? "He thong"} - {log.action} ({log.entityType})
+                    </span>
+                    <span className="text-xs text-foreground-muted tabular-nums">{formatRelativeTime(log.createdAt)}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="py-8 text-center text-sm text-foreground-muted">Chua co hoat dong nao</div>
+              )}
             </div>
           </CardContent>
         </Card>

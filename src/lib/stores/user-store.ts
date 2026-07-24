@@ -15,15 +15,12 @@ export const useUserStore = create<UserState>()(
   persist(
     (set, get) => ({
       user: null,
-
       setUser: (user) => set({ user }),
-
       clearUser: () => set({ user: null }),
-
       hasPermission: (permission) => {
         const user = get().user;
         if (!user) return false;
-        if (user.role !== "SUPER_ADMIN") return true;
+        if (user.role === "AGENCY_ADMIN") return true;
         return user.permissions.some((p) => p === permission || p === "*");
       },
     }),

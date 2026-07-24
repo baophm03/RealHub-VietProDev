@@ -94,7 +94,7 @@ export default function LeadEditPage() {
         <button onClick={() => router.push("/leads")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
           <ArrowLeft size={20} />
         </button>
-        <PageHeader eyebrow="CRM" title="Chinh sua lead" />
+        <PageHeader eyebrow="CRM" title="Chỉnh sửa lead" />
       </div>
 
       {error && (

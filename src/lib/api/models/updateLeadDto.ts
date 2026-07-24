@@ -5,5 +5,15 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { UpdateLeadDtoDuplicateStatus } from './updateLeadDtoDuplicateStatus';
+import type { UpdateLeadDtoStatus } from './updateLeadDtoStatus';
 
-export interface UpdateLeadDto { [key: string]: unknown }
+export interface UpdateLeadDto {
+  status?: UpdateLeadDtoStatus;
+  assignedSalesId?: string;
+  assignedTeamId?: string;
+  phoneNormalized?: string;
+  protectionUntil?: string;
+  duplicateStatus?: UpdateLeadDtoDuplicateStatus;
+  metadata?: string;
+}

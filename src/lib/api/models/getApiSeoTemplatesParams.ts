@@ -5,7 +5,8 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiSeoTemplatesPageType } from './getApiSeoTemplatesPageType';
 
 export type GetApiSeoTemplatesParams = {
-pageType: string;
+pageType?: GetApiSeoTemplatesPageType;
 };

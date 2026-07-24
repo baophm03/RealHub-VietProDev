@@ -5,5 +5,9 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { CompleteRevalidationTaskDtoResult } from './completeRevalidationTaskDtoResult';
 
-export interface CompleteRevalidationTaskDto { [key: string]: unknown }
+export interface CompleteRevalidationTaskDto {
+  result?: CompleteRevalidationTaskDtoResult;
+  note?: string;
+}

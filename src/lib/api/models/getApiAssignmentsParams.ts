@@ -5,9 +5,10 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiAssignmentsStatus } from './getApiAssignmentsStatus';
 
 export type GetApiAssignmentsParams = {
-propertyId: string;
-assignedUserId: string;
-status: string;
+propertyId?: string;
+assignedUserId?: string;
+status?: GetApiAssignmentsStatus;
 };

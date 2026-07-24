@@ -62,19 +62,19 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiDealsResponse200 = {
-  data: void
-  status: 200
+export type getApiDealsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiDealsResponseSuccess = (getApiDealsResponse200) & {
+;
+export type getApiDealsResponseError = (getApiDealsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiDealsResponse = (getApiDealsResponseSuccess)
+export type getApiDealsResponse = (getApiDealsResponseError)
 
-export const getGetApiDealsUrl = (params: GetApiDealsParams,) => {
+export const getGetApiDealsUrl = (params?: GetApiDealsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -92,7 +92,7 @@ export const getGetApiDealsUrl = (params: GetApiDealsParams,) => {
 /**
  * @summary List deals
  */
-export const getApiDeals = async (params: GetApiDealsParams, options?: RequestInit): Promise<getApiDealsResponse> => {
+export const getApiDeals = async (params?: GetApiDealsParams, options?: RequestInit): Promise<getApiDealsResponse> => {
 
   return useCustomClient<getApiDealsResponse>(getGetApiDealsUrl(params),
   {
@@ -120,7 +120,7 @@ export const getGetApiDealsQueryKey = (params?: GetApiDealsParams,) => {
     }
 
 
-export const getGetApiDealsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiDeals>>>, TError = ErrorType<unknown>>(params: GetApiDealsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiDealsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiDeals>>>, TError = ErrorType<unknown>>(params?: GetApiDealsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -143,7 +143,7 @@ export type GetApiDealsInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiDealsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDeals>>>, TError = ErrorType<unknown>>(
- params: GetApiDealsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>> & Pick<
+ params: undefined |  GetApiDealsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiDeals>>,
           TError,
@@ -153,7 +153,7 @@ export function useGetApiDealsInfinite<TData = InfiniteData<Awaited<ReturnType<t
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiDealsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDeals>>>, TError = ErrorType<unknown>>(
- params: GetApiDealsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>> & Pick<
+ params?: GetApiDealsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiDeals>>,
           TError,
@@ -163,7 +163,7 @@ export function useGetApiDealsInfinite<TData = InfiniteData<Awaited<ReturnType<t
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiDealsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDeals>>>, TError = ErrorType<unknown>>(
- params: GetApiDealsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiDealsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -171,7 +171,7 @@ export function useGetApiDealsInfinite<TData = InfiniteData<Awaited<ReturnType<t
  */
 
 export function useGetApiDealsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDeals>>>, TError = ErrorType<unknown>>(
- params: GetApiDealsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiDealsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -186,7 +186,7 @@ export function useGetApiDealsInfinite<TData = InfiniteData<Awaited<ReturnType<t
  * @summary List deals
  */
 export const prefetchGetApiDealsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiDeals>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiDealsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiDealsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -201,7 +201,7 @@ export const prefetchGetApiDealsInfiniteQuery = async <TData = Awaited<ReturnTyp
 
 
 
-export const getGetApiDealsQueryOptions = <TData = Awaited<ReturnType<typeof getApiDeals>>, TError = ErrorType<unknown>>(params: GetApiDealsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiDealsQueryOptions = <TData = Awaited<ReturnType<typeof getApiDeals>>, TError = ErrorType<unknown>>(params?: GetApiDealsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -224,7 +224,7 @@ export type GetApiDealsQueryError = ErrorType<unknown>
 
 
 export function useGetApiDeals<TData = Awaited<ReturnType<typeof getApiDeals>>, TError = ErrorType<unknown>>(
- params: GetApiDealsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>> & Pick<
+ params: undefined |  GetApiDealsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiDeals>>,
           TError,
@@ -234,7 +234,7 @@ export function useGetApiDeals<TData = Awaited<ReturnType<typeof getApiDeals>>, 
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiDeals<TData = Awaited<ReturnType<typeof getApiDeals>>, TError = ErrorType<unknown>>(
- params: GetApiDealsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>> & Pick<
+ params?: GetApiDealsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiDeals>>,
           TError,
@@ -244,7 +244,7 @@ export function useGetApiDeals<TData = Awaited<ReturnType<typeof getApiDeals>>, 
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiDeals<TData = Awaited<ReturnType<typeof getApiDeals>>, TError = ErrorType<unknown>>(
- params: GetApiDealsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiDealsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -252,7 +252,7 @@ export function useGetApiDeals<TData = Awaited<ReturnType<typeof getApiDeals>>, 
  */
 
 export function useGetApiDeals<TData = Awaited<ReturnType<typeof getApiDeals>>, TError = ErrorType<unknown>>(
- params: GetApiDealsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiDealsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -267,7 +267,7 @@ export function useGetApiDeals<TData = Awaited<ReturnType<typeof getApiDeals>>, 
  * @summary List deals
  */
 export const prefetchGetApiDealsQuery = async <TData = Awaited<ReturnType<typeof getApiDeals>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiDealsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiDealsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDeals>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -282,17 +282,17 @@ export const prefetchGetApiDealsQuery = async <TData = Awaited<ReturnType<typeof
 
 
 
-export type postApiDealResponse201 = {
-  data: void
-  status: 201
+export type postApiDealResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiDealResponseSuccess = (postApiDealResponse201) & {
+;
+export type postApiDealResponseError = (postApiDealResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiDealResponse = (postApiDealResponseSuccess)
+export type postApiDealResponse = (postApiDealResponseError)
 
 export const getPostApiDealUrl = () => {
 
@@ -364,17 +364,17 @@ export const usePostApiDeal = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiDealMutationOptions(options), queryClient);
     }
-    export type getApiDealIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiDealIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiDealIdResponseSuccess = (getApiDealIdResponse200) & {
+;
+export type getApiDealIdResponseError = (getApiDealIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiDealIdResponse = (getApiDealIdResponseSuccess)
+export type getApiDealIdResponse = (getApiDealIdResponseError)
 
 export const getGetApiDealIdUrl = (id: string,) => {
 
@@ -577,17 +577,17 @@ export const prefetchGetApiDealIdQuery = async <TData = Awaited<ReturnType<typeo
 
 
 
-export type patchApiDealResponse200 = {
-  data: void
-  status: 200
+export type patchApiDealResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiDealResponseSuccess = (patchApiDealResponse200) & {
+;
+export type patchApiDealResponseError = (patchApiDealResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiDealResponse = (patchApiDealResponseSuccess)
+export type patchApiDealResponse = (patchApiDealResponseError)
 
 export const getPatchApiDealUrl = (id: string,) => {
 
@@ -660,17 +660,17 @@ export const usePatchApiDeal = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPatchApiDealMutationOptions(options), queryClient);
     }
-    export type deleteApiDealResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiDealResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiDealResponseSuccess = (deleteApiDealResponse200) & {
+;
+export type deleteApiDealResponseError = (deleteApiDealResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiDealResponse = (deleteApiDealResponseSuccess)
+export type deleteApiDealResponse = (deleteApiDealResponseError)
 
 export const getDeleteApiDealUrl = (id: string,) => {
 
@@ -742,17 +742,17 @@ export const useDeleteApiDeal = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getDeleteApiDealMutationOptions(options), queryClient);
     }
-    export type getApiDealActivitiesResponse200 = {
-  data: void
-  status: 200
+    export type getApiDealActivitiesResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiDealActivitiesResponseSuccess = (getApiDealActivitiesResponse200) & {
+;
+export type getApiDealActivitiesResponseError = (getApiDealActivitiesResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiDealActivitiesResponse = (getApiDealActivitiesResponseSuccess)
+export type getApiDealActivitiesResponse = (getApiDealActivitiesResponseError)
 
 export const getGetApiDealActivitiesUrl = (id: string,) => {
 
@@ -955,17 +955,17 @@ export const prefetchGetApiDealActivitiesQuery = async <TData = Awaited<ReturnTy
 
 
 
-export type postApiDealActivityResponse201 = {
-  data: void
-  status: 201
+export type postApiDealActivityResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiDealActivityResponseSuccess = (postApiDealActivityResponse201) & {
+;
+export type postApiDealActivityResponseError = (postApiDealActivityResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiDealActivityResponse = (postApiDealActivityResponseSuccess)
+export type postApiDealActivityResponse = (postApiDealActivityResponseError)
 
 export const getPostApiDealActivityUrl = (id: string,) => {
 
@@ -1038,19 +1038,19 @@ export const usePostApiDealActivity = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiDealActivityMutationOptions(options), queryClient);
     }
-    export type getApiReservationsResponse200 = {
-  data: void
-  status: 200
+    export type getApiReservationsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiReservationsResponseSuccess = (getApiReservationsResponse200) & {
+;
+export type getApiReservationsResponseError = (getApiReservationsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiReservationsResponse = (getApiReservationsResponseSuccess)
+export type getApiReservationsResponse = (getApiReservationsResponseError)
 
-export const getGetApiReservationsUrl = (params: GetApiReservationsParams,) => {
+export const getGetApiReservationsUrl = (params?: GetApiReservationsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -1068,7 +1068,7 @@ export const getGetApiReservationsUrl = (params: GetApiReservationsParams,) => {
 /**
  * @summary List reservations
  */
-export const getApiReservations = async (params: GetApiReservationsParams, options?: RequestInit): Promise<getApiReservationsResponse> => {
+export const getApiReservations = async (params?: GetApiReservationsParams, options?: RequestInit): Promise<getApiReservationsResponse> => {
 
   return useCustomClient<getApiReservationsResponse>(getGetApiReservationsUrl(params),
   {
@@ -1096,7 +1096,7 @@ export const getGetApiReservationsQueryKey = (params?: GetApiReservationsParams,
     }
 
 
-export const getGetApiReservationsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiReservations>>>, TError = ErrorType<unknown>>(params: GetApiReservationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiReservationsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiReservations>>>, TError = ErrorType<unknown>>(params?: GetApiReservationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1119,7 +1119,7 @@ export type GetApiReservationsInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiReservationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiReservations>>>, TError = ErrorType<unknown>>(
- params: GetApiReservationsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>> & Pick<
+ params: undefined |  GetApiReservationsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiReservations>>,
           TError,
@@ -1129,7 +1129,7 @@ export function useGetApiReservationsInfinite<TData = InfiniteData<Awaited<Retur
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiReservationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiReservations>>>, TError = ErrorType<unknown>>(
- params: GetApiReservationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>> & Pick<
+ params?: GetApiReservationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiReservations>>,
           TError,
@@ -1139,7 +1139,7 @@ export function useGetApiReservationsInfinite<TData = InfiniteData<Awaited<Retur
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiReservationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiReservations>>>, TError = ErrorType<unknown>>(
- params: GetApiReservationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiReservationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1147,7 +1147,7 @@ export function useGetApiReservationsInfinite<TData = InfiniteData<Awaited<Retur
  */
 
 export function useGetApiReservationsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiReservations>>>, TError = ErrorType<unknown>>(
- params: GetApiReservationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiReservationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1162,7 +1162,7 @@ export function useGetApiReservationsInfinite<TData = InfiniteData<Awaited<Retur
  * @summary List reservations
  */
 export const prefetchGetApiReservationsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiReservations>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiReservationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiReservationsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -1177,7 +1177,7 @@ export const prefetchGetApiReservationsInfiniteQuery = async <TData = Awaited<Re
 
 
 
-export const getGetApiReservationsQueryOptions = <TData = Awaited<ReturnType<typeof getApiReservations>>, TError = ErrorType<unknown>>(params: GetApiReservationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiReservationsQueryOptions = <TData = Awaited<ReturnType<typeof getApiReservations>>, TError = ErrorType<unknown>>(params?: GetApiReservationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -1200,7 +1200,7 @@ export type GetApiReservationsQueryError = ErrorType<unknown>
 
 
 export function useGetApiReservations<TData = Awaited<ReturnType<typeof getApiReservations>>, TError = ErrorType<unknown>>(
- params: GetApiReservationsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>> & Pick<
+ params: undefined |  GetApiReservationsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiReservations>>,
           TError,
@@ -1210,7 +1210,7 @@ export function useGetApiReservations<TData = Awaited<ReturnType<typeof getApiRe
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiReservations<TData = Awaited<ReturnType<typeof getApiReservations>>, TError = ErrorType<unknown>>(
- params: GetApiReservationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>> & Pick<
+ params?: GetApiReservationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiReservations>>,
           TError,
@@ -1220,7 +1220,7 @@ export function useGetApiReservations<TData = Awaited<ReturnType<typeof getApiRe
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiReservations<TData = Awaited<ReturnType<typeof getApiReservations>>, TError = ErrorType<unknown>>(
- params: GetApiReservationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiReservationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1228,7 +1228,7 @@ export function useGetApiReservations<TData = Awaited<ReturnType<typeof getApiRe
  */
 
 export function useGetApiReservations<TData = Awaited<ReturnType<typeof getApiReservations>>, TError = ErrorType<unknown>>(
- params: GetApiReservationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiReservationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1243,7 +1243,7 @@ export function useGetApiReservations<TData = Awaited<ReturnType<typeof getApiRe
  * @summary List reservations
  */
 export const prefetchGetApiReservationsQuery = async <TData = Awaited<ReturnType<typeof getApiReservations>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiReservationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiReservationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReservations>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -1258,17 +1258,17 @@ export const prefetchGetApiReservationsQuery = async <TData = Awaited<ReturnType
 
 
 
-export type postApiReservationResponse201 = {
-  data: void
-  status: 201
+export type postApiReservationResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiReservationResponseSuccess = (postApiReservationResponse201) & {
+;
+export type postApiReservationResponseError = (postApiReservationResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiReservationResponse = (postApiReservationResponseSuccess)
+export type postApiReservationResponse = (postApiReservationResponseError)
 
 export const getPostApiReservationUrl = () => {
 
@@ -1340,17 +1340,17 @@ export const usePostApiReservation = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiReservationMutationOptions(options), queryClient);
     }
-    export type patchApiApproveReservationResponse200 = {
-  data: void
-  status: 200
+    export type patchApiApproveReservationResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiApproveReservationResponseSuccess = (patchApiApproveReservationResponse200) & {
+;
+export type patchApiApproveReservationResponseError = (patchApiApproveReservationResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiApproveReservationResponse = (patchApiApproveReservationResponseSuccess)
+export type patchApiApproveReservationResponse = (patchApiApproveReservationResponseError)
 
 export const getPatchApiApproveReservationUrl = (id: string,) => {
 
@@ -1422,17 +1422,17 @@ export const usePatchApiApproveReservation = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPatchApiApproveReservationMutationOptions(options), queryClient);
     }
-    export type patchApiRejectReservationResponse200 = {
-  data: void
-  status: 200
+    export type patchApiRejectReservationResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiRejectReservationResponseSuccess = (patchApiRejectReservationResponse200) & {
+;
+export type patchApiRejectReservationResponseError = (patchApiRejectReservationResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiRejectReservationResponse = (patchApiRejectReservationResponseSuccess)
+export type patchApiRejectReservationResponse = (patchApiRejectReservationResponseError)
 
 export const getPatchApiRejectReservationUrl = (id: string,) => {
 

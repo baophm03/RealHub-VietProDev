@@ -7,5 +7,5 @@
  */
 
 export type GetApiNotificationsParams = {
-unreadOnly: string;
+unreadOnly?: string;
 };

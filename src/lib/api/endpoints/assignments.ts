@@ -30,11 +30,12 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ExtendAssignmentDto,
   GetApiAssignmentsParams
 } from '../models';
 
 import { useCustomClient } from '../mutator/custom-client';
-import type { ErrorType } from '../mutator/custom-client';
+import type { ErrorType , BodyType } from '../mutator/custom-client';
 
 
 
@@ -57,17 +58,17 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiAssignmentPoliciesResponse200 = {
-  data: void
-  status: 200
+export type getApiAssignmentPoliciesResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiAssignmentPoliciesResponseSuccess = (getApiAssignmentPoliciesResponse200) & {
+;
+export type getApiAssignmentPoliciesResponseError = (getApiAssignmentPoliciesResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiAssignmentPoliciesResponse = (getApiAssignmentPoliciesResponseSuccess)
+export type getApiAssignmentPoliciesResponse = (getApiAssignmentPoliciesResponseError)
 
 export const getGetApiAssignmentPoliciesUrl = () => {
 
@@ -270,17 +271,17 @@ export const prefetchGetApiAssignmentPoliciesQuery = async <TData = Awaited<Retu
 
 
 
-export type postApiAssignmentPolicyResponse201 = {
-  data: void
-  status: 201
+export type postApiAssignmentPolicyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiAssignmentPolicyResponseSuccess = (postApiAssignmentPolicyResponse201) & {
+;
+export type postApiAssignmentPolicyResponseError = (postApiAssignmentPolicyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiAssignmentPolicyResponse = (postApiAssignmentPolicyResponseSuccess)
+export type postApiAssignmentPolicyResponse = (postApiAssignmentPolicyResponseError)
 
 export const getPostApiAssignmentPolicyUrl = () => {
 
@@ -352,17 +353,17 @@ export const usePostApiAssignmentPolicy = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiAssignmentPolicyMutationOptions(options), queryClient);
     }
-    export type getApiAssignmentPolicyIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiAssignmentPolicyIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiAssignmentPolicyIdResponseSuccess = (getApiAssignmentPolicyIdResponse200) & {
+;
+export type getApiAssignmentPolicyIdResponseError = (getApiAssignmentPolicyIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiAssignmentPolicyIdResponse = (getApiAssignmentPolicyIdResponseSuccess)
+export type getApiAssignmentPolicyIdResponse = (getApiAssignmentPolicyIdResponseError)
 
 export const getGetApiAssignmentPolicyIdUrl = (id: string,) => {
 
@@ -565,17 +566,17 @@ export const prefetchGetApiAssignmentPolicyIdQuery = async <TData = Awaited<Retu
 
 
 
-export type patchApiAssignmentPolicyResponse200 = {
-  data: void
-  status: 200
+export type patchApiAssignmentPolicyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiAssignmentPolicyResponseSuccess = (patchApiAssignmentPolicyResponse200) & {
+;
+export type patchApiAssignmentPolicyResponseError = (patchApiAssignmentPolicyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiAssignmentPolicyResponse = (patchApiAssignmentPolicyResponseSuccess)
+export type patchApiAssignmentPolicyResponse = (patchApiAssignmentPolicyResponseError)
 
 export const getPatchApiAssignmentPolicyUrl = (id: string,) => {
 
@@ -647,17 +648,17 @@ export const usePatchApiAssignmentPolicy = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPatchApiAssignmentPolicyMutationOptions(options), queryClient);
     }
-    export type deleteApiAssignmentPolicyResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiAssignmentPolicyResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiAssignmentPolicyResponseSuccess = (deleteApiAssignmentPolicyResponse200) & {
+;
+export type deleteApiAssignmentPolicyResponseError = (deleteApiAssignmentPolicyResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiAssignmentPolicyResponse = (deleteApiAssignmentPolicyResponseSuccess)
+export type deleteApiAssignmentPolicyResponse = (deleteApiAssignmentPolicyResponseError)
 
 export const getDeleteApiAssignmentPolicyUrl = (id: string,) => {
 
@@ -729,19 +730,19 @@ export const useDeleteApiAssignmentPolicy = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getDeleteApiAssignmentPolicyMutationOptions(options), queryClient);
     }
-    export type getApiAssignmentsResponse200 = {
-  data: void
-  status: 200
+    export type getApiAssignmentsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiAssignmentsResponseSuccess = (getApiAssignmentsResponse200) & {
+;
+export type getApiAssignmentsResponseError = (getApiAssignmentsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiAssignmentsResponse = (getApiAssignmentsResponseSuccess)
+export type getApiAssignmentsResponse = (getApiAssignmentsResponseError)
 
-export const getGetApiAssignmentsUrl = (params: GetApiAssignmentsParams,) => {
+export const getGetApiAssignmentsUrl = (params?: GetApiAssignmentsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -759,7 +760,7 @@ export const getGetApiAssignmentsUrl = (params: GetApiAssignmentsParams,) => {
 /**
  * @summary List property assignments
  */
-export const getApiAssignments = async (params: GetApiAssignmentsParams, options?: RequestInit): Promise<getApiAssignmentsResponse> => {
+export const getApiAssignments = async (params?: GetApiAssignmentsParams, options?: RequestInit): Promise<getApiAssignmentsResponse> => {
 
   return useCustomClient<getApiAssignmentsResponse>(getGetApiAssignmentsUrl(params),
   {
@@ -787,7 +788,7 @@ export const getGetApiAssignmentsQueryKey = (params?: GetApiAssignmentsParams,) 
     }
 
 
-export const getGetApiAssignmentsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAssignments>>>, TError = ErrorType<unknown>>(params: GetApiAssignmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiAssignmentsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAssignments>>>, TError = ErrorType<unknown>>(params?: GetApiAssignmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -810,7 +811,7 @@ export type GetApiAssignmentsInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiAssignmentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAssignments>>>, TError = ErrorType<unknown>>(
- params: GetApiAssignmentsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>> & Pick<
+ params: undefined |  GetApiAssignmentsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAssignments>>,
           TError,
@@ -820,7 +821,7 @@ export function useGetApiAssignmentsInfinite<TData = InfiniteData<Awaited<Return
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAssignmentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAssignments>>>, TError = ErrorType<unknown>>(
- params: GetApiAssignmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>> & Pick<
+ params?: GetApiAssignmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAssignments>>,
           TError,
@@ -830,7 +831,7 @@ export function useGetApiAssignmentsInfinite<TData = InfiniteData<Awaited<Return
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAssignmentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAssignments>>>, TError = ErrorType<unknown>>(
- params: GetApiAssignmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAssignmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -838,7 +839,7 @@ export function useGetApiAssignmentsInfinite<TData = InfiniteData<Awaited<Return
  */
 
 export function useGetApiAssignmentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAssignments>>>, TError = ErrorType<unknown>>(
- params: GetApiAssignmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAssignmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -853,7 +854,7 @@ export function useGetApiAssignmentsInfinite<TData = InfiniteData<Awaited<Return
  * @summary List property assignments
  */
 export const prefetchGetApiAssignmentsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiAssignments>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiAssignmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiAssignmentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -868,7 +869,7 @@ export const prefetchGetApiAssignmentsInfiniteQuery = async <TData = Awaited<Ret
 
 
 
-export const getGetApiAssignmentsQueryOptions = <TData = Awaited<ReturnType<typeof getApiAssignments>>, TError = ErrorType<unknown>>(params: GetApiAssignmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiAssignmentsQueryOptions = <TData = Awaited<ReturnType<typeof getApiAssignments>>, TError = ErrorType<unknown>>(params?: GetApiAssignmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -891,7 +892,7 @@ export type GetApiAssignmentsQueryError = ErrorType<unknown>
 
 
 export function useGetApiAssignments<TData = Awaited<ReturnType<typeof getApiAssignments>>, TError = ErrorType<unknown>>(
- params: GetApiAssignmentsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>> & Pick<
+ params: undefined |  GetApiAssignmentsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAssignments>>,
           TError,
@@ -901,7 +902,7 @@ export function useGetApiAssignments<TData = Awaited<ReturnType<typeof getApiAss
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAssignments<TData = Awaited<ReturnType<typeof getApiAssignments>>, TError = ErrorType<unknown>>(
- params: GetApiAssignmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>> & Pick<
+ params?: GetApiAssignmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAssignments>>,
           TError,
@@ -911,7 +912,7 @@ export function useGetApiAssignments<TData = Awaited<ReturnType<typeof getApiAss
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAssignments<TData = Awaited<ReturnType<typeof getApiAssignments>>, TError = ErrorType<unknown>>(
- params: GetApiAssignmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAssignmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -919,7 +920,7 @@ export function useGetApiAssignments<TData = Awaited<ReturnType<typeof getApiAss
  */
 
 export function useGetApiAssignments<TData = Awaited<ReturnType<typeof getApiAssignments>>, TError = ErrorType<unknown>>(
- params: GetApiAssignmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiAssignmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -934,7 +935,7 @@ export function useGetApiAssignments<TData = Awaited<ReturnType<typeof getApiAss
  * @summary List property assignments
  */
 export const prefetchGetApiAssignmentsQuery = async <TData = Awaited<ReturnType<typeof getApiAssignments>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiAssignmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiAssignmentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignments>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -949,17 +950,17 @@ export const prefetchGetApiAssignmentsQuery = async <TData = Awaited<ReturnType<
 
 
 
-export type postApiAssignmentResponse201 = {
-  data: void
-  status: 201
+export type postApiAssignmentResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiAssignmentResponseSuccess = (postApiAssignmentResponse201) & {
+;
+export type postApiAssignmentResponseError = (postApiAssignmentResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiAssignmentResponse = (postApiAssignmentResponseSuccess)
+export type postApiAssignmentResponse = (postApiAssignmentResponseError)
 
 export const getPostApiAssignmentUrl = () => {
 
@@ -1031,17 +1032,17 @@ export const usePostApiAssignment = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiAssignmentMutationOptions(options), queryClient);
     }
-    export type getApiExpiredAssignmentsResponse200 = {
-  data: void
-  status: 200
+    export type getApiExpiredAssignmentsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiExpiredAssignmentsResponseSuccess = (getApiExpiredAssignmentsResponse200) & {
+;
+export type getApiExpiredAssignmentsResponseError = (getApiExpiredAssignmentsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiExpiredAssignmentsResponse = (getApiExpiredAssignmentsResponseSuccess)
+export type getApiExpiredAssignmentsResponse = (getApiExpiredAssignmentsResponseError)
 
 export const getGetApiExpiredAssignmentsUrl = () => {
 
@@ -1244,17 +1245,17 @@ export const prefetchGetApiExpiredAssignmentsQuery = async <TData = Awaited<Retu
 
 
 
-export type postApiExpireAssignmentsResponse201 = {
-  data: void
-  status: 201
+export type postApiExpireAssignmentsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiExpireAssignmentsResponseSuccess = (postApiExpireAssignmentsResponse201) & {
+;
+export type postApiExpireAssignmentsResponseError = (postApiExpireAssignmentsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiExpireAssignmentsResponse = (postApiExpireAssignmentsResponseSuccess)
+export type postApiExpireAssignmentsResponse = (postApiExpireAssignmentsResponseError)
 
 export const getPostApiExpireAssignmentsUrl = () => {
 
@@ -1326,17 +1327,17 @@ export const usePostApiExpireAssignments = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiExpireAssignmentsMutationOptions(options), queryClient);
     }
-    export type getApiAssignmentIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiAssignmentIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiAssignmentIdResponseSuccess = (getApiAssignmentIdResponse200) & {
+;
+export type getApiAssignmentIdResponseError = (getApiAssignmentIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiAssignmentIdResponse = (getApiAssignmentIdResponseSuccess)
+export type getApiAssignmentIdResponse = (getApiAssignmentIdResponseError)
 
 export const getGetApiAssignmentIdUrl = (id: string,) => {
 
@@ -1539,17 +1540,17 @@ export const prefetchGetApiAssignmentIdQuery = async <TData = Awaited<ReturnType
 
 
 
-export type patchApiRevokeAssignmentResponse200 = {
-  data: void
-  status: 200
+export type patchApiRevokeAssignmentResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiRevokeAssignmentResponseSuccess = (patchApiRevokeAssignmentResponse200) & {
+;
+export type patchApiRevokeAssignmentResponseError = (patchApiRevokeAssignmentResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiRevokeAssignmentResponse = (patchApiRevokeAssignmentResponseSuccess)
+export type patchApiRevokeAssignmentResponse = (patchApiRevokeAssignmentResponseError)
 
 export const getPatchApiRevokeAssignmentUrl = (id: string,) => {
 
@@ -1621,17 +1622,17 @@ export const usePatchApiRevokeAssignment = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPatchApiRevokeAssignmentMutationOptions(options), queryClient);
     }
-    export type patchApiExtendAssignmentResponse200 = {
-  data: void
-  status: 200
+    export type patchApiExtendAssignmentResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiExtendAssignmentResponseSuccess = (patchApiExtendAssignmentResponse200) & {
+;
+export type patchApiExtendAssignmentResponseError = (patchApiExtendAssignmentResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiExtendAssignmentResponse = (patchApiExtendAssignmentResponseSuccess)
+export type patchApiExtendAssignmentResponse = (patchApiExtendAssignmentResponseError)
 
 export const getPatchApiExtendAssignmentUrl = (id: string,) => {
 
@@ -1644,14 +1645,15 @@ export const getPatchApiExtendAssignmentUrl = (id: string,) => {
 /**
  * @summary Extend an assignment by N days
  */
-export const patchApiExtendAssignment = async (id: string, options?: RequestInit): Promise<patchApiExtendAssignmentResponse> => {
+export const patchApiExtendAssignment = async (id: string,
+    extendAssignmentDto: ExtendAssignmentDto, options?: RequestInit): Promise<patchApiExtendAssignmentResponse> => {
 
   return useCustomClient<patchApiExtendAssignmentResponse>(getPatchApiExtendAssignmentUrl(id),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(extendAssignmentDto)
   }
 );}
 
@@ -1660,8 +1662,8 @@ export const patchApiExtendAssignment = async (id: string, options?: RequestInit
 
 
 export const getPatchApiExtendAssignmentMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiExtendAssignment>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiExtendAssignment>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiExtendAssignment>>, TError,{id: string;data: BodyType<ExtendAssignmentDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiExtendAssignment>>, TError,{id: string;data: BodyType<ExtendAssignmentDto>}, TContext> => {
 
 const mutationKey = ['patchApiExtendAssignment'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1673,10 +1675,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiExtendAssignment>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiExtendAssignment>>, {id: string;data: BodyType<ExtendAssignmentDto>}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiExtendAssignment(id,requestOptions)
+          return  patchApiExtendAssignment(id,data,requestOptions)
         }
 
 
@@ -1687,33 +1689,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiExtendAssignmentMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiExtendAssignment>>>
-
+    export type PatchApiExtendAssignmentMutationBody = BodyType<ExtendAssignmentDto>
     export type PatchApiExtendAssignmentMutationError = ErrorType<unknown>
 
     /**
  * @summary Extend an assignment by N days
  */
 export const usePatchApiExtendAssignment = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiExtendAssignment>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiExtendAssignment>>, TError,{id: string;data: BodyType<ExtendAssignmentDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiExtendAssignment>>,
         TError,
-        {id: string},
+        {id: string;data: BodyType<ExtendAssignmentDto>},
         TContext
       > => {
       return useMutation(getPatchApiExtendAssignmentMutationOptions(options), queryClient);
     }
-    export type getApiAssignmentByPublicLinkResponse200 = {
-  data: void
-  status: 200
+    export type getApiAssignmentByPublicLinkResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiAssignmentByPublicLinkResponseSuccess = (getApiAssignmentByPublicLinkResponse200) & {
+;
+export type getApiAssignmentByPublicLinkResponseError = (getApiAssignmentByPublicLinkResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiAssignmentByPublicLinkResponse = (getApiAssignmentByPublicLinkResponseSuccess)
+export type getApiAssignmentByPublicLinkResponse = (getApiAssignmentByPublicLinkResponseError)
 
 export const getGetApiAssignmentByPublicLinkUrl = (code: string,) => {
 

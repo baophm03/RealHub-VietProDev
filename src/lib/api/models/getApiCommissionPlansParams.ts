@@ -5,7 +5,8 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiCommissionPlansStatus } from './getApiCommissionPlansStatus';
 
 export type GetApiCommissionPlansParams = {
-status: string;
+status?: GetApiCommissionPlansStatus;
 };

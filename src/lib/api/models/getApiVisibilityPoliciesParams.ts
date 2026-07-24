@@ -5,7 +5,8 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { GetApiVisibilityPoliciesEntityType } from './getApiVisibilityPoliciesEntityType';
 
 export type GetApiVisibilityPoliciesParams = {
-entityType: string;
+entityType?: GetApiVisibilityPoliciesEntityType;
 };

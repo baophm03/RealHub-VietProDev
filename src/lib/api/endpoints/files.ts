@@ -59,17 +59,17 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type postApiFileUploadResponse201 = {
-  data: void
-  status: 201
+export type postApiFileUploadResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiFileUploadResponseSuccess = (postApiFileUploadResponse201) & {
+;
+export type postApiFileUploadResponseError = (postApiFileUploadResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiFileUploadResponse = (postApiFileUploadResponseSuccess)
+export type postApiFileUploadResponse = (postApiFileUploadResponseError)
 
 export const getPostApiFileUploadUrl = () => {
 
@@ -155,17 +155,17 @@ export const usePostApiFileUpload = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiFileUploadMutationOptions(options), queryClient);
     }
-    export type postApiFileUploadMultipleResponse201 = {
-  data: void
-  status: 201
+    export type postApiFileUploadMultipleResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiFileUploadMultipleResponseSuccess = (postApiFileUploadMultipleResponse201) & {
+;
+export type postApiFileUploadMultipleResponseError = (postApiFileUploadMultipleResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiFileUploadMultipleResponse = (postApiFileUploadMultipleResponseSuccess)
+export type postApiFileUploadMultipleResponse = (postApiFileUploadMultipleResponseError)
 
 export const getPostApiFileUploadMultipleUrl = () => {
 
@@ -237,19 +237,19 @@ export const usePostApiFileUploadMultiple = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiFileUploadMultipleMutationOptions(options), queryClient);
     }
-    export type getApiFilesResponse200 = {
-  data: void
-  status: 200
+    export type getApiFilesResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiFilesResponseSuccess = (getApiFilesResponse200) & {
+;
+export type getApiFilesResponseError = (getApiFilesResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiFilesResponse = (getApiFilesResponseSuccess)
+export type getApiFilesResponse = (getApiFilesResponseError)
 
-export const getGetApiFilesUrl = (params: GetApiFilesParams,) => {
+export const getGetApiFilesUrl = (params?: GetApiFilesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -267,7 +267,7 @@ export const getGetApiFilesUrl = (params: GetApiFilesParams,) => {
 /**
  * @summary List files with filters
  */
-export const getApiFiles = async (params: GetApiFilesParams, options?: RequestInit): Promise<getApiFilesResponse> => {
+export const getApiFiles = async (params?: GetApiFilesParams, options?: RequestInit): Promise<getApiFilesResponse> => {
 
   return useCustomClient<getApiFilesResponse>(getGetApiFilesUrl(params),
   {
@@ -295,7 +295,7 @@ export const getGetApiFilesQueryKey = (params?: GetApiFilesParams,) => {
     }
 
 
-export const getGetApiFilesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFiles>>>, TError = ErrorType<unknown>>(params: GetApiFilesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiFilesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFiles>>>, TError = ErrorType<unknown>>(params?: GetApiFilesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -318,7 +318,7 @@ export type GetApiFilesInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiFilesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFiles>>>, TError = ErrorType<unknown>>(
- params: GetApiFilesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>> & Pick<
+ params: undefined |  GetApiFilesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFiles>>,
           TError,
@@ -328,7 +328,7 @@ export function useGetApiFilesInfinite<TData = InfiniteData<Awaited<ReturnType<t
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFilesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFiles>>>, TError = ErrorType<unknown>>(
- params: GetApiFilesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>> & Pick<
+ params?: GetApiFilesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFiles>>,
           TError,
@@ -338,7 +338,7 @@ export function useGetApiFilesInfinite<TData = InfiniteData<Awaited<ReturnType<t
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFilesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFiles>>>, TError = ErrorType<unknown>>(
- params: GetApiFilesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFilesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -346,7 +346,7 @@ export function useGetApiFilesInfinite<TData = InfiniteData<Awaited<ReturnType<t
  */
 
 export function useGetApiFilesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFiles>>>, TError = ErrorType<unknown>>(
- params: GetApiFilesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFilesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -361,7 +361,7 @@ export function useGetApiFilesInfinite<TData = InfiniteData<Awaited<ReturnType<t
  * @summary List files with filters
  */
 export const prefetchGetApiFilesInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiFiles>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiFilesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiFilesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -376,7 +376,7 @@ export const prefetchGetApiFilesInfiniteQuery = async <TData = Awaited<ReturnTyp
 
 
 
-export const getGetApiFilesQueryOptions = <TData = Awaited<ReturnType<typeof getApiFiles>>, TError = ErrorType<unknown>>(params: GetApiFilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiFilesQueryOptions = <TData = Awaited<ReturnType<typeof getApiFiles>>, TError = ErrorType<unknown>>(params?: GetApiFilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -399,7 +399,7 @@ export type GetApiFilesQueryError = ErrorType<unknown>
 
 
 export function useGetApiFiles<TData = Awaited<ReturnType<typeof getApiFiles>>, TError = ErrorType<unknown>>(
- params: GetApiFilesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>> & Pick<
+ params: undefined |  GetApiFilesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFiles>>,
           TError,
@@ -409,7 +409,7 @@ export function useGetApiFiles<TData = Awaited<ReturnType<typeof getApiFiles>>, 
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFiles<TData = Awaited<ReturnType<typeof getApiFiles>>, TError = ErrorType<unknown>>(
- params: GetApiFilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>> & Pick<
+ params?: GetApiFilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFiles>>,
           TError,
@@ -419,7 +419,7 @@ export function useGetApiFiles<TData = Awaited<ReturnType<typeof getApiFiles>>, 
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFiles<TData = Awaited<ReturnType<typeof getApiFiles>>, TError = ErrorType<unknown>>(
- params: GetApiFilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -427,7 +427,7 @@ export function useGetApiFiles<TData = Awaited<ReturnType<typeof getApiFiles>>, 
  */
 
 export function useGetApiFiles<TData = Awaited<ReturnType<typeof getApiFiles>>, TError = ErrorType<unknown>>(
- params: GetApiFilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiFilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -442,7 +442,7 @@ export function useGetApiFiles<TData = Awaited<ReturnType<typeof getApiFiles>>, 
  * @summary List files with filters
  */
 export const prefetchGetApiFilesQuery = async <TData = Awaited<ReturnType<typeof getApiFiles>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiFilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiFilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFiles>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -457,17 +457,17 @@ export const prefetchGetApiFilesQuery = async <TData = Awaited<ReturnType<typeof
 
 
 
-export type getApiFileIdResponse200 = {
-  data: void
-  status: 200
+export type getApiFileIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiFileIdResponseSuccess = (getApiFileIdResponse200) & {
+;
+export type getApiFileIdResponseError = (getApiFileIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiFileIdResponse = (getApiFileIdResponseSuccess)
+export type getApiFileIdResponse = (getApiFileIdResponseError)
 
 export const getGetApiFileIdUrl = (id: string,) => {
 
@@ -670,17 +670,17 @@ export const prefetchGetApiFileIdQuery = async <TData = Awaited<ReturnType<typeo
 
 
 
-export type deleteApiFileResponse200 = {
-  data: void
-  status: 200
+export type deleteApiFileResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiFileResponseSuccess = (deleteApiFileResponse200) & {
+;
+export type deleteApiFileResponseError = (deleteApiFileResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiFileResponse = (deleteApiFileResponseSuccess)
+export type deleteApiFileResponse = (deleteApiFileResponseError)
 
 export const getDeleteApiFileUrl = (id: string,) => {
 
@@ -752,17 +752,17 @@ export const useDeleteApiFile = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getDeleteApiFileMutationOptions(options), queryClient);
     }
-    export type getApiFileDownloadUrlResponse200 = {
-  data: void
-  status: 200
+    export type getApiFileDownloadUrlResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiFileDownloadUrlResponseSuccess = (getApiFileDownloadUrlResponse200) & {
+;
+export type getApiFileDownloadUrlResponseError = (getApiFileDownloadUrlResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiFileDownloadUrlResponse = (getApiFileDownloadUrlResponseSuccess)
+export type getApiFileDownloadUrlResponse = (getApiFileDownloadUrlResponseError)
 
 export const getGetApiFileDownloadUrlUrl = (id: string,) => {
 
@@ -965,17 +965,17 @@ export const prefetchGetApiFileDownloadUrlQuery = async <TData = Awaited<ReturnT
 
 
 
-export type patchApiFileVisibilityResponse200 = {
-  data: void
-  status: 200
+export type patchApiFileVisibilityResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiFileVisibilityResponseSuccess = (patchApiFileVisibilityResponse200) & {
+;
+export type patchApiFileVisibilityResponseError = (patchApiFileVisibilityResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiFileVisibilityResponse = (patchApiFileVisibilityResponseSuccess)
+export type patchApiFileVisibilityResponse = (patchApiFileVisibilityResponseError)
 
 export const getPatchApiFileVisibilityUrl = (id: string,) => {
 
@@ -1047,17 +1047,17 @@ export const usePatchApiFileVisibility = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPatchApiFileVisibilityMutationOptions(options), queryClient);
     }
-    export type postApiTempUploadResponse201 = {
-  data: void
-  status: 201
+    export type postApiTempUploadResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiTempUploadResponseSuccess = (postApiTempUploadResponse201) & {
+;
+export type postApiTempUploadResponseError = (postApiTempUploadResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiTempUploadResponse = (postApiTempUploadResponseSuccess)
+export type postApiTempUploadResponse = (postApiTempUploadResponseError)
 
 export const getPostApiTempUploadUrl = () => {
 
@@ -1131,17 +1131,17 @@ export const usePostApiTempUpload = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiTempUploadMutationOptions(options), queryClient);
     }
-    export type postApiConfirmUploadResponse201 = {
-  data: void
-  status: 201
+    export type postApiConfirmUploadResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiConfirmUploadResponseSuccess = (postApiConfirmUploadResponse201) & {
+;
+export type postApiConfirmUploadResponseError = (postApiConfirmUploadResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiConfirmUploadResponse = (postApiConfirmUploadResponseSuccess)
+export type postApiConfirmUploadResponse = (postApiConfirmUploadResponseError)
 
 export const getPostApiConfirmUploadUrl = (id: string,) => {
 
@@ -1213,17 +1213,17 @@ export const usePostApiConfirmUpload = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiConfirmUploadMutationOptions(options), queryClient);
     }
-    export type deleteApiAbortUploadResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiAbortUploadResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiAbortUploadResponseSuccess = (deleteApiAbortUploadResponse200) & {
+;
+export type deleteApiAbortUploadResponseError = (deleteApiAbortUploadResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiAbortUploadResponse = (deleteApiAbortUploadResponseSuccess)
+export type deleteApiAbortUploadResponse = (deleteApiAbortUploadResponseError)
 
 export const getDeleteApiAbortUploadUrl = (id: string,) => {
 

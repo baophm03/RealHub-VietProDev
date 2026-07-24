@@ -30,12 +30,16 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  CreateExportJobDto,
+  CreateImportJobDto,
   GetApiExportJobsParams,
-  GetApiImportJobsParams
+  GetApiImportJobsParams,
+  UpdateExportJobDto,
+  UpdateImportJobDto
 } from '../models';
 
 import { useCustomClient } from '../mutator/custom-client';
-import type { ErrorType } from '../mutator/custom-client';
+import type { ErrorType , BodyType } from '../mutator/custom-client';
 
 
 
@@ -58,19 +62,19 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiImportJobsResponse200 = {
-  data: void
-  status: 200
+export type getApiImportJobsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiImportJobsResponseSuccess = (getApiImportJobsResponse200) & {
+;
+export type getApiImportJobsResponseError = (getApiImportJobsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiImportJobsResponse = (getApiImportJobsResponseSuccess)
+export type getApiImportJobsResponse = (getApiImportJobsResponseError)
 
-export const getGetApiImportJobsUrl = (params: GetApiImportJobsParams,) => {
+export const getGetApiImportJobsUrl = (params?: GetApiImportJobsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -88,7 +92,7 @@ export const getGetApiImportJobsUrl = (params: GetApiImportJobsParams,) => {
 /**
  * @summary List import jobs
  */
-export const getApiImportJobs = async (params: GetApiImportJobsParams, options?: RequestInit): Promise<getApiImportJobsResponse> => {
+export const getApiImportJobs = async (params?: GetApiImportJobsParams, options?: RequestInit): Promise<getApiImportJobsResponse> => {
 
   return useCustomClient<getApiImportJobsResponse>(getGetApiImportJobsUrl(params),
   {
@@ -116,7 +120,7 @@ export const getGetApiImportJobsQueryKey = (params?: GetApiImportJobsParams,) =>
     }
 
 
-export const getGetApiImportJobsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiImportJobs>>>, TError = ErrorType<unknown>>(params: GetApiImportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiImportJobsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiImportJobs>>>, TError = ErrorType<unknown>>(params?: GetApiImportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -139,7 +143,7 @@ export type GetApiImportJobsInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiImportJobsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiImportJobs>>>, TError = ErrorType<unknown>>(
- params: GetApiImportJobsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>> & Pick<
+ params: undefined |  GetApiImportJobsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiImportJobs>>,
           TError,
@@ -149,7 +153,7 @@ export function useGetApiImportJobsInfinite<TData = InfiniteData<Awaited<ReturnT
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiImportJobsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiImportJobs>>>, TError = ErrorType<unknown>>(
- params: GetApiImportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>> & Pick<
+ params?: GetApiImportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiImportJobs>>,
           TError,
@@ -159,7 +163,7 @@ export function useGetApiImportJobsInfinite<TData = InfiniteData<Awaited<ReturnT
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiImportJobsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiImportJobs>>>, TError = ErrorType<unknown>>(
- params: GetApiImportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiImportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -167,7 +171,7 @@ export function useGetApiImportJobsInfinite<TData = InfiniteData<Awaited<ReturnT
  */
 
 export function useGetApiImportJobsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiImportJobs>>>, TError = ErrorType<unknown>>(
- params: GetApiImportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiImportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -182,7 +186,7 @@ export function useGetApiImportJobsInfinite<TData = InfiniteData<Awaited<ReturnT
  * @summary List import jobs
  */
 export const prefetchGetApiImportJobsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiImportJobs>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiImportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiImportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -197,7 +201,7 @@ export const prefetchGetApiImportJobsInfiniteQuery = async <TData = Awaited<Retu
 
 
 
-export const getGetApiImportJobsQueryOptions = <TData = Awaited<ReturnType<typeof getApiImportJobs>>, TError = ErrorType<unknown>>(params: GetApiImportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiImportJobsQueryOptions = <TData = Awaited<ReturnType<typeof getApiImportJobs>>, TError = ErrorType<unknown>>(params?: GetApiImportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -220,7 +224,7 @@ export type GetApiImportJobsQueryError = ErrorType<unknown>
 
 
 export function useGetApiImportJobs<TData = Awaited<ReturnType<typeof getApiImportJobs>>, TError = ErrorType<unknown>>(
- params: GetApiImportJobsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>> & Pick<
+ params: undefined |  GetApiImportJobsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiImportJobs>>,
           TError,
@@ -230,7 +234,7 @@ export function useGetApiImportJobs<TData = Awaited<ReturnType<typeof getApiImpo
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiImportJobs<TData = Awaited<ReturnType<typeof getApiImportJobs>>, TError = ErrorType<unknown>>(
- params: GetApiImportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>> & Pick<
+ params?: GetApiImportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiImportJobs>>,
           TError,
@@ -240,7 +244,7 @@ export function useGetApiImportJobs<TData = Awaited<ReturnType<typeof getApiImpo
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiImportJobs<TData = Awaited<ReturnType<typeof getApiImportJobs>>, TError = ErrorType<unknown>>(
- params: GetApiImportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiImportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -248,7 +252,7 @@ export function useGetApiImportJobs<TData = Awaited<ReturnType<typeof getApiImpo
  */
 
 export function useGetApiImportJobs<TData = Awaited<ReturnType<typeof getApiImportJobs>>, TError = ErrorType<unknown>>(
- params: GetApiImportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiImportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -263,7 +267,7 @@ export function useGetApiImportJobs<TData = Awaited<ReturnType<typeof getApiImpo
  * @summary List import jobs
  */
 export const prefetchGetApiImportJobsQuery = async <TData = Awaited<ReturnType<typeof getApiImportJobs>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiImportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiImportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiImportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -278,17 +282,17 @@ export const prefetchGetApiImportJobsQuery = async <TData = Awaited<ReturnType<t
 
 
 
-export type postApiImportJobResponse201 = {
-  data: void
-  status: 201
+export type postApiImportJobResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiImportJobResponseSuccess = (postApiImportJobResponse201) & {
+;
+export type postApiImportJobResponseError = (postApiImportJobResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiImportJobResponse = (postApiImportJobResponseSuccess)
+export type postApiImportJobResponse = (postApiImportJobResponseError)
 
 export const getPostApiImportJobUrl = () => {
 
@@ -301,14 +305,14 @@ export const getPostApiImportJobUrl = () => {
 /**
  * @summary Create an import job
  */
-export const postApiImportJob = async ( options?: RequestInit): Promise<postApiImportJobResponse> => {
+export const postApiImportJob = async (createImportJobDto: CreateImportJobDto, options?: RequestInit): Promise<postApiImportJobResponse> => {
 
   return useCustomClient<postApiImportJobResponse>(getPostApiImportJobUrl(),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(createImportJobDto)
   }
 );}
 
@@ -317,8 +321,8 @@ export const postApiImportJob = async ( options?: RequestInit): Promise<postApiI
 
 
 export const getPostApiImportJobMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiImportJob>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiImportJob>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiImportJob>>, TError,{data: BodyType<CreateImportJobDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiImportJob>>, TError,{data: BodyType<CreateImportJobDto>}, TContext> => {
 
 const mutationKey = ['postApiImportJob'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -330,10 +334,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiImportJob>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiImportJob>>, {data: BodyType<CreateImportJobDto>}> = (props) => {
+          const {data} = props ?? {};
 
-
-          return  postApiImportJob(requestOptions)
+          return  postApiImportJob(data,requestOptions)
         }
 
 
@@ -344,33 +348,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiImportJobMutationResult = NonNullable<Awaited<ReturnType<typeof postApiImportJob>>>
-
+    export type PostApiImportJobMutationBody = BodyType<CreateImportJobDto>
     export type PostApiImportJobMutationError = ErrorType<unknown>
 
     /**
  * @summary Create an import job
  */
 export const usePostApiImportJob = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiImportJob>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiImportJob>>, TError,{data: BodyType<CreateImportJobDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiImportJob>>,
         TError,
-        void,
+        {data: BodyType<CreateImportJobDto>},
         TContext
       > => {
       return useMutation(getPostApiImportJobMutationOptions(options), queryClient);
     }
-    export type getApiImportJobIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiImportJobIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiImportJobIdResponseSuccess = (getApiImportJobIdResponse200) & {
+;
+export type getApiImportJobIdResponseError = (getApiImportJobIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiImportJobIdResponse = (getApiImportJobIdResponseSuccess)
+export type getApiImportJobIdResponse = (getApiImportJobIdResponseError)
 
 export const getGetApiImportJobIdUrl = (id: string,) => {
 
@@ -573,17 +577,17 @@ export const prefetchGetApiImportJobIdQuery = async <TData = Awaited<ReturnType<
 
 
 
-export type patchApiImportJobResponse200 = {
-  data: void
-  status: 200
+export type patchApiImportJobResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiImportJobResponseSuccess = (patchApiImportJobResponse200) & {
+;
+export type patchApiImportJobResponseError = (patchApiImportJobResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiImportJobResponse = (patchApiImportJobResponseSuccess)
+export type patchApiImportJobResponse = (patchApiImportJobResponseError)
 
 export const getPatchApiImportJobUrl = (id: string,) => {
 
@@ -596,14 +600,15 @@ export const getPatchApiImportJobUrl = (id: string,) => {
 /**
  * @summary Update import job progress
  */
-export const patchApiImportJob = async (id: string, options?: RequestInit): Promise<patchApiImportJobResponse> => {
+export const patchApiImportJob = async (id: string,
+    updateImportJobDto: UpdateImportJobDto, options?: RequestInit): Promise<patchApiImportJobResponse> => {
 
   return useCustomClient<patchApiImportJobResponse>(getPatchApiImportJobUrl(id),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateImportJobDto)
   }
 );}
 
@@ -612,8 +617,8 @@ export const patchApiImportJob = async (id: string, options?: RequestInit): Prom
 
 
 export const getPatchApiImportJobMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiImportJob>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiImportJob>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiImportJob>>, TError,{id: string;data: BodyType<UpdateImportJobDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiImportJob>>, TError,{id: string;data: BodyType<UpdateImportJobDto>}, TContext> => {
 
 const mutationKey = ['patchApiImportJob'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -625,10 +630,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiImportJob>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiImportJob>>, {id: string;data: BodyType<UpdateImportJobDto>}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiImportJob(id,requestOptions)
+          return  patchApiImportJob(id,data,requestOptions)
         }
 
 
@@ -639,35 +644,35 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiImportJobMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiImportJob>>>
-
+    export type PatchApiImportJobMutationBody = BodyType<UpdateImportJobDto>
     export type PatchApiImportJobMutationError = ErrorType<unknown>
 
     /**
  * @summary Update import job progress
  */
 export const usePatchApiImportJob = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiImportJob>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiImportJob>>, TError,{id: string;data: BodyType<UpdateImportJobDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiImportJob>>,
         TError,
-        {id: string},
+        {id: string;data: BodyType<UpdateImportJobDto>},
         TContext
       > => {
       return useMutation(getPatchApiImportJobMutationOptions(options), queryClient);
     }
-    export type getApiExportJobsResponse200 = {
-  data: void
-  status: 200
+    export type getApiExportJobsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiExportJobsResponseSuccess = (getApiExportJobsResponse200) & {
+;
+export type getApiExportJobsResponseError = (getApiExportJobsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiExportJobsResponse = (getApiExportJobsResponseSuccess)
+export type getApiExportJobsResponse = (getApiExportJobsResponseError)
 
-export const getGetApiExportJobsUrl = (params: GetApiExportJobsParams,) => {
+export const getGetApiExportJobsUrl = (params?: GetApiExportJobsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -685,7 +690,7 @@ export const getGetApiExportJobsUrl = (params: GetApiExportJobsParams,) => {
 /**
  * @summary List export jobs
  */
-export const getApiExportJobs = async (params: GetApiExportJobsParams, options?: RequestInit): Promise<getApiExportJobsResponse> => {
+export const getApiExportJobs = async (params?: GetApiExportJobsParams, options?: RequestInit): Promise<getApiExportJobsResponse> => {
 
   return useCustomClient<getApiExportJobsResponse>(getGetApiExportJobsUrl(params),
   {
@@ -713,7 +718,7 @@ export const getGetApiExportJobsQueryKey = (params?: GetApiExportJobsParams,) =>
     }
 
 
-export const getGetApiExportJobsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiExportJobs>>>, TError = ErrorType<unknown>>(params: GetApiExportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiExportJobsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiExportJobs>>>, TError = ErrorType<unknown>>(params?: GetApiExportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -736,7 +741,7 @@ export type GetApiExportJobsInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiExportJobsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiExportJobs>>>, TError = ErrorType<unknown>>(
- params: GetApiExportJobsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>> & Pick<
+ params: undefined |  GetApiExportJobsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiExportJobs>>,
           TError,
@@ -746,7 +751,7 @@ export function useGetApiExportJobsInfinite<TData = InfiniteData<Awaited<ReturnT
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiExportJobsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiExportJobs>>>, TError = ErrorType<unknown>>(
- params: GetApiExportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>> & Pick<
+ params?: GetApiExportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiExportJobs>>,
           TError,
@@ -756,7 +761,7 @@ export function useGetApiExportJobsInfinite<TData = InfiniteData<Awaited<ReturnT
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiExportJobsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiExportJobs>>>, TError = ErrorType<unknown>>(
- params: GetApiExportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiExportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -764,7 +769,7 @@ export function useGetApiExportJobsInfinite<TData = InfiniteData<Awaited<ReturnT
  */
 
 export function useGetApiExportJobsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiExportJobs>>>, TError = ErrorType<unknown>>(
- params: GetApiExportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiExportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -779,7 +784,7 @@ export function useGetApiExportJobsInfinite<TData = InfiniteData<Awaited<ReturnT
  * @summary List export jobs
  */
 export const prefetchGetApiExportJobsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiExportJobs>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiExportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiExportJobsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -794,7 +799,7 @@ export const prefetchGetApiExportJobsInfiniteQuery = async <TData = Awaited<Retu
 
 
 
-export const getGetApiExportJobsQueryOptions = <TData = Awaited<ReturnType<typeof getApiExportJobs>>, TError = ErrorType<unknown>>(params: GetApiExportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiExportJobsQueryOptions = <TData = Awaited<ReturnType<typeof getApiExportJobs>>, TError = ErrorType<unknown>>(params?: GetApiExportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -817,7 +822,7 @@ export type GetApiExportJobsQueryError = ErrorType<unknown>
 
 
 export function useGetApiExportJobs<TData = Awaited<ReturnType<typeof getApiExportJobs>>, TError = ErrorType<unknown>>(
- params: GetApiExportJobsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>> & Pick<
+ params: undefined |  GetApiExportJobsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiExportJobs>>,
           TError,
@@ -827,7 +832,7 @@ export function useGetApiExportJobs<TData = Awaited<ReturnType<typeof getApiExpo
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiExportJobs<TData = Awaited<ReturnType<typeof getApiExportJobs>>, TError = ErrorType<unknown>>(
- params: GetApiExportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>> & Pick<
+ params?: GetApiExportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiExportJobs>>,
           TError,
@@ -837,7 +842,7 @@ export function useGetApiExportJobs<TData = Awaited<ReturnType<typeof getApiExpo
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiExportJobs<TData = Awaited<ReturnType<typeof getApiExportJobs>>, TError = ErrorType<unknown>>(
- params: GetApiExportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiExportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -845,7 +850,7 @@ export function useGetApiExportJobs<TData = Awaited<ReturnType<typeof getApiExpo
  */
 
 export function useGetApiExportJobs<TData = Awaited<ReturnType<typeof getApiExportJobs>>, TError = ErrorType<unknown>>(
- params: GetApiExportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiExportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -860,7 +865,7 @@ export function useGetApiExportJobs<TData = Awaited<ReturnType<typeof getApiExpo
  * @summary List export jobs
  */
 export const prefetchGetApiExportJobsQuery = async <TData = Awaited<ReturnType<typeof getApiExportJobs>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiExportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiExportJobsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiExportJobs>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -875,17 +880,17 @@ export const prefetchGetApiExportJobsQuery = async <TData = Awaited<ReturnType<t
 
 
 
-export type postApiExportJobResponse201 = {
-  data: void
-  status: 201
+export type postApiExportJobResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiExportJobResponseSuccess = (postApiExportJobResponse201) & {
+;
+export type postApiExportJobResponseError = (postApiExportJobResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiExportJobResponse = (postApiExportJobResponseSuccess)
+export type postApiExportJobResponse = (postApiExportJobResponseError)
 
 export const getPostApiExportJobUrl = () => {
 
@@ -898,14 +903,14 @@ export const getPostApiExportJobUrl = () => {
 /**
  * @summary Create an export job
  */
-export const postApiExportJob = async ( options?: RequestInit): Promise<postApiExportJobResponse> => {
+export const postApiExportJob = async (createExportJobDto: CreateExportJobDto, options?: RequestInit): Promise<postApiExportJobResponse> => {
 
   return useCustomClient<postApiExportJobResponse>(getPostApiExportJobUrl(),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(createExportJobDto)
   }
 );}
 
@@ -914,8 +919,8 @@ export const postApiExportJob = async ( options?: RequestInit): Promise<postApiE
 
 
 export const getPostApiExportJobMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiExportJob>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiExportJob>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiExportJob>>, TError,{data: BodyType<CreateExportJobDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiExportJob>>, TError,{data: BodyType<CreateExportJobDto>}, TContext> => {
 
 const mutationKey = ['postApiExportJob'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -927,10 +932,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiExportJob>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiExportJob>>, {data: BodyType<CreateExportJobDto>}> = (props) => {
+          const {data} = props ?? {};
 
-
-          return  postApiExportJob(requestOptions)
+          return  postApiExportJob(data,requestOptions)
         }
 
 
@@ -941,33 +946,33 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiExportJobMutationResult = NonNullable<Awaited<ReturnType<typeof postApiExportJob>>>
-
+    export type PostApiExportJobMutationBody = BodyType<CreateExportJobDto>
     export type PostApiExportJobMutationError = ErrorType<unknown>
 
     /**
  * @summary Create an export job
  */
 export const usePostApiExportJob = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiExportJob>>, TError,void, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiExportJob>>, TError,{data: BodyType<CreateExportJobDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiExportJob>>,
         TError,
-        void,
+        {data: BodyType<CreateExportJobDto>},
         TContext
       > => {
       return useMutation(getPostApiExportJobMutationOptions(options), queryClient);
     }
-    export type getApiExportJobIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiExportJobIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiExportJobIdResponseSuccess = (getApiExportJobIdResponse200) & {
+;
+export type getApiExportJobIdResponseError = (getApiExportJobIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiExportJobIdResponse = (getApiExportJobIdResponseSuccess)
+export type getApiExportJobIdResponse = (getApiExportJobIdResponseError)
 
 export const getGetApiExportJobIdUrl = (id: string,) => {
 
@@ -1170,17 +1175,17 @@ export const prefetchGetApiExportJobIdQuery = async <TData = Awaited<ReturnType<
 
 
 
-export type patchApiExportJobResponse200 = {
-  data: void
-  status: 200
+export type patchApiExportJobResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiExportJobResponseSuccess = (patchApiExportJobResponse200) & {
+;
+export type patchApiExportJobResponseError = (patchApiExportJobResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiExportJobResponse = (patchApiExportJobResponseSuccess)
+export type patchApiExportJobResponse = (patchApiExportJobResponseError)
 
 export const getPatchApiExportJobUrl = (id: string,) => {
 
@@ -1193,14 +1198,15 @@ export const getPatchApiExportJobUrl = (id: string,) => {
 /**
  * @summary Update export job status
  */
-export const patchApiExportJob = async (id: string, options?: RequestInit): Promise<patchApiExportJobResponse> => {
+export const patchApiExportJob = async (id: string,
+    updateExportJobDto: UpdateExportJobDto, options?: RequestInit): Promise<patchApiExportJobResponse> => {
 
   return useCustomClient<patchApiExportJobResponse>(getPatchApiExportJobUrl(id),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateExportJobDto)
   }
 );}
 
@@ -1209,8 +1215,8 @@ export const patchApiExportJob = async (id: string, options?: RequestInit): Prom
 
 
 export const getPatchApiExportJobMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiExportJob>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiExportJob>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiExportJob>>, TError,{id: string;data: BodyType<UpdateExportJobDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiExportJob>>, TError,{id: string;data: BodyType<UpdateExportJobDto>}, TContext> => {
 
 const mutationKey = ['patchApiExportJob'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1222,10 +1228,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiExportJob>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiExportJob>>, {id: string;data: BodyType<UpdateExportJobDto>}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiExportJob(id,requestOptions)
+          return  patchApiExportJob(id,data,requestOptions)
         }
 
 
@@ -1236,18 +1242,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiExportJobMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiExportJob>>>
-
+    export type PatchApiExportJobMutationBody = BodyType<UpdateExportJobDto>
     export type PatchApiExportJobMutationError = ErrorType<unknown>
 
     /**
  * @summary Update export job status
  */
 export const usePatchApiExportJob = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiExportJob>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiExportJob>>, TError,{id: string;data: BodyType<UpdateExportJobDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiExportJob>>,
         TError,
-        {id: string},
+        {id: string;data: BodyType<UpdateExportJobDto>},
         TContext
       > => {
       return useMutation(getPatchApiExportJobMutationOptions(options), queryClient);

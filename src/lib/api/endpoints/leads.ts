@@ -60,19 +60,19 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type getApiLeadsResponse200 = {
-  data: void
-  status: 200
+export type getApiLeadsResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiLeadsResponseSuccess = (getApiLeadsResponse200) & {
+;
+export type getApiLeadsResponseError = (getApiLeadsResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiLeadsResponse = (getApiLeadsResponseSuccess)
+export type getApiLeadsResponse = (getApiLeadsResponseError)
 
-export const getGetApiLeadsUrl = (params: GetApiLeadsParams,) => {
+export const getGetApiLeadsUrl = (params?: GetApiLeadsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -90,7 +90,7 @@ export const getGetApiLeadsUrl = (params: GetApiLeadsParams,) => {
 /**
  * @summary List leads with filters
  */
-export const getApiLeads = async (params: GetApiLeadsParams, options?: RequestInit): Promise<getApiLeadsResponse> => {
+export const getApiLeads = async (params?: GetApiLeadsParams, options?: RequestInit): Promise<getApiLeadsResponse> => {
 
   return useCustomClient<getApiLeadsResponse>(getGetApiLeadsUrl(params),
   {
@@ -118,7 +118,7 @@ export const getGetApiLeadsQueryKey = (params?: GetApiLeadsParams,) => {
     }
 
 
-export const getGetApiLeadsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiLeads>>>, TError = ErrorType<unknown>>(params: GetApiLeadsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiLeadsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiLeads>>>, TError = ErrorType<unknown>>(params?: GetApiLeadsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -141,7 +141,7 @@ export type GetApiLeadsInfiniteQueryError = ErrorType<unknown>
 
 
 export function useGetApiLeadsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeads>>>, TError = ErrorType<unknown>>(
- params: GetApiLeadsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>> & Pick<
+ params: undefined |  GetApiLeadsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiLeads>>,
           TError,
@@ -151,7 +151,7 @@ export function useGetApiLeadsInfinite<TData = InfiniteData<Awaited<ReturnType<t
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiLeadsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeads>>>, TError = ErrorType<unknown>>(
- params: GetApiLeadsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>> & Pick<
+ params?: GetApiLeadsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiLeads>>,
           TError,
@@ -161,7 +161,7 @@ export function useGetApiLeadsInfinite<TData = InfiniteData<Awaited<ReturnType<t
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiLeadsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeads>>>, TError = ErrorType<unknown>>(
- params: GetApiLeadsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiLeadsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -169,7 +169,7 @@ export function useGetApiLeadsInfinite<TData = InfiniteData<Awaited<ReturnType<t
  */
 
 export function useGetApiLeadsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeads>>>, TError = ErrorType<unknown>>(
- params: GetApiLeadsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiLeadsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -184,7 +184,7 @@ export function useGetApiLeadsInfinite<TData = InfiniteData<Awaited<ReturnType<t
  * @summary List leads with filters
  */
 export const prefetchGetApiLeadsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiLeads>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiLeadsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiLeadsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -199,7 +199,7 @@ export const prefetchGetApiLeadsInfiniteQuery = async <TData = Awaited<ReturnTyp
 
 
 
-export const getGetApiLeadsQueryOptions = <TData = Awaited<ReturnType<typeof getApiLeads>>, TError = ErrorType<unknown>>(params: GetApiLeadsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+export const getGetApiLeadsQueryOptions = <TData = Awaited<ReturnType<typeof getApiLeads>>, TError = ErrorType<unknown>>(params?: GetApiLeadsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -222,7 +222,7 @@ export type GetApiLeadsQueryError = ErrorType<unknown>
 
 
 export function useGetApiLeads<TData = Awaited<ReturnType<typeof getApiLeads>>, TError = ErrorType<unknown>>(
- params: GetApiLeadsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>> & Pick<
+ params: undefined |  GetApiLeadsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiLeads>>,
           TError,
@@ -232,7 +232,7 @@ export function useGetApiLeads<TData = Awaited<ReturnType<typeof getApiLeads>>, 
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiLeads<TData = Awaited<ReturnType<typeof getApiLeads>>, TError = ErrorType<unknown>>(
- params: GetApiLeadsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>> & Pick<
+ params?: GetApiLeadsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiLeads>>,
           TError,
@@ -242,7 +242,7 @@ export function useGetApiLeads<TData = Awaited<ReturnType<typeof getApiLeads>>, 
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiLeads<TData = Awaited<ReturnType<typeof getApiLeads>>, TError = ErrorType<unknown>>(
- params: GetApiLeadsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiLeadsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -250,7 +250,7 @@ export function useGetApiLeads<TData = Awaited<ReturnType<typeof getApiLeads>>, 
  */
 
 export function useGetApiLeads<TData = Awaited<ReturnType<typeof getApiLeads>>, TError = ErrorType<unknown>>(
- params: GetApiLeadsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ params?: GetApiLeadsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -265,7 +265,7 @@ export function useGetApiLeads<TData = Awaited<ReturnType<typeof getApiLeads>>, 
  * @summary List leads with filters
  */
 export const prefetchGetApiLeadsQuery = async <TData = Awaited<ReturnType<typeof getApiLeads>>, TError = ErrorType<unknown>>(
- queryClient: QueryClient, params: GetApiLeadsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
+ queryClient: QueryClient, params?: GetApiLeadsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeads>>, TError, TData>>, request?: SecondParameter<typeof useCustomClient>}
 
   ): Promise<QueryClient> => {
 
@@ -280,17 +280,17 @@ export const prefetchGetApiLeadsQuery = async <TData = Awaited<ReturnType<typeof
 
 
 
-export type postApiLeadResponse201 = {
-  data: void
-  status: 201
+export type postApiLeadResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiLeadResponseSuccess = (postApiLeadResponse201) & {
+;
+export type postApiLeadResponseError = (postApiLeadResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiLeadResponse = (postApiLeadResponseSuccess)
+export type postApiLeadResponse = (postApiLeadResponseError)
 
 export const getPostApiLeadUrl = () => {
 
@@ -362,17 +362,17 @@ export const usePostApiLead = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiLeadMutationOptions(options), queryClient);
     }
-    export type getApiLeadIdResponse200 = {
-  data: void
-  status: 200
+    export type getApiLeadIdResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiLeadIdResponseSuccess = (getApiLeadIdResponse200) & {
+;
+export type getApiLeadIdResponseError = (getApiLeadIdResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiLeadIdResponse = (getApiLeadIdResponseSuccess)
+export type getApiLeadIdResponse = (getApiLeadIdResponseError)
 
 export const getGetApiLeadIdUrl = (id: string,) => {
 
@@ -575,17 +575,17 @@ export const prefetchGetApiLeadIdQuery = async <TData = Awaited<ReturnType<typeo
 
 
 
-export type patchApiLeadResponse200 = {
-  data: void
-  status: 200
+export type patchApiLeadResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type patchApiLeadResponseSuccess = (patchApiLeadResponse200) & {
+;
+export type patchApiLeadResponseError = (patchApiLeadResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type patchApiLeadResponse = (patchApiLeadResponseSuccess)
+export type patchApiLeadResponse = (patchApiLeadResponseError)
 
 export const getPatchApiLeadUrl = (id: string,) => {
 
@@ -658,17 +658,17 @@ export const usePatchApiLead = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPatchApiLeadMutationOptions(options), queryClient);
     }
-    export type deleteApiLeadResponse200 = {
-  data: void
-  status: 200
+    export type deleteApiLeadResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type deleteApiLeadResponseSuccess = (deleteApiLeadResponse200) & {
+;
+export type deleteApiLeadResponseError = (deleteApiLeadResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type deleteApiLeadResponse = (deleteApiLeadResponseSuccess)
+export type deleteApiLeadResponse = (deleteApiLeadResponseError)
 
 export const getDeleteApiLeadUrl = (id: string,) => {
 
@@ -740,17 +740,17 @@ export const useDeleteApiLead = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getDeleteApiLeadMutationOptions(options), queryClient);
     }
-    export type getApiLeadActivitiesResponse200 = {
-  data: void
-  status: 200
+    export type getApiLeadActivitiesResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type getApiLeadActivitiesResponseSuccess = (getApiLeadActivitiesResponse200) & {
+;
+export type getApiLeadActivitiesResponseError = (getApiLeadActivitiesResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type getApiLeadActivitiesResponse = (getApiLeadActivitiesResponseSuccess)
+export type getApiLeadActivitiesResponse = (getApiLeadActivitiesResponseError)
 
 export const getGetApiLeadActivitiesUrl = (id: string,) => {
 
@@ -953,17 +953,17 @@ export const prefetchGetApiLeadActivitiesQuery = async <TData = Awaited<ReturnTy
 
 
 
-export type postApiLeadActivityResponse201 = {
-  data: void
-  status: 201
+export type postApiLeadActivityResponseDefault = {
+  data: unknown
+  status: number
 }
 
-export type postApiLeadActivityResponseSuccess = (postApiLeadActivityResponse201) & {
+;
+export type postApiLeadActivityResponseError = (postApiLeadActivityResponseDefault) & {
   headers: Headers;
 };
-;
 
-export type postApiLeadActivityResponse = (postApiLeadActivityResponseSuccess)
+export type postApiLeadActivityResponse = (postApiLeadActivityResponseError)
 
 export const getPostApiLeadActivityUrl = (id: string,) => {
 

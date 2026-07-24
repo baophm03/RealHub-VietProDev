@@ -54,17 +54,17 @@ export default function LoginPage() {
           sessionId: res?.data?.sessionId,
         });
 
-        const me = await getProfile();
-        const meData = (me as unknown as GetAuthMeResponse)?.data;
+        const profile = await getProfile();
+        const profileData = (profile.data as unknown as GetAuthMeResponse)?.data;
 
-        if (meData) {
+        if (profileData) {
           setUser({
-            id: meData.id,
-            email: meData.email,
-            fullName: meData.fullName,
-            phone: meData.phone ?? undefined,
-            avatarUrl: meData.avatarUrl ?? undefined,
-            role: (meData.memberships?.[0]?.roleCode as UserRole) || "SALES",
+            id: profileData.id,
+            email: profileData.email,
+            fullName: profileData.fullName,
+            phone: profileData.phone ?? undefined,
+            avatarUrl: profileData.avatarUrl ?? undefined,
+            role: (profileData.memberships?.[0]?.roleCode as UserRole) || "SALES",
             permissions: [],
           });
         }

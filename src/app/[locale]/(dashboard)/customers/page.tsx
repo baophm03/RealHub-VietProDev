@@ -52,7 +52,7 @@ const columns: ColumnDef<CustomerRow>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Ngay tao",
+    header: "Ngày tạo",
     cell: ({ row }) => <span className="tabular-nums text-foreground-muted text-xs">{row.original.createdAt ? new Date(row.original.createdAt).toLocaleDateString("vi-VN") : "-"}</span>,
   },
 ];

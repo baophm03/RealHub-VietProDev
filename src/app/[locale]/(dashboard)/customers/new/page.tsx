@@ -72,10 +72,10 @@ export default function CustomerFormPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <FormSection title="Thong tin khach hang">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Ho va ten" htmlFor="fullName" required error={errors.fullName?.message}>
+            <FormField label="Họ và tên" htmlFor="fullName" required error={errors.fullName?.message}>
               <Input id="fullName" placeholder="Nguyen Van An" {...register("fullName")} />
             </FormField>
-            <FormField label="So dien thoai" htmlFor="phone" error={errors.phone?.message}>
+            <FormField label="Số điện thoại" htmlFor="phone" error={errors.phone?.message}>
               <Input id="phone" placeholder="0901234567" {...register("phone")} />
             </FormField>
           </div>

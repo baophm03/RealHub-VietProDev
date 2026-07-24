@@ -95,7 +95,7 @@ export default function LeadDetailPage() {
           actions={
             <Button variant="outline" onClick={() => router.push(`/leads/${id}/edit`)}>
               <Pencil size={16} />
-              Chinh sua
+              Chỉnh sửa
             </Button>
           }
         />
@@ -146,7 +146,7 @@ export default function LeadDetailPage() {
             )}
             {lead.createdAt && (
               <div>
-                <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Ngay tao</span>
+                <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Ngày tạo</span>
                 <p className="text-sm tabular-nums">{new Date(lead.createdAt).toLocaleDateString("vi-VN")}</p>
               </div>
             )}
