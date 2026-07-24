@@ -41,7 +41,7 @@ export default function AppointmentsPage() {
 
   const { data: appointmentsData, isLoading } = useGetApiAppointments({
     assignedUserId: "",
-    status: "",
+    status: undefined,
     leadId: "",
     propertyId: "",
     limit: "20",
@@ -56,9 +56,9 @@ export default function AppointmentsPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        eyebrow="Lich hen"
-        title="Lich hen"
-        description="Quan ly lich hen xem nha, gap mat, ky hop dong"
+        eyebrow="Lịch hẹn"
+        title="Lịch hẹn"
+        description="Quản lý lịch hẹn xem nhà, gặp mặt, ký hợp đồng"
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1 rounded-md border border-border p-1">
@@ -72,7 +72,7 @@ export default function AppointmentsPage() {
             {mounted && hasPermission("appointments:write") && (
               <Button onClick={() => router.push("/appointments/new")}>
                 <Plus size={16} />
-                Them lich hen
+                Thêm lịch hẹn
               </Button>
             )}
           </div>
@@ -111,7 +111,7 @@ export default function AppointmentsPage() {
         <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted/30 p-8 md:min-h-[400px]">
           <div className="flex flex-col items-center gap-2 text-foreground-muted">
             <CalendarIcon size={32} />
-            <p className="text-sm">Lich se hien thi tai day</p>
+            <p className="text-sm">Lịch sẽ hiển thị tại đây</p>
           </div>
         </div>
       )}

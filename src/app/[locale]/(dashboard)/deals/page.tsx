@@ -22,12 +22,12 @@ interface Deal {
 }
 
 const statusConfig = [
-  { id: "PENDING", title: "Cho xu ly", variant: "blue" as const },
-  { id: "NEGOTIATING", title: "Dam phan", variant: "yellow" as const },
-  { id: "DEPOSITED", title: "Dat coc", variant: "purple" as const },
-  { id: "CONTRACT_SIGNED", title: "Ky HD", variant: "default" as const },
-  { id: "COMPLETED", title: "Hoan thanh", variant: "green" as const },
-  { id: "CANCELLED", title: "Huy", variant: "red" as const },
+  { id: "PENDING", title: "Chờ xử lý", variant: "blue" as const },
+  { id: "NEGOTIATING", title: "Đàm phán", variant: "yellow" as const },
+  { id: "DEPOSITED", title: "Đặt cọc", variant: "purple" as const },
+  { id: "CONTRACT_SIGNED", title: "Ký HĐ", variant: "default" as const },
+  { id: "COMPLETED", title: "Hoàn thành", variant: "green" as const },
+  { id: "CANCELLED", title: "Hủy", variant: "red" as const },
 ];
 
 function formatPrice(price: number): string {
@@ -43,10 +43,10 @@ export default function DealsPage() {
   const [mounted, setMounted] = useState(false);
 
   const { data: dealsData, isLoading } = useGetApiDeals({
-    status: "",
-    salesUserId: "",
-    propertyId: "",
-    customerId: "",
+    status: undefined,
+    salesUserId: undefined,
+    propertyId: undefined,
+    customerId: undefined,
     limit: "50",
     offset: "0",
   });
@@ -66,9 +66,9 @@ export default function DealsPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        eyebrow="Giao dich"
-        title="Giao dich"
-        description="Quan ly giao dich theo workflow"
+        eyebrow="Giao dịch"
+        title="Giao dịch"
+        description="Quản lý giao dịch theo workflow"
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1 rounded-md border border-border p-1">
@@ -82,7 +82,7 @@ export default function DealsPage() {
             {mounted && hasPermission("deals:write") && (
               <Button onClick={() => router.push("/deals/new")}>
                 <Plus size={16} />
-                Them giao dich
+                Thêm giao dịch
               </Button>
             )}
           </div>
@@ -114,10 +114,10 @@ export default function DealsPage() {
           <table className="w-full text-sm min-w-[600px]">
             <thead>
               <tr className="border-b border-border bg-surface-muted/50">
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Tieu de</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Khach hang</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Gia tri</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Trang thai</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Tiêu đề</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Khách hàng</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Giá trị</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Trạng thái</th>
               </tr>
             </thead>
             <tbody>

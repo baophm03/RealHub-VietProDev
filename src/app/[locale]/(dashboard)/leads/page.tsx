@@ -22,12 +22,12 @@ interface Lead {
 }
 
 const statusConfig = [
-  { id: "NEW", title: "Moi", variant: "blue" as const },
-  { id: "CONTACTED", title: "Da lien he", variant: "yellow" as const },
-  { id: "INTERESTED", title: "Quan tam", variant: "purple" as const },
-  { id: "NEGOTIATING", title: "Dam phan", variant: "default" as const },
-  { id: "CONVERTED", title: "Chuyen doi", variant: "green" as const },
-  { id: "LOST", title: "Mat", variant: "red" as const },
+  { id: "NEW", title: "Mới", variant: "blue" as const },
+  { id: "CONTACTED", title: "Đã liên hệ", variant: "yellow" as const },
+  { id: "INTERESTED", title: "Quan tâm", variant: "purple" as const },
+  { id: "NEGOTIATING", title: "Đàm phán", variant: "default" as const },
+  { id: "CONVERTED", title: "Chuyển đổi", variant: "green" as const },
+  { id: "LOST", title: "Mất", variant: "red" as const },
 ];
 
 function formatPrice(price: number): string {
@@ -43,12 +43,12 @@ export default function LeadsPage() {
   const [mounted, setMounted] = useState(false);
 
   const { data: leadsData, isLoading } = useGetApiLeads({
-    status: "",
-    source: "",
-    assignedSalesId: "",
-    customerId: "",
-    propertyId: "",
-    search: "",
+    status: undefined,
+    source: undefined,
+    assignedSalesId: undefined,
+    customerId: undefined,
+    propertyId: undefined,
+    search: undefined,
     limit: "50",
     offset: "0",
   });
@@ -70,7 +70,7 @@ export default function LeadsPage() {
       <PageHeader
         eyebrow="CRM"
         title="Leads"
-        description="Quan ly lead theo trang thai"
+        description="Quản lý lead theo trạng thái"
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1 rounded-md border border-border p-1">

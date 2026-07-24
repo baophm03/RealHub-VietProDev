@@ -64,9 +64,9 @@ export default function CustomersPage() {
   const [mounted, setMounted] = useState(false);
 
   const { data: customersData, isLoading } = useGetApiCustomers({
-    search: "",
-    type: "",
-    status: "",
+    search: undefined,
+    type: undefined,
+    status: undefined,
     limit: "20",
     offset: "0",
   });
