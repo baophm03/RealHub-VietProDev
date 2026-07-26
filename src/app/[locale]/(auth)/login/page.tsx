@@ -2,89 +2,91 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { ArrowUpRight, Eye, EyeSlash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/lib/stores/auth-store";
+import { useUserStore } from "@/lib/stores/user-store";
+import { useForm } from "react-hook-form";
+import { usePostApiLogin } from "@/lib/api/endpoints/auth";
+import { useGetApiMe } from "@/lib/api/endpoints/auth";
+import { GetAuthMeResponse } from "@/lib/api/types/auth-me";
+import { UserRole } from "@/lib/types";
 
-const loginSchema = z.object({
-  email: z.string().email("Email khong hop le"),
-  password: z.string().min(1, "Vui long nhap mat khau"),
-  tenantCode: z.string().min(1, "Vui long nhap ma tenant"),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
+interface LoginFormData {
+  email: string;
+  password: string;
+}
 
 export default function LoginPage() {
   const router = useRouter();
-  const setAuth = useAuthStore((s) => s.setAuth);
-  const setTenantCode = useAuthStore((s) => s.setTenantCode);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+
+  // store
+  const setAuth = useAuthStore((s) => s.setAuth);
+  const setUser = useUserStore((s) => s.setUser);
+
+  const { refetch: getProfile } = useGetApiMe();
 
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
     defaultValues: {
-      tenantCode: process.env.NEXT_PUBLIC_TENANT_CODE ?? "DEMO",
       email: "admin@demo.realhub.local",
       password: "Admin@123456",
     },
   });
 
-  const fillDemoAccount = (email: string, password: string) => {
-    setValue("email", email);
-    setValue("password", password);
-  };
-
-  const onSubmit = async (data: LoginFormData) => {
-    setError(null);
-    setLoading(true);
-    try {
-      setTenantCode(data.tenantCode);
-
-      const demoAccounts: Record<string, { password: string; role: "SUPER_ADMIN" | "SALES"; name: string }> = {
-        "admin@demo.realhub.local": { password: "Admin@123456", role: "SUPER_ADMIN", name: "Administrator" },
-        "sales@demo.realhub.local": { password: "Sales@123456", role: "SALES", name: "Sales Demo" },
-      };
-
-      const account = demoAccounts[data.email];
-      if (account && account.password === data.password) {
+  // mutation
+  const { mutate: login, isPending } = usePostApiLogin({
+    mutation: {
+      onSuccess: async (res: any) => {
         setAuth({
-          accessToken: "mock-access-token-" + Date.now(),
-          refreshToken: "mock-refresh-token-" + Date.now(),
-          user: {
-            id: "mock-user-id",
-            email: data.email,
-            fullName: account.name,
-            role: account.role,
-            permissions: account.role === "SUPER_ADMIN" ? ["*"] : [
-              "properties:read", "properties:write",
-              "customers:read", "customers:write",
-              "leads:read", "leads:write",
-              "appointments:read", "appointments:write",
-              "deals:read", "deals:write",
-              "commission:read",
-              "files:read", "files:write",
-            ],
-          },
+          accessToken: res?.data?.accessToken,
+          refreshToken: res?.data?.refreshToken,
+          activeTenantId: res?.data?.activeTenantId,
+          expiresIn: res?.data?.expiresIn,
+          roleInTenant: res?.data?.roleInTenant,
+          sessionId: res?.data?.sessionId,
         });
+
+        const profile = await getProfile();
+        const profileData = (profile.data as unknown as GetAuthMeResponse)?.data;
+
+        if (profileData) {
+          setUser({
+            id: profileData.id,
+            email: profileData.email,
+            fullName: profileData.fullName,
+            phone: profileData.phone ?? undefined,
+            avatarUrl: profileData.avatarUrl ?? undefined,
+            role: (profileData.memberships?.[0]?.roleCode as UserRole) || "SALES",
+            permissions: [],
+          });
+        }
+
         router.push("/dashboard");
-      } else {
-        setError("Email hoac mat khau khong dung. Vui long thu lai.");
+      },
+      onError: (err: any) => {
+        const errorMessage = err?.response?.data?.message || "Đã có lỗi xảy ra vui lòng thử lại";
+        console.error(errorMessage);
       }
-    } finally {
-      setLoading(false);
-    }
+    },
+  });
+
+  const onSubmit = async (formData: LoginFormData) => {
+    setError(null);
+
+    login({
+      data: {
+        email: formData.email,
+        password: formData.password,
+      },
+    });
   };
 
   return (
@@ -103,30 +105,13 @@ export default function LoginPage() {
 
       <div className="rounded-[1.5rem] border border-border bg-surface/80 p-8 shadow-[0_20px_60px_-20px_rgba(45,95,63,0.10)] backdrop-blur-xl md:p-10">
         <div className="mb-8">
-          <h2 className="text-xl font-semibold tracking-tight">Dang nhap</h2>
+          <h2 className="text-xl font-semibold tracking-tight">Đăng nhập</h2>
           <p className="mt-1 text-sm text-foreground-muted">
-            Nhap thong tin tai khoan de tiep tuc
+            Nhập thông tin tài khoản để tiếp tục
           </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="tenantCode" className="text-[13px] font-medium">Ma tenant</Label>
-            <Input
-              id="tenantCode"
-              type="text"
-              placeholder="DEMO"
-              {...register("tenantCode")}
-              aria-invalid={!!errors.tenantCode}
-              aria-describedby={errors.tenantCode ? "tenantCode-error" : undefined}
-            />
-            {errors.tenantCode && (
-              <p id="tenantCode-error" className="text-xs text-accent-red-text">
-                {errors.tenantCode.message}
-              </p>
-            )}
-          </div>
-
           <div className="flex flex-col gap-2">
             <Label htmlFor="email" className="text-[13px] font-medium">Email</Label>
             <Input
@@ -145,12 +130,12 @@ export default function LoginPage() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="password" className="text-[13px] font-medium">Mat khau</Label>
+            <Label htmlFor="password" className="text-[13px] font-medium">Mật khẩu</Label>
             <div className="relative">
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="Nhap mat khau"
+                placeholder="Nhập mật khẩu"
                 className="pr-11"
                 {...register("password")}
                 aria-invalid={!!errors.password}
@@ -182,40 +167,10 @@ export default function LoginPage() {
             </div>
           )}
 
-          <Button type="submit" disabled={loading} className="mt-2 w-full" size="lg">
-            {loading ? "Dang dang nhap..." : "Dang nhap"}
+          <Button type="submit" disabled={isPending} className="mt-2 w-full" size="lg">
+            {isPending ? "Đang đăng nhập..." : "Đăng nhập"}
           </Button>
         </form>
-
-        <div className="mt-8 border-t border-border pt-6">
-          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-foreground-muted/60">
-            Tai khoan demo
-          </p>
-          <div className="flex flex-col gap-2">
-            <button
-              type="button"
-              onClick={() => fillDemoAccount("admin@demo.realhub.local", "Admin@123456")}
-              className="group flex items-center justify-between rounded-lg border border-border bg-surface-muted/40 px-4 py-3 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-surface-muted hover:border-border-strong"
-            >
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-foreground-muted">Super Admin</span>
-                <span className="font-mono text-xs text-foreground-muted/80">admin@demo.realhub.local</span>
-              </div>
-              <span className="font-mono text-xs text-foreground-muted/80">Admin@123456</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => fillDemoAccount("sales@demo.realhub.local", "Sales@123456")}
-              className="group flex items-center justify-between rounded-lg border border-border bg-surface-muted/40 px-4 py-3 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-surface-muted hover:border-border-strong"
-            >
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-foreground-muted">Sales</span>
-                <span className="font-mono text-xs text-foreground-muted/80">sales@demo.realhub.local</span>
-              </div>
-              <span className="font-mono text-xs text-foreground-muted/80">Sales@123456</span>
-            </button>
-          </div>
-        </div>
       </div>
 
       <div className="mt-8 text-center">
@@ -223,7 +178,7 @@ export default function LoginPage() {
           href="/register"
           className="group inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
         >
-          <span>Chua co tai khoan? Dang ky</span>
+          <span>Chưa có tài khoản? Đăng ký</span>
           <span className="inline-flex size-6 items-center justify-center rounded-lg bg-surface-muted transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
             <ArrowUpRight size={12} />
           </span>

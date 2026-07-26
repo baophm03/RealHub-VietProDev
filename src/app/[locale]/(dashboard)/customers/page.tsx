@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Users, Funnel } from "@phosphor-icons/react";
 import { PageHeader } from "@/components/shared/page-header";
@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
-import { useAuthStore } from "@/lib/stores/auth-store";
+import { useUserStore } from "@/lib/stores/user-store";
+import { useGetApiCustomers } from "@/lib/api/endpoints/customers";
 import type { ColumnDef } from "@tanstack/react-table";
 
 interface CustomerRow {
@@ -17,17 +18,9 @@ interface CustomerRow {
   fullName: string;
   phone: string;
   email: string;
-  type: string;
-  leadCount: number;
+  types: string[];
   createdAt: string;
 }
-
-const mockData: CustomerRow[] = [
-  { id: "1", fullName: "Nguyen Van An", phone: "090****567", email: "an.nguyen@email.com", type: "BUYER", leadCount: 3, createdAt: "2025-07-01" },
-  { id: "2", fullName: "Tran Thi Bich", phone: "098****321", email: "bich.tran@email.com", type: "SELLER", leadCount: 1, createdAt: "2025-07-05" },
-  { id: "3", fullName: "Le Minh Chau", phone: "091****890", email: "chau.le@email.com", type: "TENANT", leadCount: 2, createdAt: "2025-07-10" },
-  { id: "4", fullName: "Pham Quoc Huy", phone: "093****147", email: "huy.pham@email.com", type: "BUYER", leadCount: 5, createdAt: "2025-07-12" },
-];
 
 const typeLabel: Record<string, string> = {
   BUYER: "Nguoi mua",
@@ -55,27 +48,36 @@ const columns: ColumnDef<CustomerRow>[] = [
   {
     accessorKey: "type",
     header: "Loai",
-    cell: ({ row }) => <Badge variant="blue">{typeLabel[row.original.type] ?? row.original.type}</Badge>,
-  },
-  {
-    accessorKey: "leadCount",
-    header: "Leads",
-    cell: ({ row }) => <span className="tabular-nums">{row.original.leadCount}</span>,
+    cell: ({ row }) => <Badge variant="blue">{(row.original.types || []).join(", ")}</Badge>,
   },
   {
     accessorKey: "createdAt",
-    header: "Ngay tao",
-    cell: ({ row }) => <span className="tabular-nums text-foreground-muted text-xs">{row.original.createdAt}</span>,
+    header: "Ngày tạo",
+    cell: ({ row }) => <span className="tabular-nums text-foreground-muted text-xs">{row.original.createdAt ? new Date(row.original.createdAt).toLocaleDateString("vi-VN") : "-"}</span>,
   },
 ];
 
 export default function CustomersPage() {
   const router = useRouter();
-  const hasPermission = useAuthStore((s) => s.hasPermission);
+  const hasPermission = useUserStore((s) => s.hasPermission);
   const [search, setSearch] = useState("");
+  const [mounted, setMounted] = useState(false);
 
-  const filtered = mockData.filter(
-    (c) => c.fullName.toLowerCase().includes(search.toLowerCase()) || c.phone.includes(search)
+  const { data: customersData, isLoading } = useGetApiCustomers({
+    search: undefined,
+    type: undefined,
+    status: undefined,
+    limit: "20",
+    offset: "0",
+  });
+  const customers = ((customersData as unknown as { data: CustomerRow[] })?.data) || [];
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const filtered = customers.filter(
+    (c) => c.fullName.toLowerCase().includes(search.toLowerCase()) || (c.phone || "").includes(search)
   );
 
   return (
@@ -85,7 +87,7 @@ export default function CustomersPage() {
         title="Khach hang"
         description="Quan ly danh sach khach hang"
         actions={
-          hasPermission("customers:write") && (
+          mounted && hasPermission("customers:write") && (
             <Button onClick={() => router.push("/customers/new")}>
               <Plus size={16} />
               Them khach hang
@@ -109,7 +111,9 @@ export default function CustomersPage() {
         </div>
       </div>
 
-      {filtered.length > 0 ? (
+      {isLoading ? (
+        <div className="h-96 animate-pulse rounded-lg bg-surface-muted" />
+      ) : filtered.length > 0 ? (
         <DataTable
           columns={columns}
           data={filtered}
@@ -121,7 +125,7 @@ export default function CustomersPage() {
           title="Chua co khach hang"
           description="Them khach hang dau tien de bat dau quan ly CRM"
           action={
-            hasPermission("customers:write") && (
+            mounted && hasPermission("customers:write") && (
               <Button onClick={() => router.push("/customers/new")}>
                 <Plus size={16} />
                 Them khach hang

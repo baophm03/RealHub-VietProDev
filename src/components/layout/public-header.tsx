@@ -16,8 +16,21 @@ import {
   MapTrifold,
   Storefront,
   Globe,
+  SignOut,
+  UserCircle,
 } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils/cn";
+import { useAuthStore } from "@/lib/stores/auth-store";
+import { useUserStore } from "@/lib/stores/user-store";
+import { useRouter } from "next/navigation";
+import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
 
 const propertyCategories = [
   { icon: House, label: "Căn hộ", desc: "Chung cư, studio, penthouse", href: "/listings?type=apartment" },
@@ -35,10 +48,27 @@ export function PublicHeader() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [localeOpen, setLocaleOpen] = useState(false);
   const [mobileMegaOpen, setMobileMegaOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const megaRef = useRef<HTMLDivElement>(null);
   const localeRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
+
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useUserStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
+  const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const initials = user?.fullName
+    ?.split(" ")
+    .slice(-2)
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase() ?? "U";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -291,24 +321,66 @@ export function PublicHeader() {
             {/* Divider */}
             <span className="hidden h-6 w-px bg-primary-foreground/15 md:block" />
 
-            {/* Sign In */}
-            <Link
-              href="/login"
-              className="hidden rounded-lg px-4 py-2 text-sm font-medium text-primary-foreground/70 transition-colors hover:text-primary-foreground md:block"
-            >
-              {t("signIn")}
-            </Link>
+            {/* Auth: Signed in → Avatar dropdown | Signed out → Sign in/up */}
+            {mounted && isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-primary-foreground/10 transition-all duration-300">
+                  <Avatar className="size-8 rounded-lg overflow-hidden">
+                    <AvatarFallback className="flex size-8 items-center justify-center rounded-lg bg-primary-foreground/15 text-xs font-medium text-primary-foreground">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="hidden text-sm font-medium text-primary-foreground/90 md:block">
+                    {user?.fullName?.split(" ").slice(-1)[0] ?? "User"}
+                  </span>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="z-30 mt-2 min-w-[220px] rounded-2xl border border-border bg-surface p-1.5 shadow-[0_12px_40px_-12px_rgba(26,22,20,0.12)]"
+                >
+                  <div className="px-3 py-2.5">
+                    <p className="text-sm font-medium text-foreground">{user?.fullName ?? "User"}</p>
+                    <p className="text-xs text-foreground-muted">{user?.email}</p>
+                  </div>
+                  <DropdownMenuSeparator className="my-1 border-border" />
+                  <DropdownMenuItem
+                    onClick={() => router.push("/profile")}
+                    className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-foreground-muted hover:bg-surface-muted cursor-pointer outline-none transition-colors"
+                  >
+                    <UserCircle size={16} />
+                    <span>Hồ sơ cá nhân</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => { logout(); router.push("/login"); }}
+                    className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-accent-red-text hover:bg-accent-red/10 cursor-pointer outline-none transition-colors"
+                  >
+                    <SignOut size={16} />
+                    <span>Đăng xuất</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                {/* Sign In */}
+                <Link
+                  href="/login"
+                  className="hidden rounded-lg px-4 py-2 text-sm font-medium text-primary-foreground/70 transition-colors hover:text-primary-foreground md:block"
+                >
+                  {t("signIn")}
+                </Link>
 
-            {/* Sign Up — Button-in-button pattern */}
-            <Link
-              href="/register"
-              className="group hidden items-center gap-2.5 rounded-lg bg-primary-foreground px-5 py-2.5 text-sm font-medium text-primary transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.2)] hover:-translate-y-[1px] active:scale-[0.97] md:inline-flex"
-            >
-              <span>{t("signUp")}</span>
-              <span className="flex size-5 items-center justify-center rounded-full bg-primary/15 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-px">
-                <ArrowUpRight size={12} weight="bold" />
-              </span>
-            </Link>
+                {/* Sign Up — Button-in-button pattern */}
+                <Link
+                  href="/register"
+                  className="group hidden items-center gap-2.5 rounded-lg bg-primary-foreground px-5 py-2.5 text-sm font-medium text-primary transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.2)] hover:-translate-y-[1px] active:scale-[0.97] md:inline-flex"
+                >
+                  <span>{t("signUp")}</span>
+                  <span className="flex size-5 items-center justify-center rounded-full bg-primary/15 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-px">
+                    <ArrowUpRight size={12} weight="bold" />
+                  </span>
+                </Link>
+              </>
+            )}
 
             {/* Mobile Toggle */}
             <button
@@ -396,21 +468,46 @@ export function PublicHeader() {
           ))}
 
           <div className="mt-3 flex flex-col gap-2 border-t border-primary-foreground/10 pt-4">
-            <Link
-              href="/login"
-              onClick={() => setMobileOpen(false)}
-              className="rounded-lg border border-primary-foreground/20 px-4 py-3 text-center text-sm font-medium text-primary-foreground/80 transition-colors hover:bg-primary-foreground/10"
-            >
-              {t("signIn")}
-            </Link>
-            <Link
-              href="/register"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-center gap-2 rounded-lg bg-primary-foreground px-4 py-3 text-sm font-medium text-primary transition-colors"
-            >
-              {t("signUp")}
-              <ArrowUpRight size={14} weight="bold" />
-            </Link>
+            {mounted && isAuthenticated ? (
+              <>
+                <div className="flex items-center gap-3 rounded-lg bg-primary-foreground/10 px-4 py-3">
+                  <Avatar className="size-9 rounded-lg overflow-hidden">
+                    <AvatarFallback className="flex size-9 items-center justify-center rounded-lg bg-primary-foreground/15 text-xs font-medium text-primary-foreground">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-primary-foreground">{user?.fullName ?? "User"}</span>
+                    <span className="text-xs text-primary-foreground/50">{user?.email}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => { logout(); router.push("/login"); setMobileOpen(false); }}
+                  className="flex items-center justify-center gap-2 rounded-lg border border-primary-foreground/20 px-4 py-3 text-sm font-medium text-primary-foreground/80 transition-colors hover:bg-primary-foreground/10"
+                >
+                  <SignOut size={16} />
+                  Đăng xuất
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-lg border border-primary-foreground/20 px-4 py-3 text-center text-sm font-medium text-primary-foreground/80 transition-colors hover:bg-primary-foreground/10"
+                >
+                  {t("signIn")}
+                </Link>
+                <Link
+                  href="/register"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center justify-center gap-2 rounded-lg bg-primary-foreground px-4 py-3 text-sm font-medium text-primary transition-colors"
+                >
+                  {t("signUp")}
+                  <ArrowUpRight size={14} weight="bold" />
+                </Link>
+              </>
+            )}
           </div>
         </nav>
       </div>

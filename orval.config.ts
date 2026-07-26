@@ -1,15 +1,37 @@
-import { defineConfig } from 'orval';
+import { defineConfig } from 'orval'
+import config from './src/config';
 
-export default defineConfig({
-  realhub: {
+const orvalConfig = defineConfig({
+  'realhub': {
     output: {
-      target: 'src/lib/api/generated',
+      mode: 'tags',
+      target: 'src/lib/api/endpoints',
+      schemas: 'src/lib/api/models',
       client: 'react-query',
-      schemas: 'src/lib/api/model',
       clean: true,
+      override: {
+        query: {
+          version: 5,
+          useInfinite: true,
+          usePrefetch: true,
+          options: {
+            retry: 3,
+            retryDelay: 1000,
+          }
+        },
+        mutator: {
+          path: './src/lib/api/mutator/custom-client.ts',
+          name: 'useCustomClient'
+        }
+      }
     },
     input: {
-      target: 'http://localhost:5000/api/swagger-json',
-    },
-  },
-});
+      target: `${config.apiEndpoint}/api/swagger-json`,
+      filters: {
+        tags: undefined
+      }
+    }
+  }
+})
+
+export default orvalConfig

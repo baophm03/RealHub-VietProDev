@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Handshake, Kanban, List as ListIcon } from "@phosphor-icons/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { KanbanBoard, type KanbanColumn } from "@/components/shared/kanban-board";
-import { useAuthStore } from "@/lib/stores/auth-store";
+import { useUserStore } from "@/lib/stores/user-store";
+import { useGetApiDeals } from "@/lib/api/endpoints/deals-reservations";
 
 interface Deal {
   id: string;
@@ -20,20 +21,13 @@ interface Deal {
   createdAt: string;
 }
 
-const mockDeals: Deal[] = [
-  { id: "1", title: "Ban Vinomes Central Park 2PN", customerName: "Nguyen Van An", propertyName: "Vinhomes Central Park", transactionValue: 5000000000, transactionType: "SALE", status: "PENDING", createdAt: "2025-07-10" },
-  { id: "2", title: "Thue Masteri Thao Dien 3PN", customerName: "Tran Thi Bich", propertyName: "Masteri Thao Dien", transactionValue: 25000000, transactionType: "RENT", status: "NEGOTIATING", createdAt: "2025-07-08" },
-  { id: "3", title: "Ban Sunwah Pearl Studio", customerName: "Le Minh Chau", propertyName: "Sunwah Pearl", transactionValue: 3000000000, transactionType: "SALE", status: "DEPOSITED", createdAt: "2025-07-05" },
-  { id: "4", title: "Ban The Metropole Penthouse", customerName: "Pham Quoc Huy", propertyName: "The Metropole", transactionValue: 25000000000, transactionType: "SALE", status: "COMPLETED", createdAt: "2025-07-01" },
-];
-
 const statusConfig = [
-  { id: "PENDING", title: "Cho xu ly", variant: "blue" as const },
-  { id: "NEGOTIATING", title: "Dam phan", variant: "yellow" as const },
-  { id: "DEPOSITED", title: "Dat coc", variant: "purple" as const },
-  { id: "CONTRACT_SIGNED", title: "Ky HD", variant: "default" as const },
-  { id: "COMPLETED", title: "Hoan thanh", variant: "green" as const },
-  { id: "CANCELLED", title: "Huy", variant: "red" as const },
+  { id: "PENDING", title: "Chờ xử lý", variant: "blue" as const },
+  { id: "NEGOTIATING", title: "Đàm phán", variant: "yellow" as const },
+  { id: "DEPOSITED", title: "Đặt cọc", variant: "purple" as const },
+  { id: "CONTRACT_SIGNED", title: "Ký HĐ", variant: "default" as const },
+  { id: "COMPLETED", title: "Hoàn thành", variant: "green" as const },
+  { id: "CANCELLED", title: "Hủy", variant: "red" as const },
 ];
 
 function formatPrice(price: number): string {
@@ -44,22 +38,37 @@ function formatPrice(price: number): string {
 
 export default function DealsPage() {
   const router = useRouter();
-  const hasPermission = useAuthStore((s) => s.hasPermission);
+  const hasPermission = useUserStore((s) => s.hasPermission);
   const [view, setView] = useState<"kanban" | "list">("kanban");
+  const [mounted, setMounted] = useState(false);
+
+  const { data: dealsData, isLoading } = useGetApiDeals({
+    status: undefined,
+    salesUserId: undefined,
+    propertyId: undefined,
+    customerId: undefined,
+    limit: "50",
+    offset: "0",
+  });
+  const deals = ((dealsData as unknown as { data: Deal[] })?.data) || [];
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const columns: KanbanColumn<Deal>[] = statusConfig.map((status) => ({
     id: status.id,
     title: status.title,
     variant: status.variant,
-    items: mockDeals.filter((d) => d.status === status.id),
+    items: deals.filter((d) => d.status === status.id),
   }));
 
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        eyebrow="Giao dich"
-        title="Giao dich"
-        description="Quan ly giao dich theo workflow"
+        eyebrow="Giao dịch"
+        title="Giao dịch"
+        description="Quản lý giao dịch theo workflow"
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1 rounded-md border border-border p-1">
@@ -70,17 +79,19 @@ export default function DealsPage() {
                 <ListIcon size={16} />
               </button>
             </div>
-            {hasPermission("deals:write") && (
+            {mounted && hasPermission("deals:write") && (
               <Button onClick={() => router.push("/deals/new")}>
                 <Plus size={16} />
-                Them giao dich
+                Thêm giao dịch
               </Button>
             )}
           </div>
         }
       />
 
-      {view === "kanban" ? (
+      {isLoading ? (
+        <div className="h-96 animate-pulse rounded-lg bg-surface-muted" />
+      ) : view === "kanban" ? (
         <KanbanBoard
           columns={columns}
           onCardClick={(deal) => router.push(`/deals/${deal.id}`)}
@@ -103,14 +114,14 @@ export default function DealsPage() {
           <table className="w-full text-sm min-w-[600px]">
             <thead>
               <tr className="border-b border-border bg-surface-muted/50">
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Tieu de</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Khach hang</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Gia tri</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Trang thai</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Tiêu đề</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Khách hàng</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Giá trị</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted">Trạng thái</th>
               </tr>
             </thead>
             <tbody>
-              {mockDeals.map((deal) => {
+              {deals.map((deal) => {
                 const status = statusConfig.find((s) => s.id === deal.status);
                 return (
                   <tr key={deal.id} onClick={() => router.push(`/deals/${deal.id}`)} className="cursor-pointer border-b border-border hover:bg-surface-muted/30">

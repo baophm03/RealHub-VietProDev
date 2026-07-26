@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, UserCircle, Kanban, List as ListIcon } from "@phosphor-icons/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { KanbanBoard, type KanbanColumn } from "@/components/shared/kanban-board";
-import { useAuthStore } from "@/lib/stores/auth-store";
+import { useUserStore } from "@/lib/stores/user-store";
+import { useGetApiLeads } from "@/lib/api/endpoints/leads";
 
 interface Lead {
   id: string;
@@ -20,22 +21,13 @@ interface Lead {
   status: string;
 }
 
-const mockLeads: Lead[] = [
-  { id: "1", customerName: "Nguyen Van An", phone: "090****567", property: "Vinhomes Central Park", price: 5000000000, source: "WEBSITE", createdAt: "2025-07-10", status: "NEW" },
-  { id: "2", customerName: "Tran Thi Bich", phone: "098****321", property: "Masteri Thao Dien", price: 7500000000, source: "PROPERTY_DETAIL", createdAt: "2025-07-09", status: "CONTACTED" },
-  { id: "3", customerName: "Le Minh Chau", phone: "091****890", property: "Sunwah Pearl", price: 3000000000, source: "SALES_LINK", createdAt: "2025-07-08", status: "INTERESTED" },
-  { id: "4", customerName: "Pham Quoc Huy", phone: "093****147", property: "The Metropole", price: 25000000000, source: "AGENCY_MARKETING", createdAt: "2025-07-07", status: "NEGOTIATING" },
-  { id: "5", customerName: "Hoang Thi Dung", phone: "092****258", property: "Vinhomes Golden River", price: 12000000000, source: "MANUAL_INPUT", createdAt: "2025-07-05", status: "CONVERTED" },
-  { id: "6", customerName: "Vu Van Khoa", phone: "094****369", property: "Bitexco Financial Tower", price: 8000000000, source: "CTV_LINK", createdAt: "2025-07-03", status: "LOST" },
-];
-
 const statusConfig = [
-  { id: "NEW", title: "Moi", variant: "blue" as const },
-  { id: "CONTACTED", title: "Da lien he", variant: "yellow" as const },
-  { id: "INTERESTED", title: "Quan tam", variant: "purple" as const },
-  { id: "NEGOTIATING", title: "Dam phan", variant: "default" as const },
-  { id: "CONVERTED", title: "Chuyen doi", variant: "green" as const },
-  { id: "LOST", title: "Mat", variant: "red" as const },
+  { id: "NEW", title: "Mới", variant: "blue" as const },
+  { id: "CONTACTED", title: "Đã liên hệ", variant: "yellow" as const },
+  { id: "INTERESTED", title: "Quan tâm", variant: "purple" as const },
+  { id: "NEGOTIATING", title: "Đàm phán", variant: "default" as const },
+  { id: "CONVERTED", title: "Chuyển đổi", variant: "green" as const },
+  { id: "LOST", title: "Mất", variant: "red" as const },
 ];
 
 function formatPrice(price: number): string {
@@ -46,14 +38,31 @@ function formatPrice(price: number): string {
 
 export default function LeadsPage() {
   const router = useRouter();
-  const hasPermission = useAuthStore((s) => s.hasPermission);
+  const hasPermission = useUserStore((s) => s.hasPermission);
   const [view, setView] = useState<"kanban" | "list">("kanban");
+  const [mounted, setMounted] = useState(false);
+
+  const { data: leadsData, isLoading } = useGetApiLeads({
+    status: undefined,
+    source: undefined,
+    assignedSalesId: undefined,
+    customerId: undefined,
+    propertyId: undefined,
+    search: undefined,
+    limit: "50",
+    offset: "0",
+  });
+  const leads = ((leadsData as unknown as { data: Lead[] })?.data) || [];
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const columns: KanbanColumn<Lead>[] = statusConfig.map((status) => ({
     id: status.id,
     title: status.title,
     variant: status.variant,
-    items: mockLeads.filter((l) => l.status === status.id),
+    items: leads.filter((l) => l.status === status.id),
   }));
 
   return (
@@ -61,7 +70,7 @@ export default function LeadsPage() {
       <PageHeader
         eyebrow="CRM"
         title="Leads"
-        description="Quan ly lead theo trang thai"
+        description="Quản lý lead theo trạng thái"
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1 rounded-md border border-border p-1">
@@ -72,7 +81,7 @@ export default function LeadsPage() {
                 <ListIcon size={16} />
               </button>
             </div>
-            {hasPermission("leads:write") && (
+            {mounted && hasPermission("leads:write") && (
               <Button onClick={() => router.push("/leads/new")}>
                 <Plus size={16} />
                 Them lead
@@ -82,7 +91,9 @@ export default function LeadsPage() {
         }
       />
 
-      {view === "kanban" ? (
+      {isLoading ? (
+        <div className="h-96 animate-pulse rounded-lg bg-surface-muted" />
+      ) : view === "kanban" ? (
         <KanbanBoard
           columns={columns}
           onCardClick={(lead) => router.push(`/leads/${lead.id}`)}
@@ -117,7 +128,7 @@ export default function LeadsPage() {
               </tr>
             </thead>
             <tbody>
-              {mockLeads.map((lead) => {
+              {leads.map((lead) => {
                 const status = statusConfig.find((s) => s.id === lead.status);
                 return (
                   <tr key={lead.id} onClick={() => router.push(`/leads/${lead.id}`)} className="cursor-pointer border-b border-border hover:bg-surface-muted/30">

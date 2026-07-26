@@ -25,6 +25,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useGetApiPropertyId } from "@/lib/api/endpoints/properties";
+import { Property } from "@/lib/api/types/properties";
+
+function formatPrice(price: number): string {
+  if (price >= 1000000000) return `${(price / 1000000000).toFixed(1)} tỷ`;
+  if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu`;
+  return price.toLocaleString("vi-VN");
+}
 
 const propertyImages = [
   {
@@ -54,12 +62,6 @@ const propertyImages = [
   },
 ];
 
-const specs = [
-  { icon: Ruler, label: "Dien tich", value: "227 m2" },
-  { icon: Bed, label: "Phong ngu", value: "4" },
-  { icon: Bathtub, label: "Phong tam", value: "4" },
-  { icon: ShieldCheck, label: "Phap ly", value: "So hong", accent: true },
-];
 
 const highlights = [
   { icon: Car, title: "Gara o to rong rai", desc: "Suc chua 2 xe SUV lon" },
@@ -104,6 +106,9 @@ const similarListings = [
 export default function PropertyDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const id = params.id as string;
+  const { data: propertyData, isLoading } = useGetApiPropertyId(id);
+  const property = (propertyData as unknown as { data: Property })?.data;
   const [contactForm, setContactForm] = useState({
     name: "",
     phone: "",
@@ -114,6 +119,31 @@ export default function PropertyDetailPage() {
     e.preventDefault();
     console.log("Contact form:", contactForm);
   };
+
+  const priceNum = Number(property?.price || 0);
+  const areaNum = property?.area ?? 0;
+  const pricePerM2 = areaNum > 0 ? priceNum / areaNum : 0;
+
+  const specs = [
+    { icon: Ruler, label: "Dien tich", value: property ? `${areaNum} m2` : "227 m2" },
+    { icon: Bed, label: "Phong ngu", value: "4" },
+    { icon: Bathtub, label: "Phong tam", value: "4" },
+    { icon: ShieldCheck, label: "Phap ly", value: "So hong", accent: true },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center justify-between">
+          <div className="h-8 w-40 animate-pulse rounded-lg bg-surface-muted" />
+          <div className="h-8 w-24 animate-pulse rounded-lg bg-surface-muted" />
+        </div>
+        <div className="h-10 w-3/4 animate-pulse rounded-lg bg-surface-muted" />
+        <div className="h-[400px] animate-pulse rounded-lg bg-surface-muted" />
+        <div className="h-40 animate-pulse rounded-lg bg-surface-muted" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -134,7 +164,7 @@ export default function PropertyDetailPage() {
           onClick={() => router.push(`/properties/${params.id}/edit`)}
         >
           <PencilSimple size={14} />
-          Chinh sua
+          Chỉnh sửa
         </Button>
       </div>
 
@@ -153,18 +183,20 @@ export default function PropertyDetailPage() {
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="flex flex-col gap-2">
             <h1 className="font-serif text-2xl font-medium tracking-tight text-foreground md:text-4xl">
-              Biet thu ven song cao cap The River Thao Dien
+              {property?.title ?? "Biet thu ven song cao cap The River Thao Dien"}
             </h1>
             <p className="flex items-center gap-2 text-sm text-foreground-muted md:text-base">
               <MapPin size={16} className="text-primary" />
-              Nguyen Van Huong, Phuong Thao Dien, Quan 2, TP.HCM
+              {property?.address ?? "Nguyen Van Huong, Phuong Thao Dien, Quan 2, TP.HCM"}
             </p>
           </div>
           <div className="flex flex-col items-start gap-1 md:items-end">
             <span className="font-serif text-3xl font-medium text-primary md:text-4xl">
-              45.5 Ty
+              {property ? formatPrice(priceNum) : "45.5 Ty"}
             </span>
-            <span className="text-sm text-foreground-muted">~ 200 Trieu/m2</span>
+            <span className="text-sm text-foreground-muted">
+              {property && pricePerM2 > 0 ? `~ ${formatPrice(pricePerM2)}/m2` : "~ 200 Trieu/m2"}
+            </span>
           </div>
         </div>
       </div>
@@ -316,21 +348,21 @@ export default function PropertyDetailPage() {
               <h4 className="font-serif text-lg font-medium text-foreground">Lien he ngay</h4>
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="contact-name">Ho va ten</Label>
+                <Label htmlFor="contact-name">Họ và tên</Label>
                 <Input
                   id="contact-name"
-                  placeholder="Nhap ho va ten..."
+                  placeholder="Nhap Họ và tên..."
                   value={contactForm.name}
                   onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
                 />
               </div>
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="contact-phone">So dien thoai</Label>
+                <Label htmlFor="contact-phone">Số điện thoại</Label>
                 <Input
                   id="contact-phone"
                   type="tel"
-                  placeholder="Nhap so dien thoai..."
+                  placeholder="Nhap Số điện thoại..."
                   value={contactForm.phone}
                   onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
                 />

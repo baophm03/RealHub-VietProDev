@@ -1,90 +1,106 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { ArrowLeft } from "@phosphor-icons/react";
+import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft, Pencil } from "@phosphor-icons/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { FormSection, FormField } from "@/components/shared/form-section";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { useGetApiCustomerId } from "@/lib/api/endpoints/customers";
 
-const customerSchema = z.object({
-  fullName: z.string().min(2, "Ho ten phai co it nhat 2 ky tu"),
-  phone: z.string().min(10, "So dien thoai khong hop le"),
-  email: z.string().email("Email khong hop le"),
-  type: z.enum(["BUYER", "SELLER", "TENANT", "LANDLORD"]),
-  note: z.string().optional(),
-});
+interface CustomerType {
+  id: string;
+  tenantId: string;
+  customerId: string;
+  type: string;
+}
 
-type CustomerFormData = z.infer<typeof customerSchema>;
+interface Customer {
+  id: string;
+  fullName: string;
+  phone?: string;
+  email?: string;
+  types?: CustomerType[];
+  createdAt?: string;
+}
 
-export default function CustomerFormPage() {
+export default function CustomerDetailPage() {
+  const params = useParams();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<CustomerFormData>({
-    resolver: zodResolver(customerSchema),
-    defaultValues: { type: "BUYER" },
-  });
+  const id = params.id as string;
 
-  const onSubmit = async (data: CustomerFormData) => {
-    setLoading(true);
-    try {
-      console.log(data);
-      router.push("/customers");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: customerData, isLoading } = useGetApiCustomerId(id);
+  const customer = (customerData as unknown as { data: Customer })?.data;
 
-  return (
-          <div className="flex flex-col gap-6">
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 animate-pulse rounded-md bg-surface-muted" />
+          <div className="h-8 w-64 animate-pulse rounded-lg bg-surface-muted" />
+        </div>
+        <div className="h-96 animate-pulse rounded-lg bg-surface-muted" />
+      </div>
+    );
+  }
+
+  if (!customer) {
+    return (
+      <div className="flex flex-col gap-6">
         <div className="flex items-center gap-3">
           <button onClick={() => router.push("/customers")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
             <ArrowLeft size={20} />
           </button>
-          <PageHeader eyebrow="CRM" title="Them khach hang" />
+          <PageHeader eyebrow="CRM" title="Khong tim thay" />
         </div>
+      </div>
+    );
+  }
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <FormSection title="Thong tin khach hang">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField label="Ho va ten" htmlFor="fullName" required error={errors.fullName?.message}>
-                <Input id="fullName" placeholder="Nguyen Van An" {...register("fullName")} />
-              </FormField>
-              <FormField label="So dien thoai" htmlFor="phone" required error={errors.phone?.message}>
-                <Input id="phone" placeholder="0901234567" {...register("phone")} />
-              </FormField>
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField label="Email" htmlFor="email" required error={errors.email?.message}>
-                <Input id="email" type="email" placeholder="an.nguyen@email.com" {...register("email")} />
-              </FormField>
-              <FormField label="Loai khach hang" required>
-                <Select defaultValue="BUYER" onValueChange={(v) => setValue("type", v as CustomerFormData["type"])}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="BUYER">Nguoi mua</SelectItem>
-                    <SelectItem value="SELLER">Nguoi ban</SelectItem>
-                    <SelectItem value="TENANT">Nguoi thue</SelectItem>
-                    <SelectItem value="LANDLORD">Cho thue</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormField>
-            </div>
-            <FormField label="Ghi chu" htmlFor="note">
-              <Textarea id="note" placeholder="Ghi chu ve khach hang..." {...register("note")} />
-            </FormField>
-          </FormSection>
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <button onClick={() => router.push("/customers")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
+          <ArrowLeft size={20} />
+        </button>
+        <PageHeader
+          eyebrow="CRM"
+          title={customer.fullName}
+          actions={
+            <Button variant="outline" onClick={() => router.push(`/customers/${id}/edit`)}>
+              <Pencil size={16} />
+              Chỉnh sửa
+            </Button>
+          }
+        />
+      </div>
 
-          <div className="flex items-center justify-end gap-2">
-            <Button type="button" variant="secondary" onClick={() => router.push("/customers")}>Huy</Button>
-            <Button type="submit" disabled={loading}>{loading ? "Dang luu..." : "Luu"}</Button>
+      <div className="rounded-lg border border-border bg-surface p-6">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap gap-2">
+            {(customer.types || []).map((t) => (
+              <Badge key={t.id} variant="blue">{t.type}</Badge>
+            ))}
           </div>
-        </form>
-      </div>  );
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Họ và tên</span>
+              <p className="text-sm font-medium">{customer.fullName}</p>
+            </div>
+            <div>
+              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Số điện thoại</span>
+              <p className="text-sm tabular-nums">{customer.phone || "-"}</p>
+            </div>
+            <div>
+              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Email</span>
+              <p className="text-sm">{customer.email || "-"}</p>
+            </div>
+            <div>
+              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Ngày tạo</span>
+              <p className="text-sm tabular-nums">{customer.createdAt ? new Date(customer.createdAt).toLocaleDateString("vi-VN") : "-"}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

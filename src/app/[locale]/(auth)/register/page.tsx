@@ -6,25 +6,25 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowUpRight } from "@phosphor-icons/react";
+import { ArrowUpRight, Eye, EyeSlash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { apiClient } from "@/lib/api/client";
+import { usePostApiRegister } from "@/lib/api/endpoints/auth";
 
 const registerSchema = z.object({
-  fullName: z.string().min(2, "Ho ten phai co it nhat 2 ky tu"),
-  email: z.string().email("Email khong hop le"),
-  password: z.string().min(8, "Mat khau phai co it nhat 8 ky tu"),
-  phone: z.string().min(10, "So dien thoai khong hop le"),
+  fullName: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
+  email: z.string().email("Email không hợp lệ"),
+  password: z.string().min(10, "Mật khẩu phải có ít nhất 10 ký tự"),
+  phone: z.string().min(10, "Số điện thoại không hợp lệ"),
 });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -34,98 +34,128 @@ export default function RegisterPage() {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = async (data: RegisterFormData) => {
+  const { mutate: registerAccount, isPending } = usePostApiRegister({
+    mutation: {
+      onSuccess: () => {
+        router.push("/login");
+      },
+      onError: (err: any) => {
+        const errorMessage = err?.response?.data?.message || "Đã có lỗi xảy ra vui lòng thử lại";
+        setError(errorMessage);
+      },
+    },
+  });
+
+  const onSubmit = async (formData: RegisterFormData) => {
     setError(null);
-    setLoading(true);
-    try {
-      await apiClient.post("/auth/register", data);
-      router.push("/login");
-    } catch {
-      setError("Khong the dang ky. Email co the da ton tai.");
-    } finally {
-      setLoading(false);
-    }
+
+    registerAccount({
+      data: {
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone,
+      },
+    });
   };
 
   return (
     <div className="w-full max-w-md">
-      <div className="mb-10 text-center">
-        <span className="font-serif text-3xl font-semibold tracking-tight">
+      <div className="mb-12 text-center">
+        <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.25em] text-primary">
+          Real Estate Platform
+        </p>
+        <h1 className="font-serif text-4xl font-medium tracking-tight text-foreground">
           RealHub
-        </span>
-        <p className="mt-1 text-sm text-foreground-muted">
-          Tao tai khoan moi
+        </h1>
+        <p className="mt-3 text-sm text-foreground-muted leading-relaxed">
+          Nền tảng quản lý bất động sản đa tenant
         </p>
       </div>
 
-      <div className="rounded-2xl border border-border bg-surface p-8 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)]">
-        <div className="mb-6">
-          <h1 className="text-2xl font-semibold tracking-tight">Dang ky</h1>
+      <div className="rounded-[1.5rem] border border-border bg-surface/80 p-8 shadow-[0_20px_60px_-20px_rgba(45,95,63,0.10)] backdrop-blur-xl md:p-10">
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold tracking-tight">Đăng ký</h2>
           <p className="mt-1 text-sm text-foreground-muted">
-            Dien thong tin de tao tai khoan
+            Điền thông tin để tạo tài khoản
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="fullName">Ho va ten</Label>
+            <Label htmlFor="fullName" className="text-[13px] font-medium">Họ và tên</Label>
             <Input
               id="fullName"
               type="text"
-              placeholder="Nguyen Van An"
+              placeholder="Nguyễn Văn An"
               {...register("fullName")}
               aria-invalid={!!errors.fullName}
+              aria-describedby={errors.fullName ? "fullName-error" : undefined}
             />
             {errors.fullName && (
-              <p className="text-xs text-accent-red-text">
+              <p id="fullName-error" className="text-xs text-accent-red-text">
                 {errors.fullName.message}
               </p>
             )}
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-[13px] font-medium">Email</Label>
             <Input
               id="email"
               type="email"
               placeholder="an.nguyen@example.com"
               {...register("email")}
               aria-invalid={!!errors.email}
+              aria-describedby={errors.email ? "email-error" : undefined}
             />
             {errors.email && (
-              <p className="text-xs text-accent-red-text">
+              <p id="email-error" className="text-xs text-accent-red-text">
                 {errors.email.message}
               </p>
             )}
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="phone">So dien thoai</Label>
+            <Label htmlFor="phone" className="text-[13px] font-medium">Số điện thoại</Label>
             <Input
               id="phone"
               type="tel"
               placeholder="0901234567"
               {...register("phone")}
               aria-invalid={!!errors.phone}
+              aria-describedby={errors.phone ? "phone-error" : undefined}
             />
             {errors.phone && (
-              <p className="text-xs text-accent-red-text">
+              <p id="phone-error" className="text-xs text-accent-red-text">
                 {errors.phone.message}
               </p>
             )}
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="password">Mat khau</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="It nhat 8 ky tu"
-              {...register("password")}
-              aria-invalid={!!errors.password}
-            />
+            <Label htmlFor="password" className="text-[13px] font-medium">Mật khẩu</Label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Ít nhất 10 ký tự"
+                className="pr-11"
+                {...register("password")}
+                aria-invalid={!!errors.password}
+                aria-describedby={errors.password ? "password-error" : undefined}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground-muted hover:text-foreground transition-colors duration-300"
+                aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+              >
+                {showPassword ? <EyeSlash size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
             {errors.password && (
-              <p className="text-xs text-accent-red-text">
+              <p id="password-error" className="text-xs text-accent-red-text">
                 {errors.password.message}
               </p>
             )}
@@ -135,25 +165,25 @@ export default function RegisterPage() {
             <div
               role="alert"
               aria-live="polite"
-              className="rounded-md bg-accent-red/10 px-4 py-3 text-sm text-accent-red-text"
+              className="rounded-lg bg-accent-red/20 px-4 py-3 text-sm text-accent-red-text"
             >
               {error}
             </div>
           )}
 
-          <Button type="submit" disabled={loading} className="mt-2 w-full">
-            {loading ? "Dang dang ky..." : "Dang ky"}
+          <Button type="submit" disabled={isPending} className="mt-2 w-full" size="lg">
+            {isPending ? "Đang đăng ký..." : "Đăng ký"}
           </Button>
         </form>
       </div>
 
-      <div className="mt-6 text-center">
+      <div className="mt-8 text-center">
         <Link
           href="/login"
-          className="group inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-foreground"
+          className="group inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
         >
-          <span>Da co tai khoan? Dang nhap</span>
-          <span className="inline-flex size-5 items-center justify-center rounded-lg bg-surface-muted transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-px">
+          <span>Đã có tài khoản? Đăng nhập</span>
+          <span className="inline-flex size-6 items-center justify-center rounded-lg bg-surface-muted transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
             <ArrowUpRight size={12} />
           </span>
         </Link>

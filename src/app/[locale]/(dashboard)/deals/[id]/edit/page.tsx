@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,85 +9,148 @@ import { ArrowLeft } from "@phosphor-icons/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { FormSection, FormField } from "@/components/shared/form-section";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { useGetApiDealId, usePatchApiDeal } from "@/lib/api/endpoints/deals-reservations";
+
+interface Deal {
+  id: string;
+  dealCode: string;
+  customerId?: string;
+  propertyId: string;
+  transactionType: string;
+  expectedValue?: string;
+  leadId?: string;
+  salesUserId?: string;
+  currentWorkflowState?: string;
+}
 
 const dealSchema = z.object({
-  title: z.string().min(5, "Tieu de phai co it nhat 5 ky tu"),
-  customerId: z.string().min(1, "Vui long chon khach hang"),
-  propertyId: z.string().min(1, "Vui long chon BÄS"),
+  dealCode: z.string().min(1, "Vui long nhap ma giao dich"),
+  customerId: z.string().optional(),
+  propertyId: z.string().min(1, "Vui long chon BDS"),
   transactionType: z.enum(["SALE", "RENT", "TRANSFER"]),
-  transactionValueEstimated: z.number().min(0, "Gia tri phai lon hon 0"),
-  note: z.string().optional(),
+  expectedValue: z.string().optional(),
+  leadId: z.string().optional(),
+  salesUserId: z.string().optional(),
 });
 
 type DealFormData = z.infer<typeof dealSchema>;
 
-export default function DealFormPage() {
+export default function DealEditPage() {
+  const params = useParams();
   const router = useRouter();
+  const id = params.id as string;
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<DealFormData>({
+  const [error, setError] = useState<string | null>(null);
+
+  const { data: dealData, isLoading } = useGetApiDealId(id);
+  const deal = (dealData as unknown as { data: Deal })?.data;
+
+  const { mutate: updateDeal } = usePatchApiDeal();
+
+  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<DealFormData>({
     resolver: zodResolver(dealSchema),
     defaultValues: { transactionType: "SALE" },
   });
 
+  useEffect(() => {
+    if (deal) {
+      reset({
+        dealCode: deal.dealCode || "",
+        customerId: deal.customerId || "",
+        propertyId: deal.propertyId || "",
+        transactionType: (deal.transactionType as DealFormData["transactionType"]) || "SALE",
+        expectedValue: deal.expectedValue || "",
+        leadId: deal.leadId || "",
+        salesUserId: deal.salesUserId || "",
+      });
+    }
+  }, [deal, reset]);
+
   const onSubmit = async (data: DealFormData) => {
     setLoading(true);
+    setError(null);
     try {
-      console.log(data);
-      router.push("/deals");
+      await updateDeal({ id, data });
+      router.push(`/deals/${id}`);
+    } catch (err) {
+      setError("Co loi xay ra khi cap nhat giao dich. Vui long thu lai.");
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-          <div className="flex flex-col gap-6">
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/deals")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
-            <ArrowLeft size={20} />
-          </button>
-          <PageHeader eyebrow="Giao dich" title="Tao giao dich" />
+          <div className="h-8 w-8 animate-pulse rounded-md bg-surface-muted" />
+          <div className="h-8 w-64 animate-pulse rounded-lg bg-surface-muted" />
         </div>
+        <div className="h-96 animate-pulse rounded-lg bg-surface-muted" />
+      </div>
+    );
+  }
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <FormSection title="Thong tin giao dich">
-            <FormField label="Tieu de" htmlFor="title" required error={errors.title?.message}>
-              <Input id="title" placeholder="Ban Vinhomes Central Park 2PN" {...register("title")} />
-            </FormField>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField label="Khach hang" htmlFor="customerId" required error={errors.customerId?.message}>
-                <Input id="customerId" placeholder="Chon khach hang" {...register("customerId")} />
-              </FormField>
-              <FormField label="Bat dong san" htmlFor="propertyId" required error={errors.propertyId?.message}>
-                <Input id="propertyId" placeholder="Chon BÄS" {...register("propertyId")} />
-              </FormField>
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField label="Loai giao dich" required>
-                <Select defaultValue="SALE" onValueChange={(v) => setValue("transactionType", v as DealFormData["transactionType"])}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SALE">Ban</SelectItem>
-                    <SelectItem value="RENT">Cho thue</SelectItem>
-                    <SelectItem value="TRANSFER">Chuyen nhuong</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormField>
-              <FormField label="Gia tri giao dich (VND)" htmlFor="transactionValueEstimated" required error={errors.transactionValueEstimated?.message}>
-                <Input id="transactionValueEstimated" type="number" placeholder="5000000000" {...register("transactionValueEstimated")} />
-              </FormField>
-            </div>
-            <FormField label="Ghi chu" htmlFor="note">
-              <Textarea id="note" placeholder="Ghi chu ve giao dich..." {...register("note")} />
-            </FormField>
-          </FormSection>
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <button onClick={() => router.push("/deals")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
+          <ArrowLeft size={20} />
+        </button>
+        <PageHeader eyebrow="Giao dich" title="Chỉnh sửa giao dich" />
+      </div>
 
-          <div className="flex items-center justify-end gap-2">
-            <Button type="button" variant="secondary" onClick={() => router.push("/deals")}>Huy</Button>
-            <Button type="submit" disabled={loading}>{loading ? "Dang luu..." : "Luu giao dich"}</Button>
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <FormSection title="Thong tin giao dich">
+          <FormField label="Ma giao dich" htmlFor="dealCode" required error={errors.dealCode?.message}>
+            <Input id="dealCode" placeholder="DEAL-001" {...register("dealCode")} />
+          </FormField>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField label="Khach hang" htmlFor="customerId" error={errors.customerId?.message}>
+              <Input id="customerId" placeholder="Chon khach hang" {...register("customerId")} />
+            </FormField>
+            <FormField label="BDS" htmlFor="propertyId" required error={errors.propertyId?.message}>
+              <Input id="propertyId" placeholder="Chon BDS" {...register("propertyId")} />
+            </FormField>
           </div>
-        </form>
-      </div>  );
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField label="Loai giao dich" required>
+              <Select defaultValue="SALE" onValueChange={(v) => v && setValue("transactionType", v as DealFormData["transactionType"])}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="SALE">Ban</SelectItem>
+                  <SelectItem value="RENT">Cho thue</SelectItem>
+                  <SelectItem value="TRANSFER">Chuyen nhuong</SelectItem>
+                </SelectContent>
+              </Select>
+            </FormField>
+            <FormField label="Gia tri du kien (VND)" htmlFor="expectedValue">
+              <Input id="expectedValue" placeholder="5000000000" {...register("expectedValue")} />
+            </FormField>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField label="Lead" htmlFor="leadId">
+              <Input id="leadId" placeholder="ID lead" {...register("leadId")} />
+            </FormField>
+            <FormField label="Sales phu trach" htmlFor="salesUserId">
+              <Input id="salesUserId" placeholder="ID sales" {...register("salesUserId")} />
+            </FormField>
+          </div>
+        </FormSection>
+
+        <div className="flex items-center justify-end gap-2">
+          <Button type="button" variant="secondary" onClick={() => router.push(`/deals/${id}`)}>Huy</Button>
+          <Button type="submit" disabled={loading}>{loading ? "Dang luu..." : "Cap nhat giao dich"}</Button>
+        </div>
+      </form>
+    </div>);
 }

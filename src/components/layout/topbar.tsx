@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuthStore } from "@/lib/stores/auth-store";
+import { useUserStore } from "@/lib/stores/user-store";
 import { useRouter } from "next/navigation";
 import { List, Bell, Moon, Sun, SignOut, UserCircle } from "@phosphor-icons/react";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
@@ -14,7 +15,7 @@ import {
 import { useTheme } from "@/lib/hooks/use-theme";
 
 export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
-  const user = useAuthStore((s) => s.user);
+  const user = useUserStore((s) => s.user);
   const tenantCode = useAuthStore((s) => s.tenantCode);
   const logout = useAuthStore((s) => s.logout);
   const router = useRouter();
@@ -65,11 +66,11 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
           <DropdownMenuTrigger
             className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-surface-muted transition-all duration-300"
           >
-              <Avatar className="size-8 rounded-lg overflow-hidden">
-                <AvatarFallback className="flex size-8 items-center justify-center rounded-lg bg-surface-muted text-xs font-medium">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
+            <Avatar className="size-8 rounded-lg overflow-hidden">
+              <AvatarFallback className="flex size-8 items-center justify-center rounded-lg bg-surface-muted text-xs font-medium">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
@@ -85,14 +86,14 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
               className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-foreground-muted hover:bg-surface-muted cursor-pointer outline-none transition-colors"
             >
               <UserCircle size={16} />
-              <span>Ho so ca nhan</span>
+              <span>Hồ sơ cá nhân</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => { logout(); router.push("/login"); }}
               className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-accent-red-text hover:bg-accent-red/10 cursor-pointer outline-none transition-colors"
             >
               <SignOut size={16} />
-              <span>Dang xuat</span>
+              <span>Đăng xuất</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

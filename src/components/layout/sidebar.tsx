@@ -2,18 +2,24 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { navGroups } from "@/config/nav";
-import { useAuthStore } from "@/lib/stores/auth-store";
+import { useUserStore } from "@/lib/stores/user-store";
 import { cn } from "@/lib/utils/cn";
 
 export function Sidebar() {
   const pathname = usePathname();
-  const hasPermission = useAuthStore((s) => s.hasPermission);
+  const hasPermission = useUserStore((s) => s.hasPermission);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <aside className="flex w-64 shrink-0 flex-col border-r border-border bg-surface h-full">
       <div className="flex h-16 items-center px-6">
-        <span className="font-serif text-xl font-semibold tracking-tight text-accent">
+        <span className="font-serif text-xl font-semibold tracking-tight text-black">
           RealHub
         </span>
       </div>
@@ -29,7 +35,7 @@ export function Sidebar() {
                 const isActive =
                   pathname === item.href ||
                   (item.href !== "/" && pathname.startsWith(item.href));
-                const hasAccess = !item.permission || hasPermission(item.permission);
+                const hasAccess = mounted && (!item.permission || hasPermission(item.permission));
 
                 if (!hasAccess) return null;
 

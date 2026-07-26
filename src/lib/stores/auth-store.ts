@@ -2,40 +2,51 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { User } from "@/lib/types";
+import { useUserStore } from "@/lib/stores/user-store";
 
 interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
-  user: User | null;
   tenantCode: string | null;
   isAuthenticated: boolean;
+  activeTenantId: string | null;
+  expiresIn: number | null;
+  roleInTenant: string | null;
+  sessionId: string | null;
   setAuth: (tokens: {
     accessToken: string;
     refreshToken: string;
-    user: User;
+    activeTenantId: string;
+    expiresIn: number;
+    roleInTenant: string;
+    sessionId: string;
   }) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;
   setTenantCode: (code: string) => void;
   logout: () => void;
-  hasPermission: (permission: string) => boolean;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       accessToken: null,
       refreshToken: null,
-      user: null,
       tenantCode: process.env.NEXT_PUBLIC_TENANT_CODE ?? null,
       isAuthenticated: false,
+      activeTenantId: null,
+      expiresIn: null,
+      roleInTenant: null,
+      sessionId: null,
 
-      setAuth: ({ accessToken, refreshToken, user }) =>
+      setAuth: ({ accessToken, refreshToken, activeTenantId, expiresIn, roleInTenant, sessionId }) =>
         set({
           accessToken,
           refreshToken,
-          user,
           isAuthenticated: true,
+          activeTenantId,
+          expiresIn,
+          roleInTenant,
+          sessionId,
         }),
 
       setTokens: (accessToken, refreshToken) =>
@@ -43,21 +54,17 @@ export const useAuthStore = create<AuthState>()(
 
       setTenantCode: (code) => set({ tenantCode: code }),
 
-      logout: () =>
+      logout: () => {
+        useUserStore.getState().clearUser();
         set({
           accessToken: null,
           refreshToken: null,
-          user: null,
           isAuthenticated: false,
-        }),
-
-      hasPermission: (permission) => {
-        const user = get().user;
-        if (!user) return false;
-        if (user.role === "SUPER_ADMIN") return true;
-        return user.permissions.some(
-          (p) => p === permission || p === "*"
-        );
+          activeTenantId: null,
+          expiresIn: null,
+          roleInTenant: null,
+          sessionId: null,
+        });
       },
     }),
     {
@@ -65,9 +72,11 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
-        user: state.user,
-        tenantCode: state.tenantCode,
         isAuthenticated: state.isAuthenticated,
+        activeTenantId: state.activeTenantId,
+        expiresIn: state.expiresIn,
+        roleInTenant: state.roleInTenant,
+        sessionId: state.sessionId,
       }),
     }
   )
