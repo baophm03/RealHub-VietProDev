@@ -45,7 +45,7 @@ export const getPostApiUserUrl = () => {
 
 
 
-  return `/api/v1/users`
+  return `/api/users`
 }
 
 /**

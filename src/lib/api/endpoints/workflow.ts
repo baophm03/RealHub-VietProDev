@@ -82,7 +82,7 @@ export const getGetApiWorkflowsUrl = (params?: GetApiWorkflowsParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/workflows?${stringifiedParams}` : `/api/v1/workflows`
+  return stringifiedParams.length > 0 ? `/api/workflows?${stringifiedParams}` : `/api/workflows`
 }
 
 /**
@@ -105,13 +105,13 @@ export const getApiWorkflows = async (params?: GetApiWorkflowsParams, options?: 
 
 export const getGetApiWorkflowsInfiniteQueryKey = (params?: GetApiWorkflowsParams,) => {
     return [
-    'infinite', `/api/v1/workflows`, ...(params ? [params] : [])
+    'infinite', `/api/workflows`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiWorkflowsQueryKey = (params?: GetApiWorkflowsParams,) => {
     return [
-    `/api/v1/workflows`, ...(params ? [params] : [])
+    `/api/workflows`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -295,7 +295,7 @@ export const getPostApiWorkflowUrl = () => {
 
 
 
-  return `/api/v1/workflows`
+  return `/api/workflows`
 }
 
 /**
@@ -377,7 +377,7 @@ export const getGetApiWorkflowIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/workflows/${id}`
+  return `/api/workflows/${id}`
 }
 
 /**
@@ -400,13 +400,13 @@ export const getApiWorkflowId = async (id: string, options?: RequestInit): Promi
 
 export const getGetApiWorkflowIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/workflows/${id}`
+    'infinite', `/api/workflows/${id}`
     ] as const;
     }
 
 export const getGetApiWorkflowIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/workflows/${id}`
+    `/api/workflows/${id}`
     ] as const;
     }
 
@@ -591,7 +591,7 @@ export const getGetApiWorkflowTransitionsUrl = (id: string,
 
 
 
-  return `/api/v1/workflows/${id}/transitions/${currentStateCode}`
+  return `/api/workflows/${id}/transitions/${currentStateCode}`
 }
 
 /**
@@ -616,14 +616,14 @@ export const getApiWorkflowTransitions = async (id: string,
 export const getGetApiWorkflowTransitionsInfiniteQueryKey = (id: string,
     currentStateCode: string,) => {
     return [
-    'infinite', `/api/v1/workflows/${id}/transitions/${currentStateCode}`
+    'infinite', `/api/workflows/${id}/transitions/${currentStateCode}`
     ] as const;
     }
 
 export const getGetApiWorkflowTransitionsQueryKey = (id: string,
     currentStateCode: string,) => {
     return [
-    `/api/v1/workflows/${id}/transitions/${currentStateCode}`
+    `/api/workflows/${id}/transitions/${currentStateCode}`
     ] as const;
     }
 

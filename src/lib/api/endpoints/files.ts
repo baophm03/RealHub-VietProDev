@@ -76,7 +76,7 @@ export const getPostApiFileUploadUrl = () => {
 
 
 
-  return `/api/v1/files/upload`
+  return `/api/files/upload`
 }
 
 /**
@@ -172,7 +172,7 @@ export const getPostApiFileUploadMultipleUrl = () => {
 
 
 
-  return `/api/v1/files/upload-multiple`
+  return `/api/files/upload-multiple`
 }
 
 /**
@@ -261,7 +261,7 @@ export const getGetApiFilesUrl = (params?: GetApiFilesParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/files?${stringifiedParams}` : `/api/v1/files`
+  return stringifiedParams.length > 0 ? `/api/files?${stringifiedParams}` : `/api/files`
 }
 
 /**
@@ -284,13 +284,13 @@ export const getApiFiles = async (params?: GetApiFilesParams, options?: RequestI
 
 export const getGetApiFilesInfiniteQueryKey = (params?: GetApiFilesParams,) => {
     return [
-    'infinite', `/api/v1/files`, ...(params ? [params] : [])
+    'infinite', `/api/files`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiFilesQueryKey = (params?: GetApiFilesParams,) => {
     return [
-    `/api/v1/files`, ...(params ? [params] : [])
+    `/api/files`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -474,7 +474,7 @@ export const getGetApiFileIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/files/${id}`
+  return `/api/files/${id}`
 }
 
 /**
@@ -497,13 +497,13 @@ export const getApiFileId = async (id: string, options?: RequestInit): Promise<g
 
 export const getGetApiFileIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/files/${id}`
+    'infinite', `/api/files/${id}`
     ] as const;
     }
 
 export const getGetApiFileIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/files/${id}`
+    `/api/files/${id}`
     ] as const;
     }
 
@@ -687,7 +687,7 @@ export const getDeleteApiFileUrl = (id: string,) => {
 
 
 
-  return `/api/v1/files/${id}`
+  return `/api/files/${id}`
 }
 
 /**
@@ -769,7 +769,7 @@ export const getGetApiFileDownloadUrlUrl = (id: string,) => {
 
 
 
-  return `/api/v1/files/${id}/download`
+  return `/api/files/${id}/download`
 }
 
 /**
@@ -792,13 +792,13 @@ export const getApiFileDownloadUrl = async (id: string, options?: RequestInit): 
 
 export const getGetApiFileDownloadUrlInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/files/${id}/download`
+    'infinite', `/api/files/${id}/download`
     ] as const;
     }
 
 export const getGetApiFileDownloadUrlQueryKey = (id: string,) => {
     return [
-    `/api/v1/files/${id}/download`
+    `/api/files/${id}/download`
     ] as const;
     }
 
@@ -982,7 +982,7 @@ export const getPatchApiFileVisibilityUrl = (id: string,) => {
 
 
 
-  return `/api/v1/files/${id}/visibility`
+  return `/api/files/${id}/visibility`
 }
 
 /**
@@ -1064,7 +1064,7 @@ export const getPostApiTempUploadUrl = () => {
 
 
 
-  return `/api/v1/files/temp-upload`
+  return `/api/files/temp-upload`
 }
 
 /**
@@ -1148,7 +1148,7 @@ export const getPostApiConfirmUploadUrl = (id: string,) => {
 
 
 
-  return `/api/v1/files/${id}/confirm`
+  return `/api/files/${id}/confirm`
 }
 
 /**
@@ -1230,7 +1230,7 @@ export const getDeleteApiAbortUploadUrl = (id: string,) => {
 
 
 
-  return `/api/v1/files/${id}/abort`
+  return `/api/files/${id}/abort`
 }
 
 /**

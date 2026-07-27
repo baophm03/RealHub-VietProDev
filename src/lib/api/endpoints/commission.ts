@@ -85,7 +85,7 @@ export const getGetApiCommissionPlansUrl = (params?: GetApiCommissionPlansParams
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/commission/plans?${stringifiedParams}` : `/api/v1/commission/plans`
+  return stringifiedParams.length > 0 ? `/api/commission/plans?${stringifiedParams}` : `/api/commission/plans`
 }
 
 /**
@@ -108,13 +108,13 @@ export const getApiCommissionPlans = async (params?: GetApiCommissionPlansParams
 
 export const getGetApiCommissionPlansInfiniteQueryKey = (params?: GetApiCommissionPlansParams,) => {
     return [
-    'infinite', `/api/v1/commission/plans`, ...(params ? [params] : [])
+    'infinite', `/api/commission/plans`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiCommissionPlansQueryKey = (params?: GetApiCommissionPlansParams,) => {
     return [
-    `/api/v1/commission/plans`, ...(params ? [params] : [])
+    `/api/commission/plans`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -298,7 +298,7 @@ export const getPostApiCommissionPlanUrl = () => {
 
 
 
-  return `/api/v1/commission/plans`
+  return `/api/commission/plans`
 }
 
 /**
@@ -380,7 +380,7 @@ export const getGetApiCommissionPlanIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/commission/plans/${id}`
+  return `/api/commission/plans/${id}`
 }
 
 /**
@@ -403,13 +403,13 @@ export const getApiCommissionPlanId = async (id: string, options?: RequestInit):
 
 export const getGetApiCommissionPlanIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/commission/plans/${id}`
+    'infinite', `/api/commission/plans/${id}`
     ] as const;
     }
 
 export const getGetApiCommissionPlanIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/commission/plans/${id}`
+    `/api/commission/plans/${id}`
     ] as const;
     }
 
@@ -593,7 +593,7 @@ export const getPatchApiCommissionPlanStatusUrl = (id: string,) => {
 
 
 
-  return `/api/v1/commission/plans/${id}/status`
+  return `/api/commission/plans/${id}/status`
 }
 
 /**
@@ -683,7 +683,7 @@ export const getGetApiDealCommissionsUrl = (params?: GetApiDealCommissionsParams
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/commission/deals?${stringifiedParams}` : `/api/v1/commission/deals`
+  return stringifiedParams.length > 0 ? `/api/commission/deals?${stringifiedParams}` : `/api/commission/deals`
 }
 
 /**
@@ -706,13 +706,13 @@ export const getApiDealCommissions = async (params?: GetApiDealCommissionsParams
 
 export const getGetApiDealCommissionsInfiniteQueryKey = (params?: GetApiDealCommissionsParams,) => {
     return [
-    'infinite', `/api/v1/commission/deals`, ...(params ? [params] : [])
+    'infinite', `/api/commission/deals`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiDealCommissionsQueryKey = (params?: GetApiDealCommissionsParams,) => {
     return [
-    `/api/v1/commission/deals`, ...(params ? [params] : [])
+    `/api/commission/deals`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -896,7 +896,7 @@ export const getGetApiDealCommissionIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/commission/deals/${id}`
+  return `/api/commission/deals/${id}`
 }
 
 /**
@@ -919,13 +919,13 @@ export const getApiDealCommissionId = async (id: string, options?: RequestInit):
 
 export const getGetApiDealCommissionIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/commission/deals/${id}`
+    'infinite', `/api/commission/deals/${id}`
     ] as const;
     }
 
 export const getGetApiDealCommissionIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/commission/deals/${id}`
+    `/api/commission/deals/${id}`
     ] as const;
     }
 
@@ -1109,7 +1109,7 @@ export const getPostApiEstimateCommissionUrl = () => {
 
 
 
-  return `/api/v1/commission/estimate`
+  return `/api/commission/estimate`
 }
 
 /**

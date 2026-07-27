@@ -79,7 +79,7 @@ export const getGetApiSalesReportUrl = (params?: GetApiSalesReportParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/reports/sales?${stringifiedParams}` : `/api/v1/reports/sales`
+  return stringifiedParams.length > 0 ? `/api/reports/sales?${stringifiedParams}` : `/api/reports/sales`
 }
 
 /**
@@ -102,13 +102,13 @@ export const getApiSalesReport = async (params?: GetApiSalesReportParams, option
 
 export const getGetApiSalesReportInfiniteQueryKey = (params?: GetApiSalesReportParams,) => {
     return [
-    'infinite', `/api/v1/reports/sales`, ...(params ? [params] : [])
+    'infinite', `/api/reports/sales`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiSalesReportQueryKey = (params?: GetApiSalesReportParams,) => {
     return [
-    `/api/v1/reports/sales`, ...(params ? [params] : [])
+    `/api/reports/sales`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -299,7 +299,7 @@ export const getGetApiCommissionReportUrl = (params?: GetApiCommissionReportPara
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/reports/commission?${stringifiedParams}` : `/api/v1/reports/commission`
+  return stringifiedParams.length > 0 ? `/api/reports/commission?${stringifiedParams}` : `/api/reports/commission`
 }
 
 /**
@@ -322,13 +322,13 @@ export const getApiCommissionReport = async (params?: GetApiCommissionReportPara
 
 export const getGetApiCommissionReportInfiniteQueryKey = (params?: GetApiCommissionReportParams,) => {
     return [
-    'infinite', `/api/v1/reports/commission`, ...(params ? [params] : [])
+    'infinite', `/api/reports/commission`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiCommissionReportQueryKey = (params?: GetApiCommissionReportParams,) => {
     return [
-    `/api/v1/reports/commission`, ...(params ? [params] : [])
+    `/api/reports/commission`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -512,7 +512,7 @@ export const getGetApiPropertiesReportUrl = () => {
 
 
 
-  return `/api/v1/reports/properties`
+  return `/api/reports/properties`
 }
 
 /**
@@ -535,13 +535,13 @@ export const getApiPropertiesReport = async ( options?: RequestInit): Promise<ge
 
 export const getGetApiPropertiesReportInfiniteQueryKey = () => {
     return [
-    'infinite', `/api/v1/reports/properties`
+    'infinite', `/api/reports/properties`
     ] as const;
     }
 
 export const getGetApiPropertiesReportQueryKey = () => {
     return [
-    `/api/v1/reports/properties`
+    `/api/reports/properties`
     ] as const;
     }
 
@@ -732,7 +732,7 @@ export const getGetApiTeamPerformanceReportUrl = (params?: GetApiTeamPerformance
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/reports/team-performance?${stringifiedParams}` : `/api/v1/reports/team-performance`
+  return stringifiedParams.length > 0 ? `/api/reports/team-performance?${stringifiedParams}` : `/api/reports/team-performance`
 }
 
 /**
@@ -755,13 +755,13 @@ export const getApiTeamPerformanceReport = async (params?: GetApiTeamPerformance
 
 export const getGetApiTeamPerformanceReportInfiniteQueryKey = (params?: GetApiTeamPerformanceReportParams,) => {
     return [
-    'infinite', `/api/v1/reports/team-performance`, ...(params ? [params] : [])
+    'infinite', `/api/reports/team-performance`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiTeamPerformanceReportQueryKey = (params?: GetApiTeamPerformanceReportParams,) => {
     return [
-    `/api/v1/reports/team-performance`, ...(params ? [params] : [])
+    `/api/reports/team-performance`, ...(params ? [params] : [])
     ] as const;
     }
 

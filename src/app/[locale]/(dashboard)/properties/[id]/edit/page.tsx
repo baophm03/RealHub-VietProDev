@@ -9,6 +9,7 @@ import { ArrowLeft } from "@phosphor-icons/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { FormSection, FormField } from "@/components/shared/form-section";
 import {
   Select,
@@ -17,10 +18,12 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useGetApiPropertyId, usePatchApiProperty, useGetApiPropertyTypes } from "@/lib/api/endpoints/properties";
+import { useGetApiPropertyId, usePatchApiProperty, useGetApiPropertyTypes, getGetApiPropertyIdQueryKey } from "@/lib/api/endpoints/properties";
 import { useGetApiLocations } from "@/lib/api/endpoints/locations";
 import { Property } from "@/lib/api/types/properties";
+import { useQueryClient } from "@tanstack/react-query";
 import type { Location } from "@/lib/api/types/locations";
+import { DynamicFieldsSection } from "@/components/shared/dynamic-fields-section";
 
 type PropertyType = {
   id: string;
@@ -64,6 +67,7 @@ const priceUnitLabels: Record<string, string> = {
 const propertySchema = z.object({
   propertyCode: z.string().min(1, "Vui lòng nhập mã BĐS"),
   title: z.string().min(5, "Tiêu đề phải có ít nhất 5 ký tự"),
+  description: z.string().optional(),
   slug: z.string().optional(),
   propertyTypeId: z.string().min(1, "Vui lòng chọn loại BĐS"),
   transactionType: z.enum(["SALE", "RENT", "TRANSFER", "INVESTMENT"]),
@@ -89,12 +93,14 @@ export default function PropertyEditPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedProvinceId, setSelectedProvinceId] = useState<string | undefined>(undefined);
+  const [dynamicValues, setDynamicValues] = useState<Record<string, unknown>>({});
 
   const { data: propertyData, isLoading } = useGetApiPropertyId(id);
   const property = (propertyData as unknown as { data: Property })?.data;
 
   // mutation
-  const { mutate: updateProperty } = usePatchApiProperty();
+  const queryClient = useQueryClient();
+  const { mutateAsync: updateProperty } = usePatchApiProperty();
 
   // property types
   const { data: propertyTypesData, isLoading: propertyTypesLoading } = useGetApiPropertyTypes();
@@ -143,6 +149,7 @@ export default function PropertyEditPage() {
       reset({
         propertyCode: property.propertyCode || "",
         title: property.title || "",
+        description: property.description || "",
         slug: property.slug || "",
         propertyTypeId: property.propertyType?.id || "",
         transactionType: (property.transactionType as PropertyFormData["transactionType"]) || "SALE",
@@ -156,6 +163,7 @@ export default function PropertyEditPage() {
         publicationStatus: (property.publicationStatus as PropertyFormData["publicationStatus"]) || "PRIVATE",
         businessStatus: (property.businessStatus as PropertyFormData["businessStatus"]) || "AVAILABLE",
       });
+      setDynamicValues((property as any).dynamicValuesJson || {});
     }
   }, [property, reset]);
 
@@ -163,7 +171,8 @@ export default function PropertyEditPage() {
     setLoading(true);
     setError(null);
     try {
-      await updateProperty({ id, data });
+      await updateProperty({ id, data: { ...data, dynamicValuesJson: Object.keys(dynamicValues).length > 0 ? dynamicValues : undefined } });
+      await queryClient.invalidateQueries({ queryKey: getGetApiPropertyIdQueryKey(id) });
       router.push(`/properties/${id}`);
     } catch (err) {
       setError("Co loi xay ra khi cap nhat bat dong san. Vui long thu lai.");
@@ -218,6 +227,10 @@ export default function PropertyEditPage() {
               <Input id="title" placeholder="Vinhomes Central Park - 2PN" {...register("title")} />
             </FormField>
           </div>
+
+          <FormField label="Mô tả" htmlFor="description" error={errors.description?.message}>
+            <Textarea id="description" rows={4} placeholder="Nhập mô tả chi tiết về bất động sản..." {...register("description")} />
+          </FormField>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField label="Loại giao dịch" required>
@@ -402,14 +415,12 @@ export default function PropertyEditPage() {
           </div>
         </FormSection>
 
-        <FormSection title="Trường động" description="Trường được render động từ FormSchema API">
-          <p className="text-sm text-foreground-muted">
-            Các trường động sẽ tự động hiển thị tại đây sau khi fetch từ{" "}
-            <code className="rounded bg-surface-muted px-1.5 py-0.5 font-mono text-xs">
-              /api/dynamic-fields/form-schemas?entityType=PROPERTY
-            </code>
-          </p>
-        </FormSection>
+        <DynamicFieldsSection
+          entityType="PROPERTY"
+          propertyTypeId={watchedPropertyTypeId}
+          initialValues={dynamicValues}
+          onChange={setDynamicValues}
+        />
 
         <div className="flex items-center justify-end gap-2">
           <Button type="button" variant="secondary" onClick={() => router.push(`/properties/${id}`)}>

@@ -78,7 +78,7 @@ export const getGetApiLeadProtectionPoliciesUrl = () => {
 
 
 
-  return `/api/v1/lead-protection/policies`
+  return `/api/lead-protection/policies`
 }
 
 /**
@@ -101,13 +101,13 @@ export const getApiLeadProtectionPolicies = async ( options?: RequestInit): Prom
 
 export const getGetApiLeadProtectionPoliciesInfiniteQueryKey = () => {
     return [
-    'infinite', `/api/v1/lead-protection/policies`
+    'infinite', `/api/lead-protection/policies`
     ] as const;
     }
 
 export const getGetApiLeadProtectionPoliciesQueryKey = () => {
     return [
-    `/api/v1/lead-protection/policies`
+    `/api/lead-protection/policies`
     ] as const;
     }
 
@@ -291,7 +291,7 @@ export const getPostApiLeadProtectionPolicyUrl = () => {
 
 
 
-  return `/api/v1/lead-protection/policies`
+  return `/api/lead-protection/policies`
 }
 
 /**
@@ -373,7 +373,7 @@ export const getGetApiLeadProtectionPolicyIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/lead-protection/policies/${id}`
+  return `/api/lead-protection/policies/${id}`
 }
 
 /**
@@ -396,13 +396,13 @@ export const getApiLeadProtectionPolicyId = async (id: string, options?: Request
 
 export const getGetApiLeadProtectionPolicyIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/lead-protection/policies/${id}`
+    'infinite', `/api/lead-protection/policies/${id}`
     ] as const;
     }
 
 export const getGetApiLeadProtectionPolicyIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/lead-protection/policies/${id}`
+    `/api/lead-protection/policies/${id}`
     ] as const;
     }
 
@@ -586,7 +586,7 @@ export const getPatchApiLeadProtectionPolicyUrl = (id: string,) => {
 
 
 
-  return `/api/v1/lead-protection/policies/${id}`
+  return `/api/lead-protection/policies/${id}`
 }
 
 /**
@@ -669,7 +669,7 @@ export const getDeleteApiLeadProtectionPolicyUrl = (id: string,) => {
 
 
 
-  return `/api/v1/lead-protection/policies/${id}`
+  return `/api/lead-protection/policies/${id}`
 }
 
 /**
@@ -751,7 +751,7 @@ export const getGetApiCheckLeadProtectionUrl = (leadId: string,) => {
 
 
 
-  return `/api/v1/lead-protection/check/${leadId}`
+  return `/api/lead-protection/check/${leadId}`
 }
 
 /**
@@ -774,13 +774,13 @@ export const getApiCheckLeadProtection = async (leadId: string, options?: Reques
 
 export const getGetApiCheckLeadProtectionInfiniteQueryKey = (leadId: string,) => {
     return [
-    'infinite', `/api/v1/lead-protection/check/${leadId}`
+    'infinite', `/api/lead-protection/check/${leadId}`
     ] as const;
     }
 
 export const getGetApiCheckLeadProtectionQueryKey = (leadId: string,) => {
     return [
-    `/api/v1/lead-protection/check/${leadId}`
+    `/api/lead-protection/check/${leadId}`
     ] as const;
     }
 
@@ -964,7 +964,7 @@ export const getPostApiLeadDisputeUrl = () => {
 
 
 
-  return `/api/v1/lead-protection/disputes`
+  return `/api/lead-protection/disputes`
 }
 
 /**
@@ -1053,7 +1053,7 @@ export const getGetApiLeadDisputesUrl = (params?: GetApiLeadDisputesParams,) => 
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/lead-protection/disputes?${stringifiedParams}` : `/api/v1/lead-protection/disputes`
+  return stringifiedParams.length > 0 ? `/api/lead-protection/disputes?${stringifiedParams}` : `/api/lead-protection/disputes`
 }
 
 /**
@@ -1076,13 +1076,13 @@ export const getApiLeadDisputes = async (params?: GetApiLeadDisputesParams, opti
 
 export const getGetApiLeadDisputesInfiniteQueryKey = (params?: GetApiLeadDisputesParams,) => {
     return [
-    'infinite', `/api/v1/lead-protection/disputes`, ...(params ? [params] : [])
+    'infinite', `/api/lead-protection/disputes`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiLeadDisputesQueryKey = (params?: GetApiLeadDisputesParams,) => {
     return [
-    `/api/v1/lead-protection/disputes`, ...(params ? [params] : [])
+    `/api/lead-protection/disputes`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -1266,7 +1266,7 @@ export const getPatchApiResolveLeadDisputeUrl = (id: string,) => {
 
 
 
-  return `/api/v1/lead-protection/disputes/${id}/resolve`
+  return `/api/lead-protection/disputes/${id}/resolve`
 }
 
 /**

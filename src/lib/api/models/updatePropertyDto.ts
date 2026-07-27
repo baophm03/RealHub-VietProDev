@@ -16,6 +16,7 @@ import type { UpdatePropertyDtoVerificationStatus } from './updatePropertyDtoVer
 export interface UpdatePropertyDto {
   propertyCode?: string;
   title?: string;
+  description?: string;
   slug?: string;
   propertyTypeId?: string;
   transactionType?: UpdatePropertyDtoTransactionType;

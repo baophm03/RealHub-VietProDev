@@ -84,7 +84,7 @@ export const getGetApiPropertiesUrl = (params?: GetApiPropertiesParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/properties?${stringifiedParams}` : `/api/v1/properties`
+  return stringifiedParams.length > 0 ? `/api/properties?${stringifiedParams}` : `/api/properties`
 }
 
 /**
@@ -107,13 +107,13 @@ export const getApiProperties = async (params?: GetApiPropertiesParams, options?
 
 export const getGetApiPropertiesInfiniteQueryKey = (params?: GetApiPropertiesParams,) => {
     return [
-    'infinite', `/api/v1/properties`, ...(params ? [params] : [])
+    'infinite', `/api/properties`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiPropertiesQueryKey = (params?: GetApiPropertiesParams,) => {
     return [
-    `/api/v1/properties`, ...(params ? [params] : [])
+    `/api/properties`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -297,7 +297,7 @@ export const getPostApiPropertyUrl = () => {
 
 
 
-  return `/api/v1/properties`
+  return `/api/properties`
 }
 
 /**
@@ -379,7 +379,7 @@ export const getGetApiPropertyTypesUrl = () => {
 
 
 
-  return `/api/v1/properties/types`
+  return `/api/properties/types`
 }
 
 /**
@@ -402,13 +402,13 @@ export const getApiPropertyTypes = async ( options?: RequestInit): Promise<getAp
 
 export const getGetApiPropertyTypesInfiniteQueryKey = () => {
     return [
-    'infinite', `/api/v1/properties/types`
+    'infinite', `/api/properties/types`
     ] as const;
     }
 
 export const getGetApiPropertyTypesQueryKey = () => {
     return [
-    `/api/v1/properties/types`
+    `/api/properties/types`
     ] as const;
     }
 
@@ -592,7 +592,7 @@ export const getPostApiPropertyTypeUrl = () => {
 
 
 
-  return `/api/v1/properties/types`
+  return `/api/properties/types`
 }
 
 /**
@@ -674,7 +674,7 @@ export const getGetApiPropertyIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/properties/${id}`
+  return `/api/properties/${id}`
 }
 
 /**
@@ -697,13 +697,13 @@ export const getApiPropertyId = async (id: string, options?: RequestInit): Promi
 
 export const getGetApiPropertyIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/properties/${id}`
+    'infinite', `/api/properties/${id}`
     ] as const;
     }
 
 export const getGetApiPropertyIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/properties/${id}`
+    `/api/properties/${id}`
     ] as const;
     }
 
@@ -887,7 +887,7 @@ export const getPatchApiPropertyUrl = (id: string,) => {
 
 
 
-  return `/api/v1/properties/${id}`
+  return `/api/properties/${id}`
 }
 
 /**
@@ -970,7 +970,7 @@ export const getDeleteApiPropertyUrl = (id: string,) => {
 
 
 
-  return `/api/v1/properties/${id}`
+  return `/api/properties/${id}`
 }
 
 /**

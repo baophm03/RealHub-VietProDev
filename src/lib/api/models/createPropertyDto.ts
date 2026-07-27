@@ -16,6 +16,7 @@ import type { CreatePropertyDtoVerificationStatus } from './createPropertyDtoVer
 export interface CreatePropertyDto {
   propertyCode: string;
   title: string;
+  description: string;
   slug: string;
   propertyTypeId: string;
   transactionType: CreatePropertyDtoTransactionType;

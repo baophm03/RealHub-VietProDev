@@ -46,8 +46,6 @@ export default function LoginPage() {
     mutation: {
       onSuccess: async (res: any) => {
         setAuth({
-          accessToken: res?.data?.accessToken,
-          refreshToken: res?.data?.refreshToken,
           activeTenantId: res?.data?.activeTenantId,
           expiresIn: res?.data?.expiresIn,
           roleInTenant: res?.data?.roleInTenant,
@@ -99,7 +97,7 @@ export default function LoginPage() {
           RealHub
         </h1>
         <p className="mt-3 text-sm text-foreground-muted leading-relaxed">
-          Nen tang quan ly bat dong san da tenant
+          Nền tảng quản lý bất động sản
         </p>
       </div>
 

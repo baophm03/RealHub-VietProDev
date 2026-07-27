@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "api:generate": "orval"
+    "api:generate": "orval",
+    "gen:api": "orval",
+    "generate:api": "orval"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

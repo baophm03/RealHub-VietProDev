@@ -86,7 +86,7 @@ export const getGetApiDealsUrl = (params?: GetApiDealsParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/deals?${stringifiedParams}` : `/api/v1/deals`
+  return stringifiedParams.length > 0 ? `/api/deals?${stringifiedParams}` : `/api/deals`
 }
 
 /**
@@ -109,13 +109,13 @@ export const getApiDeals = async (params?: GetApiDealsParams, options?: RequestI
 
 export const getGetApiDealsInfiniteQueryKey = (params?: GetApiDealsParams,) => {
     return [
-    'infinite', `/api/v1/deals`, ...(params ? [params] : [])
+    'infinite', `/api/deals`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiDealsQueryKey = (params?: GetApiDealsParams,) => {
     return [
-    `/api/v1/deals`, ...(params ? [params] : [])
+    `/api/deals`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -299,7 +299,7 @@ export const getPostApiDealUrl = () => {
 
 
 
-  return `/api/v1/deals`
+  return `/api/deals`
 }
 
 /**
@@ -381,7 +381,7 @@ export const getGetApiDealIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/deals/${id}`
+  return `/api/deals/${id}`
 }
 
 /**
@@ -404,13 +404,13 @@ export const getApiDealId = async (id: string, options?: RequestInit): Promise<g
 
 export const getGetApiDealIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/deals/${id}`
+    'infinite', `/api/deals/${id}`
     ] as const;
     }
 
 export const getGetApiDealIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/deals/${id}`
+    `/api/deals/${id}`
     ] as const;
     }
 
@@ -594,7 +594,7 @@ export const getPatchApiDealUrl = (id: string,) => {
 
 
 
-  return `/api/v1/deals/${id}`
+  return `/api/deals/${id}`
 }
 
 /**
@@ -677,7 +677,7 @@ export const getDeleteApiDealUrl = (id: string,) => {
 
 
 
-  return `/api/v1/deals/${id}`
+  return `/api/deals/${id}`
 }
 
 /**
@@ -759,7 +759,7 @@ export const getGetApiDealActivitiesUrl = (id: string,) => {
 
 
 
-  return `/api/v1/deals/${id}/activities`
+  return `/api/deals/${id}/activities`
 }
 
 /**
@@ -782,13 +782,13 @@ export const getApiDealActivities = async (id: string, options?: RequestInit): P
 
 export const getGetApiDealActivitiesInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/deals/${id}/activities`
+    'infinite', `/api/deals/${id}/activities`
     ] as const;
     }
 
 export const getGetApiDealActivitiesQueryKey = (id: string,) => {
     return [
-    `/api/v1/deals/${id}/activities`
+    `/api/deals/${id}/activities`
     ] as const;
     }
 
@@ -972,7 +972,7 @@ export const getPostApiDealActivityUrl = (id: string,) => {
 
 
 
-  return `/api/v1/deals/${id}/activities`
+  return `/api/deals/${id}/activities`
 }
 
 /**
@@ -1062,7 +1062,7 @@ export const getGetApiReservationsUrl = (params?: GetApiReservationsParams,) => 
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/reservations?${stringifiedParams}` : `/api/v1/reservations`
+  return stringifiedParams.length > 0 ? `/api/reservations?${stringifiedParams}` : `/api/reservations`
 }
 
 /**
@@ -1085,13 +1085,13 @@ export const getApiReservations = async (params?: GetApiReservationsParams, opti
 
 export const getGetApiReservationsInfiniteQueryKey = (params?: GetApiReservationsParams,) => {
     return [
-    'infinite', `/api/v1/reservations`, ...(params ? [params] : [])
+    'infinite', `/api/reservations`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiReservationsQueryKey = (params?: GetApiReservationsParams,) => {
     return [
-    `/api/v1/reservations`, ...(params ? [params] : [])
+    `/api/reservations`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -1275,7 +1275,7 @@ export const getPostApiReservationUrl = () => {
 
 
 
-  return `/api/v1/reservations`
+  return `/api/reservations`
 }
 
 /**
@@ -1357,7 +1357,7 @@ export const getPatchApiApproveReservationUrl = (id: string,) => {
 
 
 
-  return `/api/v1/reservations/${id}/approve`
+  return `/api/reservations/${id}/approve`
 }
 
 /**
@@ -1439,7 +1439,7 @@ export const getPatchApiRejectReservationUrl = (id: string,) => {
 
 
 
-  return `/api/v1/reservations/${id}/reject`
+  return `/api/reservations/${id}/reject`
 }
 
 /**

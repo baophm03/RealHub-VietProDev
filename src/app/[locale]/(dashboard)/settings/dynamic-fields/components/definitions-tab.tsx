@@ -1,0 +1,534 @@
+"use client";
+
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Plus, PencilSimple, Trash, X } from "@phosphor-icons/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { FormField } from "@/components/shared/form-section";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table";
+import {
+  useGetApiFieldDefinitions,
+  usePostApiFieldDefinition,
+  patchApiFieldDefinition,
+} from "@/lib/api/endpoints/dynamic-fields";
+import type { CreateFieldDefinitionDto, FieldOptionDto } from "@/lib/api/models";
+import type { GetApiFieldDefinitionsEntityType } from "@/lib/api/models/getApiFieldDefinitionsEntityType";
+import type { CreateFieldDefinitionDtoFieldType } from "@/lib/api/models/createFieldDefinitionDtoFieldType";
+
+const entityTypeLabels: Record<string, string> = {
+  PROPERTY: "Bất động sản",
+  CUSTOMER_NEED: "Nhu cầu khách hàng",
+  LEAD: "Khách tiềm năng",
+  DEAL: "Giao dịch",
+  OWNER_PROFILE: "Hồ sơ chủ nhà",
+};
+
+const fieldTypeLabels: Record<string, string> = {
+  TEXT: "Text ngắn",
+  TEXTAREA: "Text dài",
+  NUMBER: "Số",
+  MONEY: "Tiền tệ",
+  BOOLEAN: "Đúng/Sai",
+  DATE: "Ngày",
+  DATETIME: "Ngày + giờ",
+  SELECT: "Chọn 1",
+  MULTI_SELECT: "Chọn nhiều",
+  RADIO: "Radio",
+  CHECKBOX: "Checkbox",
+  FILE: "File",
+  IMAGE: "Hình ảnh",
+  LOCATION: "Vị trí",
+  JSON: "JSON",
+};
+
+const fieldTypesWithOptions = ["SELECT", "MULTI_SELECT", "RADIO", "CHECKBOX"];
+
+interface FieldDefinition {
+  id: string;
+  fieldKey: string;
+  fieldLabel: string;
+  fieldType: string;
+  entityType: string;
+  groupId?: string | null;
+  isRequired?: boolean;
+  isSearchable?: boolean;
+  isFilterable?: boolean;
+  isPublic?: boolean;
+  isSensitive?: boolean;
+  defaultValue?: string | null;
+  sortOrder?: number;
+  status?: string;
+  options?: { id: string; label: string; value: string; sortOrder?: number }[];
+  group?: { id: string; name: string } | null;
+}
+
+interface FieldGroup {
+  id: string;
+  name: string;
+  code: string;
+  entityType: string;
+}
+
+interface DefinitionsTabProps {
+  entityType?: GetApiFieldDefinitionsEntityType;
+}
+
+export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    fieldKey: "",
+    fieldLabel: "",
+    fieldType: "TEXT",
+    entityType: entityType || "PROPERTY",
+    groupId: "",
+    isRequired: false,
+    isSearchable: false,
+    isFilterable: false,
+    isPublic: true,
+    isSensitive: false,
+    defaultValue: "",
+    sortOrder: 0,
+  });
+  const [options, setOptions] = useState<FieldOptionDto[]>([]);
+  const [newOption, setNewOption] = useState({ label: "", value: "" });
+
+  const { data, isLoading, refetch } = useGetApiFieldDefinitions(
+    entityType ? { entityType } : undefined,
+  );
+  const definitions = ((data as any)?.data as FieldDefinition[]) || [];
+
+  const { mutateAsync: createDefinition, isPending: isCreating } = usePostApiFieldDefinition({
+    mutation: {
+      onSuccess: () => {
+        toast.success("Tạo định nghĩa trường thành công");
+        closeDialog();
+        refetch();
+      },
+      onError: (err: any) => {
+        toast.error(err?.message || "Có lỗi xảy ra khi tạo định nghĩa trường");
+      },
+    },
+  });
+
+  const { mutateAsync: updateDefinition, isPending: isUpdating } = useMutation({
+    mutationFn: (vars: { id: string; data: CreateFieldDefinitionDto }) =>
+      patchApiFieldDefinition(vars.id, {
+        body: JSON.stringify(vars.data),
+        headers: { "Content-Type": "application/json" },
+      }),
+    onSuccess: () => {
+      toast.success("Cập nhật định nghĩa trường thành công");
+      closeDialog();
+      refetch();
+    },
+    onError: (err: any) => {
+      toast.error(err?.message || "Có lỗi xảy ra khi cập nhật định nghĩa trường");
+    },
+  });
+
+  const isPending = isCreating || isUpdating;
+
+  const openCreateDialog = () => {
+    setEditingId(null);
+    setForm({
+      fieldKey: "",
+      fieldLabel: "",
+      fieldType: "TEXT",
+      entityType: entityType || "PROPERTY",
+      groupId: "",
+      isRequired: false,
+      isSearchable: false,
+      isFilterable: false,
+      isPublic: true,
+      isSensitive: false,
+      defaultValue: "",
+      sortOrder: 0,
+    });
+    setOptions([]);
+    setNewOption({ label: "", value: "" });
+    setDialogOpen(true);
+  };
+
+  const openEditDialog = (def: FieldDefinition) => {
+    setEditingId(def.id);
+    setForm({
+      fieldKey: def.fieldKey,
+      fieldLabel: def.fieldLabel,
+      fieldType: def.fieldType,
+      entityType: def.entityType as GetApiFieldDefinitionsEntityType,
+      groupId: def.groupId || "",
+      isRequired: def.isRequired || false,
+      isSearchable: def.isSearchable || false,
+      isFilterable: def.isFilterable || false,
+      isPublic: def.isPublic ?? true,
+      isSensitive: def.isSensitive || false,
+      defaultValue: def.defaultValue || "",
+      sortOrder: def.sortOrder || 0,
+    });
+    setOptions(
+      (def.options || []).map((o) => ({
+        label: o.label,
+        value: o.value,
+        sortOrder: o.sortOrder,
+      })),
+    );
+    setNewOption({ label: "", value: "" });
+    setDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    setEditingId(null);
+    setForm({
+      fieldKey: "",
+      fieldLabel: "",
+      fieldType: "TEXT",
+      entityType: entityType || "PROPERTY",
+      groupId: "",
+      isRequired: false,
+      isSearchable: false,
+      isFilterable: false,
+      isPublic: true,
+      isSensitive: false,
+      defaultValue: "",
+      sortOrder: 0,
+    });
+    setOptions([]);
+    setNewOption({ label: "", value: "" });
+  };
+
+  const handleAddOption = () => {
+    if (!newOption.label || !newOption.value) {
+      toast.error("Nhập cả label và value cho option");
+      return;
+    }
+    setOptions([...options, { ...newOption, sortOrder: options.length }]);
+    setNewOption({ label: "", value: "" });
+  };
+
+  const handleRemoveOption = (idx: number) => {
+    setOptions(options.filter((_, i) => i !== idx));
+  };
+
+  const handleSubmit = () => {
+    if (!form.fieldKey || !form.fieldLabel) {
+      toast.error("Vui lòng nhập field key và field label");
+      return;
+    }
+    const dto: CreateFieldDefinitionDto = {
+      fieldKey: form.fieldKey,
+      fieldLabel: form.fieldLabel,
+      fieldType: form.fieldType as any,
+      entityType: form.entityType as any,
+      groupId: form.groupId || undefined,
+      isRequired: form.isRequired,
+      isSearchable: form.isSearchable,
+      isFilterable: form.isFilterable,
+      isPublic: form.isPublic,
+      isSensitive: form.isSensitive,
+      defaultValue: form.defaultValue || undefined,
+      sortOrder: form.sortOrder,
+      options: fieldTypesWithOptions.includes(form.fieldType) && options.length > 0
+        ? options
+        : undefined,
+    };
+    if (editingId) {
+      updateDefinition({ id: editingId, data: dto });
+    } else {
+      createDefinition({ data: dto });
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-end">
+        <Button size="sm" onClick={openCreateDialog}>
+          <Plus size={16} />
+          Thêm trường
+        </Button>
+      </div>
+
+      {isLoading ? (
+        <div className="flex flex-col gap-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-12 animate-pulse rounded-lg bg-surface-muted" />
+          ))}
+        </div>
+      ) : definitions.length === 0 ? (
+        <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
+          <p className="text-sm text-foreground-muted">Chưa có định nghĩa trường nào</p>
+          <Button variant="outline" size="sm" onClick={openCreateDialog}>
+            <Plus size={16} />
+            Tạo trường đầu tiên
+          </Button>
+        </div>
+      ) : (
+        <div className="rounded-lg border border-border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Tên trường</TableHead>
+                <TableHead>Key</TableHead>
+                <TableHead>Loại</TableHead>
+                <TableHead>Nhóm</TableHead>
+                <TableHead>Flags</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {definitions.map((def) => (
+                <TableRow key={def.id}>
+                  <TableCell className="font-medium">{def.fieldLabel}</TableCell>
+                  <TableCell>
+                    <code className="rounded bg-surface-muted px-1.5 py-0.5 font-mono text-xs">
+                      {def.fieldKey}
+                    </code>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="blue">{fieldTypeLabels[def.fieldType] || def.fieldType}</Badge>
+                  </TableCell>
+                  <TableCell className="text-sm text-foreground-muted">
+                    {def.group?.name || "-"}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1">
+                      {def.isRequired && <Badge variant="red">Bắt buộc</Badge>}
+                      {def.isSearchable && <Badge variant="green">Tìm kiếm</Badge>}
+                      {def.isFilterable && <Badge variant="yellow">Lọc</Badge>}
+                      {def.isSensitive && <Badge variant="red">Nhạy cảm</Badge>}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(def)}>
+                        <PencilSimple size={14} />
+                      </Button>
+                      <Button variant="ghost" size="icon-sm">
+                        <Trash size={14} />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{editingId ? "Chỉnh sửa định nghĩa trường" : "Tạo định nghĩa trường"}</DialogTitle>
+            <DialogDescription>{editingId ? "Cập nhật thông tin trường động" : "Định nghĩa một trường động mới cho đối tượng"}</DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-4">
+              <FormField label="Tên hiển thị" required>
+                <Input
+                  placeholder="VD: Số tầng"
+                  value={form.fieldLabel}
+                  onChange={(e) => setForm({ ...form, fieldLabel: e.target.value })}
+                />
+              </FormField>
+              <FormField label="Field key" required helper="Unique trong tenant + entityType">
+                <Input
+                  placeholder="VD: numberOfFloors"
+                  value={form.fieldKey}
+                  onChange={(e) => setForm({ ...form, fieldKey: e.target.value })}
+                  disabled={!!editingId}
+                />
+              </FormField>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField label="Loại trường" required>
+                <Select
+                  value={form.fieldType}
+                  onValueChange={(v) => setForm({ ...form, fieldType: v as CreateFieldDefinitionDtoFieldType })}
+                  disabled={!!editingId}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Chọn loại">
+                      {(value: string) => fieldTypeLabels[value] || value}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(fieldTypeLabels).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormField>
+              <FormField label="Đối tượng" required>
+                <Select
+                  value={form.entityType}
+                  onValueChange={(v) => setForm({ ...form, entityType: v as GetApiFieldDefinitionsEntityType })}
+                  disabled={!!editingId}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Chọn đối tượng">
+                      {(value: string) => entityTypeLabels[value] || value}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(entityTypeLabels).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormField>
+            </div>
+
+            <FormField label="Giá trị mặc định">
+              <Input
+                placeholder="VD: 1"
+                value={form.defaultValue}
+                onChange={(e) => setForm({ ...form, defaultValue: e.target.value })}
+              />
+            </FormField>
+
+            <FormField label="Thứ tự hiển thị">
+              <Input
+                type="number"
+                value={form.sortOrder}
+                onChange={(e) => setForm({ ...form, sortOrder: Number(e.target.value) })}
+              />
+            </FormField>
+
+            <div className="grid grid-cols-2 gap-3 rounded-lg border border-border p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm">Bắt buộc</span>
+                <Switch
+                  checked={form.isRequired}
+                  onCheckedChange={(v) => setForm({ ...form, isRequired: v })}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm">Tìm kiếm được</span>
+                <Switch
+                  checked={form.isSearchable}
+                  onCheckedChange={(v) => setForm({ ...form, isSearchable: v })}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm">Lọc được</span>
+                <Switch
+                  checked={form.isFilterable}
+                  onCheckedChange={(v) => setForm({ ...form, isFilterable: v })}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm">Public</span>
+                <Switch
+                  checked={form.isPublic}
+                  onCheckedChange={(v) => setForm({ ...form, isPublic: v })}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm">Nhạy cảm</span>
+                <Switch
+                  checked={form.isSensitive}
+                  onCheckedChange={(v) => setForm({ ...form, isSensitive: v })}
+                />
+              </div>
+            </div>
+
+            {fieldTypesWithOptions.includes(form.fieldType) && (
+              <FormField label="Options" helper="Thêm các lựa chọn cho trường dạng select/radio/checkbox">
+                <div className="flex flex-col gap-2">
+                  {options.map((opt, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <Input
+                        className="flex-1"
+                        value={opt.label}
+                        onChange={(e) => {
+                          const next = [...options];
+                          next[idx] = { ...next[idx], label: e.target.value };
+                          setOptions(next);
+                        }}
+                        placeholder="Label"
+                      />
+                      <Input
+                        className="flex-1"
+                        value={opt.value}
+                        onChange={(e) => {
+                          const next = [...options];
+                          next[idx] = { ...next[idx], value: e.target.value };
+                          setOptions(next);
+                        }}
+                        placeholder="Value"
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() => handleRemoveOption(idx)}
+                      >
+                        <X size={14} />
+                      </Button>
+                    </div>
+                  ))}
+                  <div className="flex items-center gap-2">
+                    <Input
+                      className="flex-1"
+                      value={newOption.label}
+                      onChange={(e) => setNewOption({ ...newOption, label: e.target.value })}
+                      placeholder="Label"
+                    />
+                    <Input
+                      className="flex-1"
+                      value={newOption.value}
+                      onChange={(e) => setNewOption({ ...newOption, value: e.target.value })}
+                      placeholder="Value"
+                    />
+                    <Button variant="outline" size="sm" onClick={handleAddOption}>
+                      <Plus size={14} />
+                      Thêm
+                    </Button>
+                  </div>
+                </div>
+              </FormField>
+            )}
+          </div>
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" />}>
+              Hủy
+            </DialogClose>
+            <Button onClick={handleSubmit} disabled={isPending}>
+              {isPending ? "Đang lưu..." : editingId ? "Cập nhật" : "Tạo trường"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

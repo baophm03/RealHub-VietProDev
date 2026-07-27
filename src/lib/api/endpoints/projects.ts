@@ -83,7 +83,7 @@ export const getGetApiProjectsUrl = (params?: GetApiProjectsParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/projects?${stringifiedParams}` : `/api/v1/projects`
+  return stringifiedParams.length > 0 ? `/api/projects?${stringifiedParams}` : `/api/projects`
 }
 
 /**
@@ -106,13 +106,13 @@ export const getApiProjects = async (params?: GetApiProjectsParams, options?: Re
 
 export const getGetApiProjectsInfiniteQueryKey = (params?: GetApiProjectsParams,) => {
     return [
-    'infinite', `/api/v1/projects`, ...(params ? [params] : [])
+    'infinite', `/api/projects`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiProjectsQueryKey = (params?: GetApiProjectsParams,) => {
     return [
-    `/api/v1/projects`, ...(params ? [params] : [])
+    `/api/projects`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -296,7 +296,7 @@ export const getPostApiProjectUrl = () => {
 
 
 
-  return `/api/v1/projects`
+  return `/api/projects`
 }
 
 /**
@@ -378,7 +378,7 @@ export const getGetApiProjectIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/projects/${id}`
+  return `/api/projects/${id}`
 }
 
 /**
@@ -401,13 +401,13 @@ export const getApiProjectId = async (id: string, options?: RequestInit): Promis
 
 export const getGetApiProjectIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/projects/${id}`
+    'infinite', `/api/projects/${id}`
     ] as const;
     }
 
 export const getGetApiProjectIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/projects/${id}`
+    `/api/projects/${id}`
     ] as const;
     }
 
@@ -591,7 +591,7 @@ export const getPatchApiProjectUrl = (id: string,) => {
 
 
 
-  return `/api/v1/projects/${id}`
+  return `/api/projects/${id}`
 }
 
 /**
@@ -674,7 +674,7 @@ export const getDeleteApiProjectUrl = (id: string,) => {
 
 
 
-  return `/api/v1/projects/${id}`
+  return `/api/projects/${id}`
 }
 
 /**

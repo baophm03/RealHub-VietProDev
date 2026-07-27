@@ -5,8 +5,6 @@ import { persist } from "zustand/middleware";
 import { useUserStore } from "@/lib/stores/user-store";
 
 interface AuthState {
-  accessToken: string | null;
-  refreshToken: string | null;
   tenantCode: string | null;
   isAuthenticated: boolean;
   activeTenantId: string | null;
@@ -14,14 +12,11 @@ interface AuthState {
   roleInTenant: string | null;
   sessionId: string | null;
   setAuth: (tokens: {
-    accessToken: string;
-    refreshToken: string;
     activeTenantId: string;
     expiresIn: number;
     roleInTenant: string;
     sessionId: string;
   }) => void;
-  setTokens: (accessToken: string, refreshToken: string) => void;
   setTenantCode: (code: string) => void;
   logout: () => void;
 }
@@ -29,8 +24,6 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      accessToken: null,
-      refreshToken: null,
       tenantCode: process.env.NEXT_PUBLIC_TENANT_CODE ?? null,
       isAuthenticated: false,
       activeTenantId: null,
@@ -38,10 +31,8 @@ export const useAuthStore = create<AuthState>()(
       roleInTenant: null,
       sessionId: null,
 
-      setAuth: ({ accessToken, refreshToken, activeTenantId, expiresIn, roleInTenant, sessionId }) =>
+      setAuth: ({ activeTenantId, expiresIn, roleInTenant, sessionId }) =>
         set({
-          accessToken,
-          refreshToken,
           isAuthenticated: true,
           activeTenantId,
           expiresIn,
@@ -49,16 +40,11 @@ export const useAuthStore = create<AuthState>()(
           sessionId,
         }),
 
-      setTokens: (accessToken, refreshToken) =>
-        set({ accessToken, refreshToken }),
-
       setTenantCode: (code) => set({ tenantCode: code }),
 
       logout: () => {
         useUserStore.getState().clearUser();
         set({
-          accessToken: null,
-          refreshToken: null,
           isAuthenticated: false,
           activeTenantId: null,
           expiresIn: null,
@@ -70,8 +56,6 @@ export const useAuthStore = create<AuthState>()(
     {
       name: "realhub-auth",
       partialize: (state) => ({
-        accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
         activeTenantId: state.activeTenantId,
         expiresIn: state.expiresIn,

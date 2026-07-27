@@ -13,11 +13,11 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { useTheme } from "@/lib/hooks/use-theme";
+import { usePostApiLogout } from "@/lib/api/endpoints/auth";
 
 export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const user = useUserStore((s) => s.user);
   const tenantCode = useAuthStore((s) => s.tenantCode);
-  const logout = useAuthStore((s) => s.logout);
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
 
@@ -27,6 +27,22 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
     .map((n) => n[0])
     .join("")
     .toUpperCase() ?? "U";
+
+  // mutation
+  const { mutate: logoutMutation } = usePostApiLogout({
+    mutation: {
+      onError: (error) => {
+        console.error("Logout error:", error);
+      },
+    },
+  });
+
+  const handleLogout = async () => {
+    logoutMutation();
+    useAuthStore.getState().logout();
+    useUserStore.getState().clearUser();
+    router.push("/login");
+  };
 
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-surface/70 px-4 backdrop-blur-xl md:px-8">
@@ -89,7 +105,7 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
               <span>Hồ sơ cá nhân</span>
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => { logout(); router.push("/login"); }}
+              onClick={handleLogout}
               className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-accent-red-text hover:bg-accent-red/10 cursor-pointer outline-none transition-colors"
             >
               <SignOut size={16} />

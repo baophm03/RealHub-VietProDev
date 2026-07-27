@@ -66,7 +66,7 @@ export const getGetApiHealthUrl = () => {
 
 
 
-  return `/api/v1/health`
+  return `/api/health`
 }
 
 /**
@@ -89,13 +89,13 @@ export const getApiHealth = async ( options?: RequestInit): Promise<getApiHealth
 
 export const getGetApiHealthInfiniteQueryKey = () => {
     return [
-    'infinite', `/api/v1/health`
+    'infinite', `/api/health`
     ] as const;
     }
 
 export const getGetApiHealthQueryKey = () => {
     return [
-    `/api/v1/health`
+    `/api/health`
     ] as const;
     }
 
@@ -279,7 +279,7 @@ export const getGetApiHealthLiveUrl = () => {
 
 
 
-  return `/api/v1/health/live`
+  return `/api/health/live`
 }
 
 /**
@@ -302,13 +302,13 @@ export const getApiHealthLive = async ( options?: RequestInit): Promise<getApiHe
 
 export const getGetApiHealthLiveInfiniteQueryKey = () => {
     return [
-    'infinite', `/api/v1/health/live`
+    'infinite', `/api/health/live`
     ] as const;
     }
 
 export const getGetApiHealthLiveQueryKey = () => {
     return [
-    `/api/v1/health/live`
+    `/api/health/live`
     ] as const;
     }
 
@@ -492,7 +492,7 @@ export const getGetApiHealthReadyUrl = () => {
 
 
 
-  return `/api/v1/health/ready`
+  return `/api/health/ready`
 }
 
 /**
@@ -515,13 +515,13 @@ export const getApiHealthReady = async ( options?: RequestInit): Promise<getApiH
 
 export const getGetApiHealthReadyInfiniteQueryKey = () => {
     return [
-    'infinite', `/api/v1/health/ready`
+    'infinite', `/api/health/ready`
     ] as const;
     }
 
 export const getGetApiHealthReadyQueryKey = () => {
     return [
-    `/api/v1/health/ready`
+    `/api/health/ready`
     ] as const;
     }
 
@@ -705,7 +705,7 @@ export const getGetApiHealthMetricsUrl = () => {
 
 
 
-  return `/api/v1/health/metrics`
+  return `/api/health/metrics`
 }
 
 /**
@@ -728,13 +728,13 @@ export const getApiHealthMetrics = async ( options?: RequestInit): Promise<getAp
 
 export const getGetApiHealthMetricsInfiniteQueryKey = () => {
     return [
-    'infinite', `/api/v1/health/metrics`
+    'infinite', `/api/health/metrics`
     ] as const;
     }
 
 export const getGetApiHealthMetricsQueryKey = () => {
     return [
-    `/api/v1/health/metrics`
+    `/api/health/metrics`
     ] as const;
     }
 
