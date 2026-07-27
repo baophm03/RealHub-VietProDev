@@ -74,7 +74,7 @@ export const getPostApiTenantUrl = () => {
 
 
 
-  return `/api/v1/tenants`
+  return `/api/tenants`
 }
 
 /**
@@ -156,7 +156,7 @@ export const getGetApiTenantIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/tenants/${id}`
+  return `/api/tenants/${id}`
 }
 
 /**
@@ -179,13 +179,13 @@ export const getApiTenantId = async (id: string, options?: RequestInit): Promise
 
 export const getGetApiTenantIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/tenants/${id}`
+    'infinite', `/api/tenants/${id}`
     ] as const;
     }
 
 export const getGetApiTenantIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/tenants/${id}`
+    `/api/tenants/${id}`
     ] as const;
     }
 
@@ -369,7 +369,7 @@ export const getGetApiTenantByDomainUrl = (domain: string,) => {
 
 
 
-  return `/api/v1/tenants/domain/${domain}`
+  return `/api/tenants/domain/${domain}`
 }
 
 /**
@@ -392,13 +392,13 @@ export const getApiTenantByDomain = async (domain: string, options?: RequestInit
 
 export const getGetApiTenantByDomainInfiniteQueryKey = (domain: string,) => {
     return [
-    'infinite', `/api/v1/tenants/domain/${domain}`
+    'infinite', `/api/tenants/domain/${domain}`
     ] as const;
     }
 
 export const getGetApiTenantByDomainQueryKey = (domain: string,) => {
     return [
-    `/api/v1/tenants/domain/${domain}`
+    `/api/tenants/domain/${domain}`
     ] as const;
     }
 
@@ -582,7 +582,7 @@ export const getGetApiTenantSettingsUrl = (id: string,) => {
 
 
 
-  return `/api/v1/tenants/${id}/settings`
+  return `/api/tenants/${id}/settings`
 }
 
 /**
@@ -605,13 +605,13 @@ export const getApiTenantSettings = async (id: string, options?: RequestInit): P
 
 export const getGetApiTenantSettingsInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/tenants/${id}/settings`
+    'infinite', `/api/tenants/${id}/settings`
     ] as const;
     }
 
 export const getGetApiTenantSettingsQueryKey = (id: string,) => {
     return [
-    `/api/v1/tenants/${id}/settings`
+    `/api/tenants/${id}/settings`
     ] as const;
     }
 
@@ -795,7 +795,7 @@ export const getPatchApiTenantSettingUrl = (id: string,) => {
 
 
 
-  return `/api/v1/tenants/${id}/settings`
+  return `/api/tenants/${id}/settings`
 }
 
 /**
@@ -877,7 +877,7 @@ export const getGetApiTenantFeaturesUrl = (id: string,) => {
 
 
 
-  return `/api/v1/tenants/${id}/features`
+  return `/api/tenants/${id}/features`
 }
 
 /**
@@ -900,13 +900,13 @@ export const getApiTenantFeatures = async (id: string, options?: RequestInit): P
 
 export const getGetApiTenantFeaturesInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/tenants/${id}/features`
+    'infinite', `/api/tenants/${id}/features`
     ] as const;
     }
 
 export const getGetApiTenantFeaturesQueryKey = (id: string,) => {
     return [
-    `/api/v1/tenants/${id}/features`
+    `/api/tenants/${id}/features`
     ] as const;
     }
 
@@ -1090,7 +1090,7 @@ export const getPatchApiTenantFeatureUrl = (id: string,) => {
 
 
 
-  return `/api/v1/tenants/${id}/features`
+  return `/api/tenants/${id}/features`
 }
 
 /**

@@ -83,7 +83,7 @@ export const getGetApiAppointmentsUrl = (params?: GetApiAppointmentsParams,) => 
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/appointments?${stringifiedParams}` : `/api/v1/appointments`
+  return stringifiedParams.length > 0 ? `/api/appointments?${stringifiedParams}` : `/api/appointments`
 }
 
 /**
@@ -106,13 +106,13 @@ export const getApiAppointments = async (params?: GetApiAppointmentsParams, opti
 
 export const getGetApiAppointmentsInfiniteQueryKey = (params?: GetApiAppointmentsParams,) => {
     return [
-    'infinite', `/api/v1/appointments`, ...(params ? [params] : [])
+    'infinite', `/api/appointments`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiAppointmentsQueryKey = (params?: GetApiAppointmentsParams,) => {
     return [
-    `/api/v1/appointments`, ...(params ? [params] : [])
+    `/api/appointments`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -296,7 +296,7 @@ export const getPostApiAppointmentUrl = () => {
 
 
 
-  return `/api/v1/appointments`
+  return `/api/appointments`
 }
 
 /**
@@ -378,7 +378,7 @@ export const getGetApiAppointmentIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/appointments/${id}`
+  return `/api/appointments/${id}`
 }
 
 /**
@@ -401,13 +401,13 @@ export const getApiAppointmentId = async (id: string, options?: RequestInit): Pr
 
 export const getGetApiAppointmentIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/appointments/${id}`
+    'infinite', `/api/appointments/${id}`
     ] as const;
     }
 
 export const getGetApiAppointmentIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/appointments/${id}`
+    `/api/appointments/${id}`
     ] as const;
     }
 
@@ -591,7 +591,7 @@ export const getPatchApiAppointmentUrl = (id: string,) => {
 
 
 
-  return `/api/v1/appointments/${id}`
+  return `/api/appointments/${id}`
 }
 
 /**
@@ -674,7 +674,7 @@ export const getDeleteApiAppointmentUrl = (id: string,) => {
 
 
 
-  return `/api/v1/appointments/${id}`
+  return `/api/appointments/${id}`
 }
 
 /**

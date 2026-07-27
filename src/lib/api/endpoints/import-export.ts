@@ -86,7 +86,7 @@ export const getGetApiImportJobsUrl = (params?: GetApiImportJobsParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/imports?${stringifiedParams}` : `/api/v1/imports`
+  return stringifiedParams.length > 0 ? `/api/imports?${stringifiedParams}` : `/api/imports`
 }
 
 /**
@@ -109,13 +109,13 @@ export const getApiImportJobs = async (params?: GetApiImportJobsParams, options?
 
 export const getGetApiImportJobsInfiniteQueryKey = (params?: GetApiImportJobsParams,) => {
     return [
-    'infinite', `/api/v1/imports`, ...(params ? [params] : [])
+    'infinite', `/api/imports`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiImportJobsQueryKey = (params?: GetApiImportJobsParams,) => {
     return [
-    `/api/v1/imports`, ...(params ? [params] : [])
+    `/api/imports`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -299,7 +299,7 @@ export const getPostApiImportJobUrl = () => {
 
 
 
-  return `/api/v1/imports`
+  return `/api/imports`
 }
 
 /**
@@ -381,7 +381,7 @@ export const getGetApiImportJobIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/imports/${id}`
+  return `/api/imports/${id}`
 }
 
 /**
@@ -404,13 +404,13 @@ export const getApiImportJobId = async (id: string, options?: RequestInit): Prom
 
 export const getGetApiImportJobIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/imports/${id}`
+    'infinite', `/api/imports/${id}`
     ] as const;
     }
 
 export const getGetApiImportJobIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/imports/${id}`
+    `/api/imports/${id}`
     ] as const;
     }
 
@@ -594,7 +594,7 @@ export const getPatchApiImportJobUrl = (id: string,) => {
 
 
 
-  return `/api/v1/imports/${id}`
+  return `/api/imports/${id}`
 }
 
 /**
@@ -684,7 +684,7 @@ export const getGetApiExportJobsUrl = (params?: GetApiExportJobsParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/exports?${stringifiedParams}` : `/api/v1/exports`
+  return stringifiedParams.length > 0 ? `/api/exports?${stringifiedParams}` : `/api/exports`
 }
 
 /**
@@ -707,13 +707,13 @@ export const getApiExportJobs = async (params?: GetApiExportJobsParams, options?
 
 export const getGetApiExportJobsInfiniteQueryKey = (params?: GetApiExportJobsParams,) => {
     return [
-    'infinite', `/api/v1/exports`, ...(params ? [params] : [])
+    'infinite', `/api/exports`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiExportJobsQueryKey = (params?: GetApiExportJobsParams,) => {
     return [
-    `/api/v1/exports`, ...(params ? [params] : [])
+    `/api/exports`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -897,7 +897,7 @@ export const getPostApiExportJobUrl = () => {
 
 
 
-  return `/api/v1/exports`
+  return `/api/exports`
 }
 
 /**
@@ -979,7 +979,7 @@ export const getGetApiExportJobIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/exports/${id}`
+  return `/api/exports/${id}`
 }
 
 /**
@@ -1002,13 +1002,13 @@ export const getApiExportJobId = async (id: string, options?: RequestInit): Prom
 
 export const getGetApiExportJobIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/exports/${id}`
+    'infinite', `/api/exports/${id}`
     ] as const;
     }
 
 export const getGetApiExportJobIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/exports/${id}`
+    `/api/exports/${id}`
     ] as const;
     }
 
@@ -1192,7 +1192,7 @@ export const getPatchApiExportJobUrl = (id: string,) => {
 
 
 
-  return `/api/v1/exports/${id}`
+  return `/api/exports/${id}`
 }
 
 /**

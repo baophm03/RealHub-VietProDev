@@ -15,6 +15,7 @@ export interface Property {
   id: string;
   propertyCode: string;
   title: string;
+  description: string;
   slug: string;
   transactionType: string;
   sellingMode: string;
@@ -32,8 +33,20 @@ export interface Property {
     code: string;
     group: string;
   };
-  province: null;
-  district: null;
-  ward: null;
+  province: {
+    id: string;
+    name: string;
+    code: string;
+  };
+  district: {
+    id: string;
+    name: string;
+    code: string;
+  };
+  ward: {
+    id: string;
+    name: string;
+    code: string;
+  };
   address?: string;
 }

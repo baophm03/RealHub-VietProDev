@@ -75,7 +75,7 @@ export const getGetApiAssignmentPoliciesUrl = () => {
 
 
 
-  return `/api/v1/assignments/policies`
+  return `/api/assignments/policies`
 }
 
 /**
@@ -98,13 +98,13 @@ export const getApiAssignmentPolicies = async ( options?: RequestInit): Promise<
 
 export const getGetApiAssignmentPoliciesInfiniteQueryKey = () => {
     return [
-    'infinite', `/api/v1/assignments/policies`
+    'infinite', `/api/assignments/policies`
     ] as const;
     }
 
 export const getGetApiAssignmentPoliciesQueryKey = () => {
     return [
-    `/api/v1/assignments/policies`
+    `/api/assignments/policies`
     ] as const;
     }
 
@@ -288,7 +288,7 @@ export const getPostApiAssignmentPolicyUrl = () => {
 
 
 
-  return `/api/v1/assignments/policies`
+  return `/api/assignments/policies`
 }
 
 /**
@@ -370,7 +370,7 @@ export const getGetApiAssignmentPolicyIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/assignments/policies/${id}`
+  return `/api/assignments/policies/${id}`
 }
 
 /**
@@ -393,13 +393,13 @@ export const getApiAssignmentPolicyId = async (id: string, options?: RequestInit
 
 export const getGetApiAssignmentPolicyIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/assignments/policies/${id}`
+    'infinite', `/api/assignments/policies/${id}`
     ] as const;
     }
 
 export const getGetApiAssignmentPolicyIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/assignments/policies/${id}`
+    `/api/assignments/policies/${id}`
     ] as const;
     }
 
@@ -583,7 +583,7 @@ export const getPatchApiAssignmentPolicyUrl = (id: string,) => {
 
 
 
-  return `/api/v1/assignments/policies/${id}`
+  return `/api/assignments/policies/${id}`
 }
 
 /**
@@ -665,7 +665,7 @@ export const getDeleteApiAssignmentPolicyUrl = (id: string,) => {
 
 
 
-  return `/api/v1/assignments/policies/${id}`
+  return `/api/assignments/policies/${id}`
 }
 
 /**
@@ -754,7 +754,7 @@ export const getGetApiAssignmentsUrl = (params?: GetApiAssignmentsParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/assignments?${stringifiedParams}` : `/api/v1/assignments`
+  return stringifiedParams.length > 0 ? `/api/assignments?${stringifiedParams}` : `/api/assignments`
 }
 
 /**
@@ -777,13 +777,13 @@ export const getApiAssignments = async (params?: GetApiAssignmentsParams, option
 
 export const getGetApiAssignmentsInfiniteQueryKey = (params?: GetApiAssignmentsParams,) => {
     return [
-    'infinite', `/api/v1/assignments`, ...(params ? [params] : [])
+    'infinite', `/api/assignments`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiAssignmentsQueryKey = (params?: GetApiAssignmentsParams,) => {
     return [
-    `/api/v1/assignments`, ...(params ? [params] : [])
+    `/api/assignments`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -967,7 +967,7 @@ export const getPostApiAssignmentUrl = () => {
 
 
 
-  return `/api/v1/assignments`
+  return `/api/assignments`
 }
 
 /**
@@ -1049,7 +1049,7 @@ export const getGetApiExpiredAssignmentsUrl = () => {
 
 
 
-  return `/api/v1/assignments/expired`
+  return `/api/assignments/expired`
 }
 
 /**
@@ -1072,13 +1072,13 @@ export const getApiExpiredAssignments = async ( options?: RequestInit): Promise<
 
 export const getGetApiExpiredAssignmentsInfiniteQueryKey = () => {
     return [
-    'infinite', `/api/v1/assignments/expired`
+    'infinite', `/api/assignments/expired`
     ] as const;
     }
 
 export const getGetApiExpiredAssignmentsQueryKey = () => {
     return [
-    `/api/v1/assignments/expired`
+    `/api/assignments/expired`
     ] as const;
     }
 
@@ -1262,7 +1262,7 @@ export const getPostApiExpireAssignmentsUrl = () => {
 
 
 
-  return `/api/v1/assignments/expire`
+  return `/api/assignments/expire`
 }
 
 /**
@@ -1344,7 +1344,7 @@ export const getGetApiAssignmentIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/assignments/${id}`
+  return `/api/assignments/${id}`
 }
 
 /**
@@ -1367,13 +1367,13 @@ export const getApiAssignmentId = async (id: string, options?: RequestInit): Pro
 
 export const getGetApiAssignmentIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/assignments/${id}`
+    'infinite', `/api/assignments/${id}`
     ] as const;
     }
 
 export const getGetApiAssignmentIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/assignments/${id}`
+    `/api/assignments/${id}`
     ] as const;
     }
 
@@ -1557,7 +1557,7 @@ export const getPatchApiRevokeAssignmentUrl = (id: string,) => {
 
 
 
-  return `/api/v1/assignments/${id}/revoke`
+  return `/api/assignments/${id}/revoke`
 }
 
 /**
@@ -1639,7 +1639,7 @@ export const getPatchApiExtendAssignmentUrl = (id: string,) => {
 
 
 
-  return `/api/v1/assignments/${id}/extend`
+  return `/api/assignments/${id}/extend`
 }
 
 /**
@@ -1722,7 +1722,7 @@ export const getGetApiAssignmentByPublicLinkUrl = (code: string,) => {
 
 
 
-  return `/api/v1/assignments/link/${code}`
+  return `/api/assignments/link/${code}`
 }
 
 /**
@@ -1745,13 +1745,13 @@ export const getApiAssignmentByPublicLink = async (code: string, options?: Reque
 
 export const getGetApiAssignmentByPublicLinkInfiniteQueryKey = (code: string,) => {
     return [
-    'infinite', `/api/v1/assignments/link/${code}`
+    'infinite', `/api/assignments/link/${code}`
     ] as const;
     }
 
 export const getGetApiAssignmentByPublicLinkQueryKey = (code: string,) => {
     return [
-    `/api/v1/assignments/link/${code}`
+    `/api/assignments/link/${code}`
     ] as const;
     }
 

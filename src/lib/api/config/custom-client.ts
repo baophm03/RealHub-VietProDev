@@ -10,22 +10,40 @@ export const apiClient: AxiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
-apiClient.interceptors.request.use((config) => {
-  const accessToken = useAuthStore.getState().accessToken;
-  const tenantCode = useAuthStore.getState().tenantCode;
+function getCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : null;
+}
 
-  if (accessToken) {
-    config.headers.set("Authorization", `Bearer ${accessToken}`);
-  }
+let csrfToken: string | null = null;
+
+apiClient.interceptors.request.use((config) => {
+  const tenantCode = useAuthStore.getState().tenantCode;
 
   if (tenantCode) {
     config.headers.set("x-tenant-code", tenantCode);
   } else {
     config.headers.set("x-tenant-code", "DEMO");
   }
+
+  const token = csrfToken || getCookie("csrf-token");
+  if (token) {
+    config.headers.set("x-csrf-token", token);
+  }
+
   return config;
+});
+
+apiClient.interceptors.response.use((response) => {
+  const token = response.headers?.["x-csrf-token"];
+  if (token) {
+    csrfToken = token;
+  }
+  return response;
 });
 
 // Query client

@@ -75,7 +75,7 @@ export const getPostApiRegisterUrl = () => {
 
 
 
-  return `/api/v1/auth/register`
+  return `/api/auth/register`
 }
 
 /**
@@ -157,7 +157,7 @@ export const getPostApiLoginUrl = () => {
 
 
 
-  return `/api/v1/auth/login`
+  return `/api/auth/login`
 }
 
 /**
@@ -239,7 +239,7 @@ export const getPostApiRefreshTokenUrl = () => {
 
 
 
-  return `/api/v1/auth/refresh`
+  return `/api/auth/refresh`
 }
 
 /**
@@ -321,7 +321,7 @@ export const getGetApiMeUrl = () => {
 
 
 
-  return `/api/v1/auth/me`
+  return `/api/auth/me`
 }
 
 /**
@@ -344,13 +344,13 @@ export const getApiMe = async ( options?: RequestInit): Promise<getApiMeResponse
 
 export const getGetApiMeInfiniteQueryKey = () => {
     return [
-    'infinite', `/api/v1/auth/me`
+    'infinite', `/api/auth/me`
     ] as const;
     }
 
 export const getGetApiMeQueryKey = () => {
     return [
-    `/api/v1/auth/me`
+    `/api/auth/me`
     ] as const;
     }
 
@@ -534,7 +534,7 @@ export const getPostApiLogoutUrl = () => {
 
 
 
-  return `/api/v1/auth/logout`
+  return `/api/auth/logout`
 }
 
 /**
@@ -616,7 +616,7 @@ export const getPostApiSwitchTenantUrl = (tenantId: string,) => {
 
 
 
-  return `/api/v1/auth/switch-tenant/${tenantId}`
+  return `/api/auth/switch-tenant/${tenantId}`
 }
 
 /**
@@ -698,7 +698,7 @@ export const getPostApiRevokeAllTokensUrl = () => {
 
 
 
-  return `/api/v1/auth/revoke-all-tokens`
+  return `/api/auth/revoke-all-tokens`
 }
 
 /**

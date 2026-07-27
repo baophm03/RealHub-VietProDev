@@ -85,7 +85,7 @@ export const getGetApiCustomersUrl = (params?: GetApiCustomersParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/customers?${stringifiedParams}` : `/api/v1/customers`
+  return stringifiedParams.length > 0 ? `/api/customers?${stringifiedParams}` : `/api/customers`
 }
 
 /**
@@ -108,13 +108,13 @@ export const getApiCustomers = async (params?: GetApiCustomersParams, options?: 
 
 export const getGetApiCustomersInfiniteQueryKey = (params?: GetApiCustomersParams,) => {
     return [
-    'infinite', `/api/v1/customers`, ...(params ? [params] : [])
+    'infinite', `/api/customers`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiCustomersQueryKey = (params?: GetApiCustomersParams,) => {
     return [
-    `/api/v1/customers`, ...(params ? [params] : [])
+    `/api/customers`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -298,7 +298,7 @@ export const getPostApiCustomerUrl = () => {
 
 
 
-  return `/api/v1/customers`
+  return `/api/customers`
 }
 
 /**
@@ -380,7 +380,7 @@ export const getGetApiCustomerIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/customers/${id}`
+  return `/api/customers/${id}`
 }
 
 /**
@@ -403,13 +403,13 @@ export const getApiCustomerId = async (id: string, options?: RequestInit): Promi
 
 export const getGetApiCustomerIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/customers/${id}`
+    'infinite', `/api/customers/${id}`
     ] as const;
     }
 
 export const getGetApiCustomerIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/customers/${id}`
+    `/api/customers/${id}`
     ] as const;
     }
 
@@ -593,7 +593,7 @@ export const getPatchApiCustomerUrl = (id: string,) => {
 
 
 
-  return `/api/v1/customers/${id}`
+  return `/api/customers/${id}`
 }
 
 /**
@@ -676,7 +676,7 @@ export const getDeleteApiCustomerUrl = (id: string,) => {
 
 
 
-  return `/api/v1/customers/${id}`
+  return `/api/customers/${id}`
 }
 
 /**
@@ -765,7 +765,7 @@ export const getGetApiCustomerNeedsUrl = (params?: GetApiCustomerNeedsParams,) =
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/customer-needs?${stringifiedParams}` : `/api/v1/customer-needs`
+  return stringifiedParams.length > 0 ? `/api/customer-needs?${stringifiedParams}` : `/api/customer-needs`
 }
 
 /**
@@ -788,13 +788,13 @@ export const getApiCustomerNeeds = async (params?: GetApiCustomerNeedsParams, op
 
 export const getGetApiCustomerNeedsInfiniteQueryKey = (params?: GetApiCustomerNeedsParams,) => {
     return [
-    'infinite', `/api/v1/customer-needs`, ...(params ? [params] : [])
+    'infinite', `/api/customer-needs`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiCustomerNeedsQueryKey = (params?: GetApiCustomerNeedsParams,) => {
     return [
-    `/api/v1/customer-needs`, ...(params ? [params] : [])
+    `/api/customer-needs`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -978,7 +978,7 @@ export const getPostApiCustomerNeedUrl = () => {
 
 
 
-  return `/api/v1/customer-needs`
+  return `/api/customer-needs`
 }
 
 /**

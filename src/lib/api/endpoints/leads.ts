@@ -84,7 +84,7 @@ export const getGetApiLeadsUrl = (params?: GetApiLeadsParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/leads?${stringifiedParams}` : `/api/v1/leads`
+  return stringifiedParams.length > 0 ? `/api/leads?${stringifiedParams}` : `/api/leads`
 }
 
 /**
@@ -107,13 +107,13 @@ export const getApiLeads = async (params?: GetApiLeadsParams, options?: RequestI
 
 export const getGetApiLeadsInfiniteQueryKey = (params?: GetApiLeadsParams,) => {
     return [
-    'infinite', `/api/v1/leads`, ...(params ? [params] : [])
+    'infinite', `/api/leads`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiLeadsQueryKey = (params?: GetApiLeadsParams,) => {
     return [
-    `/api/v1/leads`, ...(params ? [params] : [])
+    `/api/leads`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -297,7 +297,7 @@ export const getPostApiLeadUrl = () => {
 
 
 
-  return `/api/v1/leads`
+  return `/api/leads`
 }
 
 /**
@@ -379,7 +379,7 @@ export const getGetApiLeadIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/leads/${id}`
+  return `/api/leads/${id}`
 }
 
 /**
@@ -402,13 +402,13 @@ export const getApiLeadId = async (id: string, options?: RequestInit): Promise<g
 
 export const getGetApiLeadIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/leads/${id}`
+    'infinite', `/api/leads/${id}`
     ] as const;
     }
 
 export const getGetApiLeadIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/leads/${id}`
+    `/api/leads/${id}`
     ] as const;
     }
 
@@ -592,7 +592,7 @@ export const getPatchApiLeadUrl = (id: string,) => {
 
 
 
-  return `/api/v1/leads/${id}`
+  return `/api/leads/${id}`
 }
 
 /**
@@ -675,7 +675,7 @@ export const getDeleteApiLeadUrl = (id: string,) => {
 
 
 
-  return `/api/v1/leads/${id}`
+  return `/api/leads/${id}`
 }
 
 /**
@@ -757,7 +757,7 @@ export const getGetApiLeadActivitiesUrl = (id: string,) => {
 
 
 
-  return `/api/v1/leads/${id}/activities`
+  return `/api/leads/${id}/activities`
 }
 
 /**
@@ -780,13 +780,13 @@ export const getApiLeadActivities = async (id: string, options?: RequestInit): P
 
 export const getGetApiLeadActivitiesInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/leads/${id}/activities`
+    'infinite', `/api/leads/${id}/activities`
     ] as const;
     }
 
 export const getGetApiLeadActivitiesQueryKey = (id: string,) => {
     return [
-    `/api/v1/leads/${id}/activities`
+    `/api/leads/${id}/activities`
     ] as const;
     }
 
@@ -970,7 +970,7 @@ export const getPostApiLeadActivityUrl = (id: string,) => {
 
 
 
-  return `/api/v1/leads/${id}/activities`
+  return `/api/leads/${id}/activities`
 }
 
 /**

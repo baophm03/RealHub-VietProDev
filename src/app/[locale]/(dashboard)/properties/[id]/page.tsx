@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -25,7 +25,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useGetApiPropertyId } from "@/lib/api/endpoints/properties";
+import { useGetApiPropertyId, useGetApiProperties } from "@/lib/api/endpoints/properties";
+import { useGetApiFormSchemas } from "@/lib/api/endpoints/dynamic-fields";
 import { Property } from "@/lib/api/types/properties";
 
 function formatPrice(price: number): string {
@@ -70,49 +71,19 @@ const highlights = [
   { icon: Park, title: "View song truc dien", desc: "Tam nhin vinh vien khong bi che khuat" },
 ];
 
-const similarListings = [
-  {
-    name: "Biet thu song lap Holm Residences",
-    location: "Thao Dien, Quan 2",
-    price: "38 Ty",
-    area: "200m2",
-    beds: "4",
-    baths: "3",
-    image: "https://picsum.photos/seed/holm-residences/800/600",
-    badge: null as string | null,
-  },
-  {
-    name: "Penthouse Dao Kim Cuong",
-    location: "Binh Trung Tay, Quan 2",
-    price: "52 Ty",
-    area: "320m2",
-    beds: "5",
-    baths: "5",
-    image: "https://picsum.photos/seed/penthouse-kim-cuong/800/600",
-    badge: "Premium",
-  },
-  {
-    name: "Villa compound Saroma Sala",
-    location: "An Loi Dong, Quan 2",
-    price: "85 Ty",
-    area: "350m2",
-    beds: "5",
-    baths: "6",
-    image: "https://picsum.photos/seed/saroma-sala/800/600",
-    badge: null as string | null,
-  },
-];
-
 export default function PropertyDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
+
+  // server
   const { data: propertyData, isLoading } = useGetApiPropertyId(id);
   const property = (propertyData as unknown as { data: Property })?.data;
+
   const [contactForm, setContactForm] = useState({
     name: "",
     phone: "",
-    message: "Toi quan tam den bat dong san nay...",
+    message: "Tôi quan tâm đến bất động sản này...",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -124,11 +95,53 @@ export default function PropertyDetailPage() {
   const areaNum = property?.area ?? 0;
   const pricePerM2 = areaNum > 0 ? priceNum / areaNum : 0;
 
+  const { data: schemaData } = useGetApiFormSchemas({ entityType: "PROPERTY" });
+  const schemas = ((schemaData as any)?.data as any[]) || [];
+  const dynamicValues = (property as any)?.dynamicValuesJson as Record<string, unknown> | undefined;
+
+  const findFieldValue = useMemo(() => {
+    return (patterns: string[]): string | null => {
+      for (const schema of schemas) {
+        for (const f of (schema.fields || [])) {
+          const field = f.field;
+          if (!field) continue;
+          const key = (field.fieldKey || "").toLowerCase();
+          const label = (field.fieldLabel || "").toLowerCase();
+          if (patterns.some((p) => key.includes(p) || label.includes(p))) {
+            const rawValue = dynamicValues?.[field.fieldKey];
+            if (rawValue === undefined || rawValue === null || rawValue === "") return null;
+            if (field.options && Array.isArray(field.options)) {
+              const opt = field.options.find((o: any) => o.value === String(rawValue));
+              if (opt) return opt.label;
+            }
+            return String(rawValue);
+          }
+        }
+      }
+      return null;
+    };
+  }, [schemas, dynamicValues]);
+
+  const bedrooms = findFieldValue(["bedroom", "beds", "phong_ngu", "phòng ngủ"]);
+  const bathrooms = findFieldValue(["bathroom", "baths", "phong_tam", "phòng tắm"]);
+  const legalStatus = findFieldValue(["legal", "phap_ly", "pháp lý", "ownership"]);
+
+  const propertyTypeId = property?.propertyType?.id;
+  const { data: similarData } = useGetApiProperties(
+    propertyTypeId ? { propertyTypeId, limit: "10" } : undefined,
+  );
+  const similarProperties = useMemo(() => {
+    const all = ((similarData as any)?.data as Property[]) || [];
+    const filtered = all.filter((p) => p.id !== id);
+    const shuffled = [...filtered].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 3);
+  }, [similarData, id]);
+
   const specs = [
-    { icon: Ruler, label: "Dien tich", value: property ? `${areaNum} m2` : "227 m2" },
-    { icon: Bed, label: "Phong ngu", value: "4" },
-    { icon: Bathtub, label: "Phong tam", value: "4" },
-    { icon: ShieldCheck, label: "Phap ly", value: "So hong", accent: true },
+    { icon: Ruler, label: "Diện tích", value: property ? `${areaNum} m2` : "227 m2" },
+    { icon: Bed, label: "Phòng ngủ", value: bedrooms || (property ? "-" : "4") },
+    { icon: Bathtub, label: "Phòng tắm", value: bathrooms || (property ? "-" : "4") },
+    { icon: ShieldCheck, label: "Pháp lý", value: legalStatus || (property ? "-" : "Sổ hồng"), accent: true },
   ];
 
   if (isLoading) {
@@ -156,7 +169,7 @@ export default function PropertyDetailPage() {
           <span className="inline-flex size-8 items-center justify-center rounded-lg bg-surface-muted transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:-translate-x-0.5">
             <ArrowLeft size={14} />
           </span>
-          Quay lai danh sach
+          Quay lại danh sách
         </button>
         <Button
           variant="outline"
@@ -172,30 +185,30 @@ export default function PropertyDetailPage() {
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2 text-sm text-foreground-muted">
           <Link href="/properties" className="transition-colors hover:text-foreground">
-            Bat dong san
+            Bất động sản
           </Link>
           <CaretRight size={12} />
-          <span>Ho Chi Minh</span>
+          <span>{property?.province?.name ?? "-"}</span>
           <CaretRight size={12} />
-          <span>Quan 2</span>
+          <span>{property?.district?.name ?? "-"}</span>
         </div>
 
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="flex flex-col gap-2">
             <h1 className="font-serif text-2xl font-medium tracking-tight text-foreground md:text-4xl">
-              {property?.title ?? "Biet thu ven song cao cap The River Thao Dien"}
+              {property?.title ?? "-"}
             </h1>
             <p className="flex items-center gap-2 text-sm text-foreground-muted md:text-base">
               <MapPin size={16} className="text-primary" />
-              {property?.address ?? "Nguyen Van Huong, Phuong Thao Dien, Quan 2, TP.HCM"}
+              {property?.address ?? "-"}
             </p>
           </div>
           <div className="flex flex-col items-start gap-1 md:items-end">
             <span className="font-serif text-3xl font-medium text-primary md:text-4xl">
-              {property ? formatPrice(priceNum) : "45.5 Ty"}
+              {property ? formatPrice(priceNum) : "-"}
             </span>
             <span className="text-sm text-foreground-muted">
-              {property && pricePerM2 > 0 ? `~ ${formatPrice(pricePerM2)}/m2` : "~ 200 Trieu/m2"}
+              {property && pricePerM2 > 0 ? `~ ${formatPrice(pricePerM2)}/m2` : "~ -"}
             </span>
           </div>
         </div>
@@ -255,24 +268,11 @@ export default function PropertyDetailPage() {
           {/* Description */}
           <section className="flex flex-col gap-4">
             <h2 className="font-serif text-xl font-medium tracking-tight text-foreground border-b border-border pb-3">
-              Mo ta chi tiet
+              Mô tả chi tiết
             </h2>
             <div className="flex flex-col gap-4 text-base leading-relaxed text-foreground-muted">
               <p>
-                Co hoi hiem co so huu can biet thu ven song dang cap tai khu vuc Thao Dien,
-                Quan 2. Voi thiet ke hien dai, toi uu hoa khong gian song va tan dung toi da
-                anh sang tu nhien, can biet thu mang den mot trai nghiem song hoan hao cho
-                gioi thuong luu.
-              </p>
-              <p>
-                Nam trong khu compound an ninh 24/7, cu dan se duoc tan huong su rieng tu
-                tuyet doi cung he thong tien ich noi khu vuot troi bao gom ho boi vo cuc,
-                phong gym chuan quoc te, va cong vien ven song xanh mat.
-              </p>
-              <p>
-                Kien truc mang dam phong cach duong dai voi noi that nhap khau tu cac
-                thuong hieu danh tieng. San vuon rong rai, ly tuong cho cac buoi tiec ngoai
-                troi hay khong gian thu gian gia dinh cuoi tuan.
+                {property?.description || "Không có mô tả"}
               </p>
             </div>
           </section>
@@ -396,57 +396,96 @@ export default function PropertyDetailPage() {
       {/* Similar Listings */}
       <section className="flex flex-col gap-6 border-t border-border pt-10">
         <h2 className="font-serif text-2xl font-medium tracking-tight text-foreground md:text-3xl">
-          Bat dong san tuong tu
+          Bất động sản tương tự
         </h2>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {similarListings.map((listing) => (
-            <div
-              key={listing.name}
-              className="group flex flex-col gap-3 overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[2px] hover:shadow-[0_8px_24px_-12px_rgba(45,95,63,0.12)]"
-            >
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={listing.image}
-                  alt={listing.name}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                {listing.badge && (
-                  <div className="absolute top-3 right-3 rounded-lg bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white">
-                    {listing.badge}
-                  </div>
-                )}
-                <div className="absolute top-3 left-3 flex items-center gap-1 rounded-lg bg-black/40 px-2.5 py-1 text-[10px] font-medium text-white backdrop-blur-sm">
-                  <Camera size={10} />
-                  8
-                </div>
-              </div>
+        {similarProperties.length === 0 ? (
+          <p className="text-sm text-foreground-muted">Chưa có bất động sản tương tự.</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {similarProperties.map((item) => {
+              const itemPrice = Number(item.price || 0);
+              const itemArea = item.area ?? 0;
+              const itemDynValues = (item as any).dynamicValuesJson as Record<string, unknown> | undefined;
 
-              <div className="flex flex-col gap-3 p-4">
-                <h3 className="text-base font-semibold tracking-tight text-foreground line-clamp-1">
-                  {listing.name}
-                </h3>
-                <p className="flex items-center gap-1.5 text-sm text-foreground-muted">
-                  <MapPin size={14} className="text-primary" />
-                  {listing.location}
-                </p>
-                <div className="font-serif text-xl font-medium text-primary">
-                  {listing.price}
-                </div>
-                <div className="flex items-center gap-4 border-t border-border pt-3 text-xs text-foreground-muted">
-                  <span className="flex items-center gap-1">
-                    <Ruler size={12} /> {listing.area}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Bed size={12} /> {listing.beds}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Bathtub size={12} /> {listing.baths}
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+              const itemBedrooms = (() => {
+                for (const schema of schemas) {
+                  for (const f of (schema.fields || [])) {
+                    const field = f.field;
+                    if (!field) continue;
+                    const key = (field.fieldKey || "").toLowerCase();
+                    const label = (field.fieldLabel || "").toLowerCase();
+                    if (["bedroom", "beds", "phong_ngu", "phòng ngủ"].some((p) => key.includes(p) || label.includes(p))) {
+                      const v = itemDynValues?.[field.fieldKey];
+                      if (v !== undefined && v !== null && v !== "") return String(v);
+                    }
+                  }
+                }
+                return "-";
+              })();
+
+              const itemBathrooms = (() => {
+                for (const schema of schemas) {
+                  for (const f of (schema.fields || [])) {
+                    const field = f.field;
+                    if (!field) continue;
+                    const key = (field.fieldKey || "").toLowerCase();
+                    const label = (field.fieldLabel || "").toLowerCase();
+                    if (["bathroom", "baths", "phong_tam", "phòng tắm"].some((p) => key.includes(p) || label.includes(p))) {
+                      const v = itemDynValues?.[field.fieldKey];
+                      if (v !== undefined && v !== null && v !== "") return String(v);
+                    }
+                  }
+                }
+                return "-";
+              })();
+
+              const location = [item.district?.name, item.province?.name].filter(Boolean).join(", ");
+
+              return (
+                <Link
+                  key={item.id}
+                  href={`/properties/${item.id}`}
+                  className="group flex flex-col gap-3 overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[2px] hover:shadow-[0_8px_24px_-12px_rgba(45,95,63,0.12)]"
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={`https://picsum.photos/seed/${item.id}/800/600`}
+                      alt={item.title}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute top-3 left-3 flex items-center gap-1 rounded-lg bg-black/40 px-2.5 py-1 text-[10px] font-medium text-white backdrop-blur-sm">
+                      <Camera size={10} />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-3 p-4">
+                    <h3 className="text-base font-semibold tracking-tight text-foreground line-clamp-1">
+                      {item.title}
+                    </h3>
+                    <p className="flex items-center gap-1.5 text-sm text-foreground-muted">
+                      <MapPin size={14} className="text-primary" />
+                      {location || "-"}
+                    </p>
+                    <div className="font-serif text-xl font-medium text-primary">
+                      {formatPrice(itemPrice)}
+                    </div>
+                    <div className="flex items-center gap-4 border-t border-border pt-3 text-xs text-foreground-muted">
+                      <span className="flex items-center gap-1">
+                        <Ruler size={12} /> {itemArea} m2
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Bed size={12} /> {itemBedrooms}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Bathtub size={12} /> {itemBathrooms}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </section>
     </div>
   );

@@ -84,7 +84,7 @@ export const getGetApiSeoTemplatesUrl = (params?: GetApiSeoTemplatesParams,) => 
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/seo/templates?${stringifiedParams}` : `/api/v1/seo/templates`
+  return stringifiedParams.length > 0 ? `/api/seo/templates?${stringifiedParams}` : `/api/seo/templates`
 }
 
 /**
@@ -107,13 +107,13 @@ export const getApiSeoTemplates = async (params?: GetApiSeoTemplatesParams, opti
 
 export const getGetApiSeoTemplatesInfiniteQueryKey = (params?: GetApiSeoTemplatesParams,) => {
     return [
-    'infinite', `/api/v1/seo/templates`, ...(params ? [params] : [])
+    'infinite', `/api/seo/templates`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiSeoTemplatesQueryKey = (params?: GetApiSeoTemplatesParams,) => {
     return [
-    `/api/v1/seo/templates`, ...(params ? [params] : [])
+    `/api/seo/templates`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -297,7 +297,7 @@ export const getPostApiSeoTemplateUrl = () => {
 
 
 
-  return `/api/v1/seo/templates`
+  return `/api/seo/templates`
 }
 
 /**
@@ -379,7 +379,7 @@ export const getGetApiSeoTemplateIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/seo/templates/${id}`
+  return `/api/seo/templates/${id}`
 }
 
 /**
@@ -402,13 +402,13 @@ export const getApiSeoTemplateId = async (id: string, options?: RequestInit): Pr
 
 export const getGetApiSeoTemplateIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/seo/templates/${id}`
+    'infinite', `/api/seo/templates/${id}`
     ] as const;
     }
 
 export const getGetApiSeoTemplateIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/seo/templates/${id}`
+    `/api/seo/templates/${id}`
     ] as const;
     }
 
@@ -592,7 +592,7 @@ export const getPatchApiSeoTemplateUrl = (id: string,) => {
 
 
 
-  return `/api/v1/seo/templates/${id}`
+  return `/api/seo/templates/${id}`
 }
 
 /**
@@ -675,7 +675,7 @@ export const getDeleteApiSeoTemplateUrl = (id: string,) => {
 
 
 
-  return `/api/v1/seo/templates/${id}`
+  return `/api/seo/templates/${id}`
 }
 
 /**
@@ -764,7 +764,7 @@ export const getGetApiResolveSeoMetaUrl = (params: GetApiResolveSeoMetaParams,) 
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/seo/resolve?${stringifiedParams}` : `/api/v1/seo/resolve`
+  return stringifiedParams.length > 0 ? `/api/seo/resolve?${stringifiedParams}` : `/api/seo/resolve`
 }
 
 /**
@@ -787,13 +787,13 @@ export const getApiResolveSeoMeta = async (params: GetApiResolveSeoMetaParams, o
 
 export const getGetApiResolveSeoMetaInfiniteQueryKey = (params?: GetApiResolveSeoMetaParams,) => {
     return [
-    'infinite', `/api/v1/seo/resolve`, ...(params ? [params] : [])
+    'infinite', `/api/seo/resolve`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiResolveSeoMetaQueryKey = (params?: GetApiResolveSeoMetaParams,) => {
     return [
-    `/api/v1/seo/resolve`, ...(params ? [params] : [])
+    `/api/seo/resolve`, ...(params ? [params] : [])
     ] as const;
     }
 

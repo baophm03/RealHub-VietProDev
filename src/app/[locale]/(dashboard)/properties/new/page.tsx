@@ -9,6 +9,7 @@ import { ArrowLeft } from "@phosphor-icons/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { FormSection, FormField } from "@/components/shared/form-section";
 import {
   Select,
@@ -20,6 +21,7 @@ import {
 import { usePostApiProperty, useGetApiPropertyTypes } from "@/lib/api/endpoints/properties";
 import { useGetApiLocations } from "@/lib/api/endpoints/locations";
 import type { Location } from "@/lib/api/types/locations";
+import { DynamicFieldsSection } from "@/components/shared/dynamic-fields-section";
 
 type PropertyType = {
   id: string;
@@ -31,6 +33,7 @@ type PropertyType = {
 const propertySchema = z.object({
   propertyCode: z.string().min(1, "Vui lòng nhập mã BĐS"),
   title: z.string().min(5, "Tiêu đề phải có ít nhất 5 ký tự"),
+  description: z.string().min(1, "Vui lòng nhập mô tả"),
   slug: z.string().min(1, "Vui lòng nhập slug"),
   propertyTypeId: z.string().min(1, "Vui lòng chọn loại BĐS"),
   transactionType: z.enum(["SALE", "RENT", "TRANSFER", "INVESTMENT"]),
@@ -86,6 +89,7 @@ export default function PropertyFormPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedProvinceId, setSelectedProvinceId] = useState<string | undefined>(undefined);
+  const [dynamicValues, setDynamicValues] = useState<Record<string, unknown>>({});
 
   // mutation
   const { mutate: createProperty } = usePostApiProperty();
@@ -132,7 +136,7 @@ export default function PropertyFormPage() {
     setLoading(true);
     setError(null);
     try {
-      await createProperty({ data });
+      await createProperty({ data: { ...data, dynamicValuesJson: Object.keys(dynamicValues).length > 0 ? dynamicValues : undefined } });
       router.push("/properties");
     } catch (err) {
       setError("Có lỗi xảy ra khi tạo bất động sản. Vui lòng thử lại.");
@@ -175,6 +179,10 @@ export default function PropertyFormPage() {
               <Input id="title" placeholder="Vinhomes Central Park - 2PN" {...register("title")} />
             </FormField>
           </div>
+
+          <FormField label="Mô tả" htmlFor="description" required error={errors.description?.message}>
+            <Textarea id="description" rows={4} placeholder="Nhập mô tả chi tiết về bất động sản..." {...register("description")} />
+          </FormField>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField label="Slug" htmlFor="slug" required error={errors.slug?.message}>
@@ -365,14 +373,12 @@ export default function PropertyFormPage() {
           </div>
         </FormSection>
 
-        <FormSection title="Trường động" description="Trường được render động từ FormSchema API">
-          <p className="text-sm text-foreground-muted">
-            Các trường động sẽ tự động hiển thị tại đây sau khi fetch từ{" "}
-            <code className="rounded bg-surface-muted px-1.5 py-0.5 font-mono text-xs">
-              /api/dynamic-fields/form-schemas?entityType=PROPERTY
-            </code>
-          </p>
-        </FormSection>
+        <DynamicFieldsSection
+          entityType="PROPERTY"
+          propertyTypeId={watchedPropertyTypeId}
+          initialValues={dynamicValues}
+          onChange={setDynamicValues}
+        />
 
         <div className="flex items-center justify-end gap-2">
           <Button type="button" variant="secondary" onClick={() => router.push("/properties")}>

@@ -78,7 +78,7 @@ export const getGetApiRevalidationPoliciesUrl = () => {
 
 
 
-  return `/api/v1/revalidation/policies`
+  return `/api/revalidation/policies`
 }
 
 /**
@@ -101,13 +101,13 @@ export const getApiRevalidationPolicies = async ( options?: RequestInit): Promis
 
 export const getGetApiRevalidationPoliciesInfiniteQueryKey = () => {
     return [
-    'infinite', `/api/v1/revalidation/policies`
+    'infinite', `/api/revalidation/policies`
     ] as const;
     }
 
 export const getGetApiRevalidationPoliciesQueryKey = () => {
     return [
-    `/api/v1/revalidation/policies`
+    `/api/revalidation/policies`
     ] as const;
     }
 
@@ -291,7 +291,7 @@ export const getPostApiRevalidationPolicyUrl = () => {
 
 
 
-  return `/api/v1/revalidation/policies`
+  return `/api/revalidation/policies`
 }
 
 /**
@@ -373,7 +373,7 @@ export const getGetApiRevalidationPolicyIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/revalidation/policies/${id}`
+  return `/api/revalidation/policies/${id}`
 }
 
 /**
@@ -396,13 +396,13 @@ export const getApiRevalidationPolicyId = async (id: string, options?: RequestIn
 
 export const getGetApiRevalidationPolicyIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/revalidation/policies/${id}`
+    'infinite', `/api/revalidation/policies/${id}`
     ] as const;
     }
 
 export const getGetApiRevalidationPolicyIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/revalidation/policies/${id}`
+    `/api/revalidation/policies/${id}`
     ] as const;
     }
 
@@ -586,7 +586,7 @@ export const getPatchApiRevalidationPolicyUrl = (id: string,) => {
 
 
 
-  return `/api/v1/revalidation/policies/${id}`
+  return `/api/revalidation/policies/${id}`
 }
 
 /**
@@ -669,7 +669,7 @@ export const getDeleteApiRevalidationPolicyUrl = (id: string,) => {
 
 
 
-  return `/api/v1/revalidation/policies/${id}`
+  return `/api/revalidation/policies/${id}`
 }
 
 /**
@@ -758,7 +758,7 @@ export const getGetApiRevalidationTasksUrl = (params?: GetApiRevalidationTasksPa
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/revalidation/tasks?${stringifiedParams}` : `/api/v1/revalidation/tasks`
+  return stringifiedParams.length > 0 ? `/api/revalidation/tasks?${stringifiedParams}` : `/api/revalidation/tasks`
 }
 
 /**
@@ -781,13 +781,13 @@ export const getApiRevalidationTasks = async (params?: GetApiRevalidationTasksPa
 
 export const getGetApiRevalidationTasksInfiniteQueryKey = (params?: GetApiRevalidationTasksParams,) => {
     return [
-    'infinite', `/api/v1/revalidation/tasks`, ...(params ? [params] : [])
+    'infinite', `/api/revalidation/tasks`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiRevalidationTasksQueryKey = (params?: GetApiRevalidationTasksParams,) => {
     return [
-    `/api/v1/revalidation/tasks`, ...(params ? [params] : [])
+    `/api/revalidation/tasks`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -971,7 +971,7 @@ export const getPostApiRevalidationTaskUrl = () => {
 
 
 
-  return `/api/v1/revalidation/tasks`
+  return `/api/revalidation/tasks`
 }
 
 /**
@@ -1053,7 +1053,7 @@ export const getGetApiRevalidationTaskIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/revalidation/tasks/${id}`
+  return `/api/revalidation/tasks/${id}`
 }
 
 /**
@@ -1076,13 +1076,13 @@ export const getApiRevalidationTaskId = async (id: string, options?: RequestInit
 
 export const getGetApiRevalidationTaskIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/revalidation/tasks/${id}`
+    'infinite', `/api/revalidation/tasks/${id}`
     ] as const;
     }
 
 export const getGetApiRevalidationTaskIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/revalidation/tasks/${id}`
+    `/api/revalidation/tasks/${id}`
     ] as const;
     }
 
@@ -1266,7 +1266,7 @@ export const getPatchApiCompleteRevalidationTaskUrl = (id: string,) => {
 
 
 
-  return `/api/v1/revalidation/tasks/${id}/complete`
+  return `/api/revalidation/tasks/${id}/complete`
 }
 
 /**
@@ -1349,7 +1349,7 @@ export const getPostApiExpireOverdueRevalidationTasksUrl = () => {
 
 
 
-  return `/api/v1/revalidation/expire-overdue`
+  return `/api/revalidation/expire-overdue`
 }
 
 /**
@@ -1431,7 +1431,7 @@ export const getGetApiPropertyPriceHistoryUrl = (propertyId: string,) => {
 
 
 
-  return `/api/v1/properties/${propertyId}/price-history`
+  return `/api/properties/${propertyId}/price-history`
 }
 
 /**
@@ -1454,13 +1454,13 @@ export const getApiPropertyPriceHistory = async (propertyId: string, options?: R
 
 export const getGetApiPropertyPriceHistoryInfiniteQueryKey = (propertyId: string,) => {
     return [
-    'infinite', `/api/v1/properties/${propertyId}/price-history`
+    'infinite', `/api/properties/${propertyId}/price-history`
     ] as const;
     }
 
 export const getGetApiPropertyPriceHistoryQueryKey = (propertyId: string,) => {
     return [
-    `/api/v1/properties/${propertyId}/price-history`
+    `/api/properties/${propertyId}/price-history`
     ] as const;
     }
 
@@ -1644,7 +1644,7 @@ export const getGetApiPropertyStatusHistoryUrl = (propertyId: string,) => {
 
 
 
-  return `/api/v1/properties/${propertyId}/status-history`
+  return `/api/properties/${propertyId}/status-history`
 }
 
 /**
@@ -1667,13 +1667,13 @@ export const getApiPropertyStatusHistory = async (propertyId: string, options?: 
 
 export const getGetApiPropertyStatusHistoryInfiniteQueryKey = (propertyId: string,) => {
     return [
-    'infinite', `/api/v1/properties/${propertyId}/status-history`
+    'infinite', `/api/properties/${propertyId}/status-history`
     ] as const;
     }
 
 export const getGetApiPropertyStatusHistoryQueryKey = (propertyId: string,) => {
     return [
-    `/api/v1/properties/${propertyId}/status-history`
+    `/api/properties/${propertyId}/status-history`
     ] as const;
     }
 

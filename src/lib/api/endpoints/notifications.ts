@@ -87,7 +87,7 @@ export const getGetApiNotificationsUrl = (params?: GetApiNotificationsParams,) =
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/notifications?${stringifiedParams}` : `/api/v1/notifications`
+  return stringifiedParams.length > 0 ? `/api/notifications?${stringifiedParams}` : `/api/notifications`
 }
 
 /**
@@ -110,13 +110,13 @@ export const getApiNotifications = async (params?: GetApiNotificationsParams, op
 
 export const getGetApiNotificationsInfiniteQueryKey = (params?: GetApiNotificationsParams,) => {
     return [
-    'infinite', `/api/v1/notifications`, ...(params ? [params] : [])
+    'infinite', `/api/notifications`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiNotificationsQueryKey = (params?: GetApiNotificationsParams,) => {
     return [
-    `/api/v1/notifications`, ...(params ? [params] : [])
+    `/api/notifications`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -300,7 +300,7 @@ export const getGetApiUnreadNotificationCountUrl = () => {
 
 
 
-  return `/api/v1/notifications/unread-count`
+  return `/api/notifications/unread-count`
 }
 
 /**
@@ -323,13 +323,13 @@ export const getApiUnreadNotificationCount = async ( options?: RequestInit): Pro
 
 export const getGetApiUnreadNotificationCountInfiniteQueryKey = () => {
     return [
-    'infinite', `/api/v1/notifications/unread-count`
+    'infinite', `/api/notifications/unread-count`
     ] as const;
     }
 
 export const getGetApiUnreadNotificationCountQueryKey = () => {
     return [
-    `/api/v1/notifications/unread-count`
+    `/api/notifications/unread-count`
     ] as const;
     }
 
@@ -513,7 +513,7 @@ export const getPatchApiMarkNotificationReadUrl = (id: string,) => {
 
 
 
-  return `/api/v1/notifications/${id}/read`
+  return `/api/notifications/${id}/read`
 }
 
 /**
@@ -595,7 +595,7 @@ export const getPostApiMarkAllNotificationsReadUrl = () => {
 
 
 
-  return `/api/v1/notifications/mark-all-read`
+  return `/api/notifications/mark-all-read`
 }
 
 /**
@@ -684,7 +684,7 @@ export const getGetApiNotificationRulesUrl = (params?: GetApiNotificationRulesPa
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/notifications/rules?${stringifiedParams}` : `/api/v1/notifications/rules`
+  return stringifiedParams.length > 0 ? `/api/notifications/rules?${stringifiedParams}` : `/api/notifications/rules`
 }
 
 /**
@@ -707,13 +707,13 @@ export const getApiNotificationRules = async (params?: GetApiNotificationRulesPa
 
 export const getGetApiNotificationRulesInfiniteQueryKey = (params?: GetApiNotificationRulesParams,) => {
     return [
-    'infinite', `/api/v1/notifications/rules`, ...(params ? [params] : [])
+    'infinite', `/api/notifications/rules`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiNotificationRulesQueryKey = (params?: GetApiNotificationRulesParams,) => {
     return [
-    `/api/v1/notifications/rules`, ...(params ? [params] : [])
+    `/api/notifications/rules`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -897,7 +897,7 @@ export const getPostApiNotificationRuleUrl = () => {
 
 
 
-  return `/api/v1/notifications/rules`
+  return `/api/notifications/rules`
 }
 
 /**
@@ -979,7 +979,7 @@ export const getGetApiNotificationRuleIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/notifications/rules/${id}`
+  return `/api/notifications/rules/${id}`
 }
 
 /**
@@ -1002,13 +1002,13 @@ export const getApiNotificationRuleId = async (id: string, options?: RequestInit
 
 export const getGetApiNotificationRuleIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/notifications/rules/${id}`
+    'infinite', `/api/notifications/rules/${id}`
     ] as const;
     }
 
 export const getGetApiNotificationRuleIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/notifications/rules/${id}`
+    `/api/notifications/rules/${id}`
     ] as const;
     }
 
@@ -1192,7 +1192,7 @@ export const getPatchApiNotificationRuleUrl = (id: string,) => {
 
 
 
-  return `/api/v1/notifications/rules/${id}`
+  return `/api/notifications/rules/${id}`
 }
 
 /**
@@ -1275,7 +1275,7 @@ export const getDeleteApiNotificationRuleUrl = (id: string,) => {
 
 
 
-  return `/api/v1/notifications/rules/${id}`
+  return `/api/notifications/rules/${id}`
 }
 
 /**
@@ -1364,7 +1364,7 @@ export const getGetApiNotificationTemplatesUrl = (params?: GetApiNotificationTem
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/notifications/templates?${stringifiedParams}` : `/api/v1/notifications/templates`
+  return stringifiedParams.length > 0 ? `/api/notifications/templates?${stringifiedParams}` : `/api/notifications/templates`
 }
 
 /**
@@ -1387,13 +1387,13 @@ export const getApiNotificationTemplates = async (params?: GetApiNotificationTem
 
 export const getGetApiNotificationTemplatesInfiniteQueryKey = (params?: GetApiNotificationTemplatesParams,) => {
     return [
-    'infinite', `/api/v1/notifications/templates`, ...(params ? [params] : [])
+    'infinite', `/api/notifications/templates`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiNotificationTemplatesQueryKey = (params?: GetApiNotificationTemplatesParams,) => {
     return [
-    `/api/v1/notifications/templates`, ...(params ? [params] : [])
+    `/api/notifications/templates`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -1577,7 +1577,7 @@ export const getPostApiNotificationTemplateUrl = () => {
 
 
 
-  return `/api/v1/notifications/templates`
+  return `/api/notifications/templates`
 }
 
 /**
@@ -1659,7 +1659,7 @@ export const getGetApiNotificationTemplateIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/notifications/templates/${id}`
+  return `/api/notifications/templates/${id}`
 }
 
 /**
@@ -1682,13 +1682,13 @@ export const getApiNotificationTemplateId = async (id: string, options?: Request
 
 export const getGetApiNotificationTemplateIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/notifications/templates/${id}`
+    'infinite', `/api/notifications/templates/${id}`
     ] as const;
     }
 
 export const getGetApiNotificationTemplateIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/notifications/templates/${id}`
+    `/api/notifications/templates/${id}`
     ] as const;
     }
 
@@ -1872,7 +1872,7 @@ export const getPatchApiNotificationTemplateUrl = (id: string,) => {
 
 
 
-  return `/api/v1/notifications/templates/${id}`
+  return `/api/notifications/templates/${id}`
 }
 
 /**
@@ -1955,7 +1955,7 @@ export const getDeleteApiNotificationTemplateUrl = (id: string,) => {
 
 
 
-  return `/api/v1/notifications/templates/${id}`
+  return `/api/notifications/templates/${id}`
 }
 
 /**

@@ -10,28 +10,28 @@ import type { GetAuditLogsResponse } from "@/lib/api/types/audit-logs";
 
 const stats = [
   {
-    label: "Tong bat dong san",
+    label: "Tổng bất động sản",
     value: "1,247",
     change: "+12.4%",
     trend: "up" as const,
     icon: Buildings,
   },
   {
-    label: "Khach hang",
+    label: "Khách hàng",
     value: "3,891",
     change: "+8.2%",
     trend: "up" as const,
     icon: Users,
   },
   {
-    label: "Leads moi",
+    label: "Leads mới",
     value: "156",
     change: "+23.1%",
     trend: "up" as const,
     icon: UserCircle,
   },
   {
-    label: "Giao dich thang",
+    label: "Giao dịch tháng",
     value: "42",
     change: "-3.5%",
     trend: "down" as const,
@@ -40,12 +40,12 @@ const stats = [
 ];
 
 const leadStatusConfig: Record<string, { label: string; variant: "blue" | "yellow" | "purple" | "green" | "red" | "default" }> = {
-  NEW: { label: "Moi", variant: "blue" },
-  CONTACTED: { label: "Da lien he", variant: "yellow" },
-  INTERESTED: { label: "Quan tam", variant: "purple" },
-  NEGOTIATING: { label: "Dam phan", variant: "default" },
-  CONVERTED: { label: "Chuyen doi", variant: "green" },
-  LOST: { label: "Mat", variant: "red" },
+  NEW: { label: "Mới", variant: "blue" },
+  CONTACTED: { label: "Đã liên hệ", variant: "yellow" },
+  INTERESTED: { label: "Quan tâm", variant: "purple" },
+  NEGOTIATING: { label: "Đàm phán", variant: "default" },
+  CONVERTED: { label: "Chuyển đổi", variant: "green" },
+  LOST: { label: "Mất", variant: "red" },
 };
 
 function formatRelativeTime(dateString: string): string {
@@ -56,14 +56,15 @@ function formatRelativeTime(dateString: string): string {
   const diffHour = Math.floor(diffMin / 60);
   const diffDay = Math.floor(diffHour / 24);
 
-  if (diffMin < 1) return "Vua xong";
-  if (diffMin < 60) return `${diffMin} phut truoc`;
-  if (diffHour < 24) return `${diffHour} gio truoc`;
-  if (diffDay < 30) return `${diffDay} ngay truoc`;
+  if (diffMin < 1) return "Vừa xong";
+  if (diffMin < 60) return `${diffMin} phút trước`;
+  if (diffHour < 24) return `${diffHour} giờ trước`;
+  if (diffDay < 30) return `${diffDay} ngày trước`;
   return date.toLocaleDateString("vi-VN");
 }
 
 export default function DashboardPage() {
+  // server
   const { data: leadsData } = useGetApiLeads({
     limit: "5",
     offset: "0",
@@ -79,13 +80,13 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-2 animate-fade-up">
         <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
-          Tong quan
+          Tổng quan
         </p>
         <h1 className="font-serif text-3xl font-medium tracking-tight md:text-4xl">
           Dashboard
         </h1>
         <p className="text-sm text-foreground-muted leading-relaxed max-w-[60ch] md:max-w-none">
-          Tong quan hoat dong bat dong san, khach hang va giao dich
+          Tổng quan hoạt động bất động sản, khách hàng và giao dịch
         </p>
       </div>
 
@@ -124,12 +125,12 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 animate-fade-up-delay-2">
         <Card className="lg:col-span-2">
           <CardHeader className="flex-row items-center justify-between gap-2">
-            <CardTitle>Leads gan day</CardTitle>
+            <CardTitle>Lead gần đây</CardTitle>
             <a
               href="/leads"
               className="group inline-flex items-center gap-1.5 text-xs font-medium text-foreground-muted transition-colors hover:text-foreground shrink-0"
             >
-              Xem tat ca
+              Xem tất cả
               <span className="inline-flex size-5 items-center justify-center rounded-lg bg-surface-muted transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                 <ArrowUpRight size={10} />
               </span>
@@ -157,7 +158,7 @@ export default function DashboardPage() {
                   );
                 })
               ) : (
-                <div className="py-8 text-center text-sm text-foreground-muted">Chua co lead nao</div>
+                <div className="py-8 text-center text-sm text-foreground-muted">Chưa có lead nào</div>
               )}
             </div>
           </CardContent>
@@ -165,7 +166,7 @@ export default function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Hoat dong</CardTitle>
+            <CardTitle>Hoạt động</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-4">
@@ -179,7 +180,7 @@ export default function DashboardPage() {
                   </div>
                 ))
               ) : (
-                <div className="py-8 text-center text-sm text-foreground-muted">Chua co hoat dong nao</div>
+                <div className="py-8 text-center text-sm text-foreground-muted">Chưa có hoạt động nào</div>
               )}
             </div>
           </CardContent>

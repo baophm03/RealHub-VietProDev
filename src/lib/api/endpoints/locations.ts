@@ -84,7 +84,7 @@ export const getGetApiLocationsUrl = (params?: GetApiLocationsParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/locations?${stringifiedParams}` : `/api/v1/locations`
+  return stringifiedParams.length > 0 ? `/api/locations?${stringifiedParams}` : `/api/locations`
 }
 
 /**
@@ -107,13 +107,13 @@ export const getApiLocations = async (params?: GetApiLocationsParams, options?: 
 
 export const getGetApiLocationsInfiniteQueryKey = (params?: GetApiLocationsParams,) => {
     return [
-    'infinite', `/api/v1/locations`, ...(params ? [params] : [])
+    'infinite', `/api/locations`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiLocationsQueryKey = (params?: GetApiLocationsParams,) => {
     return [
-    `/api/v1/locations`, ...(params ? [params] : [])
+    `/api/locations`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -297,7 +297,7 @@ export const getPostApiLocationUrl = () => {
 
 
 
-  return `/api/v1/locations`
+  return `/api/locations`
 }
 
 /**
@@ -386,7 +386,7 @@ export const getGetApiLocationTreeUrl = (params?: GetApiLocationTreeParams,) => 
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/locations/tree?${stringifiedParams}` : `/api/v1/locations/tree`
+  return stringifiedParams.length > 0 ? `/api/locations/tree?${stringifiedParams}` : `/api/locations/tree`
 }
 
 /**
@@ -409,13 +409,13 @@ export const getApiLocationTree = async (params?: GetApiLocationTreeParams, opti
 
 export const getGetApiLocationTreeInfiniteQueryKey = (params?: GetApiLocationTreeParams,) => {
     return [
-    'infinite', `/api/v1/locations/tree`, ...(params ? [params] : [])
+    'infinite', `/api/locations/tree`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiLocationTreeQueryKey = (params?: GetApiLocationTreeParams,) => {
     return [
-    `/api/v1/locations/tree`, ...(params ? [params] : [])
+    `/api/locations/tree`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -599,7 +599,7 @@ export const getGetApiLocationIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/locations/${id}`
+  return `/api/locations/${id}`
 }
 
 /**
@@ -622,13 +622,13 @@ export const getApiLocationId = async (id: string, options?: RequestInit): Promi
 
 export const getGetApiLocationIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/locations/${id}`
+    'infinite', `/api/locations/${id}`
     ] as const;
     }
 
 export const getGetApiLocationIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/locations/${id}`
+    `/api/locations/${id}`
     ] as const;
     }
 
@@ -812,7 +812,7 @@ export const getPatchApiLocationUrl = (id: string,) => {
 
 
 
-  return `/api/v1/locations/${id}`
+  return `/api/locations/${id}`
 }
 
 /**
@@ -895,7 +895,7 @@ export const getDeleteApiLocationUrl = (id: string,) => {
 
 
 
-  return `/api/v1/locations/${id}`
+  return `/api/locations/${id}`
 }
 
 /**

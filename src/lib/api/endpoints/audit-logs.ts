@@ -78,7 +78,7 @@ export const getGetApiAuditLogsUrl = (params?: GetApiAuditLogsParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/audit-logs?${stringifiedParams}` : `/api/v1/audit-logs`
+  return stringifiedParams.length > 0 ? `/api/audit-logs?${stringifiedParams}` : `/api/audit-logs`
 }
 
 /**
@@ -101,13 +101,13 @@ export const getApiAuditLogs = async (params?: GetApiAuditLogsParams, options?: 
 
 export const getGetApiAuditLogsInfiniteQueryKey = (params?: GetApiAuditLogsParams,) => {
     return [
-    'infinite', `/api/v1/audit-logs`, ...(params ? [params] : [])
+    'infinite', `/api/audit-logs`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiAuditLogsQueryKey = (params?: GetApiAuditLogsParams,) => {
     return [
-    `/api/v1/audit-logs`, ...(params ? [params] : [])
+    `/api/audit-logs`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -298,7 +298,7 @@ export const getGetApiAuditLogSummaryUrl = (params?: GetApiAuditLogSummaryParams
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/audit-logs/summary?${stringifiedParams}` : `/api/v1/audit-logs/summary`
+  return stringifiedParams.length > 0 ? `/api/audit-logs/summary?${stringifiedParams}` : `/api/audit-logs/summary`
 }
 
 /**
@@ -321,13 +321,13 @@ export const getApiAuditLogSummary = async (params?: GetApiAuditLogSummaryParams
 
 export const getGetApiAuditLogSummaryInfiniteQueryKey = (params?: GetApiAuditLogSummaryParams,) => {
     return [
-    'infinite', `/api/v1/audit-logs/summary`, ...(params ? [params] : [])
+    'infinite', `/api/audit-logs/summary`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiAuditLogSummaryQueryKey = (params?: GetApiAuditLogSummaryParams,) => {
     return [
-    `/api/v1/audit-logs/summary`, ...(params ? [params] : [])
+    `/api/audit-logs/summary`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -511,7 +511,7 @@ export const getGetApiAuditLogIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/audit-logs/${id}`
+  return `/api/audit-logs/${id}`
 }
 
 /**
@@ -534,13 +534,13 @@ export const getApiAuditLogId = async (id: string, options?: RequestInit): Promi
 
 export const getGetApiAuditLogIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/audit-logs/${id}`
+    'infinite', `/api/audit-logs/${id}`
     ] as const;
     }
 
 export const getGetApiAuditLogIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/audit-logs/${id}`
+    `/api/audit-logs/${id}`
     ] as const;
     }
 

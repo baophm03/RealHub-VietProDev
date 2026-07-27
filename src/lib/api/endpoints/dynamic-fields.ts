@@ -35,7 +35,9 @@ import type {
   CreateFormSchemaDto,
   GetApiFieldDefinitionsParams,
   GetApiFieldGroupsParams,
-  GetApiFormSchemasParams
+  GetApiFormSchemasParams,
+  UpdateFieldGroupDto,
+  UpdateFormSchemaDto
 } from '../models';
 
 import { useCustomClient } from '../mutator/custom-client';
@@ -86,7 +88,7 @@ export const getGetApiFieldGroupsUrl = (params?: GetApiFieldGroupsParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/dynamic-fields/groups?${stringifiedParams}` : `/api/v1/dynamic-fields/groups`
+  return stringifiedParams.length > 0 ? `/api/dynamic-fields/groups?${stringifiedParams}` : `/api/dynamic-fields/groups`
 }
 
 /**
@@ -109,13 +111,13 @@ export const getApiFieldGroups = async (params?: GetApiFieldGroupsParams, option
 
 export const getGetApiFieldGroupsInfiniteQueryKey = (params?: GetApiFieldGroupsParams,) => {
     return [
-    'infinite', `/api/v1/dynamic-fields/groups`, ...(params ? [params] : [])
+    'infinite', `/api/dynamic-fields/groups`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiFieldGroupsQueryKey = (params?: GetApiFieldGroupsParams,) => {
     return [
-    `/api/v1/dynamic-fields/groups`, ...(params ? [params] : [])
+    `/api/dynamic-fields/groups`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -299,7 +301,7 @@ export const getPostApiFieldGroupUrl = () => {
 
 
 
-  return `/api/v1/dynamic-fields/groups`
+  return `/api/dynamic-fields/groups`
 }
 
 /**
@@ -364,6 +366,171 @@ export const usePostApiFieldGroup = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getPostApiFieldGroupMutationOptions(options), queryClient);
     }
+    export type patchApiFieldGroupResponse200 = {
+  data: void
+  status: 200
+}
+
+export type patchApiFieldGroupResponseSuccess = (patchApiFieldGroupResponse200) & {
+  headers: Headers;
+};
+;
+
+export type patchApiFieldGroupResponse = (patchApiFieldGroupResponseSuccess)
+
+export const getPatchApiFieldGroupUrl = (id: string,) => {
+
+
+
+
+  return `/api/dynamic-fields/groups/${id}`
+}
+
+/**
+ * @summary Update a field group
+ */
+export const patchApiFieldGroup = async (id: string,
+    updateFieldGroupDto: UpdateFieldGroupDto, options?: RequestInit): Promise<patchApiFieldGroupResponse> => {
+
+  return useCustomClient<patchApiFieldGroupResponse>(getPatchApiFieldGroupUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateFieldGroupDto)
+  }
+);}
+
+
+
+
+
+export const getPatchApiFieldGroupMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiFieldGroup>>, TError,{id: string;data: BodyType<UpdateFieldGroupDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiFieldGroup>>, TError,{id: string;data: BodyType<UpdateFieldGroupDto>}, TContext> => {
+
+const mutationKey = ['patchApiFieldGroup'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiFieldGroup>>, {id: string;data: BodyType<UpdateFieldGroupDto>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  patchApiFieldGroup(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PatchApiFieldGroupMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiFieldGroup>>>
+    export type PatchApiFieldGroupMutationBody = BodyType<UpdateFieldGroupDto>
+    export type PatchApiFieldGroupMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Update a field group
+ */
+export const usePatchApiFieldGroup = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiFieldGroup>>, TError,{id: string;data: BodyType<UpdateFieldGroupDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof patchApiFieldGroup>>,
+        TError,
+        {id: string;data: BodyType<UpdateFieldGroupDto>},
+        TContext
+      > => {
+      return useMutation(getPatchApiFieldGroupMutationOptions(options), queryClient);
+    }
+    export type deleteApiFieldGroupResponse200 = {
+  data: void
+  status: 200
+}
+
+export type deleteApiFieldGroupResponseSuccess = (deleteApiFieldGroupResponse200) & {
+  headers: Headers;
+};
+;
+
+export type deleteApiFieldGroupResponse = (deleteApiFieldGroupResponseSuccess)
+
+export const getDeleteApiFieldGroupUrl = (id: string,) => {
+
+
+
+
+  return `/api/dynamic-fields/groups/${id}`
+}
+
+/**
+ * @summary Delete a field group
+ */
+export const deleteApiFieldGroup = async (id: string, options?: RequestInit): Promise<deleteApiFieldGroupResponse> => {
+
+  return useCustomClient<deleteApiFieldGroupResponse>(getDeleteApiFieldGroupUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteApiFieldGroupMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiFieldGroup>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteApiFieldGroup>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteApiFieldGroup'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiFieldGroup>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteApiFieldGroup(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteApiFieldGroupMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiFieldGroup>>>
+
+    export type DeleteApiFieldGroupMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Delete a field group
+ */
+export const useDeleteApiFieldGroup = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiFieldGroup>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteApiFieldGroup>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteApiFieldGroupMutationOptions(options), queryClient);
+    }
     export type getApiFieldDefinitionsResponseDefault = {
   data: unknown
   status: number
@@ -388,7 +555,7 @@ export const getGetApiFieldDefinitionsUrl = (params?: GetApiFieldDefinitionsPara
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/dynamic-fields/definitions?${stringifiedParams}` : `/api/v1/dynamic-fields/definitions`
+  return stringifiedParams.length > 0 ? `/api/dynamic-fields/definitions?${stringifiedParams}` : `/api/dynamic-fields/definitions`
 }
 
 /**
@@ -411,13 +578,13 @@ export const getApiFieldDefinitions = async (params?: GetApiFieldDefinitionsPara
 
 export const getGetApiFieldDefinitionsInfiniteQueryKey = (params?: GetApiFieldDefinitionsParams,) => {
     return [
-    'infinite', `/api/v1/dynamic-fields/definitions`, ...(params ? [params] : [])
+    'infinite', `/api/dynamic-fields/definitions`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiFieldDefinitionsQueryKey = (params?: GetApiFieldDefinitionsParams,) => {
     return [
-    `/api/v1/dynamic-fields/definitions`, ...(params ? [params] : [])
+    `/api/dynamic-fields/definitions`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -601,7 +768,7 @@ export const getPostApiFieldDefinitionUrl = () => {
 
 
 
-  return `/api/v1/dynamic-fields/definitions`
+  return `/api/dynamic-fields/definitions`
 }
 
 /**
@@ -683,7 +850,7 @@ export const getPatchApiFieldDefinitionUrl = (id: string,) => {
 
 
 
-  return `/api/v1/dynamic-fields/definitions/${id}`
+  return `/api/dynamic-fields/definitions/${id}`
 }
 
 /**
@@ -772,7 +939,7 @@ export const getGetApiFormSchemasUrl = (params?: GetApiFormSchemasParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/dynamic-fields/form-schemas?${stringifiedParams}` : `/api/v1/dynamic-fields/form-schemas`
+  return stringifiedParams.length > 0 ? `/api/dynamic-fields/form-schemas?${stringifiedParams}` : `/api/dynamic-fields/form-schemas`
 }
 
 /**
@@ -795,13 +962,13 @@ export const getApiFormSchemas = async (params?: GetApiFormSchemasParams, option
 
 export const getGetApiFormSchemasInfiniteQueryKey = (params?: GetApiFormSchemasParams,) => {
     return [
-    'infinite', `/api/v1/dynamic-fields/form-schemas`, ...(params ? [params] : [])
+    'infinite', `/api/dynamic-fields/form-schemas`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiFormSchemasQueryKey = (params?: GetApiFormSchemasParams,) => {
     return [
-    `/api/v1/dynamic-fields/form-schemas`, ...(params ? [params] : [])
+    `/api/dynamic-fields/form-schemas`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -985,7 +1152,7 @@ export const getPostApiFormSchemaUrl = () => {
 
 
 
-  return `/api/v1/dynamic-fields/form-schemas`
+  return `/api/dynamic-fields/form-schemas`
 }
 
 /**
@@ -1049,4 +1216,169 @@ export const usePostApiFormSchema = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getPostApiFormSchemaMutationOptions(options), queryClient);
+    }
+    export type patchApiFormSchemaResponse200 = {
+  data: void
+  status: 200
+}
+
+export type patchApiFormSchemaResponseSuccess = (patchApiFormSchemaResponse200) & {
+  headers: Headers;
+};
+;
+
+export type patchApiFormSchemaResponse = (patchApiFormSchemaResponseSuccess)
+
+export const getPatchApiFormSchemaUrl = (id: string,) => {
+
+
+
+
+  return `/api/dynamic-fields/form-schemas/${id}`
+}
+
+/**
+ * @summary Update a form schema
+ */
+export const patchApiFormSchema = async (id: string,
+    updateFormSchemaDto: UpdateFormSchemaDto, options?: RequestInit): Promise<patchApiFormSchemaResponse> => {
+
+  return useCustomClient<patchApiFormSchemaResponse>(getPatchApiFormSchemaUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateFormSchemaDto)
+  }
+);}
+
+
+
+
+
+export const getPatchApiFormSchemaMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiFormSchema>>, TError,{id: string;data: BodyType<UpdateFormSchemaDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiFormSchema>>, TError,{id: string;data: BodyType<UpdateFormSchemaDto>}, TContext> => {
+
+const mutationKey = ['patchApiFormSchema'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiFormSchema>>, {id: string;data: BodyType<UpdateFormSchemaDto>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  patchApiFormSchema(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PatchApiFormSchemaMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiFormSchema>>>
+    export type PatchApiFormSchemaMutationBody = BodyType<UpdateFormSchemaDto>
+    export type PatchApiFormSchemaMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Update a form schema
+ */
+export const usePatchApiFormSchema = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiFormSchema>>, TError,{id: string;data: BodyType<UpdateFormSchemaDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof patchApiFormSchema>>,
+        TError,
+        {id: string;data: BodyType<UpdateFormSchemaDto>},
+        TContext
+      > => {
+      return useMutation(getPatchApiFormSchemaMutationOptions(options), queryClient);
+    }
+    export type deleteApiFormSchemaResponse200 = {
+  data: void
+  status: 200
+}
+
+export type deleteApiFormSchemaResponseSuccess = (deleteApiFormSchemaResponse200) & {
+  headers: Headers;
+};
+;
+
+export type deleteApiFormSchemaResponse = (deleteApiFormSchemaResponseSuccess)
+
+export const getDeleteApiFormSchemaUrl = (id: string,) => {
+
+
+
+
+  return `/api/dynamic-fields/form-schemas/${id}`
+}
+
+/**
+ * @summary Delete a form schema
+ */
+export const deleteApiFormSchema = async (id: string, options?: RequestInit): Promise<deleteApiFormSchemaResponse> => {
+
+  return useCustomClient<deleteApiFormSchemaResponse>(getDeleteApiFormSchemaUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteApiFormSchemaMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiFormSchema>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteApiFormSchema>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteApiFormSchema'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiFormSchema>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteApiFormSchema(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteApiFormSchemaMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiFormSchema>>>
+
+    export type DeleteApiFormSchemaMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Delete a form schema
+ */
+export const useDeleteApiFormSchema = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiFormSchema>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteApiFormSchema>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteApiFormSchemaMutationOptions(options), queryClient);
     }

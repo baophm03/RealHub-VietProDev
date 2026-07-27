@@ -173,6 +173,8 @@ export * from './updateDealDto';
 export * from './updateDealDtoStatus';
 export * from './updateExportJobDto';
 export * from './updateExportJobDtoStatus';
+export * from './updateFieldGroupDto';
+export * from './updateFormSchemaDto';
 export * from './updateImportJobDto';
 export * from './updateImportJobDtoStatus';
 export * from './updateLeadDto';

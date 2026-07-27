@@ -84,7 +84,7 @@ export const getGetApiVisibilityPoliciesUrl = (params?: GetApiVisibilityPolicies
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/v1/visibility-policies?${stringifiedParams}` : `/api/v1/visibility-policies`
+  return stringifiedParams.length > 0 ? `/api/visibility-policies?${stringifiedParams}` : `/api/visibility-policies`
 }
 
 /**
@@ -107,13 +107,13 @@ export const getApiVisibilityPolicies = async (params?: GetApiVisibilityPolicies
 
 export const getGetApiVisibilityPoliciesInfiniteQueryKey = (params?: GetApiVisibilityPoliciesParams,) => {
     return [
-    'infinite', `/api/v1/visibility-policies`, ...(params ? [params] : [])
+    'infinite', `/api/visibility-policies`, ...(params ? [params] : [])
     ] as const;
     }
 
 export const getGetApiVisibilityPoliciesQueryKey = (params?: GetApiVisibilityPoliciesParams,) => {
     return [
-    `/api/v1/visibility-policies`, ...(params ? [params] : [])
+    `/api/visibility-policies`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -297,7 +297,7 @@ export const getPostApiVisibilityPolicyUrl = () => {
 
 
 
-  return `/api/v1/visibility-policies`
+  return `/api/visibility-policies`
 }
 
 /**
@@ -379,7 +379,7 @@ export const getGetApiVisibilityPolicyIdUrl = (id: string,) => {
 
 
 
-  return `/api/v1/visibility-policies/${id}`
+  return `/api/visibility-policies/${id}`
 }
 
 /**
@@ -402,13 +402,13 @@ export const getApiVisibilityPolicyId = async (id: string, options?: RequestInit
 
 export const getGetApiVisibilityPolicyIdInfiniteQueryKey = (id: string,) => {
     return [
-    'infinite', `/api/v1/visibility-policies/${id}`
+    'infinite', `/api/visibility-policies/${id}`
     ] as const;
     }
 
 export const getGetApiVisibilityPolicyIdQueryKey = (id: string,) => {
     return [
-    `/api/v1/visibility-policies/${id}`
+    `/api/visibility-policies/${id}`
     ] as const;
     }
 
@@ -592,7 +592,7 @@ export const getPatchApiVisibilityPolicyUrl = (id: string,) => {
 
 
 
-  return `/api/v1/visibility-policies/${id}`
+  return `/api/visibility-policies/${id}`
 }
 
 /**
@@ -675,7 +675,7 @@ export const getDeleteApiVisibilityPolicyUrl = (id: string,) => {
 
 
 
-  return `/api/v1/visibility-policies/${id}`
+  return `/api/visibility-policies/${id}`
 }
 
 /**
@@ -757,7 +757,7 @@ export const getPostApiVisibilityRuleUrl = (id: string,) => {
 
 
 
-  return `/api/v1/visibility-policies/${id}/rules`
+  return `/api/visibility-policies/${id}/rules`
 }
 
 /**
@@ -840,7 +840,7 @@ export const getDeleteApiVisibilityRuleUrl = (ruleId: string,) => {
 
 
 
-  return `/api/v1/visibility-policies/rules/${ruleId}`
+  return `/api/visibility-policies/rules/${ruleId}`
 }
 
 /**

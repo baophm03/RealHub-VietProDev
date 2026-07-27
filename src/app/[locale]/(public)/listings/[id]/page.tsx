@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, useMemo, use } from "react";
 import { Button } from "@/components/ui/button";
-import { Bed, Bathtub, MapPin, House, Phone, CheckCircle, SealCheck, Star, CaretRight, PaperPlaneTilt, Car, Bathtub as Pool, Shield, Spinner } from "@phosphor-icons/react";
+import { Bed, Bathtub, MapPin, House, Phone, CheckCircle, Star, CaretRight, PaperPlaneTilt, Car, Bathtub as Pool, Shield, Ruler, ShieldCheck, Camera, Spinner } from "@phosphor-icons/react";
 import { Link } from "@/i18n/navigation";
 import { useGetApiPropertyId, useGetApiProperties } from "@/lib/api/endpoints/properties";
-import { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
+import { useGetApiFormSchemas } from "@/lib/api/endpoints/dynamic-fields";
+import { Property } from "@/lib/api/types/properties";
 
 const txLabel: Record<string, string> = {
   SALE: "Bán",
@@ -59,13 +60,50 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
   const { data: propertyData, isLoading } = useGetApiPropertyId(id);
   const property = (propertyData as unknown as { data: Property })?.data;
 
-  const { data: allPropertiesData } = useGetApiProperties();
-  const allProperties = ((allPropertiesData as unknown as GetPropertiesResponse)?.data) || [];
-  const similarProperties = allProperties
-    .filter((p) => p.id !== id && p.transactionType === property?.transactionType)
-    .slice(0, 3);
+  const { data: schemaData } = useGetApiFormSchemas({ entityType: "PROPERTY" });
+  const schemas = ((schemaData as any)?.data as any[]) || [];
+  const dynamicValues = (property as any)?.dynamicValuesJson as Record<string, unknown> | undefined;
 
-  const gallery = [PLACEHOLDER_IMAGE];
+  const findFieldValue = useMemo(() => {
+    return (patterns: string[]): string | null => {
+      for (const schema of schemas) {
+        for (const f of (schema.fields || [])) {
+          const field = f.field;
+          if (!field) continue;
+          const key = (field.fieldKey || "").toLowerCase();
+          const label = (field.fieldLabel || "").toLowerCase();
+          if (patterns.some((p) => key.includes(p) || label.includes(p))) {
+            const rawValue = dynamicValues?.[field.fieldKey];
+            if (rawValue === undefined || rawValue === null || rawValue === "") return null;
+            if (field.options && Array.isArray(field.options)) {
+              const opt = field.options.find((o: any) => o.value === String(rawValue));
+              if (opt) return opt.label;
+            }
+            return String(rawValue);
+          }
+        }
+      }
+      return null;
+    };
+  }, [schemas, dynamicValues]);
+
+  const bedrooms = findFieldValue(["bedroom", "beds", "phong_ngu", "phòng ngủ"]);
+  const bathrooms = findFieldValue(["bathroom", "baths", "phong_tam", "phòng tắm"]);
+  const legalStatus = findFieldValue(["legal", "phap_ly", "pháp lý", "ownership"]);
+  const direction = findFieldValue(["direction", "huong", "hướng"]);
+
+  const propertyTypeId = property?.propertyType?.id;
+  const { data: similarData } = useGetApiProperties(
+    propertyTypeId ? { propertyTypeId, limit: "10" } : undefined,
+  );
+  const similarProperties = useMemo(() => {
+    const all = ((similarData as any)?.data as Property[]) || [];
+    const filtered = all.filter((p) => p.id !== id);
+    const shuffled = [...filtered].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 3);
+  }, [similarData, id]);
+
+  const gallery = property ? [`https://picsum.photos/seed/${property.id}-main/1200/800`, `https://picsum.photos/seed/${property.id}-1/800/600`, `https://picsum.photos/seed/${property.id}-2/800/600`, `https://picsum.photos/seed/${property.id}-3/800/600`, `https://picsum.photos/seed/${property.id}-4/800/600`] : [PLACEHOLDER_IMAGE];
 
   const HIGHLIGHT_ICONS: Record<string, React.ElementType> = {
     "Hồ bơi": Pool,
@@ -189,37 +227,31 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
             <div className="flex flex-col gap-1">
               <span className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Diện tích</span>
               <div className="flex items-center gap-2">
-                <House size={20} className="text-primary" />
+                <Ruler size={20} weight="duotone" className="text-primary" />
                 <span className="font-serif text-xl font-medium text-primary">{property.area ? `${property.area} m²` : "—"}</span>
               </div>
             </div>
-            {(property as any).bedrooms > 0 && (
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Phòng ngủ</span>
-                <div className="flex items-center gap-2">
-                  <Bed size={20} className="text-primary" />
-                  <span className="font-serif text-xl font-medium text-primary">{(property as any).bedrooms}</span>
-                </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Phòng ngủ</span>
+              <div className="flex items-center gap-2">
+                <Bed size={20} weight="duotone" className="text-primary" />
+                <span className="font-serif text-xl font-medium text-primary">{bedrooms ?? "—"}</span>
               </div>
-            )}
-            {(property as any).bathrooms > 0 && (
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Phòng tắm</span>
-                <div className="flex items-center gap-2">
-                  <Bathtub size={20} className="text-primary" />
-                  <span className="font-serif text-xl font-medium text-primary">{(property as any).bathrooms}</span>
-                </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Phòng tắm</span>
+              <div className="flex items-center gap-2">
+                <Bathtub size={20} weight="duotone" className="text-primary" />
+                <span className="font-serif text-xl font-medium text-primary">{bathrooms ?? "—"}</span>
               </div>
-            )}
-            {(property as any).legalStatus && (
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Pháp lý</span>
-                <div className="flex items-center gap-2">
-                  <SealCheck size={20} className="text-primary" />
-                  <span className="font-serif text-xl font-medium text-primary">{(property as any).legalStatus}</span>
-                </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Pháp lý</span>
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={20} weight="duotone" className="text-accent-green-text" />
+                <span className="font-serif text-xl font-medium text-primary">{legalStatus ?? "—"}</span>
               </div>
-            )}
+            </div>
           </section>
 
           {/* Description */}
@@ -336,10 +368,10 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
                 <span>Loại hình</span>
                 <span className="font-medium text-foreground">{property.propertyType?.name ?? "—"}</span>
               </div>
-              {(property as any).direction && (
+              {direction && (
                 <div className="flex justify-between">
                   <span>Hướng</span>
-                  <span className="font-medium text-foreground">{(property as any).direction}</span>
+                  <span className="font-medium text-foreground">{direction}</span>
                 </div>
               )}
               <div className="flex justify-between">
@@ -362,46 +394,85 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
         <section className="pt-8 border-t border-border mt-8">
           <h2 className="font-serif text-2xl font-semibold tracking-tight text-primary mb-6">Bất động sản tương tự</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {similarProperties.map((p) => (
-              <Link
-                key={p.id}
-                href={`/listings/${p.id}`}
-                className="group bg-surface rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow flex flex-col"
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <div
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-                    style={{ backgroundImage: `url(${PLACEHOLDER_IMAGE})` }}
-                  />
-                </div>
-                <div className="p-4 space-y-3 flex-1 flex flex-col">
-                  <h3 className="font-serif text-lg font-medium text-primary line-clamp-1 group-hover:text-primary/80 transition-colors">
-                    {p.title}
-                  </h3>
-                  <p className="text-sm text-foreground-muted flex items-center gap-1">
-                    <MapPin size={14} weight="fill" /> {p.address ?? "Đang cập nhật"}
-                  </p>
-                  <div className="font-serif text-xl font-bold text-primary">
-                    {formatPrice(p.price, p.transactionType)}
-                  </div>
-                  <div className="flex items-center gap-4 border-t border-border pt-3 mt-auto">
-                    <div className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-                      <House size={14} /> {p.area ? `${p.area}m²` : "—"}
+            {similarProperties.map((p) => {
+              const itemDynValues = (p as any).dynamicValuesJson as Record<string, unknown> | undefined;
+              const itemBedrooms = (() => {
+                for (const schema of schemas) {
+                  for (const f of (schema.fields || [])) {
+                    const field = f.field;
+                    if (!field) continue;
+                    const key = (field.fieldKey || "").toLowerCase();
+                    const label = (field.fieldLabel || "").toLowerCase();
+                    if (["bedroom", "beds", "phong_ngu", "phòng ngủ"].some((pat) => key.includes(pat) || label.includes(pat))) {
+                      const v = itemDynValues?.[field.fieldKey];
+                      if (v !== undefined && v !== null && v !== "") return String(v);
+                    }
+                  }
+                }
+                return null;
+              })();
+              const itemBathrooms = (() => {
+                for (const schema of schemas) {
+                  for (const f of (schema.fields || [])) {
+                    const field = f.field;
+                    if (!field) continue;
+                    const key = (field.fieldKey || "").toLowerCase();
+                    const label = (field.fieldLabel || "").toLowerCase();
+                    if (["bathroom", "baths", "phong_tam", "phòng tắm"].some((pat) => key.includes(pat) || label.includes(pat))) {
+                      const v = itemDynValues?.[field.fieldKey];
+                      if (v !== undefined && v !== null && v !== "") return String(v);
+                    }
+                  }
+                }
+                return null;
+              })();
+              const location = [p.district?.name, p.province?.name].filter(Boolean).join(", ");
+
+              return (
+                <Link
+                  key={p.id}
+                  href={`/listings/${p.id}`}
+                  className="group bg-surface rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow flex flex-col"
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={`https://picsum.photos/seed/${p.id}/800/600`}
+                      alt={p.title}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute top-3 left-3 flex items-center gap-1 rounded-lg bg-black/40 px-2.5 py-1 text-[10px] font-medium text-white backdrop-blur-sm">
+                      <Camera size={10} />
                     </div>
-                    {(p as any).bedrooms > 0 && (
-                      <div className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-                        <Bed size={14} /> {(p as any).bedrooms}
-                      </div>
-                    )}
-                    {(p as any).bathrooms > 0 && (
-                      <div className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-                        <Bathtub size={14} /> {(p as any).bathrooms}
-                      </div>
-                    )}
                   </div>
-                </div>
-              </Link>
-            ))}
+                  <div className="p-4 space-y-3 flex-1 flex flex-col">
+                    <h3 className="font-serif text-lg font-medium text-primary line-clamp-1 group-hover:text-primary/80 transition-colors">
+                      {p.title}
+                    </h3>
+                    <p className="text-sm text-foreground-muted flex items-center gap-1">
+                      <MapPin size={14} weight="fill" /> {location || "Đang cập nhật"}
+                    </p>
+                    <div className="font-serif text-xl font-bold text-primary">
+                      {formatPrice(p.price, p.transactionType)}
+                    </div>
+                    <div className="flex items-center gap-4 border-t border-border pt-3 mt-auto">
+                      <div className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
+                        <Ruler size={12} /> {p.area ? `${p.area}m²` : "—"}
+                      </div>
+                      {itemBedrooms && (
+                        <div className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
+                          <Bed size={12} /> {itemBedrooms}
+                        </div>
+                      )}
+                      {itemBathrooms && (
+                        <div className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
+                          <Bathtub size={12} /> {itemBathrooms}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </section>
       )}
