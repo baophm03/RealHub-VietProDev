@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -89,6 +89,14 @@ const priceUnitLabels: Record<string, string> = {
 };
 
 export default function PropertyFormPage() {
+  return (
+    <Suspense>
+      <PropertyFormContent />
+    </Suspense>
+  );
+}
+
+function PropertyFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
@@ -108,7 +116,7 @@ export default function PropertyFormPage() {
 
   // projects
   const { data: projectsData } = useGetApiProjects();
-  const projects = ((projectsData as unknown as GetProjectsResponse)?.items) || [];
+  const projects = ((projectsData as unknown as GetProjectsResponse)?.data) || [];
   const projectItems = Object.fromEntries(projects.map((p) => [p.id, p.name]));
 
   // locations

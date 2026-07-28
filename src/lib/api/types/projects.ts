@@ -22,4 +22,7 @@ export interface Project {
     businessStatus: string;
     publicationStatus: string;
   }[];
+  _count: {
+    properties: number;
+  };
 }
