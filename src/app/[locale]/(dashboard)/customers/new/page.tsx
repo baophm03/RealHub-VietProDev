@@ -47,7 +47,7 @@ export default function CustomerFormPage() {
       await createCustomer({ data: payload });
       router.push("/customers");
     } catch (err) {
-      setError("Co loi xay ra khi tao khach hang. Vui long thu lai.");
+      setError("Có lỗi xảy ra vui lòng thử lại.");
       console.error(err);
     } finally {
       setLoading(false);
@@ -60,7 +60,7 @@ export default function CustomerFormPage() {
         <button onClick={() => router.push("/customers")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
           <ArrowLeft size={20} />
         </button>
-        <PageHeader eyebrow="CRM" title="Them khach hang" />
+        <PageHeader eyebrow="CRM" title="Thêm khách hàng" />
       </div>
 
       {error && (
@@ -70,7 +70,7 @@ export default function CustomerFormPage() {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <FormSection title="Thong tin khach hang">
+        <FormSection title="Thông tin khách hàng">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField label="Họ và tên" htmlFor="fullName" required error={errors.fullName?.message}>
               <Input id="fullName" placeholder="Nguyen Van An" {...register("fullName")} />

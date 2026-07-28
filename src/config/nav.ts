@@ -37,7 +37,7 @@ export const navGroups: NavGroup[] = [
     label: "Kinh doanh",
     items: [
       {
-        label: "Bất động sản",
+        label: "Bất động sản & Dự án",
         href: "/properties",
         icon: Buildings,
         permission: "properties:read",

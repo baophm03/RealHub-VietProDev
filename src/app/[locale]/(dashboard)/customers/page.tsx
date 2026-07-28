@@ -84,13 +84,13 @@ export default function CustomersPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         eyebrow="CRM"
-        title="Khach hang"
-        description="Quan ly danh sach khach hang"
+        title="Khách hàng"
+        description="Quản lý danh sách khách hàng"
         actions={
           mounted && hasPermission("customers:write") && (
             <Button onClick={() => router.push("/customers/new")}>
               <Plus size={16} />
-              Them khach hang
+              Thêm khách hàng
             </Button>
           )
         }
@@ -100,7 +100,7 @@ export default function CustomersPage() {
         <div className="flex items-center gap-2">
           <Input
             type="search"
-            placeholder="Tim kiem..."
+            placeholder="Tìm kiếm..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full sm:w-auto min-w-0"
@@ -122,13 +122,13 @@ export default function CustomersPage() {
       ) : (
         <EmptyState
           icon={<Users size={24} />}
-          title="Chua co khach hang"
-          description="Them khach hang dau tien de bat dau quan ly CRM"
+          title="Chưa có khách hàng"
+          description="Thêm khách hàng đầu tiên để bắt đầu quản lý CRM"
           action={
             mounted && hasPermission("customers:write") && (
               <Button onClick={() => router.push("/customers/new")}>
                 <Plus size={16} />
-                Them khach hang
+                Thêm khách hàng
               </Button>
             )
           }

@@ -2,7 +2,7 @@
 
 import { useState, useMemo, use } from "react";
 import { Button } from "@/components/ui/button";
-import { Bed, Bathtub, MapPin, House, Phone, CheckCircle, Star, CaretRight, PaperPlaneTilt, Car, Bathtub as Pool, Shield, Ruler, ShieldCheck, Camera, Spinner } from "@phosphor-icons/react";
+import { Bed, Bathtub, MapPin, Phone, Star, CaretRight, PaperPlaneTilt, Ruler, ShieldCheck, Camera, Spinner } from "@phosphor-icons/react";
 import { Link } from "@/i18n/navigation";
 import { useGetApiPropertyId, useGetApiProperties } from "@/lib/api/endpoints/properties";
 import { useGetApiFormSchemas } from "@/lib/api/endpoints/dynamic-fields";
@@ -52,16 +52,22 @@ function formatPricePerSqm(priceStr: string, area: number): string {
 
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80";
 
-const DEFAULT_FEATURES = ["Mặt tiền", "Đường lớn", "Chỗ để xe", "Phù hợp kinh doanh"];
-
 export default function ListingDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [activeImage, setActiveImage] = useState(0);
   const { data: propertyData, isLoading } = useGetApiPropertyId(id);
   const property = (propertyData as unknown as { data: Property })?.data;
 
+  const propertyTypeId = property?.propertyType?.id;
+
   const { data: schemaData } = useGetApiFormSchemas({ entityType: "PROPERTY" });
-  const schemas = ((schemaData as any)?.data as any[]) || [];
+  const allSchemas = ((schemaData as any)?.data as any[]) || [];
+  const schemas = useMemo(
+    () => allSchemas.filter(
+      (s) => s.propertyTypeId === null || s.propertyTypeId === undefined || s.propertyTypeId === propertyTypeId,
+    ),
+    [allSchemas, propertyTypeId],
+  );
   const dynamicValues = (property as any)?.dynamicValuesJson as Record<string, unknown> | undefined;
 
   const findFieldValue = useMemo(() => {
@@ -92,7 +98,58 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
   const legalStatus = findFieldValue(["legal", "phap_ly", "pháp lý", "ownership"]);
   const direction = findFieldValue(["direction", "huong", "hướng"]);
 
-  const propertyTypeId = property?.propertyType?.id;
+  const getFieldsByGroupCode = useMemo(() => {
+    return (code: string) => {
+      const result: { key: string; label: string; value: string }[] = [];
+      for (const schema of schemas) {
+        for (const f of (schema.fields || [])) {
+          const field = f.field;
+          if (!field) continue;
+          if (f.group?.code === code) {
+            const rawValue = dynamicValues?.[field.fieldKey];
+            if (rawValue === undefined || rawValue === null || rawValue === "") continue;
+            let displayValue = String(rawValue);
+            if (field.options && Array.isArray(field.options)) {
+              const opt = field.options.find((o: any) => o.value === String(rawValue));
+              if (opt) displayValue = opt.label;
+            }
+            result.push({ key: field.fieldKey, label: field.fieldLabel, value: displayValue });
+          }
+        }
+      }
+      return result;
+    };
+  }, [schemas, dynamicValues]);
+
+  const basicInfoFields = getFieldsByGroupCode("basic_info");
+  const specialFields = getFieldsByGroupCode("special");
+
+  const staticSpecs = [
+    { icon: Ruler, label: "Diện tích", value: property?.area ? `${property.area} m²` : "—", accent: false },
+    { icon: Bed, label: "Phòng ngủ", value: bedrooms ?? "—", accent: false },
+    { icon: Bathtub, label: "Phòng tắm", value: bathrooms ?? "—", accent: false },
+    { icon: ShieldCheck, label: "Pháp lý", value: legalStatus ?? "—", accent: true },
+  ];
+
+  const staticSpecLabels = new Set(["Diện tích", "Phòng ngủ", "Phòng tắm", "Pháp lý"]);
+
+  const dynamicSpecs = basicInfoFields
+    .filter((f) => !staticSpecLabels.has(f.label))
+    .map((f) => ({
+      icon: Ruler,
+      label: f.label,
+      value: f.value,
+      accent: false,
+    }));
+
+  const specs = [...staticSpecs, ...dynamicSpecs];
+
+  const highlights = specialFields.map((f) => ({
+    icon: Star,
+    title: f.label,
+    desc: f.value,
+  }));
+
   const { data: similarData } = useGetApiProperties(
     propertyTypeId ? { propertyTypeId, limit: "10" } : undefined,
   );
@@ -104,15 +161,6 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
   }, [similarData, id]);
 
   const gallery = property ? [`https://picsum.photos/seed/${property.id}-main/1200/800`, `https://picsum.photos/seed/${property.id}-1/800/600`, `https://picsum.photos/seed/${property.id}-2/800/600`, `https://picsum.photos/seed/${property.id}-3/800/600`, `https://picsum.photos/seed/${property.id}-4/800/600`] : [PLACEHOLDER_IMAGE];
-
-  const HIGHLIGHT_ICONS: Record<string, React.ElementType> = {
-    "Hồ bơi": Pool,
-    "Hồ bơi riêng": Pool,
-    "An ninh 24/7": Shield,
-    "Garage 2 xe": Car,
-    "Gara ô tô": Car,
-    "Sân vườn": House,
-  };
 
   if (isLoading) {
     return (
@@ -169,7 +217,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
           </h1>
           <p className="mt-1 flex items-center gap-1.5 text-base text-foreground-muted">
             <MapPin size={16} weight="fill" className="text-primary" />
-            {property.address ?? "Đang cập nhật vị trí"}
+            {[property.district?.name, property.province?.name].filter(Boolean).join(", ") || "Đang cập nhật vị trí"}
           </p>
         </div>
         <div className="text-right">
@@ -224,34 +272,18 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
         <div className="flex-grow w-full lg:w-2/3 space-y-8">
           {/* Key Specs Grid */}
           <section className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-surface-muted rounded-xl border border-border">
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Diện tích</span>
-              <div className="flex items-center gap-2">
-                <Ruler size={20} weight="duotone" className="text-primary" />
-                <span className="font-serif text-xl font-medium text-primary">{property.area ? `${property.area} m²` : "—"}</span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Phòng ngủ</span>
-              <div className="flex items-center gap-2">
-                <Bed size={20} weight="duotone" className="text-primary" />
-                <span className="font-serif text-xl font-medium text-primary">{bedrooms ?? "—"}</span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Phòng tắm</span>
-              <div className="flex items-center gap-2">
-                <Bathtub size={20} weight="duotone" className="text-primary" />
-                <span className="font-serif text-xl font-medium text-primary">{bathrooms ?? "—"}</span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Pháp lý</span>
-              <div className="flex items-center gap-2">
-                <ShieldCheck size={20} weight="duotone" className="text-accent-green-text" />
-                <span className="font-serif text-xl font-medium text-primary">{legalStatus ?? "—"}</span>
-              </div>
-            </div>
+            {specs.map((spec) => {
+              const Icon = spec.icon;
+              return (
+                <div key={spec.label} className="flex flex-col gap-1">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">{spec.label}</span>
+                  <div className="flex items-center gap-2">
+                    <Icon size={20} weight="duotone" className={spec.accent ? "text-accent-green-text" : "text-primary"} />
+                    <span className="font-serif text-xl font-medium text-primary">{spec.value}</span>
+                  </div>
+                </div>
+              );
+            })}
           </section>
 
           {/* Description */}
@@ -263,27 +295,27 @@ export default function ListingDetailPage({ params }: { params: Promise<{ id: st
           </section>
 
           {/* Highlights / Features */}
-          <section className="space-y-4">
-            <h2 className="font-serif text-xl font-semibold text-primary border-b border-border pb-2">Đặc điểm nổi bật</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {(Array.isArray((property as any).features) && (property as any).features.length > 0
-                ? (property as any).features
-                : DEFAULT_FEATURES
-              ).map((f: string) => {
-                const Icon = HIGHLIGHT_ICONS[f] ?? CheckCircle;
-                return (
-                  <div key={f} className="flex items-center gap-3 p-4 bg-surface rounded-lg border border-border">
-                    <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                      <Icon size={20} />
+          {highlights.length > 0 && (
+            <section className="space-y-4">
+              <h2 className="font-serif text-xl font-semibold text-primary border-b border-border pb-2">Đặc điểm nổi bật</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {highlights.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div key={item.title} className="flex items-center gap-3 p-4 bg-surface rounded-lg border border-border">
+                      <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <Icon size={20} />
+                      </div>
+                      <div className="flex flex-col gap-0.5">
+                        <h3 className="font-serif text-base font-medium text-primary">{item.title}</h3>
+                        <p className="text-xs text-foreground-muted">{item.desc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-serif text-base font-medium text-primary">{f}</h3>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
+                  );
+                })}
+              </div>
+            </section>
+          )}
 
           {/* Tags */}
           {Array.isArray((property as any).tags) && (property as any).tags.length > 0 && (

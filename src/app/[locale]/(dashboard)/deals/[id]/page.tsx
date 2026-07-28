@@ -131,7 +131,7 @@ export default function DealDetailPage() {
               <div>
                 <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">BDS</span>
                 <button
-                  onClick={() => router.push(`/properties/${deal.propertyId}`)}
+                  onClick={() => router.push(`/properties/properties/${deal.propertyId}`)}
                   className="block text-sm text-primary hover:underline"
                 >
                   {deal.propertyId}

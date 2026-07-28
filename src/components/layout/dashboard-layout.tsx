@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { TopBar } from "@/components/layout/topbar";
 import { AuthGuard } from "@/components/shared/auth-guard";
+import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils/cn";
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
@@ -36,6 +37,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           </main>
         </div>
       </div>
+      <Toaster richColors />
     </AuthGuard>
   );
 }

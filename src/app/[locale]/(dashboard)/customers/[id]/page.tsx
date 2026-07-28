@@ -47,10 +47,10 @@ export default function CustomerDetailPage() {
     return (
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/customers")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
+          <button onClick={() => router.push("/customers")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lại">
             <ArrowLeft size={20} />
           </button>
-          <PageHeader eyebrow="CRM" title="Khong tim thay" />
+          <PageHeader eyebrow="CRM" title="Không tìm thấy" />
         </div>
       </div>
     );
@@ -59,7 +59,7 @@ export default function CustomerDetailPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => router.push("/customers")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
+        <button onClick={() => router.push("/customers")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lại">
           <ArrowLeft size={20} />
         </button>
         <PageHeader

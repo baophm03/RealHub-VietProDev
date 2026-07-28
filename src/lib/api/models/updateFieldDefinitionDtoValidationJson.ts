@@ -6,10 +6,4 @@
  * OpenAPI spec version: v1
  */
 
-export interface UpdateFieldGroupDto {
-  name?: string;
-  code?: string;
-  propertyTypeId?: string;
-  sortOrder?: number;
-  status?: string;
-}
+export type UpdateFieldDefinitionDtoValidationJson = { [key: string]: unknown };

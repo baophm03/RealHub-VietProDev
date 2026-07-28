@@ -8,8 +8,8 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
         disallow: [
           "/dashboard",
-          "/properties/*/edit",
-          "/properties/new",
+          "/properties/properties/*/edit",
+          "/properties/properties/new",
           "/customers",
           "/leads",
           "/appointments",

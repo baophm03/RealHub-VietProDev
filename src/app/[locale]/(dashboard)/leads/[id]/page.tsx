@@ -125,7 +125,7 @@ export default function LeadDetailPage() {
               <div>
                 <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">BDS</span>
                 <button
-                  onClick={() => router.push(`/properties/${lead.propertyId}`)}
+                  onClick={() => router.push(`/properties/properties/${lead.propertyId}`)}
                   className="block text-sm text-primary hover:underline"
                 >
                   {lead.propertyId}

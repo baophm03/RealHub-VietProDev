@@ -64,12 +64,6 @@ const propertyImages = [
 ];
 
 
-const highlights = [
-  { icon: Car, title: "Gara o to rong rai", desc: "Suc chua 2 xe SUV lon" },
-  { icon: SwimmingPool, title: "Ho boi rieng", desc: "Thiet ke vo cuc, he thong loc muoi" },
-  { icon: SecurityCamera, title: "An ninh 24/7", desc: "Camera giam sat, bao ve tuan tra" },
-  { icon: Park, title: "View song truc dien", desc: "Tam nhin vinh vien khong bi che khuat" },
-];
 
 export default function PropertyDetailPage() {
   const params = useParams();
@@ -95,8 +89,16 @@ export default function PropertyDetailPage() {
   const areaNum = property?.area ?? 0;
   const pricePerM2 = areaNum > 0 ? priceNum / areaNum : 0;
 
+  const propertyTypeId = property?.propertyType?.id;
+
   const { data: schemaData } = useGetApiFormSchemas({ entityType: "PROPERTY" });
-  const schemas = ((schemaData as any)?.data as any[]) || [];
+  const allSchemas = ((schemaData as any)?.data as any[]) || [];
+  const schemas = useMemo(
+    () => allSchemas.filter(
+      (s) => s.propertyTypeId === null || s.propertyTypeId === undefined || s.propertyTypeId === propertyTypeId,
+    ),
+    [allSchemas, propertyTypeId],
+  );
   const dynamicValues = (property as any)?.dynamicValuesJson as Record<string, unknown> | undefined;
 
   const findFieldValue = useMemo(() => {
@@ -126,7 +128,32 @@ export default function PropertyDetailPage() {
   const bathrooms = findFieldValue(["bathroom", "baths", "phong_tam", "phòng tắm"]);
   const legalStatus = findFieldValue(["legal", "phap_ly", "pháp lý", "ownership"]);
 
-  const propertyTypeId = property?.propertyType?.id;
+  const getFieldsByGroupCode = useMemo(() => {
+    return (code: string) => {
+      const result: { key: string; label: string; value: string }[] = [];
+      for (const schema of schemas) {
+        for (const f of (schema.fields || [])) {
+          const field = f.field;
+          if (!field) continue;
+          if (f.group?.code === code) {
+            const rawValue = dynamicValues?.[field.fieldKey];
+            if (rawValue === undefined || rawValue === null || rawValue === "") continue;
+            let displayValue = String(rawValue);
+            if (field.options && Array.isArray(field.options)) {
+              const opt = field.options.find((o: any) => o.value === String(rawValue));
+              if (opt) displayValue = opt.label;
+            }
+            result.push({ key: field.fieldKey, label: field.fieldLabel, value: displayValue });
+          }
+        }
+      }
+      return result;
+    };
+  }, [schemas, dynamicValues]);
+
+  const basicInfoFields = getFieldsByGroupCode("basic_info");
+  const specialFields = getFieldsByGroupCode("special");
+
   const { data: similarData } = useGetApiProperties(
     propertyTypeId ? { propertyTypeId, limit: "10" } : undefined,
   );
@@ -137,12 +164,31 @@ export default function PropertyDetailPage() {
     return shuffled.slice(0, 3);
   }, [similarData, id]);
 
-  const specs = [
-    { icon: Ruler, label: "Diện tích", value: property ? `${areaNum} m2` : "227 m2" },
-    { icon: Bed, label: "Phòng ngủ", value: bedrooms || (property ? "-" : "4") },
-    { icon: Bathtub, label: "Phòng tắm", value: bathrooms || (property ? "-" : "4") },
+  const staticSpecs = [
+    { icon: Ruler, label: "Diện tích", value: property ? `${areaNum} m2` : "227 m2", accent: false },
+    { icon: Bed, label: "Phòng ngủ", value: bedrooms || (property ? "-" : "4"), accent: false },
+    { icon: Bathtub, label: "Phòng tắm", value: bathrooms || (property ? "-" : "4"), accent: false },
     { icon: ShieldCheck, label: "Pháp lý", value: legalStatus || (property ? "-" : "Sổ hồng"), accent: true },
   ];
+
+  const staticSpecLabels = new Set(["Diện tích", "Phòng ngủ", "Phòng tắm", "Pháp lý"]);
+
+  const dynamicSpecs = basicInfoFields
+    .filter((f) => !staticSpecLabels.has(f.label))
+    .map((f) => ({
+      icon: Ruler,
+      label: f.label,
+      value: f.value,
+      accent: false,
+    }));
+
+  const specs = [...staticSpecs, ...dynamicSpecs];
+
+  const highlights = specialFields.map((f) => ({
+    icon: Star,
+    title: f.label,
+    desc: f.value,
+  }));
 
   if (isLoading) {
     return (
@@ -174,7 +220,7 @@ export default function PropertyDetailPage() {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => router.push(`/properties/${params.id}/edit`)}
+          onClick={() => router.push(`/properties/properties/${params.id}/edit`)}
         >
           <PencilSimple size={14} />
           Chỉnh sửa
@@ -272,36 +318,38 @@ export default function PropertyDetailPage() {
             </h2>
             <div className="flex flex-col gap-4 text-base leading-relaxed text-foreground-muted">
               <p>
-                {property?.description || "Không có mô tả"}
+                {property?.description || "Chưa có mô tả chi tiết cho bất động sản này."}
               </p>
             </div>
           </section>
 
           {/* Highlights / Features */}
-          <section className="flex flex-col gap-4">
-            <h2 className="font-serif text-xl font-medium tracking-tight text-foreground border-b border-border pb-3">
-              Dac diem noi bat
-            </h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {highlights.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.title}
-                    className="flex items-center gap-4 rounded-lg border border-border bg-surface p-4 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-primary/20 hover:shadow-[0_4px_16px_-8px_rgba(45,95,63,0.12)]"
-                  >
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                      <Icon size={20} weight="duotone" className="text-primary" />
+          {highlights.length > 0 && (
+            <section className="flex flex-col gap-4">
+              <h2 className="font-serif text-xl font-medium tracking-tight text-foreground border-b border-border pb-3">
+                Đặc điểm nổi bật
+              </h2>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {highlights.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.title}
+                      className="flex items-center gap-4 rounded-lg border border-border bg-surface p-4 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-primary/20 hover:shadow-[0_4px_16px_-8px_rgba(45,95,63,0.12)]"
+                    >
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                        <Icon size={20} weight="duotone" className="text-primary" />
+                      </div>
+                      <div className="flex flex-col gap-0.5">
+                        <h3 className="text-sm font-semibold text-foreground">{item.title}</h3>
+                        <p className="text-xs text-foreground-muted">{item.desc}</p>
+                      </div>
                     </div>
-                    <div className="flex flex-col gap-0.5">
-                      <h3 className="text-sm font-semibold text-foreground">{item.title}</h3>
-                      <p className="text-xs text-foreground-muted">{item.desc}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
+                  );
+                })}
+              </div>
+            </section>
+          )}
 
           {/* Map Section */}
           <section className="flex flex-col gap-4">
@@ -312,7 +360,7 @@ export default function PropertyDetailPage() {
               <div className="flex h-full w-full items-center justify-center bg-surface-muted/50">
                 <div className="flex flex-col items-center gap-2 text-foreground-muted">
                   <MapPin size={32} weight="duotone" className="text-primary" />
-                  <p className="text-sm">Ban do se hien thi tai day</p>
+                  <p className="text-sm">Bản đồ sẽ hiển thị tại đây</p>
                 </div>
               </div>
             </div>
@@ -444,7 +492,7 @@ export default function PropertyDetailPage() {
               return (
                 <Link
                   key={item.id}
-                  href={`/properties/${item.id}`}
+                  href={`/properties/properties/${item.id}`}
                   className="group flex flex-col gap-3 overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[2px] hover:shadow-[0_8px_24px_-12px_rgba(45,95,63,0.12)]"
                 >
                   <div className="relative h-48 overflow-hidden">

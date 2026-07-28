@@ -106,7 +106,7 @@ export default function CustomerEditPage() {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <FormSection title="Thong tin khach hang">
+        <FormSection title="Thông tin khách hàng">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField label="Họ và tên" htmlFor="fullName" required error={errors.fullName?.message}>
               <Input id="fullName" placeholder="Nguyen Van An" {...register("fullName")} />

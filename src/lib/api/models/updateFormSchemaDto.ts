@@ -9,6 +9,7 @@ import type { FormSchemaFieldDto } from './formSchemaFieldDto';
 
 export interface UpdateFormSchemaDto {
   name?: string;
+  propertyTypeId?: string;
   status?: string;
   fields?: FormSchemaFieldDto[];
 }

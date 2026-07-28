@@ -153,7 +153,7 @@ export default function AppointmentDetailPage() {
                 <div>
                   <span className="text-xs text-foreground-muted">BDS</span>
                   <button
-                    onClick={() => router.push(`/properties/${appointment.propertyId}`)}
+                    onClick={() => router.push(`/properties/properties/${appointment.propertyId}`)}
                     className="block text-primary hover:underline"
                   >
                     {appointment.propertyId}

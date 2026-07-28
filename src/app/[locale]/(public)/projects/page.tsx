@@ -40,7 +40,7 @@ export default function ProjectsPage() {
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
 
   const { data: projectsData, isLoading } = useGetApiProjects();
-  const projects = ((projectsData as unknown as GetProjectsResponse)?.items) || [];
+  const projects = ((projectsData as unknown as GetProjectsResponse)?.data) || [];
 
   const filtered = useMemo(() => {
     return projects.filter((p) => {

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,11 +18,12 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useGetApiPropertyId, usePatchApiProperty, useGetApiPropertyTypes, getGetApiPropertyIdQueryKey } from "@/lib/api/endpoints/properties";
+import { usePostApiProperty, useGetApiPropertyTypes } from "@/lib/api/endpoints/properties";
+import { useGetApiProjects } from "@/lib/api/endpoints/projects";
+import { toast } from "sonner";
 import { useGetApiLocations } from "@/lib/api/endpoints/locations";
-import { Property } from "@/lib/api/types/properties";
-import { useQueryClient } from "@tanstack/react-query";
 import type { Location } from "@/lib/api/types/locations";
+import { GetProjectsResponse, Project } from "@/lib/api/types/projects";
 import { DynamicFieldsSection } from "@/components/shared/dynamic-fields-section";
 
 type PropertyType = {
@@ -31,6 +32,29 @@ type PropertyType = {
   code: string;
   group?: string | null;
 };
+
+const propertySchema = z.object({
+  propertyCode: z.string().min(1, "Vui lòng nhập mã BĐS"),
+  title: z.string().min(5, "Tiêu đề phải có ít nhất 5 ký tự"),
+  description: z.string().min(1, "Vui lòng nhập mô tả"),
+  slug: z.string().min(1, "Vui lòng nhập slug"),
+  propertyTypeId: z.string().min(1, "Vui lòng chọn loại BĐS"),
+  transactionType: z.enum(["SALE", "RENT", "TRANSFER", "INVESTMENT"]),
+  sellingMode: z.enum(["SELF_SELL", "SALES_DISTRIBUTION", "HYBRID"]),
+  provinceId: z.string().optional(),
+  districtId: z.string().optional(),
+  price: z.number().min(0, "Giá phải lớn hơn 0"),
+  priceUnit: z.string(),
+  area: z.number().min(0, "Diện tích phải lớn hơn 0"),
+  areaUnit: z.string(),
+  projectId: z.string().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
+  publicationStatus: z.enum(["PRIVATE", "PUBLIC", "ARCHIVED"]),
+  businessStatus: z.enum(["AVAILABLE", "RESERVED", "SOLD", "RENTED", "OFF_MARKET"]),
+});
+
+type PropertyFormData = z.infer<typeof propertySchema>;
 
 const transactionTypeLabels: Record<string, string> = {
   SALE: "Bán",
@@ -64,48 +88,36 @@ const priceUnitLabels: Record<string, string> = {
   USD: "USD",
 };
 
-const propertySchema = z.object({
-  propertyCode: z.string().min(1, "Vui lòng nhập mã BĐS"),
-  title: z.string().min(5, "Tiêu đề phải có ít nhất 5 ký tự"),
-  description: z.string().optional(),
-  slug: z.string().optional(),
-  propertyTypeId: z.string().min(1, "Vui lòng chọn loại BĐS"),
-  transactionType: z.enum(["SALE", "RENT", "TRANSFER", "INVESTMENT"]),
-  sellingMode: z.enum(["SELF_SELL", "SALES_DISTRIBUTION", "HYBRID"]),
-  provinceId: z.string().optional(),
-  districtId: z.string().optional(),
-  price: z.number().min(0, "Giá phải lớn hơn 0"),
-  priceUnit: z.string(),
-  area: z.number().min(0, "Diện tích phải lớn hơn 0"),
-  areaUnit: z.string(),
-  latitude: z.number().optional(),
-  longitude: z.number().optional(),
-  publicationStatus: z.enum(["PRIVATE", "PUBLIC", "ARCHIVED"]),
-  businessStatus: z.enum(["AVAILABLE", "RESERVED", "SOLD", "RENTED", "OFF_MARKET"]),
-});
+export default function PropertyFormPage() {
+  return (
+    <Suspense>
+      <PropertyFormContent />
+    </Suspense>
+  );
+}
 
-type PropertyFormData = z.infer<typeof propertySchema>;
-
-export default function PropertyEditPage() {
-  const params = useParams();
+function PropertyFormContent() {
   const router = useRouter();
-  const id = params.id as string;
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedProvinceId, setSelectedProvinceId] = useState<string | undefined>(undefined);
   const [dynamicValues, setDynamicValues] = useState<Record<string, unknown>>({});
 
-  const { data: propertyData, isLoading } = useGetApiPropertyId(id);
-  const property = (propertyData as unknown as { data: Property })?.data;
+  const projectIdFromUrl = searchParams.get("projectId");
 
   // mutation
-  const queryClient = useQueryClient();
-  const { mutateAsync: updateProperty } = usePatchApiProperty();
+  const { mutate: createProperty } = usePostApiProperty();
 
   // property types
   const { data: propertyTypesData, isLoading: propertyTypesLoading } = useGetApiPropertyTypes();
   const propertyTypes = (propertyTypesData?.data as unknown as PropertyType[]) || [];
   const propertyTypeItems = Object.fromEntries(propertyTypes.map((t) => [t.id, t.name]));
+
+  // projects
+  const { data: projectsData } = useGetApiProjects();
+  const projects = ((projectsData as unknown as GetProjectsResponse)?.data) || [];
+  const projectItems = Object.fromEntries(projects.map((p) => [p.id, p.name]));
 
   // locations
   const { data: provincesData, isLoading: provincesLoading } = useGetApiLocations({ type: "PROVINCE", limit: 100 });
@@ -122,7 +134,6 @@ export default function PropertyEditPage() {
     register,
     handleSubmit,
     setValue,
-    reset,
     watch,
     formState: { errors },
   } = useForm<PropertyFormData>({
@@ -134,80 +145,51 @@ export default function PropertyEditPage() {
       businessStatus: "AVAILABLE",
       priceUnit: "VND",
       areaUnit: "SQM",
+      projectId: projectIdFromUrl || undefined,
     },
   });
 
   const watchedPropertyTypeId = watch("propertyTypeId");
   const watchedProvinceId = watch("provinceId");
   const watchedDistrictId = watch("districtId");
+  const watchedProjectId = watch("projectId");
 
   useEffect(() => {
-    if (property) {
-      const provinceId = (property as any).provinceId || "";
-      const districtId = (property as any).districtId || "";
-      setSelectedProvinceId(provinceId || undefined);
-      reset({
-        propertyCode: property.propertyCode || "",
-        title: property.title || "",
-        description: property.description || "",
-        slug: property.slug || "",
-        propertyTypeId: property.propertyType?.id || "",
-        transactionType: (property.transactionType as PropertyFormData["transactionType"]) || "SALE",
-        sellingMode: (property.sellingMode as PropertyFormData["sellingMode"]) || "SELF_SELL",
-        provinceId,
-        districtId,
-        price: Number(property.price) || 0,
-        priceUnit: property.priceUnit || "VND",
-        area: property.area || 0,
-        areaUnit: property.areaUnit || "SQM",
-        publicationStatus: (property.publicationStatus as PropertyFormData["publicationStatus"]) || "PRIVATE",
-        businessStatus: (property.businessStatus as PropertyFormData["businessStatus"]) || "AVAILABLE",
-      });
-      setDynamicValues((property as any).dynamicValuesJson || {});
+    if (projectIdFromUrl) {
+      setValue("projectId", projectIdFromUrl);
     }
-  }, [property, reset]);
+  }, [projectIdFromUrl, setValue]);
 
   const onSubmit = async (data: PropertyFormData) => {
     setLoading(true);
     setError(null);
     try {
-      await updateProperty({ id, data: { ...data, dynamicValuesJson: Object.keys(dynamicValues).length > 0 ? dynamicValues : undefined } });
-      await queryClient.invalidateQueries({ queryKey: getGetApiPropertyIdQueryKey(id) });
-      router.push(`/properties/${id}`);
+      await createProperty({ data: { ...data, dynamicValuesJson: Object.keys(dynamicValues).length > 0 ? dynamicValues : undefined } });
+      toast.success("Tạo bất động sản thành công");
+      router.push("/properties");
     } catch (err) {
-      setError("Co loi xay ra khi cap nhat bat dong san. Vui long thu lai.");
+      setError("Có lỗi xảy ra khi tạo bất động sản. Vui lòng thử lại.");
+      toast.error("Có lỗi xảy ra khi tạo bất động sản");
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 animate-pulse rounded-md bg-surface-muted" />
-          <div className="h-8 w-64 animate-pulse rounded-lg bg-surface-muted" />
-        </div>
-        <div className="h-96 animate-pulse rounded-lg bg-surface-muted" />
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => router.push(`/properties/${id}`)}
+          onClick={() => router.push("/properties")}
           className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
-          aria-label="Quay lai"
+          aria-label="Quay lại"
         >
           <ArrowLeft size={20} />
         </button>
         <PageHeader
           eyebrow="Bất động sản"
-          title="Chỉnh sửa bất động sản"
-          description="Cập nhật thông tin bất động sản"
+          title="Thêm bất động sản"
+          description="Tạo bất động sản mới với trường động"
         />
       </div>
 
@@ -228,14 +210,20 @@ export default function PropertyEditPage() {
             </FormField>
           </div>
 
-          <FormField label="Mô tả" htmlFor="description" error={errors.description?.message}>
+          <FormField label="Mô tả" htmlFor="description" required error={errors.description?.message}>
             <Textarea id="description" rows={4} placeholder="Nhập mô tả chi tiết về bất động sản..." {...register("description")} />
           </FormField>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField label="Slug" htmlFor="slug" required error={errors.slug?.message}>
+              <Input id="slug" placeholder="vinhomes-central-park-2pn" {...register("slug")} />
+            </FormField>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField label="Loại giao dịch" required>
               <Select
-                value={watch("transactionType")}
+                defaultValue="SALE"
                 items={transactionTypeLabels}
                 onValueChange={(v) => setValue("transactionType", v as PropertyFormData["transactionType"])}
               >
@@ -273,7 +261,7 @@ export default function PropertyEditPage() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField label="Hình thức bán" required>
               <Select
-                value={watch("sellingMode")}
+                defaultValue="SELF_SELL"
                 items={sellingModeLabels}
                 onValueChange={(v) => setValue("sellingMode", v as PropertyFormData["sellingMode"])}
               >
@@ -297,7 +285,7 @@ export default function PropertyEditPage() {
               <Input id="price" type="number" placeholder="5000000000" {...register("price", { setValueAs: (v) => v === "" ? undefined : Number(v) })} />
             </FormField>
             <FormField label="Đơn vị tiền">
-              <Select value={watch("priceUnit")} items={priceUnitLabels} onValueChange={(v) => setValue("priceUnit", v ?? "")}>
+              <Select defaultValue="VND" items={priceUnitLabels} onValueChange={(v) => setValue("priceUnit", v ?? "")}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -316,6 +304,26 @@ export default function PropertyEditPage() {
         </FormSection>
 
         <FormSection title="Vị trí" description="Địa điểm của bất động sản">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField label="Dự án">
+              <Select
+                value={watchedProjectId ?? ""}
+                items={projectItems}
+                onValueChange={(v) => setValue("projectId", v as string)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Chọn dự án (không bắt buộc)" />
+                </SelectTrigger>
+                <SelectContent>
+                  {projects.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>
+                      {p.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormField>
+          </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField label="Tỉnh/Thành phố">
               <Select
@@ -380,7 +388,7 @@ export default function PropertyEditPage() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField label="Trạng thái kinh doanh">
               <Select
-                value={watch("businessStatus")}
+                defaultValue="AVAILABLE"
                 items={businessStatusLabels}
                 onValueChange={(v) => setValue("businessStatus", v as PropertyFormData["businessStatus"])}
               >
@@ -398,7 +406,7 @@ export default function PropertyEditPage() {
             </FormField>
             <FormField label="Trạng thái xuất bản">
               <Select
-                value={watch("publicationStatus")}
+                defaultValue="PRIVATE"
                 items={publicationStatusLabels}
                 onValueChange={(v) => setValue("publicationStatus", v as PropertyFormData["publicationStatus"])}
               >
@@ -423,11 +431,11 @@ export default function PropertyEditPage() {
         />
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push(`/properties/${id}`)}>
+          <Button type="button" variant="secondary" onClick={() => router.push("/properties")}>
             Hủy
           </Button>
           <Button type="submit" disabled={loading}>
-            {loading ? "Đang lưu..." : "Cập nhật bất động sản"}
+            {loading ? "Đang lưu..." : "Lưu bất động sản"}
           </Button>
         </div>
       </form>
