@@ -32,6 +32,7 @@ import {
   useDeleteApiFormSchema,
   useGetApiFieldDefinitions,
 } from "@/lib/api/endpoints/dynamic-fields";
+import { useGetApiPropertyTypes } from "@/lib/api/endpoints/properties";
 import type { CreateFormSchemaDto, UpdateFormSchemaDto, FormSchemaFieldDto } from "@/lib/api/models";
 import type { GetApiFormSchemasEntityType } from "@/lib/api/models/getApiFormSchemasEntityType";
 
@@ -71,26 +72,42 @@ interface FieldDefinition {
   group?: { id: string; name: string } | null;
 }
 
+type PropertyType = {
+  id: string;
+  name: string;
+  code: string;
+};
+
 interface FormSchemasTabProps {
   entityType?: GetApiFormSchemasEntityType;
+  propertyTypeId?: string;
 }
 
-export function FormSchemasTab({ entityType }: FormSchemasTabProps) {
+export function FormSchemasTab({ entityType, propertyTypeId }: FormSchemasTabProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: "",
     entityType: entityType || "PROPERTY" as GetApiFormSchemasEntityType,
+    propertyTypeId: "",
   });
   const [selectedFields, setSelectedFields] = useState<FormSchemaFieldDto[]>([]);
 
+  const { data: propertyTypesData } = useGetApiPropertyTypes();
+  const propertyTypes = (propertyTypesData?.data as unknown as PropertyType[]) || [];
+
   const { data, isLoading, refetch } = useGetApiFormSchemas(
-    entityType ? { entityType } : undefined,
+    entityType ? { entityType, ...(propertyTypeId ? { propertyTypeId } : {}) } : undefined,
   );
   const schemas = ((data as any)?.data as FormSchema[]) || [];
 
   const { data: definitionsData } = useGetApiFieldDefinitions(
-    entityType ? { entityType } : undefined,
+    form.entityType
+      ? {
+        entityType: form.entityType as GetApiFormSchemasEntityType,
+        ...(form.propertyTypeId ? { propertyTypeId: form.propertyTypeId } : {}),
+      }
+      : undefined,
   );
   const definitions = ((definitionsData as any)?.data as FieldDefinition[]) || [];
 
@@ -165,14 +182,14 @@ export function FormSchemasTab({ entityType }: FormSchemasTabProps) {
 
   const openCreateDialog = () => {
     setEditingId(null);
-    setForm({ name: "", entityType: entityType || "PROPERTY" as GetApiFormSchemasEntityType });
+    setForm({ name: "", entityType: entityType || "PROPERTY" as GetApiFormSchemasEntityType, propertyTypeId: propertyTypeId || "" });
     setSelectedFields([]);
     setDialogOpen(true);
   };
 
   const openEditDialog = (schema: FormSchema) => {
     setEditingId(schema.id);
-    setForm({ name: schema.name, entityType: schema.entityType as GetApiFormSchemasEntityType });
+    setForm({ name: schema.name, entityType: schema.entityType as GetApiFormSchemasEntityType, propertyTypeId: schema.propertyTypeId || "" });
     setSelectedFields(
       (schema.fields || []).map((f) => ({
         fieldId: f.fieldId,
@@ -189,7 +206,7 @@ export function FormSchemasTab({ entityType }: FormSchemasTabProps) {
   const closeDialog = () => {
     setDialogOpen(false);
     setEditingId(null);
-    setForm({ name: "", entityType: entityType || "PROPERTY" as GetApiFormSchemasEntityType });
+    setForm({ name: "", entityType: entityType || "PROPERTY" as GetApiFormSchemasEntityType, propertyTypeId: "" });
     setSelectedFields([]);
   };
 
@@ -206,6 +223,7 @@ export function FormSchemasTab({ entityType }: FormSchemasTabProps) {
     if (editingId) {
       const dto: UpdateFormSchemaDto = {
         name: form.name,
+        propertyTypeId: form.propertyTypeId || "null",
         fields: selectedFields,
       };
       updateSchema({ id: editingId, data: dto });
@@ -213,6 +231,7 @@ export function FormSchemasTab({ entityType }: FormSchemasTabProps) {
       const dto: CreateFormSchemaDto = {
         name: form.name,
         entityType: form.entityType,
+        propertyTypeId: form.propertyTypeId || "null",
         fields: selectedFields.length > 0 ? selectedFields : undefined,
       };
       createSchema({ data: dto });
@@ -224,7 +243,7 @@ export function FormSchemasTab({ entityType }: FormSchemasTabProps) {
       <div className="flex items-center justify-end">
         <Button size="sm" onClick={openCreateDialog}>
           <Plus size={16} />
-          Thêm form schema
+          Thêm nhóm đối tượng
         </Button>
       </div>
 
@@ -236,10 +255,10 @@ export function FormSchemasTab({ entityType }: FormSchemasTabProps) {
         </div>
       ) : schemas.length === 0 ? (
         <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
-          <p className="text-sm text-foreground-muted">Chưa có form schema nào</p>
+          <p className="text-sm text-foreground-muted">Chưa có nhóm đối tượng nào</p>
           <Button variant="outline" size="sm" onClick={openCreateDialog}>
             <Plus size={16} />
-            Tạo form schema đầu tiên
+            Tạo nhóm đối tượng đầu tiên
           </Button>
         </div>
       ) : (
@@ -258,8 +277,13 @@ export function FormSchemasTab({ entityType }: FormSchemasTabProps) {
                     </Button>
                   </div>
                 </div>
-                <div className="mt-1">
+                <div className="mt-1 flex flex-wrap gap-1">
                   <Badge variant="blue">{entityTypeLabels[schema.entityType] || schema.entityType}</Badge>
+                  {schema.entityType === "PROPERTY" && (
+                    <Badge variant="default">
+                      {propertyTypes.find((p) => p.id === schema.propertyTypeId)?.name || "Tất cả loại BĐS"}
+                    </Badge>
+                  )}
                 </div>
               </CardHeader>
               <CardContent>
@@ -288,11 +312,11 @@ export function FormSchemasTab({ entityType }: FormSchemasTabProps) {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-4xl">
           <DialogHeader>
-            <DialogTitle>{editingId ? "Chỉnh sửa form schema" : "Tạo form schema"}</DialogTitle>
-            <DialogDescription>Ráp các định nghĩa trường thành form hoàn chỉnh</DialogDescription>
+            <DialogTitle>{editingId ? "Chỉnh sửa nhóm đối tượng" : "Tạo nhóm đối tượng"}</DialogTitle>
+            <DialogDescription>Ráp các trường dữ liệu thành form hoàn chỉnh</DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4">
-            <FormField label="Tên form schema" required>
+            <FormField label="Tên nhóm đối tượng" required>
               <Input
                 placeholder="VD: Form tạo bất động sản"
                 value={form.name}
@@ -300,24 +324,51 @@ export function FormSchemasTab({ entityType }: FormSchemasTabProps) {
               />
             </FormField>
 
-            <FormField label="Đối tượng" required>
-              <Select
-                value={form.entityType}
-                onValueChange={(v) => setForm({ ...form, entityType: v as GetApiFormSchemasEntityType })}
-                disabled={!!editingId}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn đối tượng">
-                    {(value: string) => entityTypeLabels[value] || value}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(entityTypeLabels).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>{label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormField>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <FormField label="Đối tượng" required>
+                <Select
+                  value={form.entityType}
+                  onValueChange={(v) => setForm({ ...form, entityType: v as GetApiFormSchemasEntityType })}
+                  disabled={!!editingId}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Chọn đối tượng">
+                      {(value: string) => entityTypeLabels[value] || value}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(entityTypeLabels).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormField>
+
+              {form.entityType === "PROPERTY" && (
+                <FormField label="Loại bất động sản">
+                  <Select
+                    value={form.propertyTypeId || "__all__"}
+                    onValueChange={(v) => setForm({ ...form, propertyTypeId: !v || v === "__all__" ? "" : v })}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Tất cả loại BĐS">
+                        {(value: string) =>
+                          !value || value === "__all__"
+                            ? "Tất cả loại BĐS"
+                            : propertyTypes.find((p) => p.id === value)?.name || "Tất cả loại BĐS"
+                        }
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__all__">-- Tất cả loại BĐS --</SelectItem>
+                      {propertyTypes.map((pt) => (
+                        <SelectItem key={pt.id} value={pt.id}>{pt.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormField>
+              )}
+            </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <FormField label="Chọn trường" helper="Nhấn Thêm để đưa vào form">

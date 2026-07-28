@@ -1,5 +1,5 @@
 export interface GetProjectsResponse {
-  items: Project[];
+  data: Project[];
   total: number;
   limit: number;
   offset: number;
@@ -15,5 +15,11 @@ export interface Project {
   updatedAt: string;
   province: { id: string; name: string; code: string } | null;
   district: { id: string; name: string; code: string } | null;
-  _count: { properties: number };
+  properties: {
+    id: string;
+    propertyCode: string;
+    title: string;
+    businessStatus: string;
+    publicationStatus: string;
+  }[];
 }

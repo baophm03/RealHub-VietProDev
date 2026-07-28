@@ -37,10 +37,13 @@ import {
 } from "@/components/ui/table";
 import {
   useGetApiFieldDefinitions,
+  useGetApiFieldGroups,
   usePostApiFieldDefinition,
+  useDeleteApiFieldDefinition,
   patchApiFieldDefinition,
 } from "@/lib/api/endpoints/dynamic-fields";
-import type { CreateFieldDefinitionDto, FieldOptionDto } from "@/lib/api/models";
+import { useGetApiPropertyTypes } from "@/lib/api/endpoints/properties";
+import type { CreateFieldDefinitionDto, FieldOptionDto, UpdateFieldDefinitionDto } from "@/lib/api/models";
 import type { GetApiFieldDefinitionsEntityType } from "@/lib/api/models/getApiFieldDefinitionsEntityType";
 import type { CreateFieldDefinitionDtoFieldType } from "@/lib/api/models/createFieldDefinitionDtoFieldType";
 
@@ -79,6 +82,7 @@ interface FieldDefinition {
   fieldType: string;
   entityType: string;
   groupId?: string | null;
+  propertyTypeId?: string | null;
   isRequired?: boolean;
   isSearchable?: boolean;
   isFilterable?: boolean;
@@ -91,6 +95,12 @@ interface FieldDefinition {
   group?: { id: string; name: string } | null;
 }
 
+type PropertyType = {
+  id: string;
+  name: string;
+  code: string;
+};
+
 interface FieldGroup {
   id: string;
   name: string;
@@ -100,9 +110,10 @@ interface FieldGroup {
 
 interface DefinitionsTabProps {
   entityType?: GetApiFieldDefinitionsEntityType;
+  propertyTypeId?: string;
 }
 
-export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
+export function DefinitionsTab({ entityType, propertyTypeId }: DefinitionsTabProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({
@@ -110,6 +121,7 @@ export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
     fieldLabel: "",
     fieldType: "TEXT",
     entityType: entityType || "PROPERTY",
+    propertyTypeId: "",
     groupId: "",
     isRequired: false,
     isSearchable: false,
@@ -123,9 +135,17 @@ export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
   const [newOption, setNewOption] = useState({ label: "", value: "" });
 
   const { data, isLoading, refetch } = useGetApiFieldDefinitions(
-    entityType ? { entityType } : undefined,
+    entityType ? { entityType, ...(propertyTypeId ? { propertyTypeId } : {}) } : undefined,
   );
   const definitions = ((data as any)?.data as FieldDefinition[]) || [];
+
+  const { data: propertyTypesData } = useGetApiPropertyTypes();
+  const propertyTypes = (propertyTypesData?.data as unknown as PropertyType[]) || [];
+
+  const { data: groupsData } = useGetApiFieldGroups(
+    (form.entityType || entityType) ? { entityType: (form.entityType || entityType) as GetApiFieldDefinitionsEntityType } : undefined,
+  );
+  const availableGroups = ((groupsData as any)?.data as FieldGroup[]) || [];
 
   const { mutateAsync: createDefinition, isPending: isCreating } = usePostApiFieldDefinition({
     mutation: {
@@ -141,11 +161,8 @@ export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
   });
 
   const { mutateAsync: updateDefinition, isPending: isUpdating } = useMutation({
-    mutationFn: (vars: { id: string; data: CreateFieldDefinitionDto }) =>
-      patchApiFieldDefinition(vars.id, {
-        body: JSON.stringify(vars.data),
-        headers: { "Content-Type": "application/json" },
-      }),
+    mutationFn: (vars: { id: string; data: UpdateFieldDefinitionDto }) =>
+      patchApiFieldDefinition(vars.id, vars.data),
     onSuccess: () => {
       toast.success("Cập nhật định nghĩa trường thành công");
       closeDialog();
@@ -153,6 +170,18 @@ export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
     },
     onError: (err: any) => {
       toast.error(err?.message || "Có lỗi xảy ra khi cập nhật định nghĩa trường");
+    },
+  });
+
+  const { mutateAsync: deleteDefinition } = useDeleteApiFieldDefinition({
+    mutation: {
+      onSuccess: () => {
+        toast.success("Xóa định nghĩa trường thành công");
+        refetch();
+      },
+      onError: (err: any) => {
+        toast.error(err?.message || "Có lỗi xảy ra khi xóa định nghĩa trường");
+      },
     },
   });
 
@@ -165,6 +194,7 @@ export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
       fieldLabel: "",
       fieldType: "TEXT",
       entityType: entityType || "PROPERTY",
+      propertyTypeId: propertyTypeId || "",
       groupId: "",
       isRequired: false,
       isSearchable: false,
@@ -186,6 +216,7 @@ export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
       fieldLabel: def.fieldLabel,
       fieldType: def.fieldType,
       entityType: def.entityType as GetApiFieldDefinitionsEntityType,
+      propertyTypeId: def.propertyTypeId || "",
       groupId: def.groupId || "",
       isRequired: def.isRequired || false,
       isSearchable: def.isSearchable || false,
@@ -214,6 +245,7 @@ export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
       fieldLabel: "",
       fieldType: "TEXT",
       entityType: entityType || "PROPERTY",
+      propertyTypeId: "",
       groupId: "",
       isRequired: false,
       isSearchable: false,
@@ -245,27 +277,43 @@ export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
       toast.error("Vui lòng nhập field key và field label");
       return;
     }
-    const dto: CreateFieldDefinitionDto = {
-      fieldKey: form.fieldKey,
-      fieldLabel: form.fieldLabel,
-      fieldType: form.fieldType as any,
-      entityType: form.entityType as any,
-      groupId: form.groupId || undefined,
-      isRequired: form.isRequired,
-      isSearchable: form.isSearchable,
-      isFilterable: form.isFilterable,
-      isPublic: form.isPublic,
-      isSensitive: form.isSensitive,
-      defaultValue: form.defaultValue || undefined,
-      sortOrder: form.sortOrder,
-      options: fieldTypesWithOptions.includes(form.fieldType) && options.length > 0
-        ? options
-        : undefined,
-    };
     if (editingId) {
-      updateDefinition({ id: editingId, data: dto });
+      const updateDto: UpdateFieldDefinitionDto = {
+        propertyTypeId: form.propertyTypeId || "null",
+        groupId: form.groupId || "null",
+        fieldLabel: form.fieldLabel,
+        isRequired: form.isRequired,
+        isSearchable: form.isSearchable,
+        isFilterable: form.isFilterable,
+        isPublic: form.isPublic,
+        isSensitive: form.isSensitive,
+        defaultValue: form.defaultValue || undefined,
+        sortOrder: form.sortOrder,
+        options: fieldTypesWithOptions.includes(form.fieldType) && options.length > 0
+          ? options
+          : undefined,
+      };
+      updateDefinition({ id: editingId, data: updateDto });
     } else {
-      createDefinition({ data: dto });
+      const createDto: CreateFieldDefinitionDto = {
+        fieldKey: form.fieldKey,
+        fieldLabel: form.fieldLabel,
+        fieldType: form.fieldType as any,
+        entityType: form.entityType as any,
+        propertyTypeId: form.propertyTypeId || "null",
+        groupId: form.groupId || "null",
+        isRequired: form.isRequired,
+        isSearchable: form.isSearchable,
+        isFilterable: form.isFilterable,
+        isPublic: form.isPublic,
+        isSensitive: form.isSensitive,
+        defaultValue: form.defaultValue || undefined,
+        sortOrder: form.sortOrder,
+        options: fieldTypesWithOptions.includes(form.fieldType) && options.length > 0
+          ? options
+          : undefined,
+      };
+      createDefinition({ data: createDto });
     }
   };
 
@@ -300,6 +348,7 @@ export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
                 <TableHead>Tên trường</TableHead>
                 <TableHead>Key</TableHead>
                 <TableHead>Loại</TableHead>
+                <TableHead>Loại BĐS</TableHead>
                 <TableHead>Nhóm</TableHead>
                 <TableHead>Flags</TableHead>
                 <TableHead className="text-right">Thao tác</TableHead>
@@ -318,6 +367,11 @@ export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
                     <Badge variant="blue">{fieldTypeLabels[def.fieldType] || def.fieldType}</Badge>
                   </TableCell>
                   <TableCell className="text-sm text-foreground-muted">
+                    {def.entityType === "PROPERTY"
+                      ? (propertyTypes.find((p) => p.id === def.propertyTypeId)?.name || "Tất cả loại BĐS")
+                      : "-"}
+                  </TableCell>
+                  <TableCell className="text-sm text-foreground-muted">
                     {def.group?.name || "-"}
                   </TableCell>
                   <TableCell>
@@ -333,7 +387,11 @@ export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
                       <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(def)}>
                         <PencilSimple size={14} />
                       </Button>
-                      <Button variant="ghost" size="icon-sm">
+                      <Button variant="ghost" size="icon-sm" onClick={() => {
+                        if (confirm(`Xóa trường "${def.fieldLabel}"?`)) {
+                          deleteDefinition({ id: def.id });
+                        }
+                      }}>
                         <Trash size={14} />
                       </Button>
                     </div>
@@ -349,7 +407,7 @@ export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{editingId ? "Chỉnh sửa định nghĩa trường" : "Tạo định nghĩa trường"}</DialogTitle>
-            <DialogDescription>{editingId ? "Cập nhật thông tin trường động" : "Định nghĩa một trường động mới cho đối tượng"}</DialogDescription>
+            <DialogDescription>{editingId ? "Cập nhật thông tin trường dữ liệu" : "Định nghĩa một trường dữ liệu mới cho đối tượng"}</DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4">
             <div className="grid grid-cols-2 gap-4">
@@ -360,9 +418,9 @@ export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
                   onChange={(e) => setForm({ ...form, fieldLabel: e.target.value })}
                 />
               </FormField>
-              <FormField label="Field key" required helper="Unique trong tenant + entityType">
+              <FormField label="Field key" required>
                 <Input
-                  placeholder="VD: numberOfFloors"
+                  placeholder="VD: bedroom_count"
                   value={form.fieldKey}
                   onChange={(e) => setForm({ ...form, fieldKey: e.target.value })}
                   disabled={!!editingId}
@@ -408,6 +466,54 @@ export function DefinitionsTab({ entityType }: DefinitionsTabProps) {
                 </Select>
               </FormField>
             </div>
+
+            {form.entityType === "PROPERTY" && (
+              <FormField label="Loại bất động sản" helper="Để trống nếu áp dụng cho tất cả loại BĐS">
+                <Select
+                  value={form.propertyTypeId || "__all__"}
+                  onValueChange={(v) => setForm({ ...form, propertyTypeId: !v || v === "__all__" ? "" : v })}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Tất cả loại BĐS">
+                      {(value: string) =>
+                        !value || value === "__all__"
+                          ? "Tất cả loại BĐS"
+                          : propertyTypes.find((p) => p.id === value)?.name || "Tất cả loại BĐS"
+                      }
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__all__">-- Tất cả loại BĐS --</SelectItem>
+                    {propertyTypes.map((pt) => (
+                      <SelectItem key={pt.id} value={pt.id}>{pt.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormField>
+            )}
+
+            <FormField label="Nhóm trường" helper="Chọn nhóm mà trường này thuộc về">
+              <Select
+                value={form.groupId || "__none__"}
+                onValueChange={(v) => setForm({ ...form, groupId: !v || v === "__none__" ? "" : v })}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Không chọn nhóm">
+                    {(value: string) =>
+                      value === "__none__"
+                        ? "Không chọn nhóm"
+                        : availableGroups.find((g) => g.id === value)?.name || "Không chọn nhóm"
+                    }
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">-- Không chọn nhóm --</SelectItem>
+                  {availableGroups.map((g) => (
+                    <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormField>
 
             <FormField label="Giá trị mặc định">
               <Input

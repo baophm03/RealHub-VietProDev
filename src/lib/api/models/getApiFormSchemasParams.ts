@@ -9,4 +9,5 @@ import type { GetApiFormSchemasEntityType } from './getApiFormSchemasEntityType'
 
 export type GetApiFormSchemasParams = {
 entityType?: GetApiFormSchemasEntityType;
+propertyTypeId?: string;
 };

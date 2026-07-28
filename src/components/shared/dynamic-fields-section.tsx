@@ -19,6 +19,7 @@ interface DynamicField {
   fieldKey: string;
   fieldLabel: string;
   fieldType: string;
+  groupId?: string | null;
   options?: { id: string; label: string; value: string; sortOrder?: number }[];
   defaultValue?: string | null;
   isRequired?: boolean;
@@ -33,14 +34,23 @@ interface FormSchemaField {
   isReadonly?: boolean;
   sortOrder?: number;
   field?: DynamicField;
-  group?: { id: string; name: string } | null;
+  group?: { id: string; name: string; code: string } | null;
 }
 
 interface FormSchema {
   id: string;
   name: string;
   entityType: string;
+  propertyTypeId?: string | null;
   fields?: FormSchemaField[];
+}
+
+interface FieldGroup {
+  id: string;
+  name: string;
+  code: string;
+  entityType: string;
+  propertyTypeId?: string | null;
 }
 
 interface DynamicFieldsSectionProps {
@@ -188,33 +198,31 @@ export function DynamicFieldsSection({
   initialValues,
   onChange,
 }: DynamicFieldsSectionProps) {
-  const { data, isLoading } = useGetApiFormSchemas({
+  const { data: schemasData, isLoading } = useGetApiFormSchemas({
     entityType: entityType as any,
   });
 
-  const schemas = useMemo(() => {
-    const all = ((data as any)?.data as FormSchema[]) || [];
-    if (propertyTypeId) {
-      const filtered = all.filter(
-        (s) => !s.fields || s.fields.length > 0,
-      );
-      return filtered;
-    }
-    return all;
-  }, [data, propertyTypeId]);
+  const filteredSchemas = useMemo(() => {
+    const all = ((schemasData as any)?.data as FormSchema[]) || [];
+    return all.filter(
+      (s) => s.propertyTypeId === null || s.propertyTypeId === undefined || s.propertyTypeId === propertyTypeId,
+    );
+  }, [schemasData, propertyTypeId]);
 
   const allFields = useMemo(() => {
-    return schemas.flatMap((schema) =>
+    return filteredSchemas.flatMap((schema) =>
       (schema.fields || [])
         .filter((f) => f.isVisible !== false && f.field)
         .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
         .map((f) => ({
           schemaName: schema.name,
           field: f.field!,
+          groupCode: f.group?.code ?? null,
+          groupName: f.group?.name ?? null,
           isRequired: f.isRequired ?? f.field?.isRequired ?? false,
         })),
     );
-  }, [schemas]);
+  }, [filteredSchemas]);
 
   useEffect(() => {
     if (allFields.length > 0 && !initialValues) {
@@ -234,6 +242,23 @@ export function DynamicFieldsSection({
     onChange({ ...initialValues, [fieldKey]: value });
   };
 
+  const basicInfoFields = useMemo(
+    () => allFields.filter((f) => f.groupCode === "basic_info"),
+    [allFields],
+  );
+
+  const specialFields = useMemo(
+    () => allFields.filter((f) => f.groupCode === "special"),
+    [allFields],
+  );
+
+  const otherFields = useMemo(
+    () => allFields.filter(
+      (f) => f.groupCode !== "basic_info" && f.groupCode !== "special",
+    ),
+    [allFields],
+  );
+
   if (isLoading) {
     return (
       <FormSection title="Trường động" description="Đang tải...">
@@ -250,48 +275,46 @@ export function DynamicFieldsSection({
     return null;
   }
 
-  const groupedBySchema = schemas.filter(
-    (s) => s.fields && s.fields.some((f) => f.isVisible !== false && f.field),
+  const renderFields = (fields: typeof allFields) => (
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      {fields.map(({ field, isRequired }) => {
+        const value = initialValues?.[field.fieldKey];
+        return (
+          <FormField
+            key={field.id}
+            label={field.fieldLabel}
+            required={isRequired}
+          >
+            <FieldInput
+              field={field}
+              value={value}
+              onChange={(v) => handleFieldChange(field.fieldKey, v)}
+            />
+          </FormField>
+        );
+      })}
+    </div>
   );
 
   return (
     <>
-      {groupedBySchema.map((schema) => {
-        const fields = (schema.fields || [])
-          .filter((f) => f.isVisible !== false && f.field)
-          .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+      {basicInfoFields.length > 0 && (
+        <FormSection title={basicInfoFields[0]?.groupName || "Thông tin cơ bản"} description="Một số thông tin của dự án/bất động sản">
+          {renderFields(basicInfoFields)}
+        </FormSection>
+      )}
 
-        if (fields.length === 0) return null;
+      {specialFields.length > 0 && (
+        <FormSection title={specialFields[0]?.groupName || "Thông tin nổi bật"} description="Một số thông tin của dự án/bất động sản">
+          {renderFields(specialFields)}
+        </FormSection>
+      )}
 
-        return (
-          <FormSection
-            key={schema.id}
-            title={schema.name}
-            description="Trường động từ FormSchema"
-          >
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {fields.map((f) => {
-                const field = f.field!;
-                const isRequired = f.isRequired ?? field.isRequired ?? false;
-                const value = initialValues?.[field.fieldKey];
-                return (
-                  <FormField
-                    key={f.id}
-                    label={field.fieldLabel}
-                    required={isRequired}
-                  >
-                    <FieldInput
-                      field={field}
-                      value={value}
-                      onChange={(v) => handleFieldChange(field.fieldKey, v)}
-                    />
-                  </FormField>
-                );
-              })}
-            </div>
-          </FormSection>
-        );
-      })}
+      {otherFields.length > 0 && (
+        <FormSection title="Thông tin khác" description="Các trường động bổ sung">
+          {renderFields(otherFields)}
+        </FormSection>
+      )}
     </>
   );
 }

@@ -36,6 +36,7 @@ import type {
   GetApiFieldDefinitionsParams,
   GetApiFieldGroupsParams,
   GetApiFormSchemasParams,
+  UpdateFieldDefinitionDto,
   UpdateFieldGroupDto,
   UpdateFormSchemaDto
 } from '../models';
@@ -856,14 +857,15 @@ export const getPatchApiFieldDefinitionUrl = (id: string,) => {
 /**
  * @summary Update a field definition
  */
-export const patchApiFieldDefinition = async (id: string, options?: RequestInit): Promise<patchApiFieldDefinitionResponse> => {
+export const patchApiFieldDefinition = async (id: string,
+    updateFieldDefinitionDto: UpdateFieldDefinitionDto, options?: RequestInit): Promise<patchApiFieldDefinitionResponse> => {
 
   return useCustomClient<patchApiFieldDefinitionResponse>(getPatchApiFieldDefinitionUrl(id),
   {
     ...options,
-    method: 'PATCH'
-
-
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateFieldDefinitionDto)
   }
 );}
 
@@ -872,8 +874,8 @@ export const patchApiFieldDefinition = async (id: string, options?: RequestInit)
 
 
 export const getPatchApiFieldDefinitionMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiFieldDefinition>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiFieldDefinition>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiFieldDefinition>>, TError,{id: string;data: BodyType<UpdateFieldDefinitionDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiFieldDefinition>>, TError,{id: string;data: BodyType<UpdateFieldDefinitionDto>}, TContext> => {
 
 const mutationKey = ['patchApiFieldDefinition'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -885,10 +887,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiFieldDefinition>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiFieldDefinition>>, {id: string;data: BodyType<UpdateFieldDefinitionDto>}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiFieldDefinition(id,requestOptions)
+          return  patchApiFieldDefinition(id,data,requestOptions)
         }
 
 
@@ -899,21 +901,103 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiFieldDefinitionMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiFieldDefinition>>>
-
+    export type PatchApiFieldDefinitionMutationBody = BodyType<UpdateFieldDefinitionDto>
     export type PatchApiFieldDefinitionMutationError = ErrorType<unknown>
 
     /**
  * @summary Update a field definition
  */
 export const usePatchApiFieldDefinition = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiFieldDefinition>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiFieldDefinition>>, TError,{id: string;data: BodyType<UpdateFieldDefinitionDto>}, TContext>, request?: SecondParameter<typeof useCustomClient>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiFieldDefinition>>,
+        TError,
+        {id: string;data: BodyType<UpdateFieldDefinitionDto>},
+        TContext
+      > => {
+      return useMutation(getPatchApiFieldDefinitionMutationOptions(options), queryClient);
+    }
+    export type deleteApiFieldDefinitionResponse200 = {
+  data: void
+  status: 200
+}
+
+export type deleteApiFieldDefinitionResponseSuccess = (deleteApiFieldDefinitionResponse200) & {
+  headers: Headers;
+};
+;
+
+export type deleteApiFieldDefinitionResponse = (deleteApiFieldDefinitionResponseSuccess)
+
+export const getDeleteApiFieldDefinitionUrl = (id: string,) => {
+
+
+
+
+  return `/api/dynamic-fields/definitions/${id}`
+}
+
+/**
+ * @summary Delete a field definition
+ */
+export const deleteApiFieldDefinition = async (id: string, options?: RequestInit): Promise<deleteApiFieldDefinitionResponse> => {
+
+  return useCustomClient<deleteApiFieldDefinitionResponse>(getDeleteApiFieldDefinitionUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteApiFieldDefinitionMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiFieldDefinition>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteApiFieldDefinition>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteApiFieldDefinition'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiFieldDefinition>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteApiFieldDefinition(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteApiFieldDefinitionMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiFieldDefinition>>>
+
+    export type DeleteApiFieldDefinitionMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Delete a field definition
+ */
+export const useDeleteApiFieldDefinition = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiFieldDefinition>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof useCustomClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteApiFieldDefinition>>,
         TError,
         {id: string},
         TContext
       > => {
-      return useMutation(getPatchApiFieldDefinitionMutationOptions(options), queryClient);
+      return useMutation(getDeleteApiFieldDefinitionMutationOptions(options), queryClient);
     }
     export type getApiFormSchemasResponseDefault = {
   data: unknown
