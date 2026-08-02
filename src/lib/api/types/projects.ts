@@ -5,6 +5,10 @@ export interface GetProjectsResponse {
   offset: number;
 }
 
+export interface GetProjectItemResponse {
+  data: Project;
+}
+
 export interface Project {
   id: string;
   name: string;

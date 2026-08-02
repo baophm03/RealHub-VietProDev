@@ -27,6 +27,7 @@ import { GetProjectsResponse, Project } from "@/lib/api/types/projects";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Location } from "@/lib/api/types/locations";
 import { DynamicFieldsSection } from "@/components/shared/dynamic-fields-section";
+import { PropertyMediaManager } from "@/components/shared/property-media-manager";
 
 type PropertyType = {
   id: string;
@@ -108,7 +109,7 @@ export default function PropertyEditPage() {
 
   // property types
   const { data: propertyTypesData, isLoading: propertyTypesLoading } = useGetApiPropertyTypes();
-  const propertyTypes = (propertyTypesData?.data as unknown as PropertyType[]) || [];
+  const propertyTypes = (propertyTypesData as unknown as { data: PropertyType[] })?.data || [];
   const propertyTypeItems = Object.fromEntries(propertyTypes.map((t) => [t.id, t.name]));
 
   // projects
@@ -118,13 +119,13 @@ export default function PropertyEditPage() {
 
   // locations
   const { data: provincesData, isLoading: provincesLoading } = useGetApiLocations({ type: "PROVINCE", limit: 100 });
-  const provinces = (provincesData?.data as unknown as Location[]) || [];
+  const provinces = (provincesData as unknown as { data: Location[] })?.data || [];
   const provinceItems = Object.fromEntries(provinces.map((p) => [p.id, p.name]));
 
   const { data: districtsData, isLoading: districtsLoading } = useGetApiLocations(
     selectedProvinceId ? { type: "WARD", parentId: selectedProvinceId, limit: 100 } : undefined,
   );
-  const districts = (districtsData?.data as unknown as Location[]) || [];
+  const districts = (districtsData as unknown as { data: Location[] })?.data || [];
   const districtItems = Object.fromEntries(districts.map((d) => [d.id, d.name]));
 
   const {
@@ -454,6 +455,10 @@ export default function PropertyEditPage() {
           initialValues={dynamicValues}
           onChange={setDynamicValues}
         />
+
+        <FormSection title="Quản lý hình ảnh & media" description="Upload, sắp xếp và quản lý ảnh/video của bất động sản">
+          <PropertyMediaManager propertyId={id} />
+        </FormSection>
 
         <div className="flex items-center justify-end gap-2">
           <Button type="button" variant="secondary" onClick={() => router.push(`/properties/properties/${id}`)}>

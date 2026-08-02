@@ -3,84 +3,45 @@
 import { motion } from "framer-motion";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, MapPin, Bed, Bathtub, Square, ArrowUpRight } from "@phosphor-icons/react";
+import { ArrowRight, MapPin, Square, ArrowUpRight, Spinner } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils/cn";
+import { useGetApiProperties } from "@/lib/api/endpoints/properties";
+import { GetPropertiesResponse } from "@/lib/api/types/properties";
 
-const properties = [
-  {
-    id: 1,
-    title: "Vinhomes Central Park",
-    location: "Bình Thạnh, TP.HCM",
-    price: "5.2 tỷ",
-    badge: "green" as const,
-    badgeText: "Đang bán",
-    beds: 3,
-    baths: 2,
-    area: "98m²",
-    image: "https://picsum.photos/seed/realhub-vinhome-cp/800/600",
-    span: "lg:col-span-2 lg:row-span-2",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Masteri Thao Dien",
-    location: "Thủ Đức, TP.HCM",
-    price: "3.8 tỷ",
-    badge: "blue" as const,
-    badgeText: "Mới",
-    beds: 2,
-    baths: 2,
-    area: "76m²",
-    image: "https://picsum.photos/seed/realhub-masteri-td/600/400",
-    span: "",
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "Landmark 81",
-    location: "Bình Thạnh, TP.HCM",
-    price: "12 tỷ",
-    badge: "yellow" as const,
-    badgeText: "Đang giữ chỗ",
-    beds: 4,
-    baths: 3,
-    area: "150m²",
-    image: "https://picsum.photos/seed/realhub-landmark-81/600/400",
-    span: "",
-    featured: false,
-  },
-  {
-    id: 4,
-    title: "Sunset Grand",
-    location: "Quận 7, TP.HCM",
-    price: "2.9 tỷ",
-    badge: "green" as const,
-    badgeText: "Đang bán",
-    beds: 2,
-    baths: 1,
-    area: "65m²",
-    image: "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=600&q=80",
-    span: "",
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "Gem Riverside",
-    location: "Quận 2, TP.HCM",
-    price: "7.5 tỷ",
-    badge: "blue" as const,
-    badgeText: "Mới",
-    beds: 4,
-    baths: 3,
-    area: "120m²",
-    image: "https://picsum.photos/seed/realhub-gem-riverside/800/400",
-    span: "lg:col-span-2",
-    featured: false,
-  },
+const statusBadgeMap: Record<string, { variant: "green" | "blue" | "yellow" | "red" | "secondary"; label: string }> = {
+  AVAILABLE: { variant: "green", label: "Sẵn có" },
+  RESERVED: { variant: "yellow", label: "Đặt cọc" },
+  SOLD: { variant: "red", label: "Đã bán" },
+  RENTED: { variant: "blue", label: "Đã thuê" },
+  OFF_MARKET: { variant: "secondary", label: "Ngừng bán" },
+};
+
+const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80";
+
+const BENTO_SPANS = [
+  "lg:col-span-2 lg:row-span-2",
+  "",
+  "",
+  "",
+  "lg:col-span-2",
 ];
 
+function formatPrice(priceStr: string, transactionType: string): string {
+  const price = Number(priceStr || 0);
+  if (transactionType === "RENT") {
+    if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu/tháng`;
+    return `${price.toLocaleString("vi-VN")} đ/tháng`;
+  }
+  if (price >= 1000000000) return `${(price / 1000000000).toFixed(1)} tỷ`;
+  if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu`;
+  return `${price.toLocaleString("vi-VN")} đ`;
+}
+
 export function FeaturedProperties() {
+  const { data: propertiesData, isLoading } = useGetApiProperties({ limit: "5" } as any);
+  const properties = ((propertiesData as unknown as GetPropertiesResponse)?.data) || [];
+
   return (
     <section className="py-16 md:py-24">
       <div className="mx-auto max-w-[1400px] px-6 md:px-8 lg:px-12">
@@ -110,72 +71,95 @@ export function FeaturedProperties() {
           </Button>
         </div>
 
+        {/* Loading state */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-20">
+            <Spinner size={32} className="animate-spin text-primary" />
+          </div>
+        )}
+
         {/* Bento grid — Double-Bezel cards */}
-        <div className="grid auto-rows-[240px] grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:auto-rows-[280px]">
-          {properties.map((prop, i) => (
-            <motion.div
-              key={prop.id}
-              initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
-              whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.7, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className={prop.span}
-            >
-              <Link
-                href={`/listings/${prop.id}`}
-                className="group/property relative flex h-full flex-col justify-end overflow-hidden rounded-[1.5rem] ring-1 ring-black/5"
-              >
-                {/* Image */}
-                <div
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/property:scale-105"
-                  style={{ backgroundImage: `url(${prop.image})` }}
-                />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+        {!isLoading && properties.length > 0 && (
+          <div className="grid auto-rows-[240px] grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:auto-rows-[280px]">
+            {properties.slice(0, 5).map((prop, i) => {
+              const badge = statusBadgeMap[prop.businessStatus ?? ""];
+              const span = BENTO_SPANS[i] ?? "";
+              const featured = i === 0;
+              const location = [prop?.district?.name, prop?.province?.name].filter(Boolean).join(", ");
+              return (
+                <motion.div
+                  key={prop.id}
+                  initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
+                  whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.7, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                  className={span}
+                >
+                  <Link
+                    href={`/listings/${prop.id}`}
+                    className="group/property relative flex h-full flex-col justify-end overflow-hidden rounded-[1.5rem] ring-1 ring-black/5"
+                  >
+                    {/* Image */}
+                    <div
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/property:scale-105"
+                      style={{ backgroundImage: `url(${PLACEHOLDER_IMAGE})` }}
+                    />
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
 
-                {/* Badge */}
-                <div className="absolute top-5 left-5 z-10">
-                  <Badge variant={prop.badge}>{prop.badgeText}</Badge>
-                </div>
+                    {/* Badge */}
+                    {badge && (
+                      <div className="absolute top-5 left-5 z-10">
+                        <Badge variant={badge.variant}>{badge.label}</Badge>
+                      </div>
+                    )}
 
-                {/* Price tag — top right, pill */}
-                <div className="absolute top-5 right-5 z-10 rounded-full bg-primary-foreground/95 px-3.5 py-1.5 text-sm font-semibold text-primary backdrop-blur-sm">
-                  {prop.price}
-                </div>
+                    {/* Price tag — top right, pill */}
+                    <div className="absolute top-5 right-5 z-10 rounded-full bg-primary-foreground/95 px-3.5 py-1.5 text-sm font-semibold text-primary backdrop-blur-sm">
+                      {formatPrice(prop.price, prop.transactionType)}
+                    </div>
 
-                {/* Content */}
-                <div className="relative z-10 p-6 text-white">
-                  <div className="flex items-center gap-1.5 text-xs text-white/50">
-                    <MapPin size={12} weight="fill" />
-                    {prop.location}
-                  </div>
-                  <h3 className={cn(
-                    "mt-2 font-serif font-semibold leading-tight",
-                    prop.featured ? "text-2xl" : "text-lg",
-                  )}>
-                    {prop.title}
-                  </h3>
-                  <div className="mt-3 flex items-center gap-4 text-xs text-white/60">
-                    <span className="flex items-center gap-1.5">
-                      <Bed size={14} /> {prop.beds}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <Bathtub size={14} /> {prop.baths}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <Square size={14} /> {prop.area}
-                    </span>
-                  </div>
-                </div>
+                    {/* Content */}
+                    <div className="relative z-10 p-6 text-white">
+                      <div className="flex items-center gap-1.5 text-xs text-white/50">
+                        <MapPin size={12} weight="fill" />
+                        {location || "Đang cập nhật"}
+                      </div>
+                      <h3 className={cn(
+                        "mt-2 font-serif font-semibold leading-tight",
+                        featured ? "text-2xl" : "text-lg",
+                      )}>
+                        {prop.title}
+                      </h3>
+                      <div className="mt-3 flex items-center gap-4 text-xs text-white/60">
+                        <span className="flex items-center gap-1.5">
+                          <Square size={14} /> {prop.area ? `${prop.area}m²` : "--"}
+                        </span>
+                        {prop.propertyType?.name && (
+                          <span className="flex items-center gap-1.5">
+                            {prop.propertyType.name}
+                          </span>
+                        )}
+                      </div>
+                    </div>
 
-                {/* Hover arrow — bottom right, button-in-button */}
-                <div className="absolute bottom-6 right-6 z-10 flex size-10 translate-y-2 items-center justify-center rounded-full bg-primary-foreground/95 text-primary opacity-0 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/property:translate-y-0 group-hover/property:opacity-100">
-                  <ArrowUpRight size={16} weight="bold" />
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+                    {/* Hover arrow — bottom right, button-in-button */}
+                    <div className="absolute bottom-6 right-6 z-10 flex size-10 translate-y-2 items-center justify-center rounded-full bg-primary-foreground/95 text-primary opacity-0 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/property:translate-y-0 group-hover/property:opacity-100">
+                      <ArrowUpRight size={16} weight="bold" />
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!isLoading && properties.length === 0 && (
+          <div className="flex items-center justify-center py-20 text-center">
+            <p className="text-sm text-foreground-muted">Chưa có bất động sản nào.</p>
+          </div>
+        )}
       </div>
     </section>
   );

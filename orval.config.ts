@@ -20,8 +20,8 @@ const orvalConfig = defineConfig({
           }
         },
         mutator: {
-          path: './src/lib/api/mutator/custom-client.ts',
-          name: 'useCustomClient'
+          path: './src/lib/api/mutator/custom-instance.ts',
+          name: 'customInstance'
         }
       }
     },

@@ -107,11 +107,11 @@ function PropertyFormContent() {
   const projectIdFromUrl = searchParams.get("projectId");
 
   // mutation
-  const { mutate: createProperty } = usePostApiProperty();
+  const { mutateAsync: createProperty } = usePostApiProperty();
 
   // property types
   const { data: propertyTypesData, isLoading: propertyTypesLoading } = useGetApiPropertyTypes();
-  const propertyTypes = (propertyTypesData?.data as unknown as PropertyType[]) || [];
+  const propertyTypes = ((propertyTypesData as unknown as { data?: PropertyType[] })?.data) || [];
   const propertyTypeItems = Object.fromEntries(propertyTypes.map((t) => [t.id, t.name]));
 
   // projects
@@ -121,13 +121,13 @@ function PropertyFormContent() {
 
   // locations
   const { data: provincesData, isLoading: provincesLoading } = useGetApiLocations({ type: "PROVINCE", limit: 100 });
-  const provinces = (provincesData?.data as unknown as Location[]) || [];
+  const provinces = ((provincesData as unknown as { data?: Location[] })?.data) || [];
   const provinceItems = Object.fromEntries(provinces.map((p) => [p.id, p.name]));
 
   const { data: districtsData, isLoading: districtsLoading } = useGetApiLocations(
     selectedProvinceId ? { type: "WARD", parentId: selectedProvinceId, limit: 100 } : undefined,
   );
-  const districts = (districtsData?.data as unknown as Location[]) || [];
+  const districts = ((districtsData as unknown as { data?: Location[] })?.data) || [];
   const districtItems = Object.fromEntries(districts.map((d) => [d.id, d.name]));
 
   const {
@@ -164,9 +164,14 @@ function PropertyFormContent() {
     setLoading(true);
     setError(null);
     try {
-      await createProperty({ data: { ...data, dynamicValuesJson: Object.keys(dynamicValues).length > 0 ? dynamicValues : undefined } });
+      const result = await createProperty({ data: { ...data, dynamicValuesJson: Object.keys(dynamicValues).length > 0 ? dynamicValues : undefined } });
+      const newId = (result as any)?.id || (result as any)?.data?.id;
       toast.success("Tạo bất động sản thành công");
-      router.push("/properties");
+      if (newId) {
+        router.push(`/properties/properties/${newId}/edit`);
+      } else {
+        router.push("/properties");
+      }
     } catch (err) {
       setError("Có lỗi xảy ra khi tạo bất động sản. Vui lòng thử lại.");
       toast.error("Có lỗi xảy ra khi tạo bất động sản");

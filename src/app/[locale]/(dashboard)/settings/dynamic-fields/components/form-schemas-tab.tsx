@@ -94,7 +94,7 @@ export function FormSchemasTab({ entityType, propertyTypeId }: FormSchemasTabPro
   const [selectedFields, setSelectedFields] = useState<FormSchemaFieldDto[]>([]);
 
   const { data: propertyTypesData } = useGetApiPropertyTypes();
-  const propertyTypes = (propertyTypesData?.data as unknown as PropertyType[]) || [];
+  const propertyTypes = ((propertyTypesData as any)?.data as PropertyType[]) || [];
 
   const { data, isLoading, refetch } = useGetApiFormSchemas(
     entityType ? { entityType, ...(propertyTypeId ? { propertyTypeId } : {}) } : undefined,

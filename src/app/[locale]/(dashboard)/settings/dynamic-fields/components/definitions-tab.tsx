@@ -140,7 +140,7 @@ export function DefinitionsTab({ entityType, propertyTypeId }: DefinitionsTabPro
   const definitions = ((data as any)?.data as FieldDefinition[]) || [];
 
   const { data: propertyTypesData } = useGetApiPropertyTypes();
-  const propertyTypes = (propertyTypesData?.data as unknown as PropertyType[]) || [];
+  const propertyTypes = ((propertyTypesData as any)?.data as PropertyType[]) || [];
 
   const { data: groupsData } = useGetApiFieldGroups(
     (form.entityType || entityType) ? { entityType: (form.entityType || entityType) as GetApiFieldDefinitionsEntityType } : undefined,

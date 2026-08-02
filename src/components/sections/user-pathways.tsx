@@ -124,7 +124,7 @@ export function UserPathways() {
                   </div>
 
                   {/* Content bottom */}
-                  <div className="relative z-10 flex items-end justify-between gap-4 p-6 md:p-7">
+                  <div className="relative z-10 flex items-center justify-between gap-4 p-6 md:pt-20">
                     <div className="flex flex-col gap-2">
                       <h3 className="font-serif text-lg font-semibold tracking-tight text-white md:text-xl">
                         {pathway.title}

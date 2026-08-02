@@ -36,7 +36,7 @@ export default function DynamicFieldsPage() {
   const [propertyTypeId, setPropertyTypeId] = useState<string>("");
 
   const { data: propertyTypesData } = useGetApiPropertyTypes();
-  const propertyTypes = (propertyTypesData?.data as unknown as PropertyType[]) || [];
+  const propertyTypes = ((propertyTypesData as { data?: PropertyType[] } | undefined)?.data) || [];
 
   return (
     <div className="flex flex-col gap-6">

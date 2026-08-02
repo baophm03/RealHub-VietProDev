@@ -28,7 +28,9 @@ export default function LoginPage() {
   const setAuth = useAuthStore((s) => s.setAuth);
   const setUser = useUserStore((s) => s.setUser);
 
-  const { refetch: getProfile } = useGetApiMe();
+  const { refetch: getProfile } = useGetApiMe({
+    query: { enabled: false },
+  });
 
   const {
     register,

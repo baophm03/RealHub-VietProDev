@@ -1,3 +1,10 @@
+export interface GetLocationsResponse {
+  data: Location[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
 export interface Location {
   id: string;
   parentId: string | null;

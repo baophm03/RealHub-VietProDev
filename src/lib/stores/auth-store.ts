@@ -11,6 +11,8 @@ interface AuthState {
   expiresIn: number | null;
   roleInTenant: string | null;
   sessionId: string | null;
+  _hasHydrated: boolean
+  setHasHydrated: (val: boolean) => void
   setAuth: (tokens: {
     activeTenantId: string;
     expiresIn: number;
@@ -30,7 +32,9 @@ export const useAuthStore = create<AuthState>()(
       expiresIn: null,
       roleInTenant: null,
       sessionId: null,
+      _hasHydrated: false,
 
+      setHasHydrated: (val: boolean) => set({ _hasHydrated: val }),
       setAuth: ({ activeTenantId, expiresIn, roleInTenant, sessionId }) =>
         set({
           isAuthenticated: true,
@@ -62,6 +66,9 @@ export const useAuthStore = create<AuthState>()(
         roleInTenant: state.roleInTenant,
         sessionId: state.sessionId,
       }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true)
+      }
     }
   )
 );

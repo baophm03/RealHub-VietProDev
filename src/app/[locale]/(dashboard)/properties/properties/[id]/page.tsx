@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useGetApiPropertyId, useGetApiProperties } from "@/lib/api/endpoints/properties";
+import { useGetApiPropertyId, useGetApiProperties, useGetApiPropertyMedia } from "@/lib/api/endpoints/properties";
 import { useGetApiFormSchemas } from "@/lib/api/endpoints/dynamic-fields";
 import { Property } from "@/lib/api/types/properties";
 
@@ -35,36 +35,6 @@ function formatPrice(price: number): string {
   return price.toLocaleString("vi-VN");
 }
 
-const propertyImages = [
-  {
-    src: "https://picsum.photos/seed/villa-river-main/1200/800",
-    alt: "Biet thu ven song - anh ngoai canh",
-    span: "md:col-span-2 md:row-span-2",
-  },
-  {
-    src: "https://picsum.photos/seed/villa-living-room/800/600",
-    alt: "Phong khach",
-    span: "",
-  },
-  {
-    src: "https://picsum.photos/seed/villa-bedroom/800/600",
-    alt: "Phong ngu chinh",
-    span: "",
-  },
-  {
-    src: "https://picsum.photos/seed/villa-kitchen/800/600",
-    alt: "Bep",
-    span: "",
-  },
-  {
-    src: "https://picsum.photos/seed/villa-pool/800/600",
-    alt: "Ho boi",
-    span: "",
-  },
-];
-
-
-
 export default function PropertyDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -73,6 +43,17 @@ export default function PropertyDetailPage() {
   // server
   const { data: propertyData, isLoading } = useGetApiPropertyId(id);
   const property = (propertyData as unknown as { data: Property })?.data;
+
+  // media
+  const { data: mediaData } = useGetApiPropertyMedia(id);
+  const mediaItems = useMemo(() => {
+    const raw = (mediaData as any)?.data;
+    if (!raw) return [];
+    const items = Array.isArray(raw) ? raw : [];
+    return items
+      .filter((m: any) => m.type === "IMAGE" || m.file?.mimeType?.startsWith("image/"))
+      .sort((a: any, b: any) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  }, [mediaData]);
 
   const [contactForm, setContactForm] = useState({
     name: "",
@@ -246,7 +227,7 @@ export default function PropertyDetailPage() {
             </h1>
             <p className="flex items-center gap-2 text-sm text-foreground-muted md:text-base">
               <MapPin size={16} className="text-primary" />
-              {property?.address ?? "-"}
+              {property?.district?.name ?? "-"}, {property?.province?.name ?? "-"}
             </p>
           </div>
           <div className="flex flex-col items-start gap-1 md:items-end">
@@ -261,31 +242,51 @@ export default function PropertyDetailPage() {
       </div>
 
       {/* Image Gallery Grid */}
-      <div className="grid grid-cols-1 gap-2 md:grid-cols-4 h-[400px] md:h-[500px] rounded-lg overflow-hidden">
-        {propertyImages.map((img, i) => (
-          <div
-            key={i}
-            className={`relative group cursor-pointer ${img.span} ${i >= 1 ? "hidden md:block" : ""}`}
-          >
-            <img
-              src={img.src}
-              alt={img.alt}
-              className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-transparent" />
-            {i === 0 && (
-              <div className="absolute top-4 right-4 rounded-lg bg-primary/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white backdrop-blur-sm">
-                Premium
+      {mediaItems.length > 0 ? (
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-4 h-[400px] md:h-[500px] rounded-lg overflow-hidden">
+          {mediaItems.slice(0, 5).map((img: any, i: number) => {
+            const url = img.url;
+            const isPrimary = img.isPrimary;
+            const hasMore = mediaItems.length > 5 && i === 4;
+            return (
+              <div
+                key={img.id || i}
+                className={`relative group cursor-pointer ${i === 0 ? "md:col-span-2 md:row-span-2" : ""} ${i >= 1 ? "hidden md:block" : ""}`}
+              >
+                {url ? (
+                  <img
+                    src={url}
+                    alt={img.caption || property?.title || ""}
+                    className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-surface-muted">
+                    <Camera size={32} weight="duotone" className="text-foreground-muted" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-transparent" />
+                {isPrimary && i === 0 && (
+                  <div className="absolute top-4 right-4 rounded-lg bg-primary/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white backdrop-blur-sm">
+                    Ảnh chính
+                  </div>
+                )}
+                {hasMore && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 transition-colors group-hover:bg-black/20">
+                    <span className="font-serif text-xl font-medium text-white">+{mediaItems.length - 5} Ảnh</span>
+                  </div>
+                )}
               </div>
-            )}
-            {i === 4 && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/40 transition-colors group-hover:bg-black/20">
-                <span className="font-serif text-xl font-medium text-white">+12 Anh</span>
-              </div>
-            )}
+            );
+          })}
+        </div>
+      ) : (
+        <div className="flex h-[300px] items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted">
+          <div className="flex flex-col items-center gap-2 text-foreground-muted">
+            <Camera size={32} weight="duotone" />
+            <p className="text-sm">Chưa có hình ảnh cho bất động sản này</p>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
       {/* Main Layout: Content + Sidebar */}
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
