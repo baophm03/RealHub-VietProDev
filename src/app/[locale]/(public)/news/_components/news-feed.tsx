@@ -5,10 +5,7 @@ import { useGetApiNews } from "@/lib/api/endpoints/news";
 import { useGetApiNewsCategories } from "@/lib/api/endpoints/news-categories";
 import type { GetNewsResponse, GetNewsCategoriesResponse } from "@/lib/api/types/news";
 import { Link } from "@/i18n/navigation";
-import { ArrowRight, Calendar, Newspaper, Spinner } from "@phosphor-icons/react";
-
-const FALLBACK_IMAGE =
-  "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80";
+import { ArrowRight, Calendar, Newspaper, Spinner, Image as ImageIcon } from "@phosphor-icons/react";
 
 function formatDate(iso: string): string {
   if (!iso) return "";
@@ -21,6 +18,30 @@ function formatDate(iso: string): string {
   } catch {
     return iso;
   }
+}
+
+function NewsImage({
+  url,
+  alt,
+  className,
+  iconSize = 28,
+}: {
+  url?: string | null;
+  alt: string;
+  className?: string;
+  iconSize?: number;
+}) {
+  if (!url) {
+    return (
+      <div className={`flex items-center justify-center bg-surface-muted ${className ?? ""}`}>
+        <ImageIcon size={iconSize} weight="duotone" className="text-foreground-muted" />
+      </div>
+    );
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={url} alt={alt} className={className} loading="lazy" />
+  );
 }
 
 export function NewsFeed() {
@@ -93,12 +114,10 @@ export function NewsFeed() {
                   className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
                 >
                   <div className="relative aspect-[16/9] overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={FALLBACK_IMAGE}
+                    <NewsImage
+                      url={article.thumbnail?.url}
                       alt={article.title}
                       className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
                     />
                     {article.category && (
                       <div className="absolute left-3 top-3">
@@ -140,12 +159,11 @@ export function NewsFeed() {
                     className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
                   >
                     <div className="relative aspect-[16/10] overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={FALLBACK_IMAGE}
+                      <NewsImage
+                        url={article.thumbnail?.url}
                         alt={article.title}
                         className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        loading="lazy"
+                        iconSize={24}
                       />
                       {article.category && (
                         <div className="absolute left-3 top-3">

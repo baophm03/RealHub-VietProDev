@@ -31,8 +31,11 @@ import type {
 
 import type {
   CreateProjectDto,
+  CreateProjectMediaDto,
   GetApiProjectsParams,
-  UpdateProjectDto
+  ReorderProjectMediaDto,
+  UpdateProjectDto,
+  UpdateProjectMediaDto
 } from '../models';
 
 import { customInstance } from '../mutator/custom-instance';
@@ -614,6 +617,518 @@ export const useDeleteApiProject = <TError = unknown,
       > => {
 
       const mutationOptions = getDeleteApiProjectMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary List media of a project
+ */
+export const getApiProjectMedia = (
+    id: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/projects/${id}/media`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiProjectMediaInfiniteQueryKey = (id?: string,) => {
+    return [
+    'infinite', `/api/projects/${id}/media`
+    ] as const;
+    }
+
+export const getGetApiProjectMediaQueryKey = (id?: string,) => {
+    return [
+    `/api/projects/${id}/media`
+    ] as const;
+    }
+
+    
+export const getGetApiProjectMediaInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectMedia>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectMedia>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiProjectMediaInfiniteQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiProjectMedia>>> = ({ signal }) => getApiProjectMedia(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectMedia>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiProjectMediaInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiProjectMedia>>>
+export type GetApiProjectMediaInfiniteQueryError = unknown
+
+
+export function useGetApiProjectMediaInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectMedia>>>, TError = unknown>(
+ id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectMedia>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiProjectMedia>>,
+          TError,
+          Awaited<ReturnType<typeof getApiProjectMedia>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiProjectMediaInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectMedia>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectMedia>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiProjectMedia>>,
+          TError,
+          Awaited<ReturnType<typeof getApiProjectMedia>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiProjectMediaInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectMedia>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectMedia>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List media of a project
+ */
+
+export function useGetApiProjectMediaInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectMedia>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectMedia>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiProjectMediaInfiniteQueryOptions(id,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List media of a project
+ */
+export const prefetchGetApiProjectMediaInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiProjectMedia>>, TError = unknown>(
+ queryClient: QueryClient, id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectMedia>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiProjectMediaInfiniteQueryOptions(id,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiProjectMediaQueryOptions = <TData = Awaited<ReturnType<typeof getApiProjectMedia>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectMedia>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiProjectMediaQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiProjectMedia>>> = ({ signal }) => getApiProjectMedia(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiProjectMedia>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiProjectMediaQueryResult = NonNullable<Awaited<ReturnType<typeof getApiProjectMedia>>>
+export type GetApiProjectMediaQueryError = unknown
+
+
+export function useGetApiProjectMedia<TData = Awaited<ReturnType<typeof getApiProjectMedia>>, TError = unknown>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectMedia>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiProjectMedia>>,
+          TError,
+          Awaited<ReturnType<typeof getApiProjectMedia>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiProjectMedia<TData = Awaited<ReturnType<typeof getApiProjectMedia>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectMedia>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiProjectMedia>>,
+          TError,
+          Awaited<ReturnType<typeof getApiProjectMedia>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiProjectMedia<TData = Awaited<ReturnType<typeof getApiProjectMedia>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectMedia>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List media of a project
+ */
+
+export function useGetApiProjectMedia<TData = Awaited<ReturnType<typeof getApiProjectMedia>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectMedia>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiProjectMediaQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List media of a project
+ */
+export const prefetchGetApiProjectMediaQuery = async <TData = Awaited<ReturnType<typeof getApiProjectMedia>>, TError = unknown>(
+ queryClient: QueryClient, id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectMedia>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiProjectMediaQueryOptions(id,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Add media to a project
+ */
+export const postApiProjectMedia = (
+    id: string,
+    createProjectMediaDto: CreateProjectMediaDto,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/projects/${id}/media`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createProjectMediaDto, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiProjectMediaMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiProjectMedia>>, TError,{id: string;data: CreateProjectMediaDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiProjectMedia>>, TError,{id: string;data: CreateProjectMediaDto}, TContext> => {
+
+const mutationKey = ['postApiProjectMedia'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiProjectMedia>>, {id: string;data: CreateProjectMediaDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  postApiProjectMedia(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiProjectMediaMutationResult = NonNullable<Awaited<ReturnType<typeof postApiProjectMedia>>>
+    export type PostApiProjectMediaMutationBody = CreateProjectMediaDto
+    export type PostApiProjectMediaMutationError = unknown
+
+    /**
+ * @summary Add media to a project
+ */
+export const usePostApiProjectMedia = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiProjectMedia>>, TError,{id: string;data: CreateProjectMediaDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiProjectMedia>>,
+        TError,
+        {id: string;data: CreateProjectMediaDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiProjectMediaMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Update project media
+ */
+export const patchApiProjectMedia = (
+    id: string,
+    mediaId: string,
+    updateProjectMediaDto: UpdateProjectMediaDto,
+ ) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/projects/${id}/media/${mediaId}`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: updateProjectMediaDto
+    },
+      );
+    }
+  
+
+
+export const getPatchApiProjectMediaMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiProjectMedia>>, TError,{id: string;mediaId: string;data: UpdateProjectMediaDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiProjectMedia>>, TError,{id: string;mediaId: string;data: UpdateProjectMediaDto}, TContext> => {
+
+const mutationKey = ['patchApiProjectMedia'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiProjectMedia>>, {id: string;mediaId: string;data: UpdateProjectMediaDto}> = (props) => {
+          const {id,mediaId,data} = props ?? {};
+
+          return  patchApiProjectMedia(id,mediaId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PatchApiProjectMediaMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiProjectMedia>>>
+    export type PatchApiProjectMediaMutationBody = UpdateProjectMediaDto
+    export type PatchApiProjectMediaMutationError = unknown
+
+    /**
+ * @summary Update project media
+ */
+export const usePatchApiProjectMedia = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiProjectMedia>>, TError,{id: string;mediaId: string;data: UpdateProjectMediaDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof patchApiProjectMedia>>,
+        TError,
+        {id: string;mediaId: string;data: UpdateProjectMediaDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPatchApiProjectMediaMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Remove media from project
+ */
+export const deleteApiProjectMedia = (
+    id: string,
+    mediaId: string,
+ ) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/projects/${id}/media/${mediaId}`, method: 'DELETE'
+    },
+      );
+    }
+  
+
+
+export const getDeleteApiProjectMediaMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiProjectMedia>>, TError,{id: string;mediaId: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteApiProjectMedia>>, TError,{id: string;mediaId: string}, TContext> => {
+
+const mutationKey = ['deleteApiProjectMedia'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiProjectMedia>>, {id: string;mediaId: string}> = (props) => {
+          const {id,mediaId} = props ?? {};
+
+          return  deleteApiProjectMedia(id,mediaId,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteApiProjectMediaMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiProjectMedia>>>
+    
+    export type DeleteApiProjectMediaMutationError = unknown
+
+    /**
+ * @summary Remove media from project
+ */
+export const useDeleteApiProjectMedia = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiProjectMedia>>, TError,{id: string;mediaId: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteApiProjectMedia>>,
+        TError,
+        {id: string;mediaId: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteApiProjectMediaMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Reorder project media
+ */
+export const postApiProjectMediaReorder = (
+    id: string,
+    reorderProjectMediaDto: ReorderProjectMediaDto,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/projects/${id}/media/reorder`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: reorderProjectMediaDto, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiProjectMediaReorderMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiProjectMediaReorder>>, TError,{id: string;data: ReorderProjectMediaDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiProjectMediaReorder>>, TError,{id: string;data: ReorderProjectMediaDto}, TContext> => {
+
+const mutationKey = ['postApiProjectMediaReorder'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiProjectMediaReorder>>, {id: string;data: ReorderProjectMediaDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  postApiProjectMediaReorder(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiProjectMediaReorderMutationResult = NonNullable<Awaited<ReturnType<typeof postApiProjectMediaReorder>>>
+    export type PostApiProjectMediaReorderMutationBody = ReorderProjectMediaDto
+    export type PostApiProjectMediaReorderMutationError = unknown
+
+    /**
+ * @summary Reorder project media
+ */
+export const usePostApiProjectMediaReorder = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiProjectMediaReorder>>, TError,{id: string;data: ReorderProjectMediaDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiProjectMediaReorder>>,
+        TError,
+        {id: string;data: ReorderProjectMediaDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiProjectMediaReorderMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Set primary media for project
+ */
+export const patchApiProjectMediaSetPrimary = (
+    id: string,
+    mediaId: string,
+ ) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/projects/${id}/media/${mediaId}/set-primary`, method: 'PATCH'
+    },
+      );
+    }
+  
+
+
+export const getPatchApiProjectMediaSetPrimaryMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiProjectMediaSetPrimary>>, TError,{id: string;mediaId: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiProjectMediaSetPrimary>>, TError,{id: string;mediaId: string}, TContext> => {
+
+const mutationKey = ['patchApiProjectMediaSetPrimary'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiProjectMediaSetPrimary>>, {id: string;mediaId: string}> = (props) => {
+          const {id,mediaId} = props ?? {};
+
+          return  patchApiProjectMediaSetPrimary(id,mediaId,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PatchApiProjectMediaSetPrimaryMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiProjectMediaSetPrimary>>>
+    
+    export type PatchApiProjectMediaSetPrimaryMutationError = unknown
+
+    /**
+ * @summary Set primary media for project
+ */
+export const usePatchApiProjectMediaSetPrimary = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiProjectMediaSetPrimary>>, TError,{id: string;mediaId: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof patchApiProjectMediaSetPrimary>>,
+        TError,
+        {id: string;mediaId: string},
+        TContext
+      > => {
+
+      const mutationOptions = getPatchApiProjectMediaSetPrimaryMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

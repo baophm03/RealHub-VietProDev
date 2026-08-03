@@ -201,7 +201,11 @@ export default function EditNewsArticlePage() {
           </FormField>
 
           <FormField label="Ảnh thumbnail">
-            <ThumbnailUploader fileId={thumbnailId} onChange={setThumbnailId} />
+            <ThumbnailUploader
+              fileId={thumbnailId}
+              thumbnail={article.thumbnail}
+              onChange={setThumbnailId}
+            />
           </FormField>
         </FormSection>
 

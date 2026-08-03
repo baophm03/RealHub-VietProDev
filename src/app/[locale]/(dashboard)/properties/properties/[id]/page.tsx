@@ -245,7 +245,7 @@ export default function PropertyDetailPage() {
       {mediaItems.length > 0 ? (
         <div className="grid grid-cols-1 gap-2 md:grid-cols-4 h-[400px] md:h-[500px] rounded-lg overflow-hidden">
           {mediaItems.slice(0, 5).map((img: any, i: number) => {
-            const url = img.url;
+            const url = img.file?.url;
             const isPrimary = img.isPrimary;
             const hasMore = mediaItems.length > 5 && i === 4;
             return (

@@ -10,9 +10,18 @@ interface ListingGalleryProps {
 
 export function ListingGallery({ images, propertyCode }: ListingGalleryProps) {
   const [activeImage, setActiveImage] = useState(0);
-  const gallery = images.length > 0 ? images : [
-    "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80",
-  ];
+  const gallery = images;
+
+  if (gallery.length === 0) {
+    return (
+      <div className="flex h-[300px] md:h-[400px] items-center justify-center rounded-xl border border-dashed border-border bg-surface-muted mb-8">
+        <div className="flex flex-col items-center gap-2 text-foreground-muted">
+          <Camera size={32} weight="duotone" />
+          <p className="text-sm">Chưa có hình ảnh cho bất động sản này</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-2 h-[400px] md:h-[500px] rounded-xl overflow-hidden mb-8">

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils/cn";
 import { useGetApiProperties } from "@/lib/api/endpoints/properties";
 import { GetPropertiesResponse } from "@/lib/api/types/properties";
+import { PropertyCardImage } from "@/components/shared/property-card-image";
 
 const statusBadgeMap: Record<string, { variant: "green" | "blue" | "yellow" | "red" | "secondary"; label: string }> = {
   AVAILABLE: { variant: "green", label: "Sẵn có" },
@@ -16,8 +17,6 @@ const statusBadgeMap: Record<string, { variant: "green" | "blue" | "yellow" | "r
   RENTED: { variant: "blue", label: "Đã thuê" },
   OFF_MARKET: { variant: "secondary", label: "Ngừng bán" },
 };
-
-const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80";
 
 const BENTO_SPANS = [
   "lg:col-span-2 lg:row-span-2",
@@ -100,10 +99,14 @@ export function FeaturedProperties() {
                     className="group/property relative flex h-full flex-col justify-end overflow-hidden rounded-[1.5rem] ring-1 ring-black/5"
                   >
                     {/* Image */}
-                    <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/property:scale-105"
-                      style={{ backgroundImage: `url(${PLACEHOLDER_IMAGE})` }}
-                    />
+                    <div className="absolute inset-0 overflow-hidden transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/property:scale-105">
+                      <PropertyCardImage
+                        propertyId={prop.id}
+                        alt={prop.title}
+                        className="h-full w-full object-cover"
+                        iconSize={featured ? 40 : 28}
+                      />
+                    </div>
                     {/* Gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
 
