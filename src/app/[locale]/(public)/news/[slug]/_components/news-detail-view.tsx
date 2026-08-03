@@ -2,16 +2,13 @@
 
 import { useParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
-import { ArrowLeft, ArrowRight, Calendar, Spinner } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight, Calendar, Spinner, Image as ImageIcon } from "@phosphor-icons/react";
 import { useGetApiNewsId, useGetApiNews } from "@/lib/api/endpoints/news";
 import type {
   GetNewsItemResponse,
   GetNewsResponse,
   News,
 } from "@/lib/api/types/news";
-
-const FALLBACK_IMAGE =
-  "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80";
 
 function formatDate(iso: string): string {
   if (!iso) return "";
@@ -24,6 +21,30 @@ function formatDate(iso: string): string {
   } catch {
     return iso;
   }
+}
+
+function NewsImage({
+  url,
+  alt,
+  className,
+  iconSize = 28,
+}: {
+  url?: string | null;
+  alt: string;
+  className?: string;
+  iconSize?: number;
+}) {
+  if (!url) {
+    return (
+      <div className={`flex items-center justify-center bg-surface-muted ${className ?? ""}`}>
+        <ImageIcon size={iconSize} weight="duotone" className="text-foreground-muted" />
+      </div>
+    );
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={url} alt={alt} className={className} loading="lazy" />
+  );
 }
 
 function renderContent(content: string) {
@@ -107,8 +128,11 @@ export function NewsDetailView() {
 
         {/* Featured image */}
         <div className="mb-8 aspect-[16/9] overflow-hidden rounded-lg">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={FALLBACK_IMAGE} alt={article.title} className="size-full object-cover" />
+          <NewsImage
+            url={article.thumbnail?.url}
+            alt={article.title}
+            className="size-full object-cover"
+          />
         </div>
 
         {/* Content */}
@@ -133,12 +157,11 @@ export function NewsDetailView() {
                 className="group flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={FALLBACK_IMAGE}
+                  <NewsImage
+                    url={n.thumbnail?.url}
                     alt={n.title}
                     className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
+                    iconSize={24}
                   />
                 </div>
                 <div className="flex flex-1 flex-col gap-2 p-4">

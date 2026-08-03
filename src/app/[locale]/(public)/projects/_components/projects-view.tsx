@@ -1,11 +1,11 @@
 "use client";
 
+import { useMemo } from "react";
 import { MapPin, Building, ArrowRight, Spinner } from "@phosphor-icons/react";
 import { Link } from "@/i18n/navigation";
 import { useGetApiProjects } from "@/lib/api/endpoints/projects";
-import { GetProjectsResponse, Project } from "@/lib/api/types/projects";
-
-const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80";
+import { Project } from "@/lib/api/types/projects";
+import { ProjectCardImage } from "@/components/shared/project-card-image";
 
 const projectStatusLabels: Record<string, string> = {
   ACTIVE: "Đang hoạt động",
@@ -27,7 +27,13 @@ function getProjectScale(project: Project): string {
 
 export function ProjectsView() {
   const { data: projectsData, isLoading } = useGetApiProjects({ limit: "100" });
-  const projects = ((projectsData as unknown as GetProjectsResponse)?.data) || [];
+  const projects = useMemo(() => {
+    const raw = projectsData as any;
+    if (Array.isArray(raw)) return raw as Project[];
+    if (Array.isArray(raw?.data)) return raw.data as Project[];
+    if (Array.isArray(raw?.items)) return raw.items as Project[];
+    return [];
+  }, [projectsData]);
 
   if (isLoading) {
     return (
@@ -56,9 +62,10 @@ export function ProjectsView() {
               className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
             >
               <div className="relative aspect-[16/10] overflow-hidden">
-                <div
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                  style={{ backgroundImage: `url(${PLACEHOLDER_IMAGE})` }}
+                <ProjectCardImage
+                  projectId={project.id}
+                  alt={project.name}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute left-3 top-3">

@@ -21,21 +21,14 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import {
-  useGetApiPropertyMedia,
-  getGetApiPropertyMediaQueryKey,
-  usePostApiPropertyMedia,
-  useDeleteApiPropertyMedia,
-  usePatchApiPropertyMedia,
-  usePatchApiPropertyMediaSetPrimary,
-  usePostApiPropertyMediaReorder,
-} from "@/lib/api/endpoints/properties";
 import { usePostApiFileUpload } from "@/lib/api/endpoints/files";
+import { customInstance } from "@/lib/api/mutator/custom-instance";
+import { useGetApiProjectId, getGetApiProjectIdQueryKey } from "@/lib/api/endpoints/projects";
 
 type MediaType = "IMAGE" | "VIDEO" | "TOUR_360" | "FLOOR_PLAN" | "DOCUMENT";
 
-interface PropertyMediaManagerProps {
-  propertyId: string;
+interface ProjectMediaManagerProps {
+  projectId: string;
 }
 
 interface MediaItem {
@@ -82,18 +75,38 @@ function isImageType(item: MediaItem): boolean {
   return false;
 }
 
-export function PropertyMediaManager({ propertyId }: PropertyMediaManagerProps) {
+// Project media API helpers (until orval regenerates with project media endpoints)
+const projectMediaApi = {
+  list: (projectId: string) =>
+    customInstance<MediaItem[]>({ url: `/api/projects/${projectId}/media`, method: "GET" }),
+  create: (projectId: string, data: { fileId: string; type?: string; sortOrder?: number; isPrimary?: boolean; caption?: string }) =>
+    customInstance<MediaItem>({ url: `/api/projects/${projectId}/media`, method: "POST", data }),
+  update: (projectId: string, mediaId: string, data: Partial<{ type: string; sortOrder: number; isPrimary: boolean; caption: string }>) =>
+    customInstance<MediaItem>({ url: `/api/projects/${projectId}/media/${mediaId}`, method: "PATCH", data }),
+  delete: (projectId: string, mediaId: string) =>
+    customInstance({ url: `/api/projects/${projectId}/media/${mediaId}`, method: "DELETE" }),
+  reorder: (projectId: string, items: { id: string; sortOrder: number }[]) =>
+    customInstance<MediaItem[]>({ url: `/api/projects/${projectId}/media/reorder`, method: "POST", data: { items } }),
+  setPrimary: (projectId: string, mediaId: string) =>
+    customInstance<MediaItem>({ url: `/api/projects/${projectId}/media/${mediaId}/set-primary`, method: "PATCH" }),
+};
+
+// Query keys for project media
+const projectMediaQueryKey = (projectId: string) => [`/api/projects/${projectId}/media`] as const;
+
+export function ProjectMediaManager({ projectId }: ProjectMediaManagerProps) {
   const queryClient = useQueryClient();
   const [uploading, setUploading] = useState(false);
   const [editingCaptionId, setEditingCaptionId] = useState<string | null>(null);
   const [captionValue, setCaptionValue] = useState("");
 
-  const { data: mediaData, isLoading } = useGetApiPropertyMedia(propertyId);
+  const { data: projectData } = useGetApiProjectId(projectId);
+  const project = (projectData as any)?.data;
   const mediaItems = useMemo(() => {
-    const raw = (mediaData as any)?.data;
-    if (!raw) return [];
-    return (Array.isArray(raw) ? raw : []) as MediaItem[];
-  }, [mediaData]);
+    const mediaList = project?.media as any[] | undefined;
+    if (!mediaList) return [];
+    return mediaList as MediaItem[];
+  }, [project]);
 
   const sortedMedia = useMemo(
     () => [...mediaItems].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)),
@@ -101,15 +114,11 @@ export function PropertyMediaManager({ propertyId }: PropertyMediaManagerProps) 
   );
 
   const { mutateAsync: uploadFile } = usePostApiFileUpload();
-  const { mutateAsync: addMedia } = usePostApiPropertyMedia();
-  const { mutateAsync: deleteMedia } = useDeleteApiPropertyMedia();
-  const { mutateAsync: updateMedia } = usePatchApiPropertyMedia();
-  const { mutateAsync: setPrimary } = usePatchApiPropertyMediaSetPrimary();
-  const { mutateAsync: reorderMedia } = usePostApiPropertyMediaReorder();
 
-  const invalidateMedia = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: getGetApiPropertyMediaQueryKey(propertyId) });
-  }, [queryClient, propertyId]);
+  const invalidateAll = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: projectMediaQueryKey(projectId) });
+    queryClient.invalidateQueries({ queryKey: getGetApiProjectIdQueryKey(projectId) });
+  }, [queryClient, projectId]);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -129,8 +138,8 @@ export function PropertyMediaManager({ propertyId }: PropertyMediaManagerProps) 
           const uploadResult = await uploadFile({
             data: {
               file,
-              ownerType: "PROPERTY",
-              ownerId: propertyId,
+              ownerType: "PROJECT",
+              ownerId: projectId,
               visibility: "TENANT",
             },
           });
@@ -142,19 +151,16 @@ export function PropertyMediaManager({ propertyId }: PropertyMediaManagerProps) 
             continue;
           }
 
-          await addMedia({
-            id: propertyId,
-            data: {
-              fileId,
-              type: isImage ? "IMAGE" : isVideo ? "VIDEO" : "DOCUMENT",
-              sortOrder: currentMaxSort + 1 + i,
-              isPrimary: sortedMedia.length === 0 && i === 0,
-              caption: "",
-            },
+          await projectMediaApi.create(projectId, {
+            fileId,
+            type: isImage ? "IMAGE" : isVideo ? "VIDEO" : "DOCUMENT",
+            sortOrder: currentMaxSort + 1 + i,
+            isPrimary: sortedMedia.length === 0 && i === 0,
+            caption: "",
           });
         }
 
-        invalidateMedia();
+        invalidateAll();
         toast.success(`Đã upload ${acceptedFiles.length} file thành công`);
       } catch (err) {
         console.error(err);
@@ -163,7 +169,7 @@ export function PropertyMediaManager({ propertyId }: PropertyMediaManagerProps) 
         setUploading(false);
       }
     },
-    [sortedMedia, uploadFile, addMedia, propertyId, invalidateMedia],
+    [sortedMedia, uploadFile, projectId, invalidateAll],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -182,8 +188,8 @@ export function PropertyMediaManager({ propertyId }: PropertyMediaManagerProps) 
 
   const handleDelete = async (mediaId: string) => {
     try {
-      await deleteMedia({ id: propertyId, mediaId });
-      invalidateMedia();
+      await projectMediaApi.delete(projectId, mediaId);
+      invalidateAll();
       toast.success("Đã xóa media");
     } catch (err) {
       console.error(err);
@@ -193,8 +199,8 @@ export function PropertyMediaManager({ propertyId }: PropertyMediaManagerProps) 
 
   const handleSetPrimary = async (mediaId: string) => {
     try {
-      await setPrimary({ id: propertyId, mediaId });
-      invalidateMedia();
+      await projectMediaApi.setPrimary(projectId, mediaId);
+      invalidateAll();
       toast.success("Đã đặt làm ảnh chính");
     } catch (err) {
       console.error(err);
@@ -204,12 +210,8 @@ export function PropertyMediaManager({ propertyId }: PropertyMediaManagerProps) 
 
   const handleSaveCaption = async (mediaId: string) => {
     try {
-      await updateMedia({
-        id: propertyId,
-        mediaId,
-        data: { caption: captionValue },
-      });
-      invalidateMedia();
+      await projectMediaApi.update(projectId, mediaId, { caption: captionValue });
+      invalidateAll();
       setEditingCaptionId(null);
       toast.success("Đã cập nhật chú thích");
     } catch (err) {
@@ -236,16 +238,11 @@ export function PropertyMediaManager({ propertyId }: PropertyMediaManagerProps) 
     [newSorted[index], newSorted[targetIndex]] = [newSorted[targetIndex], newSorted[index]];
 
     try {
-      await reorderMedia({
-        id: propertyId,
-        data: {
-          items: newSorted.map((item, i) => ({
-            id: item.id,
-            sortOrder: i,
-          })),
-        },
-      });
-      invalidateMedia();
+      await projectMediaApi.reorder(
+        projectId,
+        newSorted.map((item, i) => ({ id: item.id, sortOrder: i })),
+      );
+      invalidateAll();
     } catch (err) {
       console.error(err);
       toast.error("Có lỗi khi sắp xếp lại media");
@@ -254,26 +251,13 @@ export function PropertyMediaManager({ propertyId }: PropertyMediaManagerProps) 
 
   const handleUpdateType = async (mediaId: string, type: MediaType) => {
     try {
-      await updateMedia({ id: propertyId, mediaId, data: { type } });
-      invalidateMedia();
+      await projectMediaApi.update(projectId, mediaId, { type });
+      invalidateAll();
     } catch (err) {
       console.error(err);
       toast.error("Có lỗi khi cập nhật loại media");
     }
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col gap-4">
-        <div className="h-32 animate-pulse rounded-lg bg-surface-muted" />
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-32 animate-pulse rounded-lg bg-surface-muted" />
-          ))}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -307,7 +291,7 @@ export function PropertyMediaManager({ propertyId }: PropertyMediaManagerProps) 
       {sortedMedia.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
           <ImageIcon size={32} weight="duotone" className="text-foreground-muted" />
-          <p className="text-sm text-foreground-muted">Chưa có media nào. Hãy upload ảnh/video cho bất động sản.</p>
+          <p className="text-sm text-foreground-muted">Chưa có media nào. Hãy upload ảnh/video cho dự án.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useMemo } from "react";
 import {
   Bed, Bathtub, MapPin, Phone, Star, CaretRight, PaperPlaneTilt, Ruler, ShieldCheck, Spinner,
 } from "@phosphor-icons/react";
@@ -17,6 +18,7 @@ import type {
   Property,
 } from "@/lib/api/types/properties";
 import { ListingGallery } from "./listing-gallery";
+import { PropertyCardImage } from "@/components/shared/property-card-image";
 
 const txLabel: Record<string, string> = {
   SALE: "Bán",
@@ -176,13 +178,15 @@ export function ListingDetailView() {
 
   const highlights = specialFields.map((f) => ({ icon: Star, title: f.label, desc: f.value }));
 
-  const gallery = [
-    `https://picsum.photos/seed/${property.id}-main/1200/800`,
-    `https://picsum.photos/seed/${property.id}-1/800/600`,
-    `https://picsum.photos/seed/${property.id}-2/800/600`,
-    `https://picsum.photos/seed/${property.id}-3/800/600`,
-    `https://picsum.photos/seed/${property.id}-4/800/600`,
-  ];
+  const gallery = useMemo(() => {
+    const mediaList = (property as any)?.media as any[] | undefined;
+    if (!mediaList || mediaList.length === 0) return [];
+    return mediaList
+      .filter((m) => m.type === "IMAGE" || m.file?.mimeType?.startsWith("image/"))
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+      .map((m) => m.file?.url)
+      .filter(Boolean) as string[];
+  }, [property]);
 
   const similarProperties = (((similarData as unknown as GetPropertiesResponse)?.data) || [])
     .filter((p: Property) => p.id !== id)
@@ -398,11 +402,11 @@ export function ListingDetailView() {
                   className="group bg-surface rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow flex flex-col"
                 >
                   <div className="relative h-48 overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={`https://picsum.photos/seed/${p.id}/800/600`}
+                    <PropertyCardImage
+                      propertyId={p.id}
                       alt={p.title}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      iconSize={24}
                     />
                   </div>
                   <div className="p-4 space-y-3 flex-1 flex flex-col">

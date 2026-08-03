@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Building, Funnel } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { useUserStore } from "@/lib/stores/user-store";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useGetApiProjects } from "@/lib/api/endpoints/projects";
-import { GetProjectsResponse, Project } from "@/lib/api/types/projects";
+import { Project } from "@/lib/api/types/projects";
 
 const statusVariant: Record<string, "green" | "default"> = {
   ACTIVE: "green",
@@ -34,7 +34,13 @@ export function ProjectsList() {
   }, []);
 
   const { data: projectsData } = useGetApiProjects();
-  const projects = ((projectsData as unknown as GetProjectsResponse)?.data) || [];
+  const projects = useMemo(() => {
+    const raw = projectsData as any;
+    if (Array.isArray(raw)) return raw as Project[];
+    if (Array.isArray(raw?.data)) return raw.data as Project[];
+    if (Array.isArray(raw?.items)) return raw.items as Project[];
+    return [];
+  }, [projectsData]);
 
   const filtered = projects.filter(
     (p) =>

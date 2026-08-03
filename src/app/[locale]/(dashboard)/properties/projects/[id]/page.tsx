@@ -13,6 +13,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useGetApiProjectId } from "@/lib/api/endpoints/projects";
 import { Project } from "@/lib/api/types/projects";
+import { PropertyCardImage } from "@/components/shared/property-card-image";
+import { useMemo } from "react";
+import { Camera } from "@phosphor-icons/react";
 
 const statusVariant: Record<string, "green" | "default"> = {
   ACTIVE: "green",
@@ -40,6 +43,14 @@ export default function ProjectDetailPage() {
   const { data: projectData, isLoading } = useGetApiProjectId(id);
   const project = (projectData as unknown as { data: Project })?.data;
   const properties = project?.properties ?? [];
+
+  const projectMedia = useMemo(() => {
+    const mediaList = (project as any)?.media as any[] | undefined;
+    if (!mediaList || mediaList.length === 0) return [];
+    return mediaList
+      .filter((m) => m.type === "IMAGE" || m.file?.mimeType?.startsWith("image/"))
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  }, [project]);
 
   if (isLoading) {
     return (
@@ -132,6 +143,36 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
+      {/* Project Media Gallery */}
+      {projectMedia.length > 0 ? (
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-4 h-[400px] md:h-[500px] rounded-xl overflow-hidden">
+          {projectMedia.slice(0, 5).map((img, i) => (
+            <div
+              key={img.id || i}
+              className={`relative group overflow-hidden ${i === 0 ? "md:col-span-2 md:row-span-2" : ""} ${i >= 1 ? "hidden md:block" : ""}`}
+            >
+              <img
+                src={img.file?.url}
+                alt={img.caption || project.name}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              {img.isPrimary && i === 0 && (
+                <div className="absolute top-4 right-4 rounded-lg bg-primary/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white backdrop-blur-sm">
+                  Ảnh chính
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex h-[300px] items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted">
+          <div className="flex flex-col items-center gap-2 text-foreground-muted">
+            <Camera size={32} weight="duotone" />
+            <p className="text-sm">Chưa có hình ảnh cho dự án này</p>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 gap-4 rounded-lg border border-border bg-surface p-6 md:grid-cols-4">
         <div className="flex flex-col gap-1">
           <span className="text-[11px] font-semibold uppercase tracking-wide text-foreground-muted">
@@ -191,10 +232,11 @@ export default function ProjectDetailPage() {
                   className="group flex flex-col gap-3 overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:-translate-y-[2px] hover:shadow-[0_8px_24px_-12px_rgba(45,95,63,0.12)]"
                 >
                   <div className="relative h-40 overflow-hidden">
-                    <img
-                      src={`https://picsum.photos/seed/${item.id}/800/600`}
+                    <PropertyCardImage
+                      propertyId={item.id}
                       alt={item.title}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      iconSize={24}
                     />
                   </div>
                   <div className="flex flex-col gap-2 p-4">

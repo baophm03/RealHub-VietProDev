@@ -12,7 +12,7 @@ export const routing = defineRouting({
       locales: ["vi"],
     },
     {
-      domain: "en.realhub.vn",
+      domain: "realhub.vn",
       defaultLocale: "en",
       locales: ["en"],
     },

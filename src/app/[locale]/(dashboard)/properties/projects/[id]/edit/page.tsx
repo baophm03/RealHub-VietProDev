@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Location } from "@/lib/api/types/locations";
 import { Project } from "@/lib/api/types/projects";
+import { ProjectMediaManager } from "@/components/shared/project-media-manager";
 
 const projectSchema = z.object({
   name: z.string().min(1, "Vui lòng nhập tên dự án"),
@@ -237,6 +238,10 @@ export default function ProjectEditPage() {
               </Select>
             </FormField>
           </div>
+        </FormSection>
+
+        <FormSection title="Quản lý hình ảnh & media" description="Upload, sắp xếp và quản lý ảnh/video của dự án">
+          <ProjectMediaManager projectId={id} />
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">

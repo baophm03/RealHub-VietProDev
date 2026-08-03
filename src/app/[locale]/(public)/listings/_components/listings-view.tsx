@@ -9,6 +9,7 @@ import { GetPropertiesResponse } from "@/lib/api/types/properties";
 import type { Location } from "@/lib/api/types/locations";
 import { ListingsFilter } from "./listings-filter";
 import { ListingsToolbar } from "./listings-toolbar";
+import { PropertyCardImage } from "@/components/shared/property-card-image";
 
 type PropertyType = {
   id: string;
@@ -50,8 +51,6 @@ function formatPricePerSqm(priceStr: string, area: number): string {
   if (perSqm >= 1000000) return `~${(perSqm / 1000000).toFixed(1)} tr/m²`;
   return `~${perSqm.toLocaleString("vi-VN")} đ/m²`;
 }
-
-const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80";
 
 export function ListingsView() {
   const sp = useSearchParams();
@@ -159,9 +158,10 @@ export function ListingsView() {
                   >
                     {/* Image */}
                     <div className="relative h-52 overflow-hidden">
-                      <div
-                        className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-                        style={{ backgroundImage: `url(${PLACEHOLDER_IMAGE})` }}
+                      <PropertyCardImage
+                        propertyId={property.id}
+                        alt={property.title}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                       {badge && (
                         <div className="absolute top-3 right-3 z-10">

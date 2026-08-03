@@ -17,6 +17,7 @@ export interface NewsThumbnail {
   mimeType?: string;
   originalFileName?: string;
   fileSize?: number;
+  url?: string;
 }
 
 export interface News {

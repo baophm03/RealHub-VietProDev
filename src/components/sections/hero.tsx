@@ -19,8 +19,7 @@ import {
 } from "@phosphor-icons/react";
 import { useGetApiProperties } from "@/lib/api/endpoints/properties";
 import { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
-
-const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80";
+import { PropertyCardImage } from "@/components/shared/property-card-image";
 
 function formatPrice(priceStr: string, transactionType: string): string {
   const price = Number(priceStr || 0);
@@ -234,10 +233,14 @@ export function Hero() {
                   </div>
                 ) : featured ? (
                   <Link href={`/listings/${featured.id}`} className="group/featured relative block h-full">
-                    <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/featured:scale-105"
-                      style={{ backgroundImage: `url(${PLACEHOLDER_IMAGE})` }}
-                    />
+                    <div className="absolute inset-0 overflow-hidden transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/featured:scale-105">
+                      <PropertyCardImage
+                        propertyId={featured.id}
+                        alt={featured.title}
+                        className="h-full w-full object-cover"
+                        iconSize={40}
+                      />
+                    </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
                     {/* Badge */}
                     <div className="absolute top-4 left-4">
