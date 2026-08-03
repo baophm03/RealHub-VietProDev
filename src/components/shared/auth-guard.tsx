@@ -4,18 +4,17 @@ import { useAuthStore } from "@/lib/stores/auth-store";
 import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const BYPASS_AUTH = true;
-
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const hasHydrated = useAuthStore((s) => s._hasHydrated);
 
   useEffect(() => {
-    if (!BYPASS_AUTH && !isAuthenticated) {
+    if (!isAuthenticated && hasHydrated) {
       window.location.href = "/login";
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, hasHydrated]);
 
-  if (!BYPASS_AUTH && !isAuthenticated) {
+  if (!isAuthenticated || !hasHydrated) {
     return (
       <div className="flex flex-col gap-5">
         <Skeleton className="h-10 w-56" />

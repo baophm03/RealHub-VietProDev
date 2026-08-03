@@ -8,6 +8,7 @@ import {
   Percent,
   Gear,
   FolderSimple,
+  Newspaper,
 } from "@phosphor-icons/react";
 
 export interface NavItem {
@@ -77,6 +78,12 @@ export const navGroups: NavGroup[] = [
   {
     label: "Hệ thống",
     items: [
+      {
+        label: "Tin tức",
+        href: "/news-contents",
+        icon: Newspaper,
+        permission: "news:read",
+      },
       {
         label: "Tài liệu",
         href: "/files",

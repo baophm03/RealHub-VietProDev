@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,28 @@ import {
   Storefront,
   TrendUp,
   Users,
+  Spinner,
 } from "@phosphor-icons/react";
+import { useGetApiProperties } from "@/lib/api/endpoints/properties";
+import { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
+
+const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80";
+
+function formatPrice(priceStr: string, transactionType: string): string {
+  const price = Number(priceStr || 0);
+  if (transactionType === "RENT") {
+    if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu/tháng`;
+    return `${price.toLocaleString("vi-VN")} đ/tháng`;
+  }
+  if (price >= 1000000000) return `${(price / 1000000000).toFixed(1)} tỷ`;
+  if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu`;
+  return `${price.toLocaleString("vi-VN")} đ`;
+}
+
+function pickRandom<T>(items: T[]): T | undefined {
+  if (items.length === 0) return undefined;
+  return items[Math.floor(Math.random() * items.length)];
+}
 
 const searchTabs = [
   { label: "Mua", value: "sale" },
@@ -32,6 +53,21 @@ const propertyTypes = [
 
 export function Hero() {
   const [activeTab, setActiveTab] = useState("sale");
+
+  // Fetch the 5 most recent properties, then pick one at random to feature.
+  const { data: propertiesData, isLoading } = useGetApiProperties({ limit: "5" } as any);
+  const properties = ((propertiesData as unknown as GetPropertiesResponse)?.data) || [];
+
+  // Stable random pick — only re-roll when the underlying list changes.
+  const featured: Property | undefined = useMemo(
+    () => pickRandom(properties),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [properties.map((p) => p.id).join(",")],
+  );
+
+  const featuredLocation = featured
+    ? [featured?.district?.name, featured?.province?.name].filter(Boolean).join(", ")
+    : "";
 
   return (
     <section className="relative overflow-hidden bg-background -mt-20 lg:-mt-28">
@@ -102,11 +138,10 @@ export function Hero() {
                   <button
                     key={tab.value}
                     onClick={() => setActiveTab(tab.value)}
-                    className={`rounded-full px-5 py-2 text-sm font-medium transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                      activeTab === tab.value
-                        ? "bg-foreground text-background"
-                        : "text-foreground-muted hover:text-foreground"
-                    }`}
+                    className={`rounded-full px-5 py-2 text-sm font-medium transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${activeTab === tab.value
+                      ? "bg-foreground text-background"
+                      : "text-foreground-muted hover:text-foreground"
+                      }`}
                   >
                     {tab.label}
                   </button>
@@ -193,32 +228,43 @@ export function Hero() {
             {/* Main featured property — Double-Bezel */}
             <div className="rounded-[1.5rem] bg-black/5 p-1.5 ring-1 ring-black/5">
               <div className="relative aspect-[4/3] overflow-hidden rounded-[calc(1.5rem-0.375rem)]">
-                <div
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{
-                    backgroundImage:
-                      "url(https://picsum.photos/seed/realhub-hero-property/600/450)",
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
-                {/* Badge */}
-                <div className="absolute top-4 left-4">
-                  <span className="rounded-full bg-white/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary backdrop-blur-sm">
-                    Nổi bật
-                  </span>
-                </div>
-                {/* Content */}
-                <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-xs text-white/60">Bình Thạnh, TP.HCM</span>
-                    <span className="font-serif text-xl font-semibold text-white">
-                      Vinhomes Central Park
-                    </span>
+                {isLoading ? (
+                  <div className="flex h-full items-center justify-center bg-surface">
+                    <Spinner size={28} className="animate-spin text-primary" />
                   </div>
-                  <span className="rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-foreground">
-                    5.2 tỷ
-                  </span>
-                </div>
+                ) : featured ? (
+                  <Link href={`/listings/${featured.id}`} className="group/featured relative block h-full">
+                    <div
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/featured:scale-105"
+                      style={{ backgroundImage: `url(${PLACEHOLDER_IMAGE})` }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+                    {/* Badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className="rounded-full bg-white/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary backdrop-blur-sm">
+                        Nổi bật
+                      </span>
+                    </div>
+                    {/* Content */}
+                    <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-xs text-white/60">
+                          {featuredLocation || "Đang cập nhật"}
+                        </span>
+                        <span className="font-serif text-xl font-semibold text-white">
+                          {featured.title}
+                        </span>
+                      </div>
+                      <span className="rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-foreground">
+                        {formatPrice(featured.price, featured.transactionType)}
+                      </span>
+                    </div>
+                  </Link>
+                ) : (
+                  <div className="flex h-full items-center justify-center bg-surface">
+                    <span className="text-xs text-foreground-muted">Chưa có bất động sản</span>
+                  </div>
+                )}
               </div>
             </div>
 

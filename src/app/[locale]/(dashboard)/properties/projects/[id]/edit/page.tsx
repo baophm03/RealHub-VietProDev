@@ -59,13 +59,13 @@ export default function ProjectEditPage() {
   const { mutateAsync: updateProject } = usePatchApiProject();
 
   const { data: provincesData, isLoading: provincesLoading } = useGetApiLocations({ type: "PROVINCE", limit: 100 });
-  const provinces = (provincesData?.data as unknown as Location[]) || [];
+  const provinces = ((provincesData as unknown as { data: Location[] })?.data) || [];
   const provinceItems = Object.fromEntries(provinces.map((p) => [p.id, p.name]));
 
   const { data: districtsData, isLoading: districtsLoading } = useGetApiLocations(
     selectedProvinceId ? { type: "WARD", parentId: selectedProvinceId, limit: 100 } : undefined,
   );
-  const districts = (districtsData?.data as unknown as Location[]) || [];
+  const districts = ((districtsData as unknown as { data: Location[] })?.data) || [];
   const districtItems = Object.fromEntries(districts.map((d) => [d.id, d.name]));
 
   const {

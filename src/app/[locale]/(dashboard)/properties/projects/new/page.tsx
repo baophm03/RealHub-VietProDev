@@ -20,7 +20,7 @@ import {
 import { usePostApiProject } from "@/lib/api/endpoints/projects";
 import { useGetApiLocations } from "@/lib/api/endpoints/locations";
 import { toast } from "sonner";
-import type { Location } from "@/lib/api/types/locations";
+import type { Location, GetLocationsResponse } from "@/lib/api/types/locations";
 
 const projectSchema = z.object({
   name: z.string().min(1, "Vui lòng nhập tên dự án"),
@@ -46,14 +46,14 @@ export default function ProjectFormPage() {
 
   const { mutate: createProject } = usePostApiProject();
 
-  const { data: provincesData, isLoading: provincesLoading } = useGetApiLocations({ type: "PROVINCE", limit: 100 });
-  const provinces = (provincesData?.data as unknown as Location[]) || [];
+  const { data: provincesData, isLoading: provincesLoading } = useGetApiLocations<GetLocationsResponse>({ type: "PROVINCE", limit: 100 });
+  const provinces = provincesData?.data || [];
   const provinceItems = Object.fromEntries(provinces.map((p) => [p.id, p.name]));
 
-  const { data: districtsData, isLoading: districtsLoading } = useGetApiLocations(
+  const { data: districtsData, isLoading: districtsLoading } = useGetApiLocations<GetLocationsResponse>(
     selectedProvinceId ? { type: "WARD", parentId: selectedProvinceId, limit: 100 } : undefined,
   );
-  const districts = (districtsData?.data as unknown as Location[]) || [];
+  const districts = districtsData?.data || [];
   const districtItems = Object.fromEntries(districts.map((d) => [d.id, d.name]));
 
   const {

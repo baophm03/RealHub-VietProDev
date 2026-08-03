@@ -11,6 +11,12 @@ export interface GetPropertiesResponse {
   timestamp: string;
 }
 
+export interface GetPropertyItemResponse {
+  success: boolean;
+  data: Property;
+  timestamp: string;
+}
+
 export interface Property {
   id: string;
   propertyCode: string;

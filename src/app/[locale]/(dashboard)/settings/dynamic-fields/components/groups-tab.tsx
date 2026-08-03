@@ -94,7 +94,7 @@ export function GroupsTab({ entityType, propertyTypeId }: GroupsTabProps) {
   });
 
   const { data: propertyTypesData } = useGetApiPropertyTypes();
-  const propertyTypes = (propertyTypesData?.data as unknown as PropertyType[]) || [];
+  const propertyTypes = ((propertyTypesData as any)?.data as PropertyType[]) || [];
 
   const { data, isLoading, refetch } = useGetApiFieldGroups(
     entityType ? { entityType, ...(propertyTypeId ? { propertyTypeId } : {}) } : undefined,
