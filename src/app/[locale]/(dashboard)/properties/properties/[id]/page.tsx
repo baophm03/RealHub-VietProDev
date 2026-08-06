@@ -134,16 +134,7 @@ export default function PropertyDetailPage() {
 
   const basicInfoFields = getFieldsByGroupCode("basic_info");
   const specialFields = getFieldsByGroupCode("special");
-
-  const { data: similarData } = useGetApiProperties(
-    propertyTypeId ? { propertyTypeId, limit: "10" } : undefined,
-  );
-  const similarProperties = useMemo(() => {
-    const all = ((similarData as any)?.data as Property[]) || [];
-    const filtered = all.filter((p) => p.id !== id);
-    const shuffled = [...filtered].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 3);
-  }, [similarData, id]);
+  const contactInfoFields = getFieldsByGroupCode("contact_info");
 
   const staticSpecs = [
     { icon: Ruler, label: "Diện tích", value: property ? `${areaNum} m2` : "227 m2", accent: false },
@@ -170,6 +161,14 @@ export default function PropertyDetailPage() {
     title: f.label,
     desc: f.value,
   }));
+
+  const contactInfo = contactInfoFields.length > 0
+    ? [{
+      name: contactInfoFields.find((f) => f.key === "contact_name")?.value ?? null,
+      phone: contactInfoFields.find((f) => f.key === "phone_number_contact")?.value ?? null,
+      position: contactInfoFields.find((f) => f.key === "position")?.value ?? null,
+    }]
+    : [];
 
   if (isLoading) {
     return (
@@ -372,170 +371,30 @@ export default function PropertyDetailPage() {
         <div className="w-full lg:w-1/3 lg:sticky lg:top-24">
           <div className="flex flex-col gap-6 rounded-lg border border-border bg-surface p-6 shadow-[0_1px_3px_rgba(42,37,32,0.02),0_8px_24px_-12px_rgba(45,95,63,0.06)]">
             {/* Agent Info */}
-            <div className="flex items-center gap-4 border-b border-border pb-6">
-              <div className="size-16 overflow-hidden rounded-lg border-2 border-primary/20">
-                <img
-                  src="https://picsum.photos/seed/agent-tran-huu-kien/200/200"
-                  alt="Tran Huu Kien"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <h3 className="text-base font-semibold text-foreground">Tran Huu Kien</h3>
-                <p className="text-xs text-foreground-muted">Chuyen vien Tu van Cap cao</p>
-                <div className="flex items-center gap-1 mt-0.5">
-                  <Star size={12} weight="fill" className="text-primary" />
-                  <span className="text-[11px] font-medium text-foreground-muted">
-                    4.9 (120 Danh gia)
-                  </span>
+            {contactInfo.map((item) =>
+              <div key={item.name}>
+                <div className="flex items-center gap-4 border-border pb-6">
+                  <div className="size-16 overflow-hidden rounded-lg border border-primary/20">
+                    <img
+                      src="/avatar-fallback.png"
+                      alt={item.name ?? ""}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <h3 className="text-base font-semibold text-foreground">{item.name || "Chưa có thông tin"}</h3>
+                    <p className="text-xs text-foreground-muted">{item.position || "Chưa có vị trí"}</p>
+                  </div>
                 </div>
+                <Button type="button" variant="outline" className="w-full">
+                  <Phone size={14} />
+                  {item.phone}
+                </Button>
               </div>
-            </div>
-
-            {/* Contact Form */}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <h4 className="font-serif text-lg font-medium text-foreground">Lien he ngay</h4>
-
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="contact-name">Họ và tên</Label>
-                <Input
-                  id="contact-name"
-                  placeholder="Nhap Họ và tên..."
-                  value={contactForm.name}
-                  onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="contact-phone">Số điện thoại</Label>
-                <Input
-                  id="contact-phone"
-                  type="tel"
-                  placeholder="Nhap Số điện thoại..."
-                  value={contactForm.phone}
-                  onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="contact-message">Loi nhan</Label>
-                <Textarea
-                  id="contact-message"
-                  placeholder="Toi quan tam den bat dong san nay..."
-                  rows={3}
-                  value={contactForm.message}
-                  onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                />
-              </div>
-
-              <Button type="submit" className="w-full">
-                <PaperPlaneTilt size={14} />
-                Gui yeu cau
-              </Button>
-
-              <Button type="button" variant="outline" className="w-full">
-                <Phone size={14} />
-                0901 234 567
-              </Button>
-            </form>
+            )}
           </div>
         </div>
       </div>
-
-      {/* Similar Listings */}
-      <section className="flex flex-col gap-6 border-t border-border pt-10">
-        <h2 className="font-serif text-2xl font-medium tracking-tight text-foreground md:text-3xl">
-          Bất động sản tương tự
-        </h2>
-        {similarProperties.length === 0 ? (
-          <p className="text-sm text-foreground-muted">Chưa có bất động sản tương tự.</p>
-        ) : (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {similarProperties.map((item) => {
-              const itemPrice = Number(item.price || 0);
-              const itemArea = item.area ?? 0;
-              const itemDynValues = (item as any).dynamicValuesJson as Record<string, unknown> | undefined;
-
-              const itemBedrooms = (() => {
-                for (const schema of schemas) {
-                  for (const f of (schema.fields || [])) {
-                    const field = f.field;
-                    if (!field) continue;
-                    const key = (field.fieldKey || "").toLowerCase();
-                    const label = (field.fieldLabel || "").toLowerCase();
-                    if (["bedroom", "beds", "phong_ngu", "phòng ngủ"].some((p) => key.includes(p) || label.includes(p))) {
-                      const v = itemDynValues?.[field.fieldKey];
-                      if (v !== undefined && v !== null && v !== "") return String(v);
-                    }
-                  }
-                }
-                return "-";
-              })();
-
-              const itemBathrooms = (() => {
-                for (const schema of schemas) {
-                  for (const f of (schema.fields || [])) {
-                    const field = f.field;
-                    if (!field) continue;
-                    const key = (field.fieldKey || "").toLowerCase();
-                    const label = (field.fieldLabel || "").toLowerCase();
-                    if (["bathroom", "baths", "phong_tam", "phòng tắm"].some((p) => key.includes(p) || label.includes(p))) {
-                      const v = itemDynValues?.[field.fieldKey];
-                      if (v !== undefined && v !== null && v !== "") return String(v);
-                    }
-                  }
-                }
-                return "-";
-              })();
-
-              const location = [item.district?.name, item.province?.name].filter(Boolean).join(", ");
-
-              return (
-                <Link
-                  key={item.id}
-                  href={`/properties/properties/${item.id}`}
-                  className="group flex flex-col gap-3 overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-[2px] hover:shadow-[0_8px_24px_-12px_rgba(45,95,63,0.12)]"
-                >
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={`https://picsum.photos/seed/${item.id}/800/600`}
-                      alt={item.title}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute top-3 left-3 flex items-center gap-1 rounded-lg bg-black/40 px-2.5 py-1 text-[10px] font-medium text-white backdrop-blur-sm">
-                      <Camera size={10} />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-3 p-4">
-                    <h3 className="text-base font-semibold tracking-tight text-foreground line-clamp-1">
-                      {item.title}
-                    </h3>
-                    <p className="flex items-center gap-1.5 text-sm text-foreground-muted">
-                      <MapPin size={14} className="text-primary" />
-                      {location || "-"}
-                    </p>
-                    <div className="font-serif text-xl font-medium text-primary">
-                      {formatPrice(itemPrice)}
-                    </div>
-                    <div className="flex items-center gap-4 border-t border-border pt-3 text-xs text-foreground-muted">
-                      <span className="flex items-center gap-1">
-                        <Ruler size={12} /> {itemArea} m2
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Bed size={12} /> {itemBedrooms}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Bathtub size={12} /> {itemBathrooms}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
-      </section>
     </div>
   );
 }

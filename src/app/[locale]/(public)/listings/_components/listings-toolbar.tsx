@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { GridFour, MapTrifold as MapIcon } from "@phosphor-icons/react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const SORT_OPTIONS = [
   { value: "newest", label: "Mới nhất" },
@@ -21,7 +21,8 @@ export function ListingsToolbar({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const handleSortChange = (value: string) => {
+  const handleSortChange = (value: string | null) => {
+    if (!value) return;
     const params = new URLSearchParams(searchParams.toString());
     if (value === "newest") {
       params.delete("sort");
@@ -43,27 +44,19 @@ export function ListingsToolbar({
         </p>
       </div>
       <div className="flex items-center gap-2">
-        {/* View Toggle (decorative — map not implemented) */}
-        <div className="flex items-center gap-1 bg-surface-muted p-1 rounded-xl border border-border">
-          <button className="px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-wide flex items-center gap-2 bg-surface text-primary shadow-sm">
-            <GridFour size={14} /> Grid
-          </button>
-          <button className="px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-wide flex items-center gap-2 text-foreground-muted hover:bg-surface transition-colors">
-            <MapIcon size={14} /> Map
-          </button>
-        </div>
         {/* Sort */}
-        <select
-          value={currentSort}
-          onChange={(e) => handleSortChange(e.target.value)}
-          className="rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-        >
-          {SORT_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </select>
+        <Select value={currentSort} onValueChange={handleSortChange} items={SORT_OPTIONS}>
+          <SelectTrigger className="w-[180px] rounded-lg border border-border bg-surface text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+            <SelectValue placeholder="Sắp xếp" />
+          </SelectTrigger>
+          <SelectContent>
+            {SORT_OPTIONS.map((o) => (
+              <SelectItem key={o.value} value={o.value}>
+                {o.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

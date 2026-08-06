@@ -211,10 +211,6 @@ export function ListingsView() {
                           <div className="text-xs text-foreground-muted">
                             {formatPricePerSqm(property.price, property.area)}
                           </div>
-                          <div className="text-xs font-semibold uppercase tracking-wide text-foreground-muted mt-1">
-                            {property.area ? `${property.area}m²` : "Đang cập nhật"}
-                            {property.propertyType?.name ? ` • ${property.propertyType.name}` : ""}
-                          </div>
                         </div>
                       </div>
                     </div>

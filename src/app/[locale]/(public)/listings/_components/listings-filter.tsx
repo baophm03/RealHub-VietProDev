@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Bell, Funnel } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 type PropertyType = {
   id: string;
@@ -49,6 +52,15 @@ export function ListingsFilter({
   const [draftSelectedTypes, setDraftSelectedTypes] = useState<string[]>(currentTypes || []);
   const [draftPriceFrom, setDraftPriceFrom] = useState(currentPriceFrom || "");
   const [draftPriceTo, setDraftPriceTo] = useState(currentPriceTo || "");
+
+  // Sync draft state when URL searchParams change (e.g. after "Xóa bộ lọc" or external nav)
+  useEffect(() => {
+    setDraftTransactionType((currentTransactionType as "ALL" | "SALE" | "RENT") || "ALL");
+    setDraftSelectedZone(currentProvinceId || "");
+    setDraftSelectedTypes(currentTypes || []);
+    setDraftPriceFrom(currentPriceFrom || "");
+    setDraftPriceTo(currentPriceTo || "");
+  }, [currentTransactionType, currentProvinceId, currentTypes, currentPriceFrom, currentPriceTo]);
 
   const hasFilters =
     draftSelectedTypes.length > 0 ||
@@ -112,9 +124,9 @@ export function ListingsFilter({
             <Funnel size={16} /> Bộ lọc tìm kiếm
           </h2>
           {hasFilters && (
-            <button onClick={clearFilters} className="text-primary text-sm font-semibold hover:underline">
+            <Button variant="link" size="sm" onClick={clearFilters} className="h-auto p-0 text-xs font-medium">
               Xóa bộ lọc
-            </button>
+            </Button>
           )}
         </div>
 
@@ -123,45 +135,45 @@ export function ListingsFilter({
           <label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Loại giao dịch</label>
           <div className="flex gap-2">
             {(["ALL", "SALE", "RENT"] as const).map((t) => (
-              <button
+              <Button
                 key={t}
                 onClick={() => setDraftTransactionType(t)}
-                className={`flex-1 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                  draftTransactionType === t
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-surface-muted text-foreground-muted hover:bg-border/40"
-                }`}
+                className={`flex h-9 rounded-lg text-xs font-medium transition-colors ${draftTransactionType === t
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-surface-muted text-foreground-muted hover:bg-border/40"
+                  }`}
               >
                 {t === "ALL" ? "Tất cả" : t === "SALE" ? "Bán" : "Cho thuê"}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
 
         {/* Zone Filter */}
         <div className="flex flex-col gap-2">
-          <label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Khu vực</label>
-          <select
-            value={draftSelectedZone}
-            onChange={(e) => setDraftSelectedZone(e.target.value)}
-            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          >
-            <option value="">Tất cả</option>
-            {provinces.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+          <Label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Khu vực</Label>
+          <Select value={draftSelectedZone} onValueChange={(value) => setDraftSelectedZone(value ?? "")}>
+            <SelectTrigger className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+              <SelectValue placeholder="Tất cả" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Tất cả</SelectItem>
+              {provinces.map((p) => (
+                <SelectItem key={p.id} value={p.id}>
+                  {p.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Price Range */}
         <div className="flex flex-col gap-2">
-          <label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">
+          <Label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">
             Mức giá {draftTransactionType === "RENT" ? "(triệu)" : "(tỷ)"}
-          </label>
+          </Label>
           <div className="flex items-center gap-2">
-            <input
+            <Input
               type="text"
               value={draftPriceFrom}
               onChange={(e) => setDraftPriceFrom(e.target.value)}
@@ -169,7 +181,7 @@ export function ListingsFilter({
               className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
             <span className="text-foreground-muted">—</span>
-            <input
+            <Input
               type="text"
               value={draftPriceTo}
               onChange={(e) => setDraftPriceTo(e.target.value)}
@@ -181,18 +193,18 @@ export function ListingsFilter({
 
         {/* Property Type */}
         <div className="flex flex-col gap-2">
-          <label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Loại hình</label>
+          <Label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Loại hình</Label>
           <div className="flex flex-col gap-2">
             {propertyTypes.map((t) => (
-              <label key={t.id} className="flex items-center gap-2 text-sm cursor-pointer">
-                <input
+              <Label key={t.id} className="flex items-center gap-2 text-sm cursor-pointer">
+                <Input
                   type="checkbox"
                   checked={draftSelectedTypes.includes(t.id)}
                   onChange={() => toggleType(t.id)}
                   className="size-4 rounded border-border text-primary focus:ring-primary"
                 />
                 {t.name}
-              </label>
+              </Label>
             ))}
           </div>
         </div>
@@ -209,9 +221,9 @@ export function ListingsFilter({
         <p className="text-sm text-primary-foreground/80">
           Nhận thông báo khi có bất động sản mới phù hợp với tìm kiếm này.
         </p>
-        <button className="w-full mt-2 py-2 bg-surface text-primary rounded-lg text-xs font-semibold uppercase tracking-wide hover:bg-surface-muted transition-colors">
+        <Button className="w-full mt-2 py-2 bg-surface text-primary rounded-lg text-xs font-semibold uppercase tracking-wide hover:bg-surface-muted transition-colors">
           Đăng ký nhận tin
-        </button>
+        </Button>
       </div>
     </div>
   );

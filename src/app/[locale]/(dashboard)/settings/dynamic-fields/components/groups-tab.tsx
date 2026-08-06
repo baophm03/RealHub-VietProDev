@@ -376,13 +376,16 @@ export function GroupsTab({ entityType, propertyTypeId }: GroupsTabProps) {
                         ? "Thông tin cơ bản"
                         : value === "special"
                           ? "Thông tin nổi bật"
-                          : "Chọn loại nhóm"
+                          : value === "contact_info"
+                            ? "Thông tin liên hệ"
+                            : "Chọn loại nhóm"
                     }
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="basic_info">Thông tin cơ bản</SelectItem>
                   <SelectItem value="special">Thông tin nổi bật</SelectItem>
+                  <SelectItem value="contact_info">Thông tin liên hệ</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
