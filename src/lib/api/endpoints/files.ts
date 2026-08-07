@@ -32,7 +32,9 @@ import type {
 import type {
   GetApiFilesParams,
   PostApiFileUploadBody,
-  PostApiTempUploadBody
+  PostApiFileUploadMultipleBody,
+  PostApiTempUploadBody,
+  UpdateFileVisibilityDto
 } from '../models';
 
 import { customInstance } from '../mutator/custom-instance';
@@ -123,13 +125,26 @@ export const usePostApiFileUpload = <TError = unknown,
  * @summary Upload multiple files (max 10)
  */
 export const postApiFileUploadMultiple = (
-    
+    postApiFileUploadMultipleBody: PostApiFileUploadMultipleBody,
  signal?: AbortSignal
 ) => {
       
-      
+      const formData = new FormData();
+postApiFileUploadMultipleBody.files.forEach(value => formData.append(`files`, value));
+if(postApiFileUploadMultipleBody.ownerType !== undefined) {
+ formData.append(`ownerType`, postApiFileUploadMultipleBody.ownerType)
+ }
+if(postApiFileUploadMultipleBody.ownerId !== undefined) {
+ formData.append(`ownerId`, postApiFileUploadMultipleBody.ownerId)
+ }
+if(postApiFileUploadMultipleBody.visibility !== undefined) {
+ formData.append(`visibility`, postApiFileUploadMultipleBody.visibility)
+ }
+
       return customInstance<unknown>(
-      {url: `/api/files/upload-multiple`, method: 'POST', signal
+      {url: `/api/files/upload-multiple`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
     },
       );
     }
@@ -137,8 +152,8 @@ export const postApiFileUploadMultiple = (
 
 
 export const getPostApiFileUploadMultipleMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiFileUploadMultiple>>, TError,void, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof postApiFileUploadMultiple>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiFileUploadMultiple>>, TError,{data: PostApiFileUploadMultipleBody}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiFileUploadMultiple>>, TError,{data: PostApiFileUploadMultipleBody}, TContext> => {
 
 const mutationKey = ['postApiFileUploadMultiple'];
 const {mutation: mutationOptions} = options ?
@@ -150,10 +165,10 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiFileUploadMultiple>>, void> = () => {
-          
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiFileUploadMultiple>>, {data: PostApiFileUploadMultipleBody}> = (props) => {
+          const {data} = props ?? {};
 
-          return  postApiFileUploadMultiple()
+          return  postApiFileUploadMultiple(data,)
         }
 
         
@@ -162,18 +177,18 @@ const {mutation: mutationOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiFileUploadMultipleMutationResult = NonNullable<Awaited<ReturnType<typeof postApiFileUploadMultiple>>>
-    
+    export type PostApiFileUploadMultipleMutationBody = PostApiFileUploadMultipleBody
     export type PostApiFileUploadMultipleMutationError = unknown
 
     /**
  * @summary Upload multiple files (max 10)
  */
 export const usePostApiFileUploadMultiple = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiFileUploadMultiple>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiFileUploadMultiple>>, TError,{data: PostApiFileUploadMultipleBody}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiFileUploadMultiple>>,
         TError,
-        void,
+        {data: PostApiFileUploadMultipleBody},
         TContext
       > => {
 
@@ -827,11 +842,14 @@ export const prefetchGetApiFileDownloadUrlQuery = async <TData = Awaited<ReturnT
  */
 export const patchApiFileVisibility = (
     id: string,
+    updateFileVisibilityDto: UpdateFileVisibilityDto,
  ) => {
       
       
       return customInstance<unknown>(
-      {url: `/api/files/${id}/visibility`, method: 'PATCH'
+      {url: `/api/files/${id}/visibility`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: updateFileVisibilityDto
     },
       );
     }
@@ -839,8 +857,8 @@ export const patchApiFileVisibility = (
 
 
 export const getPatchApiFileVisibilityMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiFileVisibility>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiFileVisibility>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiFileVisibility>>, TError,{id: string;data: UpdateFileVisibilityDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiFileVisibility>>, TError,{id: string;data: UpdateFileVisibilityDto}, TContext> => {
 
 const mutationKey = ['patchApiFileVisibility'];
 const {mutation: mutationOptions} = options ?
@@ -852,10 +870,10 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiFileVisibility>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiFileVisibility>>, {id: string;data: UpdateFileVisibilityDto}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiFileVisibility(id,)
+          return  patchApiFileVisibility(id,data,)
         }
 
         
@@ -864,18 +882,18 @@ const {mutation: mutationOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiFileVisibilityMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiFileVisibility>>>
-    
+    export type PatchApiFileVisibilityMutationBody = UpdateFileVisibilityDto
     export type PatchApiFileVisibilityMutationError = unknown
 
     /**
  * @summary Update file visibility
  */
 export const usePatchApiFileVisibility = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiFileVisibility>>, TError,{id: string}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiFileVisibility>>, TError,{id: string;data: UpdateFileVisibilityDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiFileVisibility>>,
         TError,
-        {id: string},
+        {id: string;data: UpdateFileVisibilityDto},
         TContext
       > => {
 

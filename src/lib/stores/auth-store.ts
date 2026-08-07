@@ -13,7 +13,7 @@ interface AuthState {
   sessionId: string | null;
   _hasHydrated: boolean
   setHasHydrated: (val: boolean) => void
-  setAuth: (tokens: {
+  setAuth: (data: {
     activeTenantId: string;
     expiresIn: number;
     roleInTenant: string;

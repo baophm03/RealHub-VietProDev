@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import axios, { AxiosError, AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 import config from "@/config";
 
 // API client (axios instance)
@@ -12,6 +12,7 @@ const apiClient = axios.create({
 
 // CSRF token management
 let csrfToken: string | null = null;
+let refreshPromise: Promise<void> | null = null;
 
 const getCookie = (name: string): string | null => {
   if (typeof document === "undefined") return null;
@@ -19,16 +20,13 @@ const getCookie = (name: string): string | null => {
   return match ? decodeURIComponent(match[1]) : null;
 };
 
-apiClient.interceptors.request.use((reqConfig) => {
+apiClient.interceptors.request.use((request) => {
   const token = csrfToken || getCookie("csrf-token");
+  if (token) request.headers.set("x-csrf-token", token);
 
-  if (token) {
-    reqConfig.headers.set("x-csrf-token", token);
-  }
+  request.headers.set("x-tenant-code", process.env.NEXT_PUBLIC_TENANT_CODE ?? "DEMO");
 
-  reqConfig.headers.set("x-tenant-code", process.env.NEXT_PUBLIC_TENANT_CODE ?? "DEMO");
-
-  return reqConfig;
+  return request;
 });
 
 apiClient.interceptors.response.use(
@@ -39,10 +37,41 @@ apiClient.interceptors.response.use(
     }
     return response;
   },
-  (error: AxiosError) => {
+  async (error: AxiosError) => {
     const statusCode = error.response?.status;
+    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+
     if (typeof window !== "undefined") {
-      if (statusCode === 401) {
+      if (statusCode === 401 && originalRequest && !originalRequest._retry) {
+        const isRefreshRequest = originalRequest.url?.includes("/api/auth/refresh");
+
+        if (!isRefreshRequest) {
+          originalRequest._retry = true;
+
+          try {
+            if (!refreshPromise) {
+              refreshPromise = apiClient
+                .post("/api/auth/refresh")
+                .then(() => {
+                  const newCsrf = getCookie("csrf-token");
+                  if (newCsrf) csrfToken = newCsrf;
+                })
+                .finally(() => {
+                  refreshPromise = null;
+                });
+            }
+            await refreshPromise;
+
+            return apiClient(originalRequest);
+          } catch (e) {
+            console.error("Failed to refresh token", e);
+            localStorage.removeItem("realhub-auth");
+            localStorage.removeItem("realhub-user");
+            window.location.href = "/vi/login";
+            return Promise.reject(error);
+          }
+        }
+
         localStorage.removeItem("realhub-auth");
         localStorage.removeItem("realhub-user");
         window.location.href = "/vi/login";

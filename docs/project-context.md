@@ -280,30 +280,38 @@ realhub/
 ```
 src/
 ├── app/                    # Next.js App Router
-│   ├── (auth)/             # Auth pages (login, register)
-│   ├── (dashboard)/        # Protected pages
-│   │   ├── layout.tsx      # Dashboard layout (sidebar + topbar)
-│   │   ├── page.tsx        # Dashboard home
-│   │   ├── properties/     # Bất động sản
-│   │   ├── customers/      # Khách hàng
-│   │   ├── leads/          # Leads (Kanban)
-│   │   ├── appointments/   # Lịch hẹn
-│   │   ├── deals/          # Giao dịch
-│   │   ├── commission/     # Hoa hồng
-│   │   └── settings/       # Cài đặt
+│   ├── [locale]/           # i18n locale segment (next-intl)
+│   │   ├── (auth)/         # Auth pages (login, register, forgot-password)
+│   │   ├── (public)/       # Public marketing pages (home, about, listings, ...)
+│   │   └── dashboard/      # Protected pages (sidebar + topbar layout)
+│   │       ├── (dashboard)/# Dashboard home (stats cards, charts)
+│   │       ├── properties/ # Bất động sản (list + new + [id] + [id]/edit)
+│   │       ├── projects/   # Dự án (list + new + [id] + [id]/edit)
+│   │       ├── customers/  # Khách hàng
+│   │       ├── leads/      # Leads (Kanban)
+│   │       ├── appointments/ # Lịch hẹn
+│   │       ├── deals/      # Giao dịch
+│   │       ├── commission/ # Hoa hồng (plans + reports)
+│   │       ├── news/       # Tin tức (news + categories)
+│   │       ├── files/      # Tài liệu
+│   │       ├── profile/    # Hồ sơ người dùng
+│   │       └── settings/   # Cài đặt (workflows, locations, dynamic-fields, visibility, lead-protection)
 │   ├── layout.tsx          # Root layout
 │   └── globals.css         # Global styles + CSS variables
 ├── components/
 │   ├── ui/                 # Base primitives (button, card, input, ...)
 │   ├── layout/             # Layout components (sidebar, topbar, footer)
+│   ├── sections/           # Landing page sections (hero, featured, ...)
 │   └── shared/             # Shared business components
 ├── lib/
 │   ├── api/                # API client, interceptors, endpoints
 │   ├── stores/             # Zustand stores (auth, ui, tenant)
 │   ├── hooks/              # Custom hooks
 │   ├── utils/              # Utilities (cn, formatters, ...)
-│   └── types/              # TypeScript types & enums
-├── providers/              # Context providers
+│   ├── types/              # TypeScript types & enums
+│   └── mock/               # Mock data
+├── i18n/                   # next-intl config (routing, navigation, request)
+├── providers/              # Context providers (react-query, ...)
 └── config/                 # App config (nav items, env, constants)
 ```
 
@@ -409,6 +417,9 @@ Auth, Tenant, Users/Roles, Locations/Zones, Properties/Projects, Assignments, Le
 | Properties | `/properties` | Properties | DataGrid + filter sidebar + map toggle |
 | Property Detail | `/properties/:id` | Properties | Tabs: Info, Media, Documents, History |
 | Property Form | `/properties/new` | Properties + Dynamic Fields | Dynamic form từ FormSchema API |
+| Projects | `/projects` | Projects | DataGrid + search + developer filter |
+| Project Detail | `/projects/:id` | Projects | Info + danh sách BĐS thuộc dự án |
+| Project Form | `/projects/new` | Projects | Form tạo dự án (tên, mã, chủ đầu tư, khu vực) |
 | Customers | `/customers` | CRM | DataGrid + search + type filter |
 | Customer Detail | `/customers/:id` | CRM | Tabs: Info, Needs, Leads, Activities |
 | Leads | `/leads` | CRM | Kanban board (theo status) + list toggle |

@@ -13,9 +13,8 @@ export interface NewsCategory {
 
 export interface NewsThumbnail {
   id: string;
-  objectKey?: string;
   mimeType?: string;
-  originalFileName?: string;
+  original?: string;
   fileSize?: number;
   url?: string;
 }

@@ -12,6 +12,8 @@ export type GetApiFilesVisibility = typeof GetApiFilesVisibility[keyof typeof Ge
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GetApiFilesVisibility = {
   PUBLIC: 'PUBLIC',
-  PRIVATE: 'PRIVATE',
   TENANT: 'TENANT',
+  ASSIGNED: 'ASSIGNED',
+  PRIVATE: 'PRIVATE',
+  SENSITIVE: 'SENSITIVE',
 } as const;

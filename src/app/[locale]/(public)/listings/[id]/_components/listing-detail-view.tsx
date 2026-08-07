@@ -257,9 +257,16 @@ export function ListingDetailView() {
           {/* Description */}
           <section className="space-y-4">
             <h2 className="font-serif text-xl font-semibold text-primary border-b border-border pb-2">Mô tả chi tiết</h2>
-            <p className="text-base leading-relaxed text-foreground-muted">
-              {(property as any).description ?? "Chưa có mô tả chi tiết cho bất động sản này."}
-            </p>
+            {(property as any).description ? (
+              <div
+                className="prose prose-sm max-w-none prose-headings:font-serif prose-headings:font-semibold prose-a:text-primary prose-img:rounded-lg prose-img:my-4 text-foreground-muted"
+                dangerouslySetInnerHTML={{ __html: (property as any).description }}
+              />
+            ) : (
+              <p className="text-base leading-relaxed text-foreground-muted">
+                Chưa có mô tả chi tiết cho bất động sản này.
+              </p>
+            )}
           </section>
 
           {/* Highlights / Features */}
