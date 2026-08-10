@@ -31,6 +31,8 @@ import {
   usePostApiPropertyMediaReorder,
 } from "@/lib/api/endpoints/properties";
 import { usePostApiFileUpload } from "@/lib/api/endpoints/files";
+import { FilePickerModal } from "@/components/shared/file-picker-modal";
+import type { FileItem } from "@/lib/api/types/files";
 
 type MediaType = "IMAGE" | "VIDEO" | "TOUR_360" | "FLOOR_PLAN" | "DOCUMENT";
 
@@ -47,11 +49,10 @@ interface MediaItem {
   caption?: string | null;
   file?: {
     id: string;
-    originalFileName?: string;
+    original?: string;
     mimeType?: string;
     fileSize?: number;
     visibility?: string;
-    objectKey?: string;
     url?: string;
   };
 }
@@ -87,6 +88,7 @@ export function PropertyMediaManager({ propertyId }: PropertyMediaManagerProps) 
   const [uploading, setUploading] = useState(false);
   const [editingCaptionId, setEditingCaptionId] = useState<string | null>(null);
   const [captionValue, setCaptionValue] = useState("");
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const { data: mediaData, isLoading } = useGetApiPropertyMedia(propertyId);
   const mediaItems = useMemo(() => {
@@ -262,6 +264,36 @@ export function PropertyMediaManager({ propertyId }: PropertyMediaManagerProps) 
     }
   };
 
+  const handlePickFromLibrary = async (files: FileItem[]) => {
+    if (files.length === 0) return;
+    try {
+      const currentMaxSort = sortedMedia.reduce(
+        (max, item) => Math.max(max, item.sortOrder ?? 0),
+        -1,
+      );
+      for (let i = 0; i < files.length; i++) {
+        const f = files[i];
+        const isImage = f.mimeType?.startsWith("image/");
+        const isVideo = f.mimeType?.startsWith("video/");
+        await addMedia({
+          id: propertyId,
+          data: {
+            fileId: f.id,
+            type: isImage ? "IMAGE" : isVideo ? "VIDEO" : "DOCUMENT",
+            sortOrder: currentMaxSort + 1 + i,
+            isPrimary: sortedMedia.length === 0 && i === 0,
+            caption: "",
+          },
+        });
+      }
+      invalidateMedia();
+      toast.success(`Đã thêm ${files.length} file từ thư viện`);
+    } catch (err) {
+      console.error(err);
+      toast.error("Có lỗi khi thêm file từ thư viện");
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex flex-col gap-4">
@@ -277,31 +309,58 @@ export function PropertyMediaManager({ propertyId }: PropertyMediaManagerProps) 
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Upload Zone */}
-      <div
-        {...getRootProps()}
-        className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-8 text-center transition-colors ${isDragActive
-          ? "border-primary bg-primary/5"
-          : "border-border hover:border-primary/50 hover:bg-surface-muted/50"
-          } ${uploading ? "pointer-events-none opacity-60" : ""}`}
-      >
-        <input {...getInputProps()} />
-        <UploadSimple size={32} weight="duotone" className="text-primary" />
-        {uploading ? (
-          <p className="text-sm text-foreground-muted">Đang upload...</p>
-        ) : isDragActive ? (
-          <p className="text-sm font-medium text-primary">Thả file vào đây...</p>
-        ) : (
-          <>
-            <p className="text-sm font-medium text-foreground">
-              Kéo thả file hoặc click để chọn
-            </p>
-            <p className="text-xs text-foreground-muted">
-              Hỗ trợ: JPG, PNG, WebP, GIF, MP4, PDF — Tối đa 50MB/file
-            </p>
-          </>
-        )}
+      {/* Upload Zone + Library Picker */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+        <div
+          {...getRootProps()}
+          className={`flex flex-1 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 text-center transition-colors ${isDragActive
+            ? "border-primary bg-primary/5"
+            : "border-border hover:border-primary/50 hover:bg-surface-muted/50"
+            } ${uploading ? "pointer-events-none opacity-60" : ""}`}
+        >
+          <input {...getInputProps()} />
+          <UploadSimple size={28} weight="duotone" className="text-primary" />
+          {uploading ? (
+            <p className="text-sm text-foreground-muted">Đang upload...</p>
+          ) : isDragActive ? (
+            <p className="text-sm font-medium text-primary">Thả file vào đây...</p>
+          ) : (
+            <>
+              <p className="text-sm font-medium text-foreground">
+                Kéo thả file hoặc click để chọn
+              </p>
+              <p className="text-xs text-foreground-muted">
+                JPG, PNG, WebP, GIF, MP4, PDF — Tối đa 50MB/file
+              </p>
+            </>
+          )}
+        </div>
+        <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-border bg-surface-muted/30 p-6 text-center sm:w-48">
+          <ImageIcon size={28} weight="duotone" className="text-foreground-muted" />
+          <p className="text-xs text-foreground-muted">
+            Chọn từ ảnh đã có trong hệ thống
+          </p>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setPickerOpen(true)}
+          >
+            Chọn từ thư viện
+          </Button>
+        </div>
       </div>
+      <FilePickerModal
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        onSelect={handlePickFromLibrary}
+        multiple
+        filter="all"
+        ownerType="PROPERTY"
+        ownerId={propertyId}
+        excludeIds={sortedMedia.map((m) => m.fileId)}
+        title="Chọn file từ thư viện"
+      />
 
       {/* Media Grid */}
       {sortedMedia.length === 0 ? (

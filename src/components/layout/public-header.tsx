@@ -18,6 +18,7 @@ import {
   Globe,
   SignOut,
   UserCircle,
+  User,
 } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils/cn";
 import { useAuthStore } from "@/lib/stores/auth-store";
@@ -344,10 +345,10 @@ export function PublicHeader() {
                   </div>
                   <DropdownMenuSeparator className="my-1 border-border" />
                   <DropdownMenuItem
-                    onClick={() => router.push("/profile")}
+                    onClick={() => router.push("/dashboard/profile")}
                     className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-foreground-muted hover:bg-surface-muted cursor-pointer outline-none transition-colors"
                   >
-                    <UserCircle size={16} />
+                    <User size={16} />
                     <span>Hồ sơ cá nhân</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem

@@ -1,6 +1,7 @@
 import {
   House,
   Buildings,
+  Building,
   Users,
   UserCircle,
   Calendar,
@@ -38,38 +39,44 @@ export const navGroups: NavGroup[] = [
     label: "Kinh doanh",
     items: [
       {
-        label: "Bất động sản & Dự án",
-        href: "/properties",
+        label: "Bất động sản",
+        href: "/dashboard/properties",
         icon: Buildings,
         permission: "properties:read",
       },
       {
+        label: "Dự án",
+        href: "/dashboard/projects",
+        icon: Building,
+        permission: "properties:read",
+      },
+      {
         label: "Khách hàng",
-        href: "/customers",
+        href: "/dashboard/customers",
         icon: Users,
         permission: "customers:read",
       },
       {
         label: "Leads",
-        href: "/leads",
+        href: "/dashboard/leads",
         icon: UserCircle,
         permission: "leads:read",
       },
       {
         label: "Lịch hẹn",
-        href: "/appointments",
+        href: "/dashboard/appointments",
         icon: Calendar,
         permission: "appointments:read",
       },
       {
         label: "Giao dịch",
-        href: "/deals",
+        href: "/dashboard/deals",
         icon: Handshake,
         permission: "deals:read",
       },
       {
         label: "Hoa hồng",
-        href: "/commission",
+        href: "/dashboard/commission",
         icon: Percent,
         permission: "commission:read",
       },
@@ -80,18 +87,18 @@ export const navGroups: NavGroup[] = [
     items: [
       {
         label: "Tin tức",
-        href: "/news-contents",
+        href: "/dashboard/news",
         icon: Newspaper,
         permission: "news:read",
       },
       {
         label: "Tài liệu",
-        href: "/files",
+        href: "/dashboard/files",
         icon: FolderSimple,
       },
       {
         label: "Cài đặt",
-        href: "/settings",
+        href: "/dashboard/settings",
         icon: Gear,
         permission: "tenants:read",
       },

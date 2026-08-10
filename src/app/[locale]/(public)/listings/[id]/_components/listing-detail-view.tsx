@@ -3,10 +3,9 @@
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
 import {
-  Bed, Bathtub, MapPin, Phone, Star, CaretRight, PaperPlaneTilt, Ruler, ShieldCheck, Spinner,
+  Bed, Bathtub, MapPin, Star, CaretRight, Ruler, ShieldCheck, Spinner,
 } from "@phosphor-icons/react";
 import { Link } from "@/i18n/navigation";
-import { Button } from "@/components/ui/button";
 import {
   useGetApiPropertyId,
   useGetApiProperties,
@@ -18,6 +17,7 @@ import type {
   Property,
 } from "@/lib/api/types/properties";
 import { ListingGallery } from "./listing-gallery";
+import { ListingContactSidebar } from "./listing-contact-sidebar";
 import { PropertyCardImage } from "@/components/shared/property-card-image";
 
 const txLabel: Record<string, string> = {
@@ -33,14 +33,6 @@ const statusLabel: Record<string, string> = {
   SOLD: "Đã bán",
   RENTED: "Đã thuê",
   OFF_MARKET: "Ngừng bán",
-};
-
-const sellingModeLabel: Record<string, string> = {
-  SALES_DISTRIBUTION: "Phân phối sales",
-  SELF_SELL: "Tự bán",
-  HYBRID: "Kết hợp",
-  MARKETPLACE_PUBLIC: "Marketplace",
-  INTERNAL_ONLY: "Nội bộ",
 };
 
 function formatPrice(priceStr: string, transactionType: string): string {
@@ -121,7 +113,7 @@ export function ListingDetailView() {
 
   const property = (propertyData as unknown as GetPropertyItemResponse)?.data ?? null;
   const schemas = ((schemaData as any)?.data as any[]) || [];
-
+  console.log(property)
   const propertyTypeId = property?.propertyType?.id;
   const { data: similarData } = useGetApiProperties(
     propertyTypeId ? { propertyTypeId, limit: "10" } : { limit: "10" },
@@ -162,6 +154,15 @@ export function ListingDetailView() {
 
   const basicInfoFields = getFieldsByGroupCode(relevantSchemas, dynamicValues, "basic_info");
   const specialFields = getFieldsByGroupCode(relevantSchemas, dynamicValues, "special");
+  const contactInfoFields = getFieldsByGroupCode(relevantSchemas, dynamicValues, "contact_info");
+
+  const contactInfo = contactInfoFields.length > 0
+    ? [{
+      name: contactInfoFields.find((f) => f.key === "contact_name")?.value ?? null,
+      phone: contactInfoFields.find((f) => f.key === "phone_number_contact")?.value ?? null,
+      position: contactInfoFields.find((f) => f.key === "position")?.value ?? null,
+    }]
+    : [];
 
   const staticSpecs = [
     { icon: Ruler, label: "Diện tích", value: property.area ? `${property.area} m²` : "—", accent: false },
@@ -256,9 +257,16 @@ export function ListingDetailView() {
           {/* Description */}
           <section className="space-y-4">
             <h2 className="font-serif text-xl font-semibold text-primary border-b border-border pb-2">Mô tả chi tiết</h2>
-            <p className="text-base leading-relaxed text-foreground-muted">
-              {(property as any).description ?? "Chưa có mô tả chi tiết cho bất động sản này."}
-            </p>
+            {(property as any).description ? (
+              <div
+                className="prose prose-sm max-w-none prose-headings:font-serif prose-headings:font-semibold prose-a:text-primary prose-img:rounded-lg prose-img:my-4 text-foreground-muted"
+                dangerouslySetInnerHTML={{ __html: (property as any).description }}
+              />
+            ) : (
+              <p className="text-base leading-relaxed text-foreground-muted">
+                Chưa có mô tả chi tiết cho bất động sản này.
+              </p>
+            )}
           </section>
 
           {/* Highlights / Features */}
@@ -312,76 +320,14 @@ export function ListingDetailView() {
         </div>
 
         {/* Right Column: Contact Sidebar */}
-        <div className="w-full lg:w-1/3 lg:sticky lg:top-24">
-          <div className="bg-surface rounded-xl border border-border shadow-sm p-6 space-y-6">
-            {/* Agent Info */}
-            <div className="flex items-center gap-4 pb-6 border-b border-border">
-              <div className="flex size-16 items-center justify-center rounded-full border-2 border-primary/20 bg-primary/10 text-lg font-bold text-primary">
-                {(property as any).assignedTo?.split(" ").slice(-1).map((n: string) => n[0]).join("") ?? "—"}
-              </div>
-              <div>
-                <h3 className="font-serif text-lg font-bold text-primary">{(property as any).assignedTo ?? "Chưa gán"}</h3>
-                <p className="text-sm text-foreground-muted">Chuyên viên Tư vấn</p>
-                <div className="flex items-center gap-1 mt-1" style={{ color: "#3b6934" }}>
-                  <Star size={12} weight="fill" />
-                  <Star size={12} weight="fill" />
-                  <Star size={12} weight="fill" />
-                  <Star size={12} weight="fill" />
-                  <Star size={12} weight="fill" />
-                </div>
-              </div>
-            </div>
-
-            {/* Contact Form */}
-            <form className="space-y-3" action="/api/contact" method="POST">
-              <input
-                type="text"
-                placeholder="Họ và tên"
-                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-              />
-              <input
-                type="tel"
-                placeholder="Số điện thoại"
-                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-              />
-              <textarea
-                placeholder="Nội dung yêu cầu"
-                rows={3}
-                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-              />
-              <Button className="w-full" size="lg" leftIcon={<PaperPlaneTilt size={16} />}>
-                Gửi yêu cầu
-              </Button>
-              <Button variant="outline" className="w-full" size="lg" leftIcon={<Phone size={16} />}>
-                0901 234 567
-              </Button>
-            </form>
-
-            {/* Property Meta */}
-            <div className="border-t border-border pt-4 space-y-2 text-xs text-foreground-muted">
-              <div className="flex justify-between">
-                <span>Loại hình</span>
-                <span className="font-medium text-foreground">{property.propertyType?.name ?? "—"}</span>
-              </div>
-              {direction && (
-                <div className="flex justify-between">
-                  <span>Hướng</span>
-                  <span className="font-medium text-foreground">{direction}</span>
-                </div>
-              )}
-              <div className="flex justify-between">
-                <span>Chế độ bán</span>
-                <span className="font-medium text-foreground">
-                  {sellingModeLabel[property.sellingMode ?? ""] ?? property.sellingMode ?? "—"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Ngày đăng</span>
-                <span className="font-medium text-foreground">{new Date(property.createdAt).toLocaleDateString("vi-VN")}</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ListingContactSidebar
+          propertyId={property.id}
+          contacts={contactInfo}
+          propertyTypeName={property.propertyType?.name}
+          direction={direction}
+          sellingMode={property.sellingMode}
+          createdAt={property.createdAt}
+        />
       </div>
 
       {/* Similar Properties */}

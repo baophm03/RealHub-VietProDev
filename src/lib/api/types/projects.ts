@@ -18,12 +18,11 @@ export interface ProjectMedia {
   fileId: string;
   file: {
     id: string;
-    originalFileName: string;
+    original: string;
     mimeType: string;
     fileSize: number;
     visibility: string;
     bucket: string;
-    objectKey: string;
     url: string;
   } | null;
   createdAt: string;

@@ -7,7 +7,7 @@
  */
 
 export interface UpdateNewsDto {
-  /** UUID of the thumbnail File record */
+  /** ID of the thumbnail File record */
   thumbnailId?: string;
   title?: string;
   description?: string;

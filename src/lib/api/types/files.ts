@@ -1,20 +1,21 @@
 export interface FileItem {
   id: string;
   url: string;
-  objectKey: string;
+  original: string;
   bucket: string;
-  originalFileName: string;
   mimeType: string;
   fileSize: number;
   visibility: string;
   isSensitive: boolean;
   ownerType: string | null;
   ownerId: string | null;
+  status: string;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface GetFilesResponse {
-  data: FileItem[];
+  items: FileItem[];
   total: number;
   limit: number;
   offset: number;
@@ -23,8 +24,7 @@ export interface GetFilesResponse {
 export interface UploadFileResponse {
   id: string;
   url: string;
-  objectKey: string;
-  originalFileName: string;
+  original: string;
   mimeType: string;
   fileSize: number;
   visibility: string;

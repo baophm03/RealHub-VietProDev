@@ -3,7 +3,7 @@
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useUserStore } from "@/lib/stores/user-store";
 import { useRouter } from "next/navigation";
-import { List, Bell, Moon, Sun, SignOut, UserCircle } from "@phosphor-icons/react";
+import { List, Bell, Moon, Sun, SignOut, UserCircle, User } from "@phosphor-icons/react";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import {
   DropdownMenu,
@@ -80,10 +80,10 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
 
         <DropdownMenu>
           <DropdownMenuTrigger
-            className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-surface-muted transition-all duration-300"
+            className="flex items-center gap-2 rounded-md p-1.5 hover:bg-surface-muted transition-all duration-300"
           >
-            <Avatar className="size-8 rounded-lg overflow-hidden">
-              <AvatarFallback className="flex size-8 items-center justify-center rounded-lg bg-surface-muted text-xs font-medium">
+            <Avatar className="size-10 rounded-md overflow-hidden">
+              <AvatarFallback className="flex size-10 items-center justify-center rounded-md bg-surface-muted text-xs font-medium">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -98,10 +98,10 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
             </div>
             <DropdownMenuSeparator className="my-1 border-border" />
             <DropdownMenuItem
-              onClick={() => router.push("/profile")}
+              onClick={() => router.push("/dashboard/profile")}
               className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-foreground-muted hover:bg-surface-muted cursor-pointer outline-none transition-colors"
             >
-              <UserCircle size={16} />
+              <User size={16} />
               <span>Hồ sơ cá nhân</span>
             </DropdownMenuItem>
             <DropdownMenuItem
