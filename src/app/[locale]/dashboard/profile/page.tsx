@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormSection, FormField } from "@/components/shared/form-section";
 import { useUserStore } from "@/lib/stores/user-store";
-import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export default function ProfilePage() {
   const user = useUserStore((s) => s.user);

@@ -51,7 +51,7 @@ export function ListingsToolbar({
           </SelectTrigger>
           <SelectContent>
             {SORT_OPTIONS.map((o) => (
-              <SelectItem key={o.value} value={o.value}>
+              <SelectItem key={o.value} value={o.value} label={o.label}>
                 {o.label}
               </SelectItem>
             ))}

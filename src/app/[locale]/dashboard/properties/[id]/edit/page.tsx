@@ -262,10 +262,10 @@ export default function PropertyEditPage() {
                   <SelectValue placeholder="Chọn loại giao dịch" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="SALE">Bán</SelectItem>
-                  <SelectItem value="RENT">Cho thuê</SelectItem>
-                  <SelectItem value="TRANSFER">Chuyển nhượng</SelectItem>
-                  <SelectItem value="INVESTMENT">Đầu tư</SelectItem>
+                  <SelectItem value="SALE" label="Bán">Bán</SelectItem>
+                  <SelectItem value="RENT" label="Cho thuê">Cho thuê</SelectItem>
+                  <SelectItem value="TRANSFER" label="Chuyển nhượng">Chuyển nhượng</SelectItem>
+                  <SelectItem value="INVESTMENT" label="Đầu tư">Đầu tư</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
@@ -280,7 +280,7 @@ export default function PropertyEditPage() {
                 </SelectTrigger>
                 <SelectContent>
                   {propertyTypes.map((t) => (
-                    <SelectItem key={t.id} value={t.id}>
+                    <SelectItem key={t.id} value={t.id} label={t.name}>
                       {t.name}
                     </SelectItem>
                   ))}
@@ -300,9 +300,9 @@ export default function PropertyEditPage() {
                   <SelectValue placeholder="Chọn hình thức bán" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="SELF_SELL">Bán tự hành</SelectItem>
-                  <SelectItem value="SALES_DISTRIBUTION">Phân phối bán</SelectItem>
-                  <SelectItem value="HYBRID">Kết hợp</SelectItem>
+                  <SelectItem value="SELF_SELL" label="Bán tự hành">Bán tự hành</SelectItem>
+                  <SelectItem value="SALES_DISTRIBUTION" label="Phân phối bán">Phân phối bán</SelectItem>
+                  <SelectItem value="HYBRID" label="Kết hợp">Kết hợp</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
@@ -332,8 +332,8 @@ export default function PropertyEditPage() {
                     <SelectValue className="w-[100px]" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="VND">VND</SelectItem>
-                    <SelectItem value="USD">USD</SelectItem>
+                    <SelectItem value="VND" label="VND">VND</SelectItem>
+                    <SelectItem value="USD" label="USD">USD</SelectItem>
                   </SelectContent>
                 </Select>
               </FormField>
@@ -357,7 +357,7 @@ export default function PropertyEditPage() {
                 </SelectTrigger>
                 <SelectContent>
                   {projects.map((p) => (
-                    <SelectItem key={p.id} value={p.id}>
+                    <SelectItem key={p.id} value={p.id} label={p.name}>
                       {p.name}
                     </SelectItem>
                   ))}
@@ -382,7 +382,7 @@ export default function PropertyEditPage() {
                 </SelectTrigger>
                 <SelectContent>
                   {provinces.map((loc) => (
-                    <SelectItem key={loc.id} value={loc.id}>
+                    <SelectItem key={loc.id} value={loc.id} label={loc.name}>
                       {loc.name}
                     </SelectItem>
                   ))}
@@ -407,7 +407,7 @@ export default function PropertyEditPage() {
                 </SelectTrigger>
                 <SelectContent>
                   {districts.map((loc) => (
-                    <SelectItem key={loc.id} value={loc.id}>
+                    <SelectItem key={loc.id} value={loc.id} label={loc.name}>
                       {loc.name}
                     </SelectItem>
                   ))}
@@ -423,6 +423,14 @@ export default function PropertyEditPage() {
               <Input type="number" step="any" placeholder="106.7009" {...register("longitude", { setValueAs: (v) => v === "" ? undefined : Number(v) })} />
             </FormField>
           </div>
+          <iframe
+            width="100%"
+            height="400"
+            className="border-0"
+            loading="lazy"
+            allowFullScreen
+            src={`https://maps.google.com/maps?q=${watch("latitude") || 0},${watch("longitude") || 0}&z=15&output=embed`}>
+          </iframe>
         </FormSection>
 
         <FormSection title="Trạng thái" description="Trạng thái kinh doanh và xuất bản">
@@ -437,11 +445,11 @@ export default function PropertyEditPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="AVAILABLE">Sẵn có</SelectItem>
-                  <SelectItem value="RESERVED">Đặt cọc</SelectItem>
-                  <SelectItem value="SOLD">Đã bán</SelectItem>
-                  <SelectItem value="RENTED">Đã thuê</SelectItem>
-                  <SelectItem value="OFF_MARKET">Không còn</SelectItem>
+                  <SelectItem value="AVAILABLE" label="Sẵn có">Sẵn có</SelectItem>
+                  <SelectItem value="RESERVED" label="Đặt cọc">Đặt cọc</SelectItem>
+                  <SelectItem value="SOLD" label="Đã bán">Đã bán</SelectItem>
+                  <SelectItem value="RENTED" label="Đã thuê">Đã thuê</SelectItem>
+                  <SelectItem value="OFF_MARKET" label="Không còn">Không còn</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
@@ -455,9 +463,9 @@ export default function PropertyEditPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="PRIVATE">Riêng tư</SelectItem>
-                  <SelectItem value="PUBLIC">Công khai</SelectItem>
-                  <SelectItem value="ARCHIVED">Lưu trữ</SelectItem>
+                  <SelectItem value="PRIVATE" label="Riêng tư">Riêng tư</SelectItem>
+                  <SelectItem value="PUBLIC" label="Công khai">Công khai</SelectItem>
+                  <SelectItem value="ARCHIVED" label="Lưu trữ">Lưu trữ</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>

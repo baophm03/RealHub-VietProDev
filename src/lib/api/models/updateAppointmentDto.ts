@@ -17,4 +17,7 @@ export interface UpdateAppointmentDto {
   endTime?: string;
   status?: UpdateAppointmentDtoStatus;
   resultNote?: string;
+  customerId?: string;
+  propertyId?: string;
+  leadId?: string;
 }

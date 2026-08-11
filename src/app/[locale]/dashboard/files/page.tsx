@@ -272,9 +272,9 @@ export default function FilesPage() {
               <SelectValue placeholder="Tất cả" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="ALL">Tất cả</SelectItem>
+              <SelectItem value="ALL" label="Tất cả">Tất cả</SelectItem>
               {visibilityOptions.map((v) => (
-                <SelectItem key={v} value={v}>
+                <SelectItem key={v} value={v} label={visibilityLabel[v]}>
                   {visibilityLabel[v]}
                 </SelectItem>
               ))}

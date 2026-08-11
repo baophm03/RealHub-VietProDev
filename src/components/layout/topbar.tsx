@@ -4,14 +4,15 @@ import { useAuthStore } from "@/lib/stores/auth-store";
 import { useUserStore } from "@/lib/stores/user-store";
 import { useRouter } from "next/navigation";
 import { List, Bell, Moon, Sun, SignOut, UserCircle, User } from "@phosphor-icons/react";
-import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/lib/hooks/use-theme";
 import { usePostApiLogout } from "@/lib/api/endpoints/auth";
 
@@ -47,13 +48,13 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-surface/70 px-4 backdrop-blur-xl md:px-8">
       <div className="flex items-center gap-3">
-        <button
+        <Button
           onClick={onMenuClick}
           className="lg:hidden rounded-lg p-2 text-foreground-muted hover:bg-surface-muted transition-colors duration-300"
           aria-label="Menu"
         >
           <List size={20} />
-        </button>
+        </Button>
         {tenantCode && (
           <span className="hidden md:inline-flex items-center rounded-lg border border-primary/20 bg-primary/8 px-3 py-1 text-[11px] font-medium tracking-wide text-primary">
             {tenantCode}
@@ -61,22 +62,25 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
         )}
       </div>
 
-      <div className="flex items-center gap-1.5">
-        <button
+      <div className="flex items-center gap-1">
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={toggleTheme}
-          className="rounded-lg p-2.5 text-foreground-muted hover:bg-surface-muted transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:text-foreground"
           aria-label="Toggle theme"
         >
           {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
+        </Button>
 
-        <button
-          className="relative rounded-lg p-2.5 text-foreground-muted hover:bg-surface-muted transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:text-foreground"
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative"
           aria-label="Notifications"
         >
           <Bell size={18} />
-          <span className="absolute right-2 top-2 size-1.5 rounded-lg bg-primary" />
-        </button>
+          <span className="absolute right-2 top-2 size-2 rounded-full bg-red-500 ring-2 ring-surface" />
+        </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger

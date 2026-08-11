@@ -127,9 +127,9 @@ export default function DealEditPage() {
               <Select defaultValue="SALE" onValueChange={(v) => v && setValue("transactionType", v as DealFormData["transactionType"])}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="SALE">Ban</SelectItem>
-                  <SelectItem value="RENT">Cho thue</SelectItem>
-                  <SelectItem value="TRANSFER">Chuyen nhuong</SelectItem>
+                  <SelectItem value="SALE" label="Ban">Ban</SelectItem>
+                  <SelectItem value="RENT" label="Cho thue">Cho thue</SelectItem>
+                  <SelectItem value="TRANSFER" label="Chuyen nhuong">Chuyen nhuong</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>

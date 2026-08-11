@@ -118,15 +118,15 @@ export default function LeadEditPage() {
               <Select defaultValue="MANUAL_INPUT" onValueChange={(v) => setValue("source", v as LeadFormData["source"])}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="WEBSITE">Website</SelectItem>
-                  <SelectItem value="PROPERTY_DETAIL">Trang BÄS</SelectItem>
-                  <SelectItem value="OWNER_PAGE">Trang chu</SelectItem>
-                  <SelectItem value="SALES_LINK">Link sales</SelectItem>
-                  <SelectItem value="CTV_LINK">Link CTV</SelectItem>
-                  <SelectItem value="AGENCY_MARKETING">Marketing</SelectItem>
-                  <SelectItem value="MANUAL_INPUT">Nhap tay</SelectItem>
-                  <SelectItem value="LEAD_POOL">Lead pool</SelectItem>
-                  <SelectItem value="IMPORT">Nhap file</SelectItem>
+                  <SelectItem value="WEBSITE" label="Website">Website</SelectItem>
+                  <SelectItem value="PROPERTY_DETAIL" label="Trang BÄS">Trang BÄS</SelectItem>
+                  <SelectItem value="OWNER_PAGE" label="Trang chu">Trang chu</SelectItem>
+                  <SelectItem value="SALES_LINK" label="Link sales">Link sales</SelectItem>
+                  <SelectItem value="CTV_LINK" label="Link CTV">Link CTV</SelectItem>
+                  <SelectItem value="AGENCY_MARKETING" label="Marketing">Marketing</SelectItem>
+                  <SelectItem value="MANUAL_INPUT" label="Nhap tay">Nhap tay</SelectItem>
+                  <SelectItem value="LEAD_POOL" label="Lead pool">Lead pool</SelectItem>
+                  <SelectItem value="IMPORT" label="Nhap file">Nhap file</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
@@ -134,13 +134,13 @@ export default function LeadEditPage() {
               <Select defaultValue="NEW" onValueChange={(v) => setValue("status", v as LeadFormData["status"])}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="NEW">Moi</SelectItem>
-                  <SelectItem value="CONTACTED">Da lien he</SelectItem>
-                  <SelectItem value="INTERESTED">Quan tam</SelectItem>
-                  <SelectItem value="NEGOTIATING">Dam phan</SelectItem>
-                  <SelectItem value="CONVERTED">Chuyen doi</SelectItem>
-                  <SelectItem value="LOST">Mat</SelectItem>
-                  <SelectItem value="RECYCLED">Tai che</SelectItem>
+                  <SelectItem value="NEW" label="Moi">Moi</SelectItem>
+                  <SelectItem value="CONTACTED" label="Da lien he">Da lien he</SelectItem>
+                  <SelectItem value="INTERESTED" label="Quan tam">Quan tam</SelectItem>
+                  <SelectItem value="NEGOTIATING" label="Dam phan">Dam phan</SelectItem>
+                  <SelectItem value="CONVERTED" label="Chuyen doi">Chuyen doi</SelectItem>
+                  <SelectItem value="LOST" label="Mat">Mat</SelectItem>
+                  <SelectItem value="RECYCLED" label="Tai che">Tai che</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>

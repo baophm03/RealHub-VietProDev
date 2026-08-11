@@ -18,11 +18,11 @@ export function Sidebar() {
 
   return (
     <aside className="flex w-64 shrink-0 flex-col border-r border-border bg-surface h-full">
-      <div className="flex h-16 items-center px-6">
+      <Link href="/" className="flex h-16 items-center px-6">
         <span className="font-serif text-xl font-semibold tracking-tight text-black">
           RealHub
         </span>
-      </div>
+      </Link>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4">
         {navGroups.map((group) => (

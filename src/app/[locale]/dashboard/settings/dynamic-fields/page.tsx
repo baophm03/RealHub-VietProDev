@@ -63,9 +63,9 @@ export default function DynamicFieldsPage() {
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tất cả</SelectItem>
+                <SelectItem value="" label="Tất cả">Tất cả</SelectItem>
                 {entityTypeOptions.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
+                  <SelectItem key={opt.value} value={opt.value} label={opt.label}>
                     {opt.label}
                   </SelectItem>
                 ))}
@@ -86,9 +86,9 @@ export default function DynamicFieldsPage() {
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Tất cả loại BĐS</SelectItem>
+                  <SelectItem value="" label="Tất cả loại BĐS">Tất cả loại BĐS</SelectItem>
                   {propertyTypes.map((pt) => (
-                    <SelectItem key={pt.id} value={pt.id}>
+                    <SelectItem key={pt.id} value={pt.id} label={pt.name}>
                       {pt.name}
                     </SelectItem>
                   ))}

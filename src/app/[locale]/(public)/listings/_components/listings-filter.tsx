@@ -157,9 +157,9 @@ export function ListingsFilter({
               <SelectValue placeholder="Tất cả" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Tất cả</SelectItem>
+              <SelectItem value="" label="Tất cả">Tất cả</SelectItem>
               {provinces.map((p) => (
-                <SelectItem key={p.id} value={p.id}>
+                <SelectItem key={p.id} value={p.id} label={p.name}>
                   {p.name}
                 </SelectItem>
               ))}

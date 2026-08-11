@@ -24,14 +24,14 @@ import { cn } from "@/lib/utils/cn";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useUserStore } from "@/lib/stores/user-store";
 import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 
 const propertyCategories = [
   { icon: House, label: "Căn hộ", desc: "Chung cư, studio, penthouse", href: "/listings?type=apartment" },

@@ -442,7 +442,7 @@ export function DefinitionsTab({ entityType, propertyTypeId }: DefinitionsTabPro
                   </SelectTrigger>
                   <SelectContent>
                     {Object.entries(fieldTypeLabels).map(([value, label]) => (
-                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                      <SelectItem key={value} value={value} label={label}>{label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -460,7 +460,7 @@ export function DefinitionsTab({ entityType, propertyTypeId }: DefinitionsTabPro
                   </SelectTrigger>
                   <SelectContent>
                     {Object.entries(entityTypeLabels).map(([value, label]) => (
-                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                      <SelectItem key={value} value={value} label={label}>{label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -483,9 +483,9 @@ export function DefinitionsTab({ entityType, propertyTypeId }: DefinitionsTabPro
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="__all__">-- Tất cả loại BĐS --</SelectItem>
+                    <SelectItem value="__all__" label="-- Tất cả loại BĐS --">-- Tất cả loại BĐS --</SelectItem>
                     {propertyTypes.map((pt) => (
-                      <SelectItem key={pt.id} value={pt.id}>{pt.name}</SelectItem>
+                      <SelectItem key={pt.id} value={pt.id} label={pt.name}>{pt.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -507,9 +507,9 @@ export function DefinitionsTab({ entityType, propertyTypeId }: DefinitionsTabPro
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__none__">-- Không chọn nhóm --</SelectItem>
+                  <SelectItem value="__none__" label="-- Không chọn nhóm --">-- Không chọn nhóm --</SelectItem>
                   {availableGroups.map((g) => (
-                    <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
+                    <SelectItem key={g.id} value={g.id} label={g.name}>{g.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
