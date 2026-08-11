@@ -207,9 +207,9 @@ export default function NewsFormPage() {
                 <SelectValue placeholder="Chọn chuyên mục" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="__none__">— Không chuyên mục —</SelectItem>
+                <SelectItem value="__none__" label="— Không chuyên mục —">— Không chuyên mục —</SelectItem>
                 {categories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id}>
+                  <SelectItem key={cat.id} value={cat.id} label={cat.name}>
                     {cat.name}
                   </SelectItem>
                 ))}

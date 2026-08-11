@@ -118,8 +118,8 @@ export default function CommissionPlanFormPage() {
                 <Select defaultValue={split.type}>
                   <SelectTrigger className="w-full sm:w-32"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="PERCENT">Theo %</SelectItem>
-                    <SelectItem value="FIXED">Co dinh</SelectItem>
+                    <SelectItem value="PERCENT" label="Theo %">Theo %</SelectItem>
+                    <SelectItem value="FIXED" label="Co dinh">Co dinh</SelectItem>
                   </SelectContent>
                 </Select>
                 <Input type="number" placeholder="60" defaultValue={split.value} className="w-full sm:w-24" />

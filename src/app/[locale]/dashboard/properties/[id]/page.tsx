@@ -379,16 +379,16 @@ export default function PropertyDetailPage() {
           {/* Map Section */}
           <section className="flex flex-col gap-4">
             <h2 className="font-serif text-xl font-medium tracking-tight text-foreground border-b border-border pb-3">
-              Vi tri
+              Vị trí
             </h2>
-            <div className="h-80 w-full overflow-hidden rounded-lg border border-border bg-surface-muted">
-              <div className="flex h-full w-full items-center justify-center bg-surface-muted/50">
-                <div className="flex flex-col items-center gap-2 text-foreground-muted">
-                  <MapPin size={32} weight="duotone" className="text-primary" />
-                  <p className="text-sm">Bản đồ sẽ hiển thị tại đây</p>
-                </div>
-              </div>
-            </div>
+            <iframe
+              width="100%"
+              height="400"
+              className="border-0"
+              loading="lazy"
+              allowFullScreen
+              src={`https://maps.google.com/maps?q=${property?.latitude || 0},${property?.longitude || 0}&z=15&output=embed`}>
+            </iframe>
           </section>
         </div>
 

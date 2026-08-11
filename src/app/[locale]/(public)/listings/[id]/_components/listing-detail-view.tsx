@@ -309,13 +309,14 @@ export function ListingDetailView() {
           {/* Map Section */}
           <section className="space-y-4">
             <h2 className="font-serif text-xl font-semibold text-primary border-b border-border pb-2">Vị trí</h2>
-            <div className="w-full h-80 bg-surface-muted rounded-xl border border-border overflow-hidden relative flex items-center justify-center">
-              <div className="text-center text-foreground-muted">
-                <MapPin size={48} weight="fill" className="mx-auto mb-2 text-primary" />
-                <p className="text-sm">{property.address ?? "Đang cập nhật vị trí"}</p>
-                <p className="text-xs mt-1">Bản đồ sẽ hiển thị tại đây</p>
-              </div>
-            </div>
+            <iframe
+              width="100%"
+              height="400"
+              className="border-0"
+              loading="lazy"
+              allowFullScreen
+              src={`https://maps.google.com/maps?q=${property?.latitude || 0},${property?.longitude || 0}&z=15&output=embed`}>
+            </iframe>
           </section>
         </div>
 

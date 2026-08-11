@@ -338,7 +338,7 @@ export function FormSchemasTab({ entityType, propertyTypeId }: FormSchemasTabPro
                   </SelectTrigger>
                   <SelectContent>
                     {Object.entries(entityTypeLabels).map(([value, label]) => (
-                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                      <SelectItem key={value} value={value} label={label}>{label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -360,9 +360,9 @@ export function FormSchemasTab({ entityType, propertyTypeId }: FormSchemasTabPro
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="__all__">-- Tất cả loại BĐS --</SelectItem>
+                      <SelectItem value="__all__" label="-- Tất cả loại BĐS --">-- Tất cả loại BĐS --</SelectItem>
                       {propertyTypes.map((pt) => (
-                        <SelectItem key={pt.id} value={pt.id}>{pt.name}</SelectItem>
+                        <SelectItem key={pt.id} value={pt.id} label={pt.name}>{pt.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>

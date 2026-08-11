@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Handshake, Kanban, List as ListIcon } from "@phosphor-icons/react";
+import { Plus, Kanban, List as ListIcon } from "@phosphor-icons/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -140,4 +140,3 @@ export default function DealsPage() {
   );
 }
 
-void Handshake;

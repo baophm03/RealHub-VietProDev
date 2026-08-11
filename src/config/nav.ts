@@ -10,6 +10,7 @@ import {
   Gear,
   FolderSimple,
   Newspaper,
+  Headset,
 } from "@phosphor-icons/react";
 
 export interface NavItem {
@@ -61,6 +62,12 @@ export const navGroups: NavGroup[] = [
         href: "/dashboard/leads",
         icon: UserCircle,
         permission: "leads:read",
+      },
+      {
+        label: "Tư vấn",
+        href: "/dashboard/consultations",
+        icon: Headset,
+        permission: "properties:read",
       },
       {
         label: "Lịch hẹn",

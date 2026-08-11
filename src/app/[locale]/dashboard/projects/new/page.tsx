@@ -136,8 +136,8 @@ export default function ProjectFormPage() {
                   <SelectValue placeholder="Chọn trạng thái" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="ACTIVE">Đang hoạt động</SelectItem>
-                  <SelectItem value="INACTIVE">Ngừng hoạt động</SelectItem>
+                  <SelectItem value="ACTIVE" label="Đang hoạt động">Đang hoạt động</SelectItem>
+                  <SelectItem value="INACTIVE" label="Ngừng hoạt động">Ngừng hoạt động</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
@@ -162,7 +162,7 @@ export default function ProjectFormPage() {
                 </SelectTrigger>
                 <SelectContent>
                   {provinces.map((loc) => (
-                    <SelectItem key={loc.id} value={loc.id}>
+                    <SelectItem key={loc.id} value={loc.id} label={loc.name}>
                       {loc.name}
                     </SelectItem>
                   ))}
@@ -187,7 +187,7 @@ export default function ProjectFormPage() {
                 </SelectTrigger>
                 <SelectContent>
                   {districts.map((loc) => (
-                    <SelectItem key={loc.id} value={loc.id}>
+                    <SelectItem key={loc.id} value={loc.id} label={loc.name}>
                       {loc.name}
                     </SelectItem>
                   ))}

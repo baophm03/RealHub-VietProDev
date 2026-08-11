@@ -105,10 +105,10 @@ export default function CommissionPlanEditPage() {
             <Select defaultValue={status} onValueChange={(v) => v && setStatus(v)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="DRAFT">Ban nhap</SelectItem>
-                <SelectItem value="PENDING_APPROVAL">Cho duyet</SelectItem>
-                <SelectItem value="ACTIVE">Hoat dong</SelectItem>
-                <SelectItem value="ARCHIVED">Luu tru</SelectItem>
+                <SelectItem value="DRAFT" label="Ban nhap">Ban nhap</SelectItem>
+                <SelectItem value="PENDING_APPROVAL" label="Cho duyet">Cho duyet</SelectItem>
+                <SelectItem value="ACTIVE" label="Hoat dong">Hoat dong</SelectItem>
+                <SelectItem value="ARCHIVED" label="Luu tru">Luu tru</SelectItem>
               </SelectContent>
             </Select>
           </FormField>
