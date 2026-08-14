@@ -12,7 +12,7 @@ const sellingModeLabel: Record<string, string> = {
   SALES_DISTRIBUTION: "Phân phối sales",
   SELF_SELL: "Tự bán",
   HYBRID: "Kết hợp",
-  MARKETPLACE_PUBLIC: "Marketplace",
+  AGENCY_DISTRIBUTION: "Sàn công khai",
   INTERNAL_ONLY: "Nội bộ",
 };
 

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, MapTrifold, List as ListIcon, Funnel, Buildings } from "@phosphor-icons/react";
+import { Plus, MapTrifold, List as ListIcon, Funnel, Buildings, PaperPlaneTilt, Trash } from "@phosphor-icons/react";
+import { formatPrice } from "@/utils";
 import { Can } from "@casl/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,8 @@ import { EmptyState } from "@/components/shared/empty-state";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useGetApiProperties } from "@/lib/api/endpoints/properties";
 import { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
+import { SubmitVerificationDialog } from "./submit-verification-dialog";
+import { DeletePropertyDialog } from "./delete-property-dialog";
 
 const statusVariant: Record<string, "green" | "yellow" | "red" | "blue" | "default"> = {
   AVAILABLE: "green",
@@ -36,23 +39,47 @@ const txLabel: Record<string, string> = {
   INVESTMENT: "Đầu tư",
 };
 
-function formatPrice(price: number): string {
-  if (price >= 1000000000) return `${(price / 1000000000).toFixed(1)} tỷ`;
-  if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu`;
-  return price.toLocaleString("vi-VN");
-}
+const verificationStatusVariant: Record<
+  string,
+  "default" | "yellow" | "green" | "red"
+> = {
+  DRAFT: "default",
+  PENDING: "yellow",
+  VERIFIED: "green",
+  REJECTED: "red",
+};
+
+const verificationStatusLabel: Record<string, string> = {
+  DRAFT: "Nháp",
+  PENDING: "Chờ duyệt",
+  VERIFIED: "Đã duyệt",
+  REJECTED: "Từ chối",
+};
 
 export function PropertiesList() {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [view, setView] = useState<"list" | "map">("list");
+  const [pendingSubmit, setPendingSubmit] = useState<Property | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<Property | null>(null);
 
   const { data: propertiesData } = useGetApiProperties();
   const properties = ((propertiesData as unknown as GetPropertiesResponse)?.data) || [];
 
-  const filtered = properties.filter((p) =>
-    p.title.toLowerCase().includes(search.toLowerCase())
+  const filtered = useMemo(
+    () =>
+      properties.filter((p) =>
+        p.title.toLowerCase().includes(search.toLowerCase()),
+      ),
+    [properties, search],
   );
+
+  const getVerificationStatus = (p: Property) =>
+    (p.verificationStatus ?? "DRAFT") as
+    | "DRAFT"
+    | "PENDING"
+    | "VERIFIED"
+    | "REJECTED";
 
   const columns: ColumnDef<Property>[] = [
     {
@@ -98,6 +125,18 @@ export function PropertiesList() {
       ),
     },
     {
+      id: "verificationStatus",
+      header: "Duyệt",
+      cell: ({ row }) => {
+        const vStatus = getVerificationStatus(row.original);
+        return (
+          <Badge variant={verificationStatusVariant[vStatus] ?? "default"}>
+            {verificationStatusLabel[vStatus] ?? vStatus}
+          </Badge>
+        );
+      },
+    },
+    {
       accessorKey: "businessStatus",
       header: "Trạng thái",
       cell: ({ row }) => (
@@ -105,6 +144,41 @@ export function PropertiesList() {
           {statusLabel[row.original.businessStatus ?? ""] ?? row.original.businessStatus}
         </Badge>
       ),
+    },
+    {
+      id: "actions",
+      header: "Hành động",
+      cell: ({ row }) => {
+        const vStatus = getVerificationStatus(row.original);
+        const canSubmit = vStatus === "DRAFT" || vStatus === "REJECTED";
+        return (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center justify-start gap-2"
+          >
+            {canSubmit ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPendingSubmit(row.original)}
+              >
+                <PaperPlaneTilt size={14} />
+                Gửi duyệt
+              </Button>
+            ) : null}
+            <Can I="DELETE" a="PROPERTY">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Xóa"
+                onClick={() => setPendingDelete(row.original)}
+              >
+                <Trash size={14} className="text-destructive" />
+              </Button>
+            </Can>
+          </div>
+        );
+      },
     },
   ];
 
@@ -164,6 +238,17 @@ export function PropertiesList() {
           </div>
         </div>
       )}
+
+      <SubmitVerificationDialog
+        property={pendingSubmit}
+        open={!!pendingSubmit}
+        onOpenChange={(open) => !open && setPendingSubmit(null)}
+      />
+      <DeletePropertyDialog
+        property={pendingDelete}
+        open={!!pendingDelete}
+        onOpenChange={(open) => !open && setPendingDelete(null)}
+      />
     </div>
   );
 }

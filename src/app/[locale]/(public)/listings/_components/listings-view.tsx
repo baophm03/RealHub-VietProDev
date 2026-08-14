@@ -3,6 +3,10 @@
 import { useSearchParams } from "next/navigation";
 import { MapPin, Spinner } from "@phosphor-icons/react";
 import { Link } from "@/i18n/navigation";
+import {
+  formatPriceWithTransaction as formatPrice,
+  formatPricePerSqm,
+} from "@/utils";
 import { useGetApiProperties, useGetApiPropertyTypes } from "@/lib/api/endpoints/properties";
 import { useGetApiLocations } from "@/lib/api/endpoints/locations";
 import { GetPropertiesResponse } from "@/lib/api/types/properties";
@@ -33,24 +37,6 @@ const txLabel: Record<string, string> = {
   INVESTMENT: "Đầu tư",
 };
 
-function formatPrice(priceStr: string, transactionType: string): string {
-  const price = Number(priceStr || 0);
-  if (transactionType === "RENT") {
-    if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu/tháng`;
-    return `${price.toLocaleString("vi-VN")} đ/tháng`;
-  }
-  if (price >= 1000000000) return `${(price / 1000000000).toFixed(1)} tỷ`;
-  if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu`;
-  return `${price.toLocaleString("vi-VN")} đ`;
-}
-
-function formatPricePerSqm(priceStr: string, area: number): string {
-  const price = Number(priceStr || 0);
-  if (!area || area <= 0) return "";
-  const perSqm = Math.round(price / area);
-  if (perSqm >= 1000000) return `~${(perSqm / 1000000).toFixed(1)} tr/m²`;
-  return `~${perSqm.toLocaleString("vi-VN")} đ/m²`;
-}
 
 export function ListingsView() {
   const sp = useSearchParams();
@@ -73,11 +59,18 @@ export function ListingsView() {
   const propertyTypes = ((propertyTypesData as unknown as { data?: PropertyType[] })?.data) || [];
   const provinces = ((provincesData as unknown as { data?: Location[] })?.data) || [];
 
+  // Map property type code → id for API filter
+  const codeToId = Object.fromEntries(propertyTypes.map((t) => [t.code, t.id]));
+  const selectedTypeIds = types.map((c) => codeToId[c]).filter(Boolean);
+
   // Build API params from searchParams
-  const apiParams: Record<string, string> = {};
+  const apiParams: Record<string, string> = {
+    verificationStatus: "VERIFIED",
+    publicationStatus: "PUBLIC",
+  };
   if (transactionType) apiParams.transactionType = transactionType;
   if (provinceId) apiParams.provinceId = provinceId;
-  if (types.length === 1) apiParams.propertyTypeId = types[0];
+  if (selectedTypeIds.length === 1) apiParams.propertyTypeId = selectedTypeIds[0];
   if (minPrice) apiParams.minPrice = minPrice;
   if (maxPrice) apiParams.maxPrice = maxPrice;
   apiParams.limit = "100";
@@ -85,10 +78,10 @@ export function ListingsView() {
   const { data: propertiesData, isLoading } = useGetApiProperties(apiParams as any);
   let properties = ((propertiesData as unknown as GetPropertiesResponse)?.data) || [];
 
-  // Client-side filtering for multiple property types
+  // Client-side filtering for multiple property types (by code)
   if (types.length > 1) {
     properties = properties.filter(
-      (p) => p.propertyType && types.includes(p.propertyType.id),
+      (p) => p.propertyType && types.includes(p.propertyType.code),
     );
   }
 

@@ -20,7 +20,7 @@ import {
   UserCircle,
   User,
 } from "@phosphor-icons/react";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useUserStore } from "@/lib/stores/user-store";
 import { useRouter } from "next/navigation";
@@ -34,11 +34,36 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const propertyCategories = [
-  { icon: House, label: "Căn hộ", desc: "Chung cư, studio, penthouse", href: "/listings?type=apartment" },
-  { icon: Building, label: "Biệt thự", desc: "Biệt thự đơn lập, song lập", href: "/listings?type=villa" },
-  { icon: Warehouse, label: "Nhà phố", desc: "Nhà phố, nhà mặt tiền", href: "/listings?type=townhouse" },
-  { icon: MapTrifold, label: "Đất nền", desc: "Đất thổ cư, đất dự án", href: "/listings?type=land" },
-  { icon: Storefront, label: "Mặt bằng", desc: "Văn phòng, shop, kho xưởng", href: "/listings?type=commercial" },
+  {
+    icon: House,
+    label: "Căn hộ",
+    desc: "Chung cư, studio, penthouse",
+    href: "/listings?types=APARTMENT"
+  },
+  {
+    icon: Building,
+    label: "Biệt thự",
+    desc: "Biệt thự đơn lập, song lập",
+    href: "/listings?types=VILLA"
+  },
+  {
+    icon: Warehouse,
+    label: "Nhà phố",
+    desc: "Nhà phố, nhà mặt tiền",
+    href: "/listings?types=HOUSE,SHOPHOUSE"
+  },
+  {
+    icon: MapTrifold,
+    label: "Đất nền",
+    desc: "Đất thổ cư, đất dự án",
+    href: "/listings?types=LAND"
+  },
+  {
+    icon: Storefront,
+    label: "Mặt bằng",
+    desc: "Văn phòng, shop, kho xưởng",
+    href: "/listings?types=OFFICE,WAREHOUSE,SHOP"
+  },
 ];
 
 export function PublicHeader() {
@@ -325,9 +350,9 @@ export function PublicHeader() {
             {/* Auth: Signed in → Avatar dropdown | Signed out → Sign in/up */}
             {mounted && isAuthenticated ? (
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-primary-foreground/10 transition-all duration-300">
-                  <Avatar className="size-8 rounded-lg overflow-hidden">
-                    <AvatarFallback className="flex size-8 items-center justify-center rounded-lg bg-primary-foreground/15 text-xs font-medium text-primary-foreground">
+                <DropdownMenuTrigger className="flex items-center gap-2 rounded-full p-0 hover:bg-transparent transition-all duration-300">
+                  <Avatar className="size-8 rounded-full overflow-hidden">
+                    <AvatarFallback className="flex size-8 items-center justify-center rounded-full bg-primary-foreground/15 text-xs font-medium text-primary-foreground">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
@@ -472,8 +497,8 @@ export function PublicHeader() {
             {mounted && isAuthenticated ? (
               <>
                 <div className="flex items-center gap-3 rounded-lg bg-primary-foreground/10 px-4 py-3">
-                  <Avatar className="size-9 rounded-lg overflow-hidden">
-                    <AvatarFallback className="flex size-9 items-center justify-center rounded-lg bg-primary-foreground/15 text-xs font-medium text-primary-foreground">
+                  <Avatar className="size-9 rounded-full overflow-hidden">
+                    <AvatarFallback className="flex size-9 items-center justify-center rounded-full bg-primary-foreground/15 text-xs font-medium text-primary-foreground">
                       {initials}
                     </AvatarFallback>
                   </Avatar>

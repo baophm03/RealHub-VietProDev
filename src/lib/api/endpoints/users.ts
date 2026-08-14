@@ -31,7 +31,9 @@ import type {
 
 import type {
   CreateUserDto,
-  GetApiUsersParams
+  GetApiUsersParams,
+  ReplaceUserDto,
+  UpdateUserDto
 } from '../models';
 
 import { customInstance } from '../mutator/custom-instance';
@@ -298,3 +300,325 @@ export const prefetchGetApiUsersQuery = async <TData = Awaited<ReturnType<typeof
 
 
 
+/**
+ * @summary Get user by ID
+ */
+export const getApiUserId = (
+    id: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/users/${id}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiUserIdInfiniteQueryKey = (id?: string,) => {
+    return [
+    'infinite', `/api/users/${id}`
+    ] as const;
+    }
+
+export const getGetApiUserIdQueryKey = (id?: string,) => {
+    return [
+    `/api/users/${id}`
+    ] as const;
+    }
+
+    
+export const getGetApiUserIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiUserId>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUserId>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiUserIdInfiniteQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUserId>>> = ({ signal }) => getApiUserId(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUserId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiUserIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiUserId>>>
+export type GetApiUserIdInfiniteQueryError = unknown
+
+
+export function useGetApiUserIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiUserId>>>, TError = unknown>(
+ id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUserId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiUserId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiUserId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiUserIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiUserId>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUserId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiUserId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiUserId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiUserIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiUserId>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUserId>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get user by ID
+ */
+
+export function useGetApiUserIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiUserId>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUserId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiUserIdInfiniteQueryOptions(id,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get user by ID
+ */
+export const prefetchGetApiUserIdInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiUserId>>, TError = unknown>(
+ queryClient: QueryClient, id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUserId>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiUserIdInfiniteQueryOptions(id,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiUserIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiUserId>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUserId>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiUserIdQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUserId>>> = ({ signal }) => getApiUserId(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiUserId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiUserIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiUserId>>>
+export type GetApiUserIdQueryError = unknown
+
+
+export function useGetApiUserId<TData = Awaited<ReturnType<typeof getApiUserId>>, TError = unknown>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUserId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiUserId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiUserId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiUserId<TData = Awaited<ReturnType<typeof getApiUserId>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUserId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiUserId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiUserId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiUserId<TData = Awaited<ReturnType<typeof getApiUserId>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUserId>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get user by ID
+ */
+
+export function useGetApiUserId<TData = Awaited<ReturnType<typeof getApiUserId>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUserId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiUserIdQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get user by ID
+ */
+export const prefetchGetApiUserIdQuery = async <TData = Awaited<ReturnType<typeof getApiUserId>>, TError = unknown>(
+ queryClient: QueryClient, id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUserId>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiUserIdQueryOptions(id,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Partially update a user by ID
+ */
+export const patchApiUserId = (
+    id: string,
+    updateUserDto: UpdateUserDto,
+ ) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/users/${id}`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: updateUserDto
+    },
+      );
+    }
+  
+
+
+export const getPatchApiUserIdMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiUserId>>, TError,{id: string;data: UpdateUserDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiUserId>>, TError,{id: string;data: UpdateUserDto}, TContext> => {
+
+const mutationKey = ['patchApiUserId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiUserId>>, {id: string;data: UpdateUserDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  patchApiUserId(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PatchApiUserIdMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiUserId>>>
+    export type PatchApiUserIdMutationBody = UpdateUserDto
+    export type PatchApiUserIdMutationError = unknown
+
+    /**
+ * @summary Partially update a user by ID
+ */
+export const usePatchApiUserId = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiUserId>>, TError,{id: string;data: UpdateUserDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof patchApiUserId>>,
+        TError,
+        {id: string;data: UpdateUserDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPatchApiUserIdMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Fully replace a user by ID
+ */
+export const putApiUserId = (
+    id: string,
+    replaceUserDto: ReplaceUserDto,
+ ) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/users/${id}`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: replaceUserDto
+    },
+      );
+    }
+  
+
+
+export const getPutApiUserIdMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiUserId>>, TError,{id: string;data: ReplaceUserDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putApiUserId>>, TError,{id: string;data: ReplaceUserDto}, TContext> => {
+
+const mutationKey = ['putApiUserId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiUserId>>, {id: string;data: ReplaceUserDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  putApiUserId(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiUserIdMutationResult = NonNullable<Awaited<ReturnType<typeof putApiUserId>>>
+    export type PutApiUserIdMutationBody = ReplaceUserDto
+    export type PutApiUserIdMutationError = unknown
+
+    /**
+ * @summary Fully replace a user by ID
+ */
+export const usePutApiUserId = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiUserId>>, TError,{id: string;data: ReplaceUserDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiUserId>>,
+        TError,
+        {id: string;data: ReplaceUserDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPutApiUserIdMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    

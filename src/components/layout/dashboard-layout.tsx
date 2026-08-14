@@ -5,7 +5,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { TopBar } from "@/components/layout/topbar";
 import { AuthGuard } from "@/components/shared/auth-guard";
 import { Toaster } from "@/components/ui/sonner";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@/lib/utils";
 import { AbilityProvider } from "@casl/react";
 import { ability } from "@/config/casl/ability";
 

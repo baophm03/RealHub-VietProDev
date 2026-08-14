@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "@/i18n/navigation";
+import { formatPriceWithTransaction as formatPrice } from "@/utils";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
@@ -20,17 +21,6 @@ import {
 import { useGetApiProperties } from "@/lib/api/endpoints/properties";
 import { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
 import { PropertyCardImage } from "@/components/shared/property-card-image";
-
-function formatPrice(priceStr: string, transactionType: string): string {
-  const price = Number(priceStr || 0);
-  if (transactionType === "RENT") {
-    if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu/tháng`;
-    return `${price.toLocaleString("vi-VN")} đ/tháng`;
-  }
-  if (price >= 1000000000) return `${(price / 1000000000).toFixed(1)} tỷ`;
-  if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu`;
-  return `${price.toLocaleString("vi-VN")} đ`;
-}
 
 function pickRandom<T>(items: T[]): T | undefined {
   if (items.length === 0) return undefined;
@@ -54,7 +44,11 @@ export function Hero() {
   const [activeTab, setActiveTab] = useState("sale");
 
   // Fetch the 5 most recent properties, then pick one at random to feature.
-  const { data: propertiesData, isLoading } = useGetApiProperties({ limit: "5" } as any);
+  const { data: propertiesData, isLoading } = useGetApiProperties({
+    verificationStatus: "VERIFIED",
+    publicationStatus: "PUBLIC",
+    limit: "5",
+  } as any);
   const properties = ((propertiesData as unknown as GetPropertiesResponse)?.data) || [];
 
   // Stable random pick — only re-roll when the underlying list changes.

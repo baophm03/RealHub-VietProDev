@@ -8,12 +8,14 @@
 import type { GetApiPropertiesTransactionType } from './getApiPropertiesTransactionType';
 import type { GetApiPropertiesBusinessStatus } from './getApiPropertiesBusinessStatus';
 import type { GetApiPropertiesPublicationStatus } from './getApiPropertiesPublicationStatus';
+import type { GetApiPropertiesVerificationStatus } from './getApiPropertiesVerificationStatus';
 
 export type GetApiPropertiesParams = {
 propertyTypeId?: string;
 transactionType?: GetApiPropertiesTransactionType;
 businessStatus?: GetApiPropertiesBusinessStatus;
 publicationStatus?: GetApiPropertiesPublicationStatus;
+verificationStatus?: GetApiPropertiesVerificationStatus;
 provinceId?: string;
 districtId?: string;
 wardId?: string;

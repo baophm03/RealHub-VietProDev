@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navGroups } from "@/config/nav";
 import { ability } from "@/config/casl/ability";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@/lib/utils";
 
 export function Sidebar() {
   const pathname = usePathname();

@@ -12,6 +12,7 @@ import {
   Newspaper,
   Headset,
   Key,
+  ShieldCheck,
 } from "@phosphor-icons/react";
 import type { Actions, Features } from "@/config/casl/ability";
 
@@ -46,6 +47,12 @@ export const navGroups: NavGroup[] = [
         href: "/dashboard/properties",
         icon: Buildings,
         permission: { action: "READ", subject: "PROPERTY" },
+      },
+      {
+        label: "Duyệt BĐS",
+        href: "/dashboard/verification",
+        icon: ShieldCheck,
+        permission: { action: "APPROVE", subject: "PROPERTY" },
       },
       {
         label: "Dự án",
