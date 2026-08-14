@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Tag, Trash, PencilSimple, Spinner } from "@phosphor-icons/react";
+import { Can } from "@casl/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
-import { useUserStore } from "@/lib/stores/user-store";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   useGetApiNewsCategories,
@@ -32,14 +32,8 @@ function formatDate(iso: string): string {
 
 export function CategoriesList() {
   const router = useRouter();
-  const hasPermission = useUserStore((s) => s.hasPermission);
   const [search, setSearch] = useState("");
-  const [mounted, setMounted] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const { data: categoriesData, isLoading, refetch: refetchCategories } = useGetApiNewsCategories({ limit: "100" });
   const categories: NewsCategory[] =
@@ -114,7 +108,7 @@ export function CategoriesList() {
           >
             <PencilSimple size={16} />
           </button>
-          {mounted && hasPermission("news:delete") && (
+          <Can I="DELETE" a="NEWS">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -130,7 +124,7 @@ export function CategoriesList() {
                 <Trash size={16} />
               )}
             </button>
-          )}
+          </Can>
         </div>
       ),
     },
@@ -146,12 +140,12 @@ export function CategoriesList() {
           onChange={(e) => setSearch(e.target.value)}
           className="w-full sm:w-auto min-w-0"
         />
-        {mounted && hasPermission("news:write") && (
+        <Can I="CREATE" a="NEWS">
           <Button onClick={() => router.push("/dashboard/news/categories/new")}>
             <Plus size={16} />
             Thêm chuyên mục
           </Button>
-        )}
+        </Can>
       </div>
 
       {isLoading ? (
@@ -171,12 +165,12 @@ export function CategoriesList() {
           title="Chưa có chuyên mục"
           description="Tạo chuyên mục đầu tiên để phân loại bài viết"
           action={
-            mounted && hasPermission("news:write") && (
+            <Can I="CREATE" a="NEWS">
               <Button onClick={() => router.push("/dashboard/news/categories/new")}>
                 <Plus size={16} />
                 Thêm chuyên mục
               </Button>
-            )
+            </Can>
           }
         />
       )}

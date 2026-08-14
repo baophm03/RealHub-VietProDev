@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Kanban, List as ListIcon } from "@phosphor-icons/react";
+import { Can } from "@casl/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { KanbanBoard, type KanbanColumn } from "@/components/shared/kanban-board";
-import { useUserStore } from "@/lib/stores/user-store";
 import { useGetApiDeals } from "@/lib/api/endpoints/deals-reservations";
 
 interface Deal {
@@ -38,9 +38,7 @@ function formatPrice(price: number): string {
 
 export default function DealsPage() {
   const router = useRouter();
-  const hasPermission = useUserStore((s) => s.hasPermission);
   const [view, setView] = useState<"kanban" | "list">("kanban");
-  const [mounted, setMounted] = useState(false);
 
   const { data: dealsData, isLoading } = useGetApiDeals({
     status: undefined,
@@ -51,10 +49,6 @@ export default function DealsPage() {
     offset: "0",
   });
   const deals = ((dealsData as unknown as { data: Deal[] })?.data) || [];
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const columns: KanbanColumn<Deal>[] = statusConfig.map((status) => ({
     id: status.id,
@@ -79,12 +73,12 @@ export default function DealsPage() {
                 <ListIcon size={16} />
               </button>
             </div>
-            {mounted && hasPermission("deals:write") && (
+            <Can I="CREATE" a="DEAL">
               <Button onClick={() => router.push("/dashboard/deals/new")}>
                 <Plus size={16} />
                 Thêm giao dịch
               </Button>
-            )}
+            </Can>
           </div>
         }
       />

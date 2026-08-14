@@ -12,7 +12,6 @@ import { useForm } from "react-hook-form";
 import { usePostApiLogin } from "@/lib/api/endpoints/auth";
 import { useGetApiMe } from "@/lib/api/endpoints/auth";
 import { GetAuthMeResponse } from "@/lib/api/types/auth-me";
-import { UserRole } from "@/lib/types";
 
 interface LoginFormData {
   email: string;
@@ -62,10 +61,22 @@ export default function LoginPage() {
             id: profileData.id,
             email: profileData.email,
             fullName: profileData.fullName,
-            phone: profileData.phone ?? undefined,
-            avatarUrl: profileData.avatarUrl ?? undefined,
-            role: (profileData.memberships?.[0]?.roleCode as UserRole) || "SALES",
-            permissions: [],
+            phone: profileData.phone,
+            avatarUrl: profileData.avatarUrl,
+            status: profileData.status,
+            role: profileData.role
+              ? {
+                code: profileData.role.code,
+                name: profileData.role.name,
+                description: profileData.role.description,
+                permissions: profileData.role.permissions.map((p) => ({
+                  module: p.module,
+                  action: p.action,
+                })),
+              }
+              : null,
+            lastLoginAt: profileData.lastLoginAt,
+            createdAt: profileData.createdAt,
           });
         }
 

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Calendar as CalendarIcon, List as ListIcon, Trash, Clock } from "@phosphor-icons/react";
+import { Can } from "@casl/react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,6 @@ import {
   DialogPortal,
   DialogOverlay,
 } from "@/components/ui/dialog";
-import { useUserStore } from "@/lib/stores/user-store";
 import { useGetApiAppointments, useDeleteApiAppointment } from "@/lib/api/endpoints/appointments";
 import type { GetApiAppointmentsStatus } from "@/lib/api/models/getApiAppointmentsStatus";
 
@@ -75,10 +75,8 @@ const statusFilters: { value: GetApiAppointmentsStatus | "ALL"; label: string }[
 
 export default function AppointmentsPage() {
   const router = useRouter();
-  const hasPermission = useUserStore((s) => s.hasPermission);
   const [view, setView] = useState<"list" | "calendar">("list");
   const [statusFilter, setStatusFilter] = useState<GetApiAppointmentsStatus | "ALL">("ALL");
-  const [mounted, setMounted] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Appointment | null>(null);
 
   const { data: appointmentsData, isLoading, refetch } = useGetApiAppointments({
@@ -90,12 +88,6 @@ export default function AppointmentsPage() {
 
   const { mutateAsync: deleteAppointment, isPending: isDeleting } = useDeleteApiAppointment();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const canWrite = mounted && hasPermission("appointments:write");
-  const canDelete = mounted && hasPermission("appointments:delete");
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -126,12 +118,12 @@ export default function AppointmentsPage() {
                 <CalendarIcon size={16} />
               </button>
             </div>
-            {canWrite && (
+            <Can I="CREATE" a="APPOINTMENT">
               <Button onClick={() => router.push("/dashboard/appointments/new")}>
                 <Plus size={16} />
                 Thêm lịch hẹn
               </Button>
-            )}
+            </Can>
           </div>
         }
       />
@@ -190,7 +182,7 @@ export default function AppointmentsPage() {
                   <Badge variant={statusCfg.variant} className="shrink-0">
                     {statusCfg.label}
                   </Badge>
-                  {canDelete && (
+                  <Can I="DELETE" a="APPOINTMENT">
                     <Button
                       variant="ghost"
                       size="icon-sm"
@@ -202,7 +194,7 @@ export default function AppointmentsPage() {
                     >
                       <Trash size={14} />
                     </Button>
-                  )}
+                  </Can>
                 </div>
               </div>
             );
@@ -214,12 +206,12 @@ export default function AppointmentsPage() {
           title="Chưa có lịch hẹn"
           description="Tạo lịch hẹn đầu tiên để quản lý các buổi xem nhà, gặp mặt"
           action={
-            canWrite && (
+            <Can I="CREATE" a="APPOINTMENT">
               <Button onClick={() => router.push("/dashboard/appointments/new")}>
                 <Plus size={16} />
                 Thêm lịch hẹn
               </Button>
-            )
+            </Can>
           }
         />
       )}

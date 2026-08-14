@@ -3,25 +3,37 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { User } from "@/lib/types";
+import { ability, type Actions } from "@/config/casl/ability";
 
 interface UserState {
   user: User | null;
   setUser: (user: User) => void;
   clearUser: () => void;
-  hasPermission: (permission: string) => boolean;
 }
+
+// helper
+const updateCaslAbility = (user: User | null) => {
+  const rules =
+    user?.role?.permissions.map((p) => ({
+      action: p.action as Actions,
+      subject: p.module,
+    })) ?? [];
+
+  ability.update(rules);
+};
 
 export const useUserStore = create<UserState>()(
   persist(
     (set, get) => ({
       user: null,
-      setUser: (user) => set({ user }),
-      clearUser: () => set({ user: null }),
-      hasPermission: (permission) => {
-        const user = get().user;
-        if (!user) return false;
-        if (user.role === "AGENCY_ADMIN") return true;
-        return user.permissions.some((p) => p === permission || p === "*");
+      setUser: (user) => {
+        set({ user });
+        updateCaslAbility(user);
+      },
+
+      clearUser: () => {
+        set({ user: null });
+        ability.update([]);
       },
     }),
     {
@@ -29,6 +41,11 @@ export const useUserStore = create<UserState>()(
       partialize: (state) => ({
         user: state.user,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (state?.user) {
+          updateCaslAbility(state.user);
+        }
+      },
     }
   )
 );

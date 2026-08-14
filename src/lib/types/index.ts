@@ -72,14 +72,28 @@ export type FileVisibility =
 
 export type LocationType = "COUNTRY" | "PROVINCE" | "DISTRICT" | "WARD" | "STREET";
 
+export interface RolePermission {
+  module: string;
+  action: string;
+}
+
+export interface Role {
+  code: string;
+  name: string;
+  description: string | null;
+  permissions: RolePermission[];
+}
+
 export interface User {
   id: string;
   email: string;
   fullName: string;
-  phone?: string;
-  role: UserRole;
-  permissions: string[];
-  avatarUrl?: string;
+  phone?: string | null;
+  avatarUrl?: string | null;
+  status: string;
+  role: Role | null;
+  lastLoginAt?: string | null;
+  createdAt?: string;
 }
 
 export interface AuthResponse {

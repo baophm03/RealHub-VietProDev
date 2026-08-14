@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, MapTrifold, List as ListIcon, Funnel, Buildings } from "@phosphor-icons/react";
+import { Can } from "@casl/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
-import { useUserStore } from "@/lib/stores/user-store";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useGetApiProperties } from "@/lib/api/endpoints/properties";
 import { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
@@ -44,14 +44,8 @@ function formatPrice(price: number): string {
 
 export function PropertiesList() {
   const router = useRouter();
-  const hasPermission = useUserStore((s) => s.hasPermission);
   const [search, setSearch] = useState("");
   const [view, setView] = useState<"list" | "map">("list");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const { data: propertiesData } = useGetApiProperties();
   const properties = ((propertiesData as unknown as GetPropertiesResponse)?.data) || [];
@@ -130,12 +124,12 @@ export function PropertiesList() {
           </Button>
         </div>
         <div className="flex items-center gap-2">
-          {mounted && hasPermission("properties:write") && (
+          <Can I="CREATE" a="PROPERTY">
             <Button onClick={() => router.push("/dashboard/properties/new")}>
               <Plus size={16} />
               Thêm BĐS
             </Button>
-          )}
+          </Can>
         </div>
       </div>
 
@@ -153,12 +147,12 @@ export function PropertiesList() {
             title="Chưa có bất động sản"
             description="Tạo bất động sản đầu tiên để bắt đầu bán hàng"
             action={
-              mounted && hasPermission("properties:write") && (
+              <Can I="CREATE" a="PROPERTY">
                 <Button onClick={() => router.push("/dashboard/properties/new")}>
                   <Plus size={16} />
                   Thêm BĐS
                 </Button>
-              )
+              </Can>
             }
           />
         )

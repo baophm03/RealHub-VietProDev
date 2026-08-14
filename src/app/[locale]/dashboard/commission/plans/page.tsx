@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus } from "@phosphor-icons/react";
+import { Can } from "@casl/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DataTable } from "@/components/shared/data-table";
-import { useUserStore } from "@/lib/stores/user-store";
 import { useGetApiCommissionPlans } from "@/lib/api/endpoints/commission";
 import type { ColumnDef } from "@tanstack/react-table";
 
@@ -54,17 +53,11 @@ const columns: ColumnDef<PlanRow>[] = [
 
 export default function CommissionPlansPage() {
   const router = useRouter();
-  const hasPermission = useUserStore((s) => s.hasPermission);
-  const [mounted, setMounted] = useState(false);
 
   const { data: plansData, isLoading } = useGetApiCommissionPlans({
     status: undefined
   });
   const plans = ((plansData as unknown as { data: PlanRow[] })?.data) || [];
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   return (
     <div className="flex flex-col gap-6">
@@ -73,12 +66,12 @@ export default function CommissionPlansPage() {
         title="Kế hoạch hoa hồng"
         description="Quản lý kế hoạch hoa hồng, quy tắc và phân chia"
         actions={
-          mounted && hasPermission("commission:write") && (
+          <Can I="CREATE" a="COMMISSION">
             <Button onClick={() => router.push("/dashboard/commission/plans/new")}>
               <Plus size={16} />
               Thêm kế hoạch
             </Button>
-          )
+          </Can>
         }
       />
 
