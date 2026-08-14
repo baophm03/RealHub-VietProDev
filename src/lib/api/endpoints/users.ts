@@ -6,17 +6,32 @@
  * OpenAPI spec version: v1
  */
 import {
-  useMutation
+  useInfiniteQuery,
+  useMutation,
+  useQuery
 } from '@tanstack/react-query';
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseInfiniteQueryResult,
+  DefinedUseQueryResult,
+  InfiniteData,
   MutationFunction,
   QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   UseMutationOptions,
-  UseMutationResult
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
-  CreateUserDto
+  CreateUserDto,
+  GetApiUsersParams
 } from '../models';
 
 import { customInstance } from '../mutator/custom-instance';
@@ -89,4 +104,197 @@ export const usePostApiUser = <TError = unknown,
 
       return useMutation(mutationOptions, queryClient);
     }
+    /**
+ * @summary List users in current tenant
+ */
+export const getApiUsers = (
+    params?: GetApiUsersParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/users`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiUsersInfiniteQueryKey = (params?: GetApiUsersParams,) => {
+    return [
+    'infinite', `/api/users`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiUsersQueryKey = (params?: GetApiUsersParams,) => {
+    return [
+    `/api/users`, ...(params ? [params]: [])
+    ] as const;
+    }
+
     
+export const getGetApiUsersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>, TError = unknown>(params?: GetApiUsersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiUsersInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsers>>> = ({ signal }) => getApiUsers(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiUsersInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiUsers>>>
+export type GetApiUsersInfiniteQueryError = unknown
+
+
+export function useGetApiUsersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>, TError = unknown>(
+ params: undefined |  GetApiUsersParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiUsers>>,
+          TError,
+          Awaited<ReturnType<typeof getApiUsers>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiUsersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>, TError = unknown>(
+ params?: GetApiUsersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiUsers>>,
+          TError,
+          Awaited<ReturnType<typeof getApiUsers>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiUsersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>, TError = unknown>(
+ params?: GetApiUsersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List users in current tenant
+ */
+
+export function useGetApiUsersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>, TError = unknown>(
+ params?: GetApiUsersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiUsersInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List users in current tenant
+ */
+export const prefetchGetApiUsersInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiUsers>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiUsersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiUsersInfiniteQueryOptions(params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiUsersQueryOptions = <TData = Awaited<ReturnType<typeof getApiUsers>>, TError = unknown>(params?: GetApiUsersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiUsersQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsers>>> = ({ signal }) => getApiUsers(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiUsersQueryResult = NonNullable<Awaited<ReturnType<typeof getApiUsers>>>
+export type GetApiUsersQueryError = unknown
+
+
+export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = unknown>(
+ params: undefined |  GetApiUsersParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiUsers>>,
+          TError,
+          Awaited<ReturnType<typeof getApiUsers>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = unknown>(
+ params?: GetApiUsersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiUsers>>,
+          TError,
+          Awaited<ReturnType<typeof getApiUsers>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = unknown>(
+ params?: GetApiUsersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List users in current tenant
+ */
+
+export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = unknown>(
+ params?: GetApiUsersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiUsersQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List users in current tenant
+ */
+export const prefetchGetApiUsersQuery = async <TData = Awaited<ReturnType<typeof getApiUsers>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiUsersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiUsersQueryOptions(params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+

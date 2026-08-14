@@ -44,7 +44,7 @@ export default function ProfilePage() {
               <p className="text-sm font-medium">{user?.fullName ?? "User"}</p>
               <p className="text-xs text-foreground-muted">{user?.email}</p>
             </div>
-            {user && <Badge variant="blue">{user.role}</Badge>}
+            {user && user.role && <Badge variant="blue">{user.role.name}</Badge>}
           </CardContent>
         </Card>
 

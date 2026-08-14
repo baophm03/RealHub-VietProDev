@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   Headset,
@@ -31,7 +31,7 @@ import {
   DialogPortal,
   DialogOverlay,
 } from "@/components/ui/dialog";
-import { useUserStore } from "@/lib/stores/user-store";
+import { Can } from "@casl/react";
 import {
   useGetApiPropertyContacts,
   usePatchApiPropertyContactsId,
@@ -86,10 +86,8 @@ const statusFilters: { value: PropertyContact["status"] | "ALL"; label: string }
 
 export default function ConsultationsPage() {
   const router = useRouter();
-  const hasPermission = useUserStore((s) => s.hasPermission);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<PropertyContact["status"] | "ALL">("ALL");
-  const [mounted, setMounted] = useState(false);
   const [detailContact, setDetailContact] = useState<PropertyContact | null>(null);
 
   const { data: contactsData, isLoading, refetch } = useGetApiPropertyContacts({
@@ -102,12 +100,6 @@ export default function ConsultationsPage() {
     ((contactsData as unknown as PropertyContactsResponse)?.data) || [];
 
   const { mutateAsync: updateContact, isPending: isUpdating } = usePatchApiPropertyContactsId();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const canWrite = mounted && hasPermission("properties:write");
 
   const handleStatusChange = async (
     id: string,
@@ -373,7 +365,7 @@ export default function ConsultationsPage() {
                 </div>
 
                 {/* Status actions */}
-                {canWrite && (
+                <Can I="UPDATE" a="PROPERTY">
                   <div className="flex flex-wrap items-center gap-2 border-t border-border pt-4">
                     <span className="text-xs font-medium text-foreground-muted mr-auto">
                       Cập nhật trạng thái:
@@ -405,7 +397,7 @@ export default function ConsultationsPage() {
                       Đã phản hồi
                     </Button>
                   </div>
-                )}
+                </Can>
               </div>
             )}
           </DialogContent>

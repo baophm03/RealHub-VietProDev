@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Pencil, Trash, Clock, MapPin, User, House, Kanban, Bell } from "@phosphor-icons/react";
+import { Can } from "@casl/react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,6 @@ import {
   DialogOverlay,
 } from "@/components/ui/dialog";
 import { useGetApiAppointmentId, usePatchApiAppointment, useDeleteApiAppointment } from "@/lib/api/endpoints/appointments";
-import { useUserStore } from "@/lib/stores/user-store";
 import type { UpdateAppointmentDtoStatus } from "@/lib/api/models/updateAppointmentDtoStatus";
 
 interface Appointment {
@@ -74,7 +74,6 @@ export default function AppointmentDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
-  const hasPermission = useUserStore((s) => s.hasPermission);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const { data: appointmentData, isLoading, refetch } = useGetApiAppointmentId(id);
@@ -82,9 +81,6 @@ export default function AppointmentDetailPage() {
 
   const { mutateAsync: updateAppointment, isPending: isUpdating } = usePatchApiAppointment();
   const { mutateAsync: deleteAppointment, isPending: isDeleting } = useDeleteApiAppointment();
-
-  const canWrite = hasPermission("appointments:write");
-  const canDelete = hasPermission("appointments:delete");
 
   const handleStatusChange = async (newStatus: string) => {
     if (!appointment) return;
@@ -147,18 +143,18 @@ export default function AppointmentDetailPage() {
           <PageHeader eyebrow="Lịch hẹn" title={appointment.title} />
         </div>
         <div className="flex items-center gap-2">
-          {canWrite && (
+          <Can I="UPDATE" a="APPOINTMENT">
             <Button variant="outline" onClick={() => router.push(`/dashboard/appointments/${id}/edit`)}>
               <Pencil size={16} />
               Chỉnh sửa
             </Button>
-          )}
-          {canDelete && (
+          </Can>
+          <Can I="DELETE" a="APPOINTMENT">
             <Button variant="destructive" onClick={() => setDeleteOpen(true)}>
               <Trash size={16} />
               Xóa
             </Button>
-          )}
+          </Can>
         </div>
       </div>
 
@@ -204,7 +200,7 @@ export default function AppointmentDetailPage() {
           </div>
 
           {/* Status update */}
-          {canWrite && (
+          <Can I="UPDATE" a="APPOINTMENT">
             <div className="rounded-lg border border-border bg-surface p-6">
               <h3 className="text-sm font-semibold mb-4">Cập nhật trạng thái</h3>
               <div className="flex flex-wrap items-center gap-2">
@@ -224,7 +220,7 @@ export default function AppointmentDetailPage() {
                 })}
               </div>
             </div>
-          )}
+          </Can>
         </div>
 
         {/* Sidebar — related info */}

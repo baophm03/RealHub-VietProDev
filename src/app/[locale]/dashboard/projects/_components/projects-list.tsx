@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Building, Funnel } from "@phosphor-icons/react";
+import { Can } from "@casl/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
-import { useUserStore } from "@/lib/stores/user-store";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useGetApiProjects } from "@/lib/api/endpoints/projects";
 import { Project } from "@/lib/api/types/projects";
@@ -25,13 +25,7 @@ const statusLabel: Record<string, string> = {
 
 export function ProjectsList() {
   const router = useRouter();
-  const hasPermission = useUserStore((s) => s.hasPermission);
   const [search, setSearch] = useState("");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const { data: projectsData } = useGetApiProjects();
   const projects = useMemo(() => {
@@ -121,12 +115,12 @@ export function ProjectsList() {
             <Funnel size={16} />
           </Button>
         </div>
-        {mounted && hasPermission("properties:write") && (
+        <Can I="CREATE" a="PROPERTY">
           <Button onClick={() => router.push("/dashboard/projects/new")}>
             <Plus size={16} />
             Thêm dự án
           </Button>
-        )}
+        </Can>
       </div>
 
       {filtered.length > 0 ? (
@@ -142,12 +136,12 @@ export function ProjectsList() {
           title="Chưa có dự án"
           description="Tạo dự án đầu tiên để nhóm bất động sản theo dự án"
           action={
-            mounted && hasPermission("properties:write") && (
+            <Can I="CREATE" a="PROPERTY">
               <Button onClick={() => router.push("/dashboard/projects/new")}>
                 <Plus size={16} />
                 Thêm dự án
               </Button>
-            )
+            </Can>
           }
         />
       )}

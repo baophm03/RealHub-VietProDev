@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useDropzone } from "react-dropzone";
 import { useQueryClient } from "@tanstack/react-query";
+import { Can } from "@casl/react";
 import {
   UploadSimple,
   FileText,
@@ -21,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/shared/empty-state";
-import { useUserStore } from "@/lib/stores/user-store";
+import { ability } from "@/config/casl/ability";
 import {
   useGetApiFiles,
   getGetApiFilesQueryKey,
@@ -97,16 +98,10 @@ function formatDate(iso: string): string {
 
 export default function FilesPage() {
   const queryClient = useQueryClient();
-  const hasPermission = useUserStore((s) => s.hasPermission);
   const [search, setSearch] = useState("");
   const [visibilityFilter, setVisibilityFilter] = useState<string>("");
   const [uploading, setUploading] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const params = useMemo(
     () => (visibilityFilter ? { visibility: visibilityFilter as any } : undefined),
@@ -173,7 +168,7 @@ export default function FilesPage() {
       "text/csv": [".csv"],
       "application/zip": [".zip"],
     },
-    disabled: uploading || (mounted && !hasPermission("files:write")),
+    disabled: uploading || !ability.can("CREATE", "FILE"),
   });
 
   const filtered = useMemo(() => {
@@ -221,8 +216,8 @@ export default function FilesPage() {
     }
   };
 
-  const canWrite = mounted && hasPermission("files:write");
-  const canDelete = mounted && hasPermission("files:delete");
+  const canWrite = ability.can("CREATE", "FILE");
+  const canDelete = ability.can("DELETE", "FILE");
 
   return (
     <div className="flex flex-col gap-6">

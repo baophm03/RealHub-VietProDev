@@ -59,9 +59,9 @@ export function CtaSection() {
               Đăng ký miễn phí
             </Button>
             <Button
-              variant="outline"
+              variant="secondary"
               size="lg"
-              className="border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/8"
+              className="border-primary-foreground/20"
               render={<Link href="/contact" />}
             >
               <Phone size={16} weight="regular" />

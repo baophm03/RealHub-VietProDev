@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Kanban, List as ListIcon } from "@phosphor-icons/react";
+import { Can } from "@casl/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { KanbanBoard, type KanbanColumn } from "@/components/shared/kanban-board";
-import { useUserStore } from "@/lib/stores/user-store";
 import { useGetApiLeads } from "@/lib/api/endpoints/leads";
 
 interface Lead {
@@ -38,9 +38,7 @@ function formatPrice(price: number): string {
 
 export default function LeadsPage() {
   const router = useRouter();
-  const hasPermission = useUserStore((s) => s.hasPermission);
   const [view, setView] = useState<"kanban" | "list">("kanban");
-  const [mounted, setMounted] = useState(false);
 
   const { data: leadsData, isLoading } = useGetApiLeads({
     status: undefined,
@@ -53,10 +51,6 @@ export default function LeadsPage() {
     offset: "0",
   });
   const leads = ((leadsData as unknown as { data: Lead[] })?.data) || [];
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const columns: KanbanColumn<Lead>[] = statusConfig.map((status) => ({
     id: status.id,
@@ -81,12 +75,12 @@ export default function LeadsPage() {
                 <ListIcon size={16} />
               </button>
             </div>
-            {mounted && hasPermission("leads:write") && (
+            <Can I="CREATE" a="LEAD">
               <Button onClick={() => router.push("/dashboard/leads/new")}>
                 <Plus size={16} />
                 Them lead
               </Button>
-            )}
+            </Can>
           </div>
         }
       />

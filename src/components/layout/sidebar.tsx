@@ -2,19 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { navGroups } from "@/config/nav";
-import { useUserStore } from "@/lib/stores/user-store";
+import { ability } from "@/config/casl/ability";
 import { cn } from "@/lib/utils/cn";
 
 export function Sidebar() {
   const pathname = usePathname();
-  const hasPermission = useUserStore((s) => s.hasPermission);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   return (
     <aside className="flex w-64 shrink-0 flex-col border-r border-border bg-surface h-full">
@@ -32,15 +25,11 @@ export function Sidebar() {
             </p>
             <ul className="flex flex-col gap-0.5">
               {group.items.map((item) => {
-                const isActive =
-                  pathname === item.href ||
-                  (item.href !== "/" && pathname.startsWith(item.href));
-                const hasAccess = mounted && (!item.permission || hasPermission(item.permission));
-
+                const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+                const hasAccess = !item.permission || ability.can(item.permission.action, item.permission.subject);
                 if (!hasAccess) return null;
 
                 const Icon = item.icon;
-
                 return (
                   <li key={item.href}>
                     <Link

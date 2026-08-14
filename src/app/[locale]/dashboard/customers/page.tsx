@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Users, Funnel, Trash } from "@phosphor-icons/react";
 import { toast } from "sonner";
@@ -19,7 +19,6 @@ import {
   DialogPortal,
   DialogOverlay,
 } from "@/components/ui/dialog";
-import { useUserStore } from "@/lib/stores/user-store";
 import {
   useGetApiCustomers,
   useDeleteApiCustomer,
@@ -27,6 +26,7 @@ import {
 import type { ColumnDef } from "@tanstack/react-table";
 import type { GetApiCustomersType } from "@/lib/api/models/getApiCustomersType";
 import type { GetApiCustomersStatus } from "@/lib/api/models/getApiCustomersStatus";
+import { Can } from '@casl/react';
 
 interface CustomerType {
   id: string;
@@ -89,11 +89,9 @@ const statusFilters: { value: GetApiCustomersStatus | "ALL"; label: string }[] =
 
 export default function CustomersPage() {
   const router = useRouter();
-  const hasPermission = useUserStore((s) => s.hasPermission);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<GetApiCustomersType | "ALL">("ALL");
   const [statusFilter, setStatusFilter] = useState<GetApiCustomersStatus | "ALL">("ALL");
-  const [mounted, setMounted] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<CustomerRow | null>(null);
 
   const { data: customersData, isLoading, refetch } = useGetApiCustomers({
@@ -106,13 +104,6 @@ export default function CustomersPage() {
   const customers = ((customersData as unknown as CustomersResponse)?.data) || [];
 
   const { mutateAsync: deleteCustomer, isPending: isDeleting } = useDeleteApiCustomer();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const canWrite = mounted && hasPermission("customers:write");
-  const canDelete = mounted && hasPermission("customers:delete");
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -204,7 +195,7 @@ export default function CustomersPage() {
         header: "Thao tác",
         cell: ({ row }) => (
           <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-            {canDelete && (
+            <Can I="DELETE" a="CUSTOMER">
               <Button
                 variant="ghost"
                 size="icon-sm"
@@ -213,12 +204,12 @@ export default function CustomersPage() {
               >
                 <Trash size={14} />
               </Button>
-            )}
+            </Can>
           </div>
         ),
       },
     ],
-    [canDelete],
+    [],
   );
 
   const totalCount = (customersData as unknown as CustomersResponse)?.meta?.total ?? customers.length;
@@ -230,12 +221,12 @@ export default function CustomersPage() {
         title="Khách hàng"
         description="Quản lý danh sách khách hàng"
         actions={
-          canWrite && (
+          <Can I="CREATE" a="CUSTOMER">
             <Button onClick={() => router.push("/dashboard/customers/new")}>
               <Plus size={16} />
               Thêm khách hàng
             </Button>
-          )
+          </Can>
         }
       />
 
@@ -293,12 +284,12 @@ export default function CustomersPage() {
           title="Chưa có khách hàng"
           description="Thêm khách hàng đầu tiên để bắt đầu quản lý CRM"
           action={
-            canWrite && (
+            <Can I="CREATE" a="CUSTOMER">
               <Button onClick={() => router.push("/dashboard/customers/new")}>
                 <Plus size={16} />
                 Thêm khách hàng
               </Button>
-            )
+            </Can>
           }
         />
       )}
@@ -329,13 +320,15 @@ export default function CustomersPage() {
               <Button variant="outline" onClick={() => setDeleteTarget(null)}>
                 Hủy
               </Button>
-              <Button
-                variant="destructive"
-                disabled={isDeleting}
-                onClick={handleDelete}
-              >
-                {isDeleting ? "Đang xóa..." : "Xóa"}
-              </Button>
+              <Can I="DELETE" a="CUSTOMER">
+                <Button
+                  variant="destructive"
+                  disabled={isDeleting}
+                  onClick={handleDelete}
+                >
+                  {isDeleting ? "Đang xóa..." : "Xóa"}
+                </Button>
+              </Can>
             </div>
           </DialogContent>
         </DialogPortal>

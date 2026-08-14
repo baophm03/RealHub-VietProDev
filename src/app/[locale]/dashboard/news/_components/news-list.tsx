@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Newspaper, Trash, PencilSimple, Spinner } from "@phosphor-icons/react";
+import { Can } from "@casl/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
-import { useUserStore } from "@/lib/stores/user-store";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   useGetApiNews,
@@ -32,14 +32,8 @@ function formatDate(iso: string): string {
 
 export function NewsList() {
   const router = useRouter();
-  const hasPermission = useUserStore((s) => s.hasPermission);
   const [search, setSearch] = useState("");
-  const [mounted, setMounted] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const { data: newsData, isLoading, refetch: refetchNews } = useGetApiNews({ limit: "100" });
   const news: News[] = (newsData as unknown as GetNewsResponse)?.data ?? [];
@@ -109,7 +103,7 @@ export function NewsList() {
           >
             <PencilSimple size={16} />
           </button>
-          {mounted && hasPermission("news:delete") && (
+          <Can I="DELETE" a="NEWS">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -125,7 +119,7 @@ export function NewsList() {
                 <Trash size={16} />
               )}
             </button>
-          )}
+          </Can>
         </div>
       ),
     },
@@ -141,12 +135,12 @@ export function NewsList() {
           onChange={(e) => setSearch(e.target.value)}
           className="w-full sm:w-auto min-w-0"
         />
-        {mounted && hasPermission("news:write") && (
+        <Can I="CREATE" a="NEWS">
           <Button onClick={() => router.push("/dashboard/news/new")}>
             <Plus size={16} />
             Thêm bài viết
           </Button>
-        )}
+        </Can>
       </div>
 
       {isLoading ? (
@@ -166,12 +160,12 @@ export function NewsList() {
           title="Chưa có bài viết"
           description="Tạo bài viết đầu tiên để hiển thị trên trang tin tức"
           action={
-            mounted && hasPermission("news:write") && (
+            <Can I="CREATE" a="NEWS">
               <Button onClick={() => router.push("/dashboard/news/new")}>
                 <Plus size={16} />
                 Thêm bài viết
               </Button>
-            )
+            </Can>
           }
         />
       )}

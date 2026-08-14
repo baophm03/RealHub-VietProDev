@@ -1,24 +1,25 @@
+export interface AuthMePermission {
+  module: string;
+  action: string;
+}
+
+export interface AuthMeRole {
+  code: string;
+  name: string;
+  description: string | null;
+  permissions: AuthMePermission[];
+}
+
 export interface AuthMeResponse {
   id: string;
   fullName: string;
   email: string;
   phone: string | null;
-  phoneNormalized: string | null;
   avatarUrl: string | null;
   status: string;
-  tokenVersion: number;
-  memberships: Array<{
-    id: string;
-    tenantId: string;
-    userId: string;
-    roleId: string;
-    roleCode: string;
-    status: string;
-    joinedAt: string;
-    invitedBy: string | null;
-    createdAt: string;
-    updatedAt: string;
-  }>;
+  role: AuthMeRole | null;
+  lastLoginAt: string | null;
+  createdAt: string;
 }
 
 export interface GetAuthMeResponse {
