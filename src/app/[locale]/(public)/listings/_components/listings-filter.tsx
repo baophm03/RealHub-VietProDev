@@ -69,9 +69,9 @@ export function ListingsFilter({
     draftPriceTo !== "" ||
     draftSelectedZone !== "";
 
-  const toggleType = (typeId: string) => {
+  const toggleType = (typeCode: string) => {
     setDraftSelectedTypes((prev) =>
-      prev.includes(typeId) ? prev.filter((t) => t !== typeId) : [...prev, typeId],
+      prev.includes(typeCode) ? prev.filter((t) => t !== typeCode) : [...prev, typeCode],
     );
   };
 
@@ -89,7 +89,6 @@ export function ListingsFilter({
 
     if (draftTransactionType !== "ALL") params.set("transactionType", draftTransactionType);
     if (draftSelectedZone) params.set("provinceId", draftSelectedZone);
-    if (draftSelectedTypes.length > 0) params.set("types", draftSelectedTypes.join(","));
     if (draftPriceFrom) {
       const multiplier = draftTransactionType === "RENT" ? 1000000 : 1000000000;
       params.set("minPrice", String(parseFloat(draftPriceFrom) * multiplier));
@@ -100,7 +99,16 @@ export function ListingsFilter({
     }
     if (sort) params.set("sort", sort);
 
-    return `${pathname}?${params.toString()}`;
+    // Build query manually to keep comma raw (URLSearchParams encodes it to %2C)
+    const parts: string[] = [];
+    for (const [key, value] of params.entries()) {
+      parts.push(`${key}=${value}`);
+    }
+    if (draftSelectedTypes.length > 0) {
+      parts.push(`types=${draftSelectedTypes.join(",")}`);
+    }
+
+    return parts.length > 0 ? `${pathname}?${parts.join("&")}` : pathname;
   };
 
   const applyFilters = () => {
@@ -196,11 +204,11 @@ export function ListingsFilter({
           <Label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Loại hình</Label>
           <div className="flex flex-col gap-2">
             {propertyTypes.map((t) => (
-              <Label key={t.id} className="flex items-center gap-2 text-sm cursor-pointer">
+              <Label key={t.code} className="flex items-center gap-2 text-sm cursor-pointer">
                 <Input
                   type="checkbox"
-                  checked={draftSelectedTypes.includes(t.id)}
-                  onChange={() => toggleType(t.id)}
+                  checked={draftSelectedTypes.includes(t.code)}
+                  onChange={() => toggleType(t.code)}
                   className="size-4 rounded border-border text-primary focus:ring-primary"
                 />
                 {t.name}

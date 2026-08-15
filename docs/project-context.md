@@ -76,7 +76,7 @@ Không chỉ là website đăng tin BĐS. Không chỉ là CRM nội bộ. Khôn
 | SALES_DISTRIBUTION | Sales/agency khai thác | Sales theo assignment/team | Áp dụng Commission Engine |
 | HYBRID | Owner + sales cùng khai thác | Theo nguồn lead: owner link, sales link, CTV link, public | Tính theo nguồn lead + rule phù hợp |
 | INTERNAL_ONLY | Chỉ nội bộ tenant thấy | Theo người được phân quyền | Theo chính sách nội bộ |
-| MARKETPLACE_PUBLIC | Public trên RealHub marketplace | Theo lead source/policy | Theo rule tenant/platform |
+| AGENCY_DISTRIBUTION | Phân phối qua agency/sàn công khai | Theo lead source/policy | Theo rule tenant/platform |
 
 ---
 
@@ -399,7 +399,7 @@ Auth, Tenant, Users/Roles, Locations/Zones, Properties/Projects, Assignments, Le
 | Scope Phase 1 | Chốt không payment, có owner self-sell, customer self-service, commission động |
 | Role/Permission | Role MVP + multi-profile/multi-tenant membership |
 | Product Visibility | Có visibility_scope và publication_status riêng |
-| Selling Mode | Có SELF_SELL, SALES_DISTRIBUTION, HYBRID, INTERNAL_ONLY, MARKETPLACE_PUBLIC |
+| Selling Mode | Có SELF_SELL, SALES_DISTRIBUTION, HYBRID, INTERNAL_ONLY, AGENCY_DISTRIBUTION |
 | Lead Policy | Có duplicate/protection/lead pool |
 | Commission Engine | Có plan/rule/split/snapshot/ledger |
 | Dynamic Config | Có assignment, visibility, lead protection, SEO, feature flags |

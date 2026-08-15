@@ -40,7 +40,7 @@ const propertySchema = z.object({
   slug: z.string().min(1, "Vui lòng nhập slug"),
   propertyTypeId: z.string().min(1, "Vui lòng chọn loại BĐS"),
   transactionType: z.enum(["SALE", "RENT", "TRANSFER", "INVESTMENT"]),
-  sellingMode: z.enum(["SELF_SELL", "SALES_DISTRIBUTION", "HYBRID"]),
+  sellingMode: z.enum(["SELF_SELL", "SALES_DISTRIBUTION", "HYBRID", "INTERNAL_ONLY", "AGENCY_DISTRIBUTION"]),
   provinceId: z.string().optional(),
   districtId: z.string().optional(),
   price: z.number().min(0, "Giá phải lớn hơn 0"),
@@ -64,9 +64,11 @@ const transactionTypeLabels: Record<string, string> = {
 };
 
 const sellingModeLabels: Record<string, string> = {
-  SELF_SELL: "Bán tự hành",
-  SALES_DISTRIBUTION: "Phân phối bán",
+  SELF_SELL: "Tự bán",
+  SALES_DISTRIBUTION: "Phân phối",
   HYBRID: "Kết hợp",
+  INTERNAL_ONLY: "Chỉ nội bộ",
+  AGENCY_DISTRIBUTION: "Sàn công khai",
 };
 
 const businessStatusLabels: Record<string, string> = {
@@ -230,14 +232,14 @@ function PropertyFormContent() {
             </FormField>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <FormField label="Loại giao dịch" required>
               <Select
                 defaultValue="SALE"
                 items={transactionTypeLabels}
                 onValueChange={(v) => setValue("transactionType", v as PropertyFormData["transactionType"])}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Chọn loại giao dịch" />
                 </SelectTrigger>
                 <SelectContent>
@@ -248,14 +250,14 @@ function PropertyFormContent() {
                 </SelectContent>
               </Select>
             </FormField>
-            <FormField label="Loại BĐS" required error={errors.propertyTypeId?.message}>
+            <FormField label="Thể loại" required error={errors.propertyTypeId?.message}>
               <Select
                 value={watchedPropertyTypeId ?? ""}
                 items={propertyTypeItems}
                 onValueChange={(v) => setValue("propertyTypeId", v as string)}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder={propertyTypesLoading ? "Đang tải..." : "Chọn loại BĐS"} />
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={propertyTypesLoading ? "Đang tải..." : "Chọn thể loại"} />
                 </SelectTrigger>
                 <SelectContent>
                   {propertyTypes.map((t) => (
@@ -266,22 +268,21 @@ function PropertyFormContent() {
                 </SelectContent>
               </Select>
             </FormField>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField label="Hình thức bán" required>
               <Select
                 defaultValue="SELF_SELL"
                 items={sellingModeLabels}
                 onValueChange={(v) => setValue("sellingMode", v as PropertyFormData["sellingMode"])}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Chọn hình thức bán" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="SELF_SELL" label="Bán tự hành">Bán tự hành</SelectItem>
-                  <SelectItem value="SALES_DISTRIBUTION" label="Phân phối bán">Phân phối bán</SelectItem>
+                  <SelectItem value="SELF_SELL" label="Tự bán">Tự bán</SelectItem>
+                  <SelectItem value="SALES_DISTRIBUTION" label="Phân phối">Phân phối</SelectItem>
                   <SelectItem value="HYBRID" label="Kết hợp">Kết hợp</SelectItem>
+                  <SelectItem value="INTERNAL_ONLY" label="Chỉ nội bộ">Chỉ nội bộ</SelectItem>
+                  <SelectItem value="AGENCY_DISTRIBUTION" label="Sàn công khai">Sàn công khai</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>

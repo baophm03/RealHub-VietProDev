@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { formatPrice } from "@/utils";
 import {
   ArrowLeft,
   MapPin,
@@ -10,31 +11,17 @@ import {
   Bed,
   Ruler,
   ShieldCheck,
-  Car,
-  SwimmingPool,
-  SecurityCamera,
-  Park,
   Star,
   Phone,
-  PaperPlaneTilt,
   Camera,
   CaretRight,
   PencilSimple,
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { useGetApiPropertyId, useGetApiProperties, useGetApiPropertyMedia } from "@/lib/api/endpoints/properties";
+import { useGetApiPropertyId, useGetApiPropertyMedia } from "@/lib/api/endpoints/properties";
 import { useGetApiFormSchemas } from "@/lib/api/endpoints/dynamic-fields";
 import { Property } from "@/lib/api/types/properties";
 import { ImageLightbox, type LightboxImage } from "@/components/shared/image-lightbox";
-
-function formatPrice(price: number): string {
-  if (price >= 1000000000) return `${(price / 1000000000).toFixed(1)} tỷ`;
-  if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu`;
-  return price.toLocaleString("vi-VN");
-}
 
 export default function PropertyDetailPage() {
   const params = useParams();
@@ -56,11 +43,6 @@ export default function PropertyDetailPage() {
       .sort((a: any, b: any) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
   }, [mediaData]);
 
-  const [contactForm, setContactForm] = useState({
-    name: "",
-    phone: "",
-    message: "Tôi quan tâm đến bất động sản này...",
-  });
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
@@ -78,11 +60,6 @@ export default function PropertyDetailPage() {
   const openLightbox = (i: number) => {
     setLightboxIndex(i);
     setLightboxOpen(true);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Contact form:", contactForm);
   };
 
   const priceNum = Number(property?.price || 0);

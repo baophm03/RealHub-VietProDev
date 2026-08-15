@@ -3,6 +3,10 @@
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
 import {
+  formatPriceWithTransaction as formatPrice,
+  formatPricePerSqm,
+} from "@/utils";
+import {
   Bed, Bathtub, MapPin, Star, CaretRight, Ruler, ShieldCheck, Spinner,
 } from "@phosphor-icons/react";
 import { Link } from "@/i18n/navigation";
@@ -35,24 +39,6 @@ const statusLabel: Record<string, string> = {
   OFF_MARKET: "Ngừng bán",
 };
 
-function formatPrice(priceStr: string, transactionType: string): string {
-  const price = Number(priceStr || 0);
-  if (transactionType === "RENT") {
-    if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu/tháng`;
-    return `${price.toLocaleString("vi-VN")} đ/tháng`;
-  }
-  if (price >= 1000000000) return `${(price / 1000000000).toFixed(1)} tỷ`;
-  if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu`;
-  return `${price.toLocaleString("vi-VN")} đ`;
-}
-
-function formatPricePerSqm(priceStr: string, area: number): string {
-  const price = Number(priceStr || 0);
-  if (!area || area <= 0) return "";
-  const perSqm = Math.round(price / area);
-  if (perSqm >= 1000000) return `~${(perSqm / 1000000).toFixed(1)} tr/m²`;
-  return `~${perSqm.toLocaleString("vi-VN")} đ/m²`;
-}
 
 function findFieldValue(
   schemas: any[],
@@ -116,7 +102,9 @@ export function ListingDetailView() {
   console.log(property)
   const propertyTypeId = property?.propertyType?.id;
   const { data: similarData } = useGetApiProperties(
-    propertyTypeId ? { propertyTypeId, limit: "10" } : { limit: "10" },
+    propertyTypeId
+      ? { propertyTypeId, verificationStatus: "VERIFIED", publicationStatus: "PUBLIC", limit: "10" }
+      : { verificationStatus: "VERIFIED", publicationStatus: "PUBLIC", limit: "10" },
     { query: { enabled: !!property } },
   );
 

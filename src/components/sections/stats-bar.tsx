@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { TrendUp } from "@phosphor-icons/react";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@/lib/utils";
 
 const stats = [
   { value: "1,247", label: "BĐS đang bán", change: "+12.4%" },

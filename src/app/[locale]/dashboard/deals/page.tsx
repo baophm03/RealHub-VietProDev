@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Kanban, List as ListIcon } from "@phosphor-icons/react";
+import { formatPrice } from "@/utils";
 import { Can } from "@casl/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -29,12 +30,6 @@ const statusConfig = [
   { id: "COMPLETED", title: "Hoàn thành", variant: "green" as const },
   { id: "CANCELLED", title: "Hủy", variant: "red" as const },
 ];
-
-function formatPrice(price: number): string {
-  if (price >= 1000000000) return `${(price / 1000000000).toFixed(1)} ty`;
-  if (price >= 1000000) return `${(price / 1000000).toFixed(0)} trieu`;
-  return price.toLocaleString("vi-VN");
-}
 
 export default function DealsPage() {
   const router = useRouter();

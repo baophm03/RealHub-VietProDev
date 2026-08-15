@@ -31,6 +31,7 @@ export interface Property {
   areaUnit: string;
   publicationStatus: string;
   businessStatus: string;
+  verificationStatus?: string;
   createdAt: string;
   updatedAt: string;
   propertyType: {

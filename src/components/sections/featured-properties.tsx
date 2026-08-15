@@ -3,9 +3,10 @@
 import { motion } from "framer-motion";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
+import { formatPriceWithTransaction as formatPrice } from "@/utils";
 import { ArrowRight, MapPin, Square, ArrowUpRight, Spinner } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@/lib/utils";
 import { useGetApiProperties } from "@/lib/api/endpoints/properties";
 import { GetPropertiesResponse } from "@/lib/api/types/properties";
 import { PropertyCardImage } from "@/components/shared/property-card-image";
@@ -26,19 +27,12 @@ const BENTO_SPANS = [
   "lg:col-span-2",
 ];
 
-function formatPrice(priceStr: string, transactionType: string): string {
-  const price = Number(priceStr || 0);
-  if (transactionType === "RENT") {
-    if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu/tháng`;
-    return `${price.toLocaleString("vi-VN")} đ/tháng`;
-  }
-  if (price >= 1000000000) return `${(price / 1000000000).toFixed(1)} tỷ`;
-  if (price >= 1000000) return `${(price / 1000000).toFixed(0)} triệu`;
-  return `${price.toLocaleString("vi-VN")} đ`;
-}
-
 export function FeaturedProperties() {
-  const { data: propertiesData, isLoading } = useGetApiProperties({ limit: "5" } as any);
+  const { data: propertiesData, isLoading } = useGetApiProperties({
+    verificationStatus: "VERIFIED",
+    publicationStatus: "PUBLIC",
+    limit: "5",
+  } as any);
   const properties = ((propertiesData as unknown as GetPropertiesResponse)?.data) || [];
 
   return (

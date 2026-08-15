@@ -4,7 +4,7 @@ import { useAuthStore } from "@/lib/stores/auth-store";
 import { useUserStore } from "@/lib/stores/user-store";
 import { useRouter } from "next/navigation";
 import { List, Bell, Moon, Sun, SignOut, UserCircle, User } from "@phosphor-icons/react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -84,10 +84,16 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
 
         <DropdownMenu>
           <DropdownMenuTrigger
-            className="flex items-center gap-2 rounded-md p-1.5 hover:bg-surface-muted transition-all duration-300"
+            className="flex items-center gap-2 rounded-full p-0 hover:bg-transparent transition-all duration-300"
           >
-            <Avatar className="size-10 rounded-md overflow-hidden">
-              <AvatarFallback className="flex size-10 items-center justify-center rounded-md bg-surface-muted text-xs font-medium">
+            <Avatar className="size-10 rounded-full overflow-hidden">
+              {user?.avatarUrl && (
+                <AvatarImage
+                  src={user.avatarUrl}
+                  alt={user?.fullName ?? "User"}
+                />
+              )}
+              <AvatarFallback className="flex size-10 items-center justify-center rounded-full bg-surface-muted text-xs font-medium">
                 {initials}
               </AvatarFallback>
             </Avatar>

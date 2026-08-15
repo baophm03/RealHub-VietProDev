@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Pencil, Trash, House, Kanban, Phone, Envelope } from "@phosphor-icons/react";
+import { formatBudget } from "@/utils";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -80,19 +81,7 @@ const purposeLabel: Record<string, string> = {
   LEASE_OUT: "Cho thuê",
 };
 
-function formatBudget(min?: string, max?: string): string {
-  if (!min && !max) return "—";
-  const fmt = (v: string) => {
-    const n = Number(v);
-    if (n >= 1000000000) return `${(n / 1000000000).toFixed(1)} tỷ`;
-    if (n >= 1000000) return `${(n / 1000000).toFixed(0)} triệu`;
-    return n.toLocaleString("vi-VN");
-  };
-  if (min && max) return `${fmt(min)} — ${fmt(max)}`;
-  if (min) return `từ ${fmt(min)}`;
-  if (max) return `đến ${fmt(max)}`;
-  return "—";
-}
+
 
 export default function CustomerDetailPage() {
   const params = useParams();

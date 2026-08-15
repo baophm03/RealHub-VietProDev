@@ -33,7 +33,7 @@ import {
   togglePermissionInSet,
   type PermissionKey,
 } from "@/config/permissions";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@/lib/utils";
 import { RoleUsersTab } from "./role-users-tab";
 import type {
   Role,
