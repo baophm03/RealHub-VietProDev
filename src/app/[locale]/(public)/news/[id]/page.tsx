@@ -1,14 +1,16 @@
-"use client";
-
-import { useParams } from "next/navigation";
-import { Link } from "@/i18n/navigation";
-import { ArrowLeft, ArrowRight, Calendar, Spinner, Image as ImageIcon } from "@phosphor-icons/react";
-import { useGetApiNewsId, useGetApiNews } from "@/lib/api/endpoints/news";
+import { setRequestLocale } from "next-intl/server";
+import { getApiNewsId, getApiNews } from "@/lib/api/endpoints/news";
 import type {
   GetNewsItemResponse,
   GetNewsResponse,
   News,
 } from "@/lib/api/types/news";
+import { Link } from "@/i18n/navigation";
+import { ArrowLeft, ArrowRight, Calendar, ImageIcon } from "lucide-react";
+
+type Props = {
+  params: Promise<{ locale: string; id: string }>;
+};
 
 function formatDate(iso: string): string {
   if (!iso) return "";
@@ -37,7 +39,7 @@ function NewsImage({
   if (!url) {
     return (
       <div className={`flex items-center justify-center bg-surface-muted ${className ?? ""}`}>
-        <ImageIcon size={iconSize} weight="duotone" className="text-foreground-muted" />
+        <ImageIcon size={iconSize} className="text-foreground-muted" />
       </div>
     );
   }
@@ -56,25 +58,19 @@ function renderContent(content: string) {
   );
 }
 
-export function NewsDetailView() {
-  const params = useParams();
-  const slug = params.slug as string;
+export default async function NewsDetailPage({ params }: Props) {
+  const { locale, id } = await params;
+  setRequestLocale(locale);
 
-  const { data: articleData, isLoading } = useGetApiNewsId(slug);
-  const { data: relatedData } = useGetApiNews({ limit: "4" });
+  const [articleRes, relatedRes] = await Promise.all([
+    getApiNewsId(id),
+    getApiNews({ limit: "4" }),
+  ]);
 
-  const article = (articleData as unknown as GetNewsItemResponse)?.data ?? null;
-  const relatedNews = (((relatedData as unknown as GetNewsResponse)?.data) ?? [])
-    .filter((n: News) => n.id !== slug)
+  const article = (articleRes as unknown as GetNewsItemResponse)?.data ?? null;
+  const relatedNews = (((relatedRes as unknown as GetNewsResponse)?.data) ?? [])
+    .filter((n: News) => n.id !== id)
     .slice(0, 3);
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Spinner size={32} className="animate-spin text-foreground-muted" />
-      </div>
-    );
-  }
 
   if (!article) {
     return (

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { Plus, PencilSimple, Trash, X } from "@phosphor-icons/react";
+import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -270,10 +270,10 @@ export function FormSchemasTab({ entityType, propertyTypeId }: FormSchemasTabPro
                   <CardTitle className="text-base truncate">{schema.name}</CardTitle>
                   <div className="flex gap-1 shrink-0">
                     <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(schema)}>
-                      <PencilSimple size={14} />
+                      <Pencil size={14} />
                     </Button>
                     <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(schema)}>
-                      <Trash size={14} />
+                      <Trash2 size={14} />
                     </Button>
                   </div>
                 </div>

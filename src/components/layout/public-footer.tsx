@@ -1,21 +1,26 @@
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { propertyCategories } from "@/config/property-categories";
 
 export function PublicFooter() {
   const t = useTranslations("public");
-  const tNav = useTranslations("nav");
 
   const footerLinks = [
     {
-      title: t("browseProperties"),
+      title: "Bất động sản",
+      links: propertyCategories.map((cat) => ({ label: cat.label, href: cat.href })),
+    },
+    {
+      title: "Khám phá",
       links: [
-        { label: t("featuredProperties"), href: "/listings" },
+        { label: "Dự án", href: "/projects" },
+        { label: "Tin tức", href: "/news" },
         { label: t("about"), href: "/about" },
         { label: t("contact"), href: "/contact" },
       ],
     },
     {
-      title: tNav("settings"),
+      title: "Tài khoản",
       links: [
         { label: t("signIn"), href: "/login" },
         { label: t("signUp"), href: "/register" },
@@ -27,7 +32,7 @@ export function PublicFooter() {
     <footer className="border-t border-border bg-surface-muted">
       <div className="mx-auto max-w-[1400px] px-6 py-12 md:px-8 lg:px-12">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-          <div className="col-span-2 md:col-span-2">
+          <div className="col-span-2 md:col-span-1">
             <span className="font-serif text-xl font-semibold tracking-tight">
               RealHub
             </span>

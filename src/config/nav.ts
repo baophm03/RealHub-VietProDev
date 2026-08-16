@@ -1,19 +1,18 @@
 import {
-  House,
-  Buildings,
-  Building,
-  Users,
-  UserCircle,
+  Building2,
   Calendar,
+  CircleUser,
+  Folder,
   Handshake,
-  Percent,
-  Gear,
-  FolderSimple,
-  Newspaper,
   Headset,
+  House,
   Key,
+  Newspaper,
+  Percent,
+  Settings,
   ShieldCheck,
-} from "@phosphor-icons/react";
+  Users,
+} from "lucide-react";
 import type { Actions, Features } from "@/config/casl/ability";
 
 export interface NavItem {
@@ -45,7 +44,7 @@ export const navGroups: NavGroup[] = [
       {
         label: "Bất động sản",
         href: "/dashboard/properties",
-        icon: Buildings,
+        icon: Building2,
         permission: { action: "READ", subject: "PROPERTY" },
       },
       {
@@ -57,7 +56,7 @@ export const navGroups: NavGroup[] = [
       {
         label: "Dự án",
         href: "/dashboard/projects",
-        icon: Building,
+        icon: Building2,
         permission: { action: "READ", subject: "PROPERTY" },
       },
       {
@@ -69,7 +68,7 @@ export const navGroups: NavGroup[] = [
       {
         label: "Leads",
         href: "/dashboard/leads",
-        icon: UserCircle,
+        icon: CircleUser,
         permission: { action: "READ", subject: "LEAD" },
       },
       {
@@ -110,7 +109,7 @@ export const navGroups: NavGroup[] = [
       {
         label: "Tài liệu",
         href: "/dashboard/files",
-        icon: FolderSimple,
+        icon: Folder,
         permission: { action: "READ", subject: "FILE" },
       },
       {
@@ -122,7 +121,7 @@ export const navGroups: NavGroup[] = [
       {
         label: "Cài đặt",
         href: "/dashboard/settings",
-        icon: Gear,
+        icon: Settings,
         permission: { action: "READ", subject: "TENANT" },
       },
     ],

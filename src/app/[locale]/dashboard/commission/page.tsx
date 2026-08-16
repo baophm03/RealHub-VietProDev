@@ -2,7 +2,7 @@
 
 import { PageHeader } from "@/components/shared/page-header";
 import { Link } from "@/i18n/navigation";
-import { Percent, ChartBar } from "@phosphor-icons/react";
+import { BarChart3, Percent } from "lucide-react";
 
 export default function CommissionPage() {
   return (
@@ -32,7 +32,7 @@ export default function CommissionPage() {
           className="group flex flex-col gap-4 rounded-lg border border-border bg-surface p-6 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.08)]"
         >
           <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
-            <ChartBar size={24} className="text-primary" />
+            <BarChart3 size={24} className="text-primary" />
           </div>
           <div>
             <h3 className="font-serif text-lg font-semibold">Báo cáo hoa hồng</h3>

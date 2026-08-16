@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Pencil, Check, Lock, Spinner } from "@phosphor-icons/react";
+import { Check, Loader2, Lock, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -84,7 +84,7 @@ export function EditRoleDialog({ role, open, onOpenChange }: EditRoleDialogProps
               Chỉnh sửa role
               {isLocked && (
                 <Badge variant="yellow" className="ml-1">
-                  <Lock size={10} weight="fill" />
+                  <Lock size={10} />
                   Khóa
                 </Badge>
               )}
@@ -96,7 +96,7 @@ export function EditRoleDialog({ role, open, onOpenChange }: EditRoleDialogProps
 
           {isLocked && (
             <div className="rounded-lg bg-accent-yellow/20 px-4 py-3 text-sm text-accent-yellow-text flex items-center gap-2">
-              <Lock size={14} weight="fill" />
+              <Lock size={14} />
               SUPER_ADMIN không thể chỉnh sửa.
             </div>
           )}
@@ -159,7 +159,7 @@ export function EditRoleDialog({ role, open, onOpenChange }: EditRoleDialogProps
             <Button onClick={handleSubmit} disabled={isPending || isLocked}>
               {isPending ? (
                 <>
-                  <Spinner size={14} className="animate-spin" />
+                  <Loader2 size={14} className="animate-spin" />
                   Đang lưu...
                 </>
               ) : (

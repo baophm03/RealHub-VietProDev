@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { PaperPlaneTilt } from "@phosphor-icons/react";
+import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -87,7 +87,7 @@ export function SubmitVerificationDialog({
             Hủy
           </Button>
           <Button onClick={handleConfirm} loading={isPending || submitting}>
-            <PaperPlaneTilt size={14} />
+            <Send size={14} />
             Gửi duyệt
           </Button>
         </DialogFooter>

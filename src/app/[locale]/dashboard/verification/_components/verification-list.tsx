@@ -6,14 +6,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { formatPrice } from "@/utils";
 import { toast } from "sonner";
 import {
-  Funnel,
-  ShieldCheck,
-  DotsThreeVertical,
-  CheckCircle,
-  XCircle,
+  CircleCheck,
+  CircleX,
   Clock,
-  PencilSimple,
-} from "@phosphor-icons/react";
+  Filter,
+  MoreVertical,
+  Pencil,
+  ShieldCheck,
+} from "lucide-react";
 import { Can } from "@casl/react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
@@ -71,10 +71,10 @@ const statusLabel: Record<VerificationStatus, string> = {
 };
 
 const statusIcon: Record<VerificationStatus, typeof ShieldCheck> = {
-  DRAFT: PencilSimple,
+  DRAFT: Pencil,
   PENDING: Clock,
-  VERIFIED: CheckCircle,
-  REJECTED: XCircle,
+  VERIFIED: CircleCheck,
+  REJECTED: CircleX,
 };
 
 const statusDescription: Record<VerificationStatus, string> = {
@@ -227,7 +227,7 @@ export function VerificationList() {
                     />
                   }
                 >
-                  <DotsThreeVertical size={16} />
+                  <MoreVertical size={16} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" sideOffset={4}>
                   <DropdownMenuGroup>
@@ -335,7 +335,7 @@ export function VerificationList() {
           className="w-full sm:w-auto min-w-0"
         />
         <Button variant="outline" size="icon" aria-label="Bộ lọc" className="shrink-0">
-          <Funnel size={16} />
+          <Filter size={16} />
         </Button>
       </div>
 

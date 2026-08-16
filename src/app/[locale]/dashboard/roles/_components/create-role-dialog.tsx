@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Plus, Spinner, Check } from "@phosphor-icons/react";
+import { Check, Loader2, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -128,7 +128,7 @@ export function CreateRoleDialog({ open, onOpenChange }: CreateRoleDialogProps) 
             <Button onClick={handleSubmit} disabled={isPending}>
               {isPending ? (
                 <>
-                  <Spinner size={14} className="animate-spin" />
+                  <Loader2 size={14} className="animate-spin" />
                   Đang tạo...
                 </>
               ) : (

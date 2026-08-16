@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Phone, Envelope, MapPin, PaperPlaneTilt } from "@phosphor-icons/react";
+import { Mail, MapPin, Phone, Send } from "lucide-react";
 
 export default function ContactPage() {
   return (
@@ -46,7 +46,7 @@ export default function ContactPage() {
               <label className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Nội dung</label>
               <textarea rows={5} className="rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary transition-colors" placeholder="Mô tả nhu cầu của bạn..." />
             </div>
-            <Button size="lg" className="w-fit" leftIcon={<PaperPlaneTilt size={16} />}>
+            <Button size="lg" className="w-fit" leftIcon={<Send size={16} />}>
               Gửi tin nhắn
             </Button>
           </form>
@@ -67,7 +67,7 @@ export default function ContactPage() {
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
-                  <Envelope size={18} className="text-primary" />
+                  <Mail size={18} className="text-primary" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-xs text-foreground-muted">Email</span>

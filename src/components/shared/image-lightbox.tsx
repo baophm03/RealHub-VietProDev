@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { X, CaretLeft, CaretRight, Image as ImageIcon } from "@phosphor-icons/react";
+import { ChevronLeft, ChevronRight, Image as ImageIcon, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -83,7 +83,7 @@ export function ImageLightbox({
               className="absolute left-4 top-1/2 z-10 inline-flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
               aria-label="Ảnh trước"
             >
-              <CaretLeft size={24} />
+              <ChevronLeft size={24} />
             </button>
           )}
 
@@ -95,7 +95,7 @@ export function ImageLightbox({
               className="absolute right-4 top-1/2 z-10 inline-flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
               aria-label="Ảnh sau"
             >
-              <CaretRight size={24} />
+              <ChevronRight size={24} />
             </button>
           )}
 
@@ -109,7 +109,7 @@ export function ImageLightbox({
               />
             ) : (
               <div className="flex h-64 w-64 items-center justify-center rounded-lg bg-white/5">
-                <ImageIcon size={48} weight="duotone" className="text-white/40" />
+                <ImageIcon size={48} className="text-white/40" />
               </div>
             )}
 

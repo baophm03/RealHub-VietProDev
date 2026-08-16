@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { Bell, Funnel } from "@phosphor-icons/react";
+import { Bell, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
@@ -129,7 +129,7 @@ export function ListingsFilter({
       <div className="bg-surface rounded-xl border border-border p-4 flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <h2 className="font-serif text-xl font-medium text-primary flex items-center gap-2">
-            <Funnel size={16} /> Bộ lọc tìm kiếm
+            <Filter size={16} /> Bộ lọc tìm kiếm
           </h2>
           {hasFilters && (
             <Button variant="link" size="sm" onClick={clearFilters} className="h-auto p-0 text-xs font-medium">

@@ -4,15 +4,15 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  UploadSimple,
-  Spinner,
-  Image as ImageIcon,
-  FileText,
-  Video,
   Check,
-  MagnifyingGlass,
+  FileText,
+  Image as ImageIcon,
+  Loader2,
+  Search,
+  Upload,
+  Video,
   X,
-} from "@phosphor-icons/react";
+} from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -251,7 +251,7 @@ export function FilePickerModal({
             <div className="flex flex-col gap-3">
               {/* Search */}
               <div className="relative">
-                <MagnifyingGlass
+                <Search
                   size={14}
                   className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-foreground-muted"
                 />
@@ -273,7 +273,7 @@ export function FilePickerModal({
                 </div>
               ) : files.length === 0 ? (
                 <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border py-16 text-center">
-                  <ImageIcon size={32} weight="duotone" className="text-foreground-muted" />
+                  <ImageIcon size={32} className="text-foreground-muted" />
                   <div>
                     <p className="text-sm font-medium text-foreground">
                       {search ? "Không tìm thấy file phù hợp" : "Chưa có file nào trong thư viện"}
@@ -286,7 +286,7 @@ export function FilePickerModal({
                   </div>
                   {!search && (
                     <Button variant="outline" size="sm" onClick={() => setTab("upload")}>
-                      <UploadSimple size={14} />
+                      <Upload size={14} />
                       Tải lên mới
                     </Button>
                   )}
@@ -312,7 +312,7 @@ export function FilePickerModal({
                           />
                         ) : (
                           <div className="flex h-full w-full flex-col items-center justify-center gap-1 text-foreground-muted">
-                            <Icon size={28} weight="duotone" />
+                            <Icon size={28} />
                             <span className="text-[10px] uppercase">
                               {file.mimeType?.split("/").pop()}
                             </span>
@@ -333,7 +333,7 @@ export function FilePickerModal({
                         <div
                           className={`absolute top-2 right-2 flex size-5 items-center justify-center rounded-full border-2 transition-all ${isSelected ? "border-primary bg-primary text-white" : "border-white/80 bg-black/30 text-transparent group-hover:border-white"}`}
                         >
-                          <Check size={12} weight="bold" />
+                          <Check size={12} />
                         </div>
                       </button>
                     );
@@ -350,12 +350,12 @@ export function FilePickerModal({
                 <input {...getInputProps()} />
                 {uploading ? (
                   <>
-                    <Spinner size={28} className="animate-spin text-primary" />
+                    <Loader2 size={28} className="animate-spin text-primary" />
                     <p className="text-sm text-foreground-muted">Đang tải lên...</p>
                   </>
                 ) : (
                   <>
-                    <UploadSimple size={28} weight="duotone" className="text-primary" />
+                    <Upload size={28} className="text-primary" />
                     <div>
                       <p className="text-sm font-medium text-foreground">
                         {isDragActive ? "Thả file vào đây" : "Kéo thả file hoặc click để chọn"}

@@ -3,7 +3,13 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Plus, PencilSimple, Trash, ArrowsInLineHorizontal, X } from "@phosphor-icons/react";
+import {
+  MoveHorizontal,
+  Pencil,
+  Plus,
+  Trash2,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -292,13 +298,13 @@ export function GroupsTab({ entityType, propertyTypeId }: GroupsTabProps) {
                   <CardTitle className="text-base truncate">{group.name}</CardTitle>
                   <div className="flex gap-1 shrink-0">
                     <Button variant="ghost" size="icon-sm" onClick={() => openAssignDialog(group)} title="Gán trường vào nhóm">
-                      <ArrowsInLineHorizontal size={14} />
+                      <MoveHorizontal size={14} />
                     </Button>
                     <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(group)}>
-                      <PencilSimple size={14} />
+                      <Pencil size={14} />
                     </Button>
                     <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(group)}>
-                      <Trash size={14} />
+                      <Trash2 size={14} />
                     </Button>
                   </div>
                 </div>

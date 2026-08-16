@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useGetApiCommissionReport } from "@/lib/api/endpoints/reports";
-import { Percent, TrendUp, CurrencyDollar } from "@phosphor-icons/react";
+import { DollarSign, Percent, TrendingUp } from "lucide-react";
 
 interface CommissionReport {
   totalConfirmed?: string;
@@ -80,7 +80,7 @@ export default function CommissionReportsPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-6">
           <div className="flex size-10 items-center justify-center rounded-lg bg-accent-green/20">
-            <CurrencyDollar size={20} className="text-accent-green-text" />
+            <DollarSign size={20} className="text-accent-green-text" />
           </div>
           <div>
             <span className="text-2xl font-semibold tabular-nums">{totalConfirmed}</span>
@@ -89,7 +89,7 @@ export default function CommissionReportsPage() {
         </div>
         <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-6">
           <div className="flex size-10 items-center justify-center rounded-lg bg-accent-blue/20">
-            <TrendUp size={20} className="text-accent-blue-text" />
+            <TrendingUp size={20} className="text-accent-blue-text" />
           </div>
           <div>
             <span className="text-2xl font-semibold tabular-nums">{totalEstimated}</span>

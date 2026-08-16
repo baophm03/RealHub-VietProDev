@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowLeft, Spinner } from "@phosphor-icons/react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { PageHeader } from "@/components/shared/page-header";
@@ -104,7 +104,7 @@ export default function CategoryFormPage() {
   if (!isCreate && isLoading) {
     return (
       <div className="flex min-h-[300px] items-center justify-center">
-        <Spinner size={28} className="animate-spin text-primary" />
+        <Loader2 size={28} className="animate-spin text-primary" />
       </div>
     );
   }

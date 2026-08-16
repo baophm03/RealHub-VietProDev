@@ -1,7 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Target, Eye, Users, Handshake, Globe, ChartLine } from "@phosphor-icons/react";
+import {
+  Eye,
+  Globe,
+  Handshake,
+  LineChart,
+  Target,
+  Users,
+} from "lucide-react";
 
 export default function AboutPage() {
   return (
@@ -68,7 +75,7 @@ export default function AboutPage() {
       </div>
 
       <div className="rounded-lg bg-primary p-12 text-center text-primary-foreground">
-        <ChartLine size={32} className="mx-auto mb-4 text-primary-foreground/60" />
+        <LineChart size={32} className="mx-auto mb-4 text-primary-foreground/60" />
         <h2 className="mb-2 font-serif text-3xl font-semibold">45+ Agency tin dùng</h2>
         <p className="text-primary-foreground/70">Và con số vẫn đang tăng mỗi tháng</p>
       </div>

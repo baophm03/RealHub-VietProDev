@@ -5,17 +5,17 @@ import { useDropzone } from "react-dropzone";
 import { useQueryClient } from "@tanstack/react-query";
 import { Can } from "@casl/react";
 import {
-  UploadSimple,
-  FileText,
-  Image as ImageIcon,
-  Video,
-  Trash,
   Download,
   Eye,
-  Lock,
-  Funnel,
+  FileText,
   Files as FilesIcon,
-} from "@phosphor-icons/react";
+  Filter,
+  Image as ImageIcon,
+  Lock,
+  Trash2,
+  Upload,
+  Video,
+} from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -236,7 +236,7 @@ export default function FilesPage() {
         >
           <input {...getInputProps()} />
           <div className="flex size-12 items-center justify-center rounded-lg bg-surface-muted">
-            <UploadSimple size={24} className="text-foreground-muted" />
+            <Upload size={24} className="text-foreground-muted" />
           </div>
           <div className="text-center">
             <p className="text-sm font-medium">
@@ -314,7 +314,7 @@ export default function FilesPage() {
                     />
                   ) : (
                     <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-foreground-muted">
-                      <Icon size={32} weight="duotone" />
+                      <Icon size={32} />
                       <span className="text-xs uppercase">{file.mimeType.split("/").pop()}</span>
                     </div>
                   )}
@@ -325,7 +325,7 @@ export default function FilesPage() {
                       variant={visibilityVariant[file.visibility] ?? "default"}
                       className={`text-[10px] ${visibilityColor[file.visibility] ?? ""}`}
                     >
-                      {file.isSensitive && <Lock size={10} weight="fill" />}
+                      {file.isSensitive && <Lock size={10} />}
                       {visibilityLabel[file.visibility] ?? file.visibility}
                     </Badge>
                   </div>
@@ -358,7 +358,7 @@ export default function FilesPage() {
                           onClick={() => handleDelete(file)}
                           title="Xóa"
                         >
-                          <Trash size={14} />
+                          <Trash2 size={14} />
                         </Button>
                       )}
                     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle } from "@phosphor-icons/react";
+import { CircleCheck } from "lucide-react";
 
 const features = [
   {
@@ -112,9 +112,8 @@ export function WhyRealHub() {
                     {feature.description}
                   </p>
                 </div>
-                <CheckCircle
+                <CircleCheck
                   size={20}
-                  weight="duotone"
                   className="ml-auto mt-0.5 shrink-0 text-primary/30 transition-colors duration-500 group-hover:text-primary"
                 />
               </motion.div>

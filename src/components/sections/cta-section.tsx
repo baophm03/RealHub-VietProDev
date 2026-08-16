@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Phone } from "@phosphor-icons/react";
+import { ArrowRight, Phone } from "lucide-react";
 
 export function CtaSection() {
   return (
@@ -51,7 +51,7 @@ export function CtaSection() {
               size="lg"
               rightIcon={
                 <span className="flex size-7 items-center justify-center rounded-full bg-primary/10">
-                  <ArrowRight size={14} weight="bold" />
+                  <ArrowRight size={14} />
                 </span>
               }
               render={<Link href="/register" />}
@@ -64,7 +64,7 @@ export function CtaSection() {
               className="border-primary-foreground/20"
               render={<Link href="/contact" />}
             >
-              <Phone size={16} weight="regular" />
+              <Phone size={16} />
               Liên hệ tư vấn
             </Button>
           </div>

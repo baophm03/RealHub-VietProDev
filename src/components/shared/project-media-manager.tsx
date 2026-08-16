@@ -4,19 +4,19 @@ import { useState, useCallback, useMemo } from "react";
 import { useDropzone } from "react-dropzone";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  UploadSimple,
-  Trash,
-  Star,
-  CaretLeft,
-  CaretRight,
-  Image as ImageIcon,
-  VideoCamera,
-  FileText,
-  Eye,
-  PencilSimple,
   Check,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  FileText,
+  Image as ImageIcon,
+  Pencil,
+  Star,
+  Trash2,
+  Upload,
+  Video,
   X,
-} from "@phosphor-icons/react";
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,7 +60,7 @@ const mediaTypeLabels: Record<MediaType, string> = {
 
 const mediaTypeIcons: Record<MediaType, typeof ImageIcon> = {
   IMAGE: ImageIcon,
-  VIDEO: VideoCamera,
+  VIDEO: Video,
   TOUR_360: Eye,
   FLOOR_PLAN: FileText,
   DOCUMENT: FileText,
@@ -300,7 +300,7 @@ export function ProjectMediaManager({ projectId }: ProjectMediaManagerProps) {
             } ${uploading ? "pointer-events-none opacity-60" : ""}`}
         >
           <input {...getInputProps()} />
-          <UploadSimple size={28} weight="duotone" className="text-primary" />
+          <Upload size={28} className="text-primary" />
           {uploading ? (
             <p className="text-sm text-foreground-muted">Đang upload...</p>
           ) : isDragActive ? (
@@ -317,7 +317,7 @@ export function ProjectMediaManager({ projectId }: ProjectMediaManagerProps) {
           )}
         </div>
         <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-border bg-surface-muted/30 p-6 text-center sm:w-48">
-          <ImageIcon size={28} weight="duotone" className="text-foreground-muted" />
+          <ImageIcon size={28} className="text-foreground-muted" />
           <p className="text-xs text-foreground-muted">
             Chọn từ ảnh đã có trong hệ thống
           </p>
@@ -346,7 +346,7 @@ export function ProjectMediaManager({ projectId }: ProjectMediaManagerProps) {
       {/* Media Grid */}
       {sortedMedia.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
-          <ImageIcon size={32} weight="duotone" className="text-foreground-muted" />
+          <ImageIcon size={32} className="text-foreground-muted" />
           <p className="text-sm text-foreground-muted">Chưa có media nào. Hãy upload ảnh/video cho dự án.</p>
         </div>
       ) : (
@@ -378,7 +378,7 @@ export function ProjectMediaManager({ projectId }: ProjectMediaManagerProps) {
                     />
                   ) : (
                     <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-foreground-muted">
-                      <TypeIcon size={32} weight="duotone" />
+                      <TypeIcon size={32} />
                       <span className="text-xs">{mediaTypeLabels[item.type]}</span>
                     </div>
                   )}
@@ -387,7 +387,7 @@ export function ProjectMediaManager({ projectId }: ProjectMediaManagerProps) {
                   {item.isPrimary && (
                     <div className="absolute top-2 left-2">
                       <Badge variant="default" className="gap-1">
-                        <Star size={10} weight="fill" />
+                        <Star size={10} />
                         Ảnh chính
                       </Badge>
                     </div>
@@ -418,7 +418,7 @@ export function ProjectMediaManager({ projectId }: ProjectMediaManagerProps) {
                       onClick={() => handleStartEditCaption(item)}
                       title="Sửa chú thích"
                     >
-                      <PencilSimple size={14} />
+                      <Pencil size={14} />
                     </Button>
                     <Button
                       size="icon-sm"
@@ -426,7 +426,7 @@ export function ProjectMediaManager({ projectId }: ProjectMediaManagerProps) {
                       onClick={() => handleDelete(item.id)}
                       title="Xóa"
                     >
-                      <Trash size={14} />
+                      <Trash2 size={14} />
                     </Button>
                   </div>
                 </div>
@@ -489,7 +489,7 @@ export function ProjectMediaManager({ projectId }: ProjectMediaManagerProps) {
                         onClick={() => handleMove(index, "left")}
                         title="Di chuyển trái"
                       >
-                        <CaretLeft size={14} />
+                        <ChevronLeft size={14} />
                       </Button>
                       <Button
                         size="icon-sm"
@@ -498,7 +498,7 @@ export function ProjectMediaManager({ projectId }: ProjectMediaManagerProps) {
                         onClick={() => handleMove(index, "right")}
                         title="Di chuyển phải"
                       >
-                        <CaretRight size={14} />
+                        <ChevronRight size={14} />
                       </Button>
                     </div>
                   </div>

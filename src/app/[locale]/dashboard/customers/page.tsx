@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Users, Funnel, Trash } from "@phosphor-icons/react";
+import { Filter, Plus, Trash2, Users } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -202,7 +202,7 @@ export default function CustomersPage() {
                 aria-label="Xóa"
                 onClick={() => setDeleteTarget(row.original)}
               >
-                <Trash size={14} />
+                <Trash2 size={14} />
               </Button>
             </Can>
           </div>
@@ -240,7 +240,7 @@ export default function CustomersPage() {
             className="w-full sm:w-auto min-w-0 sm:min-w-[260px]"
           />
           <Button variant="outline" size="icon" aria-label="Bộ lọc" className="shrink-0">
-            <Funnel size={16} />
+            <Filter size={16} />
           </Button>
         </div>
 

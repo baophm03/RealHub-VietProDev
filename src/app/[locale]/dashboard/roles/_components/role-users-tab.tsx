@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Spinner, UserPlus, X } from "@phosphor-icons/react";
+import { Loader2, UserPlus, X } from "lucide-react";
 import { toast } from "sonner";
 import { Can } from "@casl/react";
 import { Button } from "@/components/ui/button";
@@ -111,7 +111,7 @@ export function RoleUsersTab({ roleId, isLocked }: RoleUsersTabProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-8 text-sm text-foreground-muted">
-        <Spinner size={16} className="mr-2 animate-spin" />
+        <Loader2 size={16} className="mr-2 animate-spin" />
         Đang tải danh sách thành viên...
       </div>
     );
@@ -187,7 +187,7 @@ export function RoleUsersTab({ roleId, isLocked }: RoleUsersTabProps) {
           >
             {assigning ? (
               <>
-                <Spinner size={14} className="animate-spin" />
+                <Loader2 size={14} className="animate-spin" />
                 Đang gán...
               </>
             ) : (

@@ -3,7 +3,15 @@
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useUserStore } from "@/lib/stores/user-store";
 import { useRouter } from "next/navigation";
-import { List, Bell, Moon, Sun, SignOut, UserCircle, User } from "@phosphor-icons/react";
+import {
+  Bell,
+  CircleUser,
+  List,
+  LogOut,
+  Moon,
+  Sun,
+  User,
+} from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -118,7 +126,7 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
               onClick={handleLogout}
               className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-accent-red-text hover:bg-accent-red/10 cursor-pointer outline-none transition-colors"
             >
-              <SignOut size={16} />
+              <LogOut size={16} />
               <span>Đăng xuất</span>
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { Trash, Lock, Spinner } from "@phosphor-icons/react";
+import { Loader2, Lock, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -78,7 +78,7 @@ export function DeleteRoleDialog({ role, open, onOpenChange }: DeleteRoleDialogP
 
           {isSystem && (
             <div className="rounded-lg bg-accent-red/10 px-4 py-3 text-sm text-accent-red flex items-center gap-2">
-              <Lock size={14} weight="fill" />
+              <Lock size={14} />
               Role hệ thống không thể xóa.
             </div>
           )}
@@ -111,12 +111,12 @@ export function DeleteRoleDialog({ role, open, onOpenChange }: DeleteRoleDialogP
             >
               {isPending ? (
                 <>
-                  <Spinner size={14} className="animate-spin" />
+                  <Loader2 size={14} className="animate-spin" />
                   Đang xóa...
                 </>
               ) : (
                 <>
-                  <Trash size={14} />
+                  <Trash2 size={14} />
                   Xóa
                 </>
               )}

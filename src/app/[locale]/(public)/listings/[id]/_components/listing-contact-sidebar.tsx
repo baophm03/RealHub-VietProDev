@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PaperPlaneTilt, Phone } from "@phosphor-icons/react";
+import { Send, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -110,7 +110,7 @@ export function ListingContactSidebar({
             onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
             className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
-          <Button type="submit" className="w-full" size="lg" disabled={isPending} leftIcon={<PaperPlaneTilt size={16} />}>
+          <Button type="submit" className="w-full" size="lg" disabled={isPending} leftIcon={<Send size={16} />}>
             {isPending ? "Đang gửi..." : "Gửi yêu cầu"}
           </Button>
           {contacts.map((item) => (

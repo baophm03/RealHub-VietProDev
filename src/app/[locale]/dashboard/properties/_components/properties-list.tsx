@@ -2,7 +2,15 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, MapTrifold, List as ListIcon, Funnel, Buildings, PaperPlaneTilt, Trash } from "@phosphor-icons/react";
+import {
+  Building2,
+  Filter,
+  List as ListIcon,
+  Map,
+  Plus,
+  Send,
+  Trash2,
+} from "lucide-react";
 import { formatPrice } from "@/utils";
 import { Can } from "@casl/react";
 import { Button } from "@/components/ui/button";
@@ -162,7 +170,7 @@ export function PropertiesList() {
                 size="sm"
                 onClick={() => setPendingSubmit(row.original)}
               >
-                <PaperPlaneTilt size={14} />
+                <Send size={14} />
                 Gửi duyệt
               </Button>
             ) : null}
@@ -173,7 +181,7 @@ export function PropertiesList() {
                 aria-label="Xóa"
                 onClick={() => setPendingDelete(row.original)}
               >
-                <Trash size={14} className="text-destructive" />
+                <Trash2 size={14} className="text-destructive" />
               </Button>
             </Can>
           </div>
@@ -194,7 +202,7 @@ export function PropertiesList() {
             className="w-full sm:w-auto min-w-0"
           />
           <Button variant="outline" size="icon" aria-label="Bộ lọc" className="shrink-0">
-            <Funnel size={16} />
+            <Filter size={16} />
           </Button>
         </div>
         <div className="flex items-center gap-2">
@@ -217,7 +225,7 @@ export function PropertiesList() {
           />
         ) : (
           <EmptyState
-            icon={<Buildings size={24} />}
+            icon={<Building2 size={24} />}
             title="Chưa có bất động sản"
             description="Tạo bất động sản đầu tiên để bắt đầu bán hàng"
             action={
@@ -233,7 +241,7 @@ export function PropertiesList() {
       ) : (
         <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted/30 p-8 md:min-h-[400px]">
           <div className="flex flex-col items-center gap-2 text-foreground-muted">
-            <MapTrifold size={32} />
+            <Map size={32} />
             <p className="text-sm">Bản đồ sẽ hiển thị tại đây</p>
           </div>
         </div>

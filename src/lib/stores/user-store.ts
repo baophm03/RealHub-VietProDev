@@ -13,6 +13,12 @@ interface UserState {
 
 // helper
 const updateCaslAbility = (user: User | null) => {
+  const roleCode = user?.role?.code;
+  // SUPER_ADMIN / AGENCY_ADMIN bypass — full access to all modules
+  if (roleCode === "SUPER_ADMIN" || roleCode === "AGENCY_ADMIN") {
+    ability.update([{ action: "manage", subject: "all" } as any]);
+    return;
+  }
   const rules =
     user?.role?.permissions.map((p) => ({
       action: p.action as Actions,
