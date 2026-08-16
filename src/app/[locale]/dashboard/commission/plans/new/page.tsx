@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, Trash } from "@phosphor-icons/react";
+import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -124,7 +124,7 @@ export default function CommissionPlanFormPage() {
                 </Select>
                 <Input type="number" placeholder="60" defaultValue={split.value} className="w-full sm:w-24" />
                 <Button type="button" variant="ghost" size="icon" onClick={() => removeSplit(split.id)} aria-label="Xoa" className="self-end sm:self-auto">
-                  <Trash size={16} />
+                  <Trash2 size={16} />
                 </Button>
               </div>
             ))}

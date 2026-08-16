@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Building, Funnel } from "@phosphor-icons/react";
+import { Building2, Filter, Plus } from "lucide-react";
 import { Can } from "@casl/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -112,7 +112,7 @@ export function ProjectsList() {
             className="w-full sm:w-auto min-w-0"
           />
           <Button variant="outline" size="icon" aria-label="Bộ lọc" className="shrink-0">
-            <Funnel size={16} />
+            <Filter size={16} />
           </Button>
         </div>
         <Can I="CREATE" a="PROPERTY">
@@ -132,7 +132,7 @@ export function ProjectsList() {
         />
       ) : (
         <EmptyState
-          icon={<Building size={24} />}
+          icon={<Building2 size={24} />}
           title="Chưa có dự án"
           description="Tạo dự án đầu tiên để nhóm bất động sản theo dự án"
           action={

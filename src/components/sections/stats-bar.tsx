@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { TrendUp } from "@phosphor-icons/react";
+import { TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const stats = [
@@ -38,7 +38,7 @@ export function StatsBar() {
                 {stat.label}
               </span>
               <div className="flex items-center gap-1.5">
-                <TrendUp size={12} weight="bold" className="text-primary" />
+                <TrendingUp size={12} className="text-primary" />
                 <span className="text-xs font-semibold tabular-nums text-primary">
                   {stat.change}
                 </span>

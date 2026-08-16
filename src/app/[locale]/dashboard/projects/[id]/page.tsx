@@ -4,18 +4,18 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
+  Building2,
+  Camera,
+  ChevronRight,
   MapPin,
-  Building,
-  PencilSimple,
-  CaretRight,
-} from "@phosphor-icons/react";
+  Pencil,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useGetApiProjectId } from "@/lib/api/endpoints/projects";
 import { Project } from "@/lib/api/types/projects";
 import { PropertyCardImage } from "@/components/shared/property-card-image";
 import { useMemo } from "react";
-import { Camera } from "@phosphor-icons/react";
 
 const statusVariant: Record<string, "green" | "default"> = {
   ACTIVE: "green",
@@ -95,7 +95,7 @@ export default function ProjectDetailPage() {
           size="sm"
           onClick={() => router.push(`/dashboard/projects/${id}/edit`)}
         >
-          <PencilSimple size={14} />
+          <Pencil size={14} />
           Chỉnh sửa
         </Button>
       </div>
@@ -105,11 +105,11 @@ export default function ProjectDetailPage() {
           <Link href="/dashboard/properties" className="transition-colors hover:text-foreground">
             Bất động sản
           </Link>
-          <CaretRight size={12} />
+          <ChevronRight size={12} />
           <Link href="/dashboard/properties?tab=projects" className="transition-colors hover:text-foreground">
             Dự án
           </Link>
-          <CaretRight size={12} />
+          <ChevronRight size={12} />
           <span>{project.name}</span>
         </div>
 
@@ -124,12 +124,12 @@ export default function ProjectDetailPage() {
           </div>
           <div className="flex flex-col gap-1 text-sm text-foreground-muted md:flex-row md:items-center md:gap-4">
             <span className="flex items-center gap-1.5">
-              <Building size={14} className="text-primary" />
+              <Building2 size={14} className="text-primary" />
               Mã: <span className="font-mono font-medium text-foreground">{project.code}</span>
             </span>
             {project.developer && (
               <span className="flex items-center gap-1.5">
-                <Building size={14} className="text-primary" />
+                <Building2 size={14} className="text-primary" />
                 {project.developer}
               </span>
             )}
@@ -167,7 +167,7 @@ export default function ProjectDetailPage() {
       ) : (
         <div className="flex h-[300px] items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted">
           <div className="flex flex-col items-center gap-2 text-foreground-muted">
-            <Camera size={32} weight="duotone" />
+            <Camera size={32} />
             <p className="text-sm">Chưa có hình ảnh cho dự án này</p>
           </div>
         </div>

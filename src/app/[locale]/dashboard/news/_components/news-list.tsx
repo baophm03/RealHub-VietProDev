@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Newspaper, Trash, PencilSimple, Spinner } from "@phosphor-icons/react";
+import {
+  Loader2,
+  Newspaper,
+  Pencil,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { Can } from "@casl/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -101,7 +107,7 @@ export function NewsList() {
             className="rounded-md p-1.5 text-foreground-muted transition-colors hover:bg-surface-muted hover:text-foreground"
             aria-label="Sửa"
           >
-            <PencilSimple size={16} />
+            <Pencil size={16} />
           </button>
           <Can I="DELETE" a="NEWS">
             <button
@@ -114,9 +120,9 @@ export function NewsList() {
               aria-label="Xóa"
             >
               {deletingId === row.original.id ? (
-                <Spinner size={16} className="animate-spin" />
+                <Loader2 size={16} className="animate-spin" />
               ) : (
-                <Trash size={16} />
+                <Trash2 size={16} />
               )}
             </button>
           </Can>
@@ -145,7 +151,7 @@ export function NewsList() {
 
       {isLoading ? (
         <div className="flex min-h-[200px] items-center justify-center">
-          <Spinner size={24} className="animate-spin text-primary" />
+          <Loader2 size={24} className="animate-spin text-primary" />
         </div>
       ) : filtered.length > 0 ? (
         <DataTable

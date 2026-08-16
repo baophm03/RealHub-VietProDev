@@ -14,7 +14,7 @@ Nền tảng Bất động sản đa tenant — Frontend Next.js 16 + React 19 +
 | Forms | React Hook Form + Zod |
 | Table/DataGrid | TanStack Table v8 |
 | Charts | Recharts |
-| Icons | Phosphor Icons |
+| Icons | lucide-react |
 | File Upload | react-dropzone |
 | Date | date-fns |
 | Maps | Leaflet + react-leaflet |

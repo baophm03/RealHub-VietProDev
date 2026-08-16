@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Kanban, List as ListIcon } from "@phosphor-icons/react";
+import { List as ListIcon, Plus, SquareKanban } from "lucide-react";
 import { formatPrice } from "@/utils";
 import { Can } from "@casl/react";
 import { PageHeader } from "@/components/shared/page-header";
@@ -61,8 +61,8 @@ export default function DealsPage() {
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1 rounded-md border border-border p-1">
-              <button onClick={() => setView("kanban")} className={`rounded-sm p-1.5 ${view === "kanban" ? "bg-surface-muted" : "text-foreground-muted"}`} aria-label="Kanban">
-                <Kanban size={16} />
+              <button onClick={() => setView("kanban")} className={`rounded-sm p-1.5 ${view === "kanban" ? "bg-surface-muted" : "text-foreground-muted"}`} aria-label="SquareKanban">
+                <SquareKanban size={16} />
               </button>
               <button onClick={() => setView("list")} className={`rounded-sm p-1.5 ${view === "list" ? "bg-surface-muted" : "text-foreground-muted"}`} aria-label="Danh sach">
                 <ListIcon size={16} />

@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Calendar as CalendarIcon, List as ListIcon, Trash, Clock } from "@phosphor-icons/react";
+import {
+  Calendar as CalendarIcon,
+  Clock,
+  List as ListIcon,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { Can } from "@casl/react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
@@ -192,7 +198,7 @@ export default function AppointmentsPage() {
                         setDeleteTarget(apt);
                       }}
                     >
-                      <Trash size={14} />
+                      <Trash2 size={14} />
                     </Button>
                   </Can>
                 </div>

@@ -2,7 +2,13 @@
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Key, Users, Check, Lock, Spinner } from "@phosphor-icons/react";
+import {
+  Check,
+  Key,
+  Loader2,
+  Lock,
+  Users,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Can } from "@casl/react";
 import { Button } from "@/components/ui/button";
@@ -166,7 +172,7 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
               Phân quyền: {roleLoading ? "..." : role?.name}
               {isLocked && (
                 <Badge variant="yellow" className="ml-1">
-                  <Lock size={10} weight="fill" />
+                  <Lock size={10} />
                   Khóa
                 </Badge>
               )}
@@ -178,7 +184,7 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
 
           {isLocked && (
             <div className="rounded-lg bg-accent-yellow/20 px-4 py-3 text-sm text-accent-yellow-text flex items-center gap-2">
-              <Lock size={14} weight="fill" />
+              <Lock size={14} />
               SUPER_ADMIN có toàn quyền, không thể chỉnh sửa.
             </div>
           )}
@@ -213,7 +219,7 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
               <div className="flex-1 overflow-y-auto -mx-2 px-2">
                 {permissionModules.length === 0 && !search ? (
                   <div className="flex items-center justify-center py-8 text-sm text-foreground-muted">
-                    <Spinner size={16} className="mr-2 animate-spin" />
+                    <Loader2 size={16} className="mr-2 animate-spin" />
                     Đang tải danh sách quyền...
                   </div>
                 ) : (
@@ -314,7 +320,7 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
                     >
                       {saving ? (
                         <>
-                          <Spinner size={14} className="animate-spin" />
+                          <Loader2 size={14} className="animate-spin" />
                           Đang lưu...
                         </>
                       ) : (

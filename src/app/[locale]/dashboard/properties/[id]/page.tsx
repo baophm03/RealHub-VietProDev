@@ -6,17 +6,17 @@ import Link from "next/link";
 import { formatPrice } from "@/utils";
 import {
   ArrowLeft,
-  MapPin,
-  Bathtub,
+  Bath,
   Bed,
+  Camera,
+  ChevronRight,
+  MapPin,
+  Pencil,
+  Phone,
   Ruler,
   ShieldCheck,
   Star,
-  Phone,
-  Camera,
-  CaretRight,
-  PencilSimple,
-} from "@phosphor-icons/react";
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGetApiPropertyId, useGetApiPropertyMedia } from "@/lib/api/endpoints/properties";
 import { useGetApiFormSchemas } from "@/lib/api/endpoints/dynamic-fields";
@@ -135,7 +135,7 @@ export default function PropertyDetailPage() {
   const staticSpecs = [
     { icon: Ruler, label: "Diện tích", value: property ? `${areaNum} m2` : "227 m2", accent: false },
     { icon: Bed, label: "Phòng ngủ", value: bedrooms || (property ? "-" : "4"), accent: false },
-    { icon: Bathtub, label: "Phòng tắm", value: bathrooms || (property ? "-" : "4"), accent: false },
+    { icon: Bath, label: "Phòng tắm", value: bathrooms || (property ? "-" : "4"), accent: false },
     { icon: ShieldCheck, label: "Pháp lý", value: legalStatus || (property ? "-" : "Sổ hồng"), accent: true },
   ];
 
@@ -198,7 +198,7 @@ export default function PropertyDetailPage() {
           size="sm"
           onClick={() => router.push(`/dashboard/properties/${params.id}/edit`)}
         >
-          <PencilSimple size={14} />
+          <Pencil size={14} />
           Chỉnh sửa
         </Button>
       </div>
@@ -209,9 +209,9 @@ export default function PropertyDetailPage() {
           <Link href="/dashboard/properties" className="transition-colors hover:text-foreground">
             Bất động sản
           </Link>
-          <CaretRight size={12} />
+          <ChevronRight size={12} />
           <span>{property?.province?.name ?? "-"}</span>
-          <CaretRight size={12} />
+          <ChevronRight size={12} />
           <span>{property?.district?.name ?? "-"}</span>
         </div>
 
@@ -257,7 +257,7 @@ export default function PropertyDetailPage() {
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center bg-surface-muted">
-                    <Camera size={32} weight="duotone" className="text-foreground-muted" />
+                    <Camera size={32} className="text-foreground-muted" />
                   </div>
                 )}
                 <div className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-transparent" />
@@ -278,7 +278,7 @@ export default function PropertyDetailPage() {
       ) : (
         <div className="flex h-[300px] items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted">
           <div className="flex flex-col items-center gap-2 text-foreground-muted">
-            <Camera size={32} weight="duotone" />
+            <Camera size={32} />
             <p className="text-sm">Chưa có hình ảnh cho bất động sản này</p>
           </div>
         </div>
@@ -298,7 +298,7 @@ export default function PropertyDetailPage() {
                     {spec.label}
                   </span>
                   <div className="flex items-center gap-2">
-                    <Icon size={20} weight="duotone" className={spec.accent ? "text-accent-green-text" : "text-primary"} />
+                    <Icon size={20} className={spec.accent ? "text-accent-green-text" : "text-primary"} />
                     <span className="font-serif text-xl font-medium text-foreground">
                       {spec.value}
                     </span>
@@ -340,7 +340,7 @@ export default function PropertyDetailPage() {
                       className="flex items-center gap-4 rounded-lg border border-border bg-surface p-4 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-primary/20 hover:shadow-[0_4px_16px_-8px_rgba(45,95,63,0.12)]"
                     >
                       <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                        <Icon size={20} weight="duotone" className="text-primary" />
+                        <Icon size={20} className="text-primary" />
                       </div>
                       <div className="flex flex-col gap-0.5">
                         <h3 className="text-sm font-semibold text-foreground">{item.title}</h3>

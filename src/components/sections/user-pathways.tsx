@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Link } from "@/i18n/navigation";
-import { ArrowRight } from "@phosphor-icons/react";
+import { ArrowRight } from "lucide-react";
 
 const pathways = [
   {
@@ -88,7 +88,7 @@ export function UserPathways() {
                 <div className="mt-2 flex items-center gap-2.5 text-sm font-medium text-white">
                   {customer.cta}
                   <span className="flex size-7 items-center justify-center rounded-full bg-white/15 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/pathway:translate-x-1">
-                    <ArrowRight size={12} weight="bold" />
+                    <ArrowRight size={12} />
                   </span>
                 </div>
               </div>
@@ -124,7 +124,7 @@ export function UserPathways() {
                   </div>
 
                   {/* Content bottom */}
-                  <div className="relative z-10 flex items-center justify-between gap-4 p-6 md:pt-20">
+                  <div className="relative z-10 flex items-center justify-between gap-4 p-6 md:pt-30">
                     <div className="flex flex-col gap-2">
                       <h3 className="font-serif text-lg font-semibold tracking-tight text-white md:text-xl">
                         {pathway.title}
@@ -134,7 +134,7 @@ export function UserPathways() {
                       </p>
                     </div>
                     <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white/15 text-white transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/pathway:translate-x-1">
-                      <ArrowRight size={12} weight="bold" />
+                      <ArrowRight size={12} />
                     </span>
                   </div>
                 </Link>

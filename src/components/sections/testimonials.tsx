@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Quotes } from "@phosphor-icons/react";
+import { Quote } from "lucide-react";
 
 const testimonials = [
   {
@@ -51,7 +51,7 @@ export function Testimonials() {
         >
           <div className="rounded-[2rem] bg-surface-muted p-1.5 ring-1 ring-border">
             <div className="flex flex-col gap-10 rounded-[calc(2rem-0.375rem)] bg-surface p-10 md:p-14">
-              <Quotes size={44} weight="fill" className="text-primary/12" />
+              <Quote size={44} className="text-primary/12" />
               <p className="max-w-[60ch] font-serif text-2xl italic leading-relaxed text-foreground md:text-3xl">
                 &ldquo;{testimonials[0].quote}&rdquo;
               </p>

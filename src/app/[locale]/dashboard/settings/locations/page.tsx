@@ -2,7 +2,7 @@
 
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardContent } from "@/components/ui/card";
-import { CaretRight, MapPin } from "@phosphor-icons/react";
+import { ChevronRight, MapPin } from "lucide-react";
 
 interface LocationItem {
   id: string;
@@ -33,7 +33,7 @@ function LocationTree({ items, depth = 0 }: { items: LocationItem[]; depth?: num
             className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 hover:bg-surface-muted"
             style={{ paddingLeft: `${depth * 20 + 8}px` }}
           >
-            {item.children?.length ? <CaretRight size={14} className="text-foreground-muted" /> : <MapPin size={14} className="text-foreground-muted" />}
+            {item.children?.length ? <ChevronRight size={14} className="text-foreground-muted" /> : <MapPin size={14} className="text-foreground-muted" />}
             <span className="text-sm">{item.name}</span>
             <span className="text-xs text-foreground-muted uppercase">{item.type}</span>
           </div>

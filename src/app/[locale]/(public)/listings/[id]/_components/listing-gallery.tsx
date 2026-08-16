@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Camera } from "@phosphor-icons/react";
+import { Camera } from "lucide-react";
 import { ImageLightbox, type LightboxImage } from "@/components/shared/image-lightbox";
 
 interface ListingGalleryProps {
@@ -29,7 +29,7 @@ export function ListingGallery({ images, propertyCode }: ListingGalleryProps) {
     return (
       <div className="flex h-[300px] md:h-[400px] items-center justify-center rounded-xl border border-dashed border-border bg-surface-muted mb-8">
         <div className="flex flex-col items-center gap-2 text-foreground-muted">
-          <Camera size={32} weight="duotone" />
+          <Camera size={32} />
           <p className="text-sm">Chưa có hình ảnh cho bất động sản này</p>
         </div>
       </div>

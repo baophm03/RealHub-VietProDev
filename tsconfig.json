@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
     "lib": [
       "dom",
       "dom.iterable",
@@ -25,16 +24,58 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
+      ],
+      "@api/*": [
+        "./src/api/*"
+      ],
+      "@lib/*": [
+        "./src/lib/*"
+      ],
+      "@public/*": [
+        "./public/*"
+      ],
+      "@store/*": [
+        "./src/store/*"
+      ],
+      "@stores/*": [
+        "./src/stores/*"
+      ],
+      "@links/*": [
+        "./src/links/*"
+      ],
+      "@app/*": [
+        "./src/app/(main)/*"
+      ],
+      "@constants/*": [
+        "./src/constants/*"
+      ],
+      "@types/*": [
+        "./src/types/*"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
+      ],
+      "@auth/*": [
+        "./src/auth/*"
+      ],
+      "@configs/*": [
+        "./src/configs/*"
       ]
-    }
+    },
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

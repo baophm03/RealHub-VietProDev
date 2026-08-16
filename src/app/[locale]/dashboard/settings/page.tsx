@@ -8,17 +8,17 @@ import { FormSection, FormField } from "@/components/shared/form-section";
 import { Switch } from "@/components/ui/switch";
 import { Link } from "@/i18n/navigation";
 import {
-  TextColumns,
-  Shield,
-  MapPin,
+  ArrowRightLeft,
+  Columns2,
   Eye,
-  FlowArrow,
-} from "@phosphor-icons/react";
+  MapPin,
+  Shield,
+} from "lucide-react";
 
 const settingModules = [
   {
     href: "/dashboard/settings/dynamic-fields",
-    icon: TextColumns,
+    icon: Columns2,
     title: "Trường động",
     description: "Nhóm trường, định nghĩa và form schema — render động theo đối tượng",
   },
@@ -42,7 +42,7 @@ const settingModules = [
   },
   {
     href: "/dashboard/settings/workflows",
-    icon: FlowArrow,
+    icon: ArrowRightLeft,
     title: "Workflow",
     description: "Định nghĩa luồng trạng thái cho deal, lead, property",
   },

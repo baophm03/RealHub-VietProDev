@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Trash, House, Kanban, Phone, Envelope } from "@phosphor-icons/react";
+import {
+  ArrowLeft,
+  House,
+  Mail,
+  Pencil,
+  Phone,
+  SquareKanban,
+  Trash2,
+} from "lucide-react";
 import { formatBudget } from "@/utils";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
@@ -150,7 +158,7 @@ export default function CustomerDetailPage() {
             Chỉnh sửa
           </Button>
           <Button variant="destructive" onClick={() => setDeleteOpen(true)}>
-            <Trash size={16} />
+            <Trash2 size={16} />
             Xóa
           </Button>
         </div>
@@ -180,7 +188,7 @@ export default function CustomerDetailPage() {
             <div className="flex flex-col gap-1">
               <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Email</span>
               <div className="flex items-center gap-1.5 text-sm">
-                <Envelope size={14} className="text-foreground-muted" />
+                <Mail size={14} className="text-foreground-muted" />
                 {customer.email || "—"}
               </div>
             </div>
@@ -240,7 +248,7 @@ export default function CustomerDetailPage() {
       {/* Recent Leads */}
       <div className="rounded-lg border border-border bg-surface p-6">
         <div className="flex items-center gap-2 mb-4">
-          <Kanban size={16} className="text-foreground-muted" />
+          <SquareKanban size={16} className="text-foreground-muted" />
           <h3 className="text-sm font-semibold">Lead gần đây</h3>
           <Badge variant="secondary">{customer.leads?.length ?? 0}</Badge>
         </div>

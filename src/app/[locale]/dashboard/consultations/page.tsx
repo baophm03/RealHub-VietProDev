@@ -3,18 +3,18 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
-  Headset,
-  Funnel,
+  Calendar,
   Check,
-  Checks,
+  CheckCheck,
+  CircleUser,
+  ExternalLink,
   Eye,
-  Phone,
+  Filter,
+  Headset,
   House,
-  CalendarBlank,
-  ChatCircleText,
-  ArrowSquareOut,
-  UserCircle,
-} from "@phosphor-icons/react";
+  MessageCircle,
+  Phone,
+} from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -223,7 +223,7 @@ export default function ConsultationsPage() {
             className="w-full sm:w-auto min-w-0 sm:min-w-[260px]"
           />
           <Button variant="outline" size="icon" aria-label="Bộ lọc" className="shrink-0">
-            <Funnel size={16} />
+            <Filter size={16} />
           </Button>
         </div>
 
@@ -312,7 +312,7 @@ export default function ConsultationsPage() {
                               setDetailContact(null);
                             }}
                           >
-                            <ArrowSquareOut size={14} />
+                            <ExternalLink size={14} />
                           </Button>
                         </div>
                         <span className="text-xs tabular-nums text-foreground-muted">
@@ -327,7 +327,7 @@ export default function ConsultationsPage() {
                   {/* Customer info (right) */}
                   <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface-muted/40 p-4">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-                      <UserCircle size={14} />
+                      <CircleUser size={14} />
                       Khách liên hệ
                     </div>
                     <div className="flex flex-col gap-2">
@@ -343,7 +343,7 @@ export default function ConsultationsPage() {
                 {/* Content (full width) */}
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-                    <ChatCircleText size={14} />
+                    <MessageCircle size={14} />
                     Nội dung yêu cầu
                   </div>
                   <p className="text-sm leading-relaxed text-foreground whitespace-pre-wrap rounded-lg border border-border bg-surface-muted/40 p-4">
@@ -353,7 +353,7 @@ export default function ConsultationsPage() {
 
                 {/* Meta */}
                 <div className="flex items-center gap-2 text-xs text-foreground-muted">
-                  <CalendarBlank size={14} />
+                  <Calendar size={14} />
                   <span>
                     Cập nhật lúc:{" "}
                     <span className="tabular-nums">
@@ -392,7 +392,7 @@ export default function ConsultationsPage() {
                       size="sm"
                       disabled={isUpdating || detailContact.status === "REPLIED"}
                       onClick={() => handleStatusChange(detailContact.id, "REPLIED")}
-                      leftIcon={<Checks size={14} />}
+                      leftIcon={<CheckCheck size={14} />}
                     >
                       Đã phản hồi
                     </Button>

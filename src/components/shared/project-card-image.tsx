@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Image as ImageIcon } from "@phosphor-icons/react";
+import { Image as ImageIcon } from "lucide-react";
 import { useGetApiProjectId } from "@/lib/api/endpoints/projects";
 
 interface ProjectCardImageProps {
@@ -34,7 +34,7 @@ export function ProjectCardImage({
     return (
       <div className={`flex items-center justify-center bg-surface-muted ${className ?? ""}`}>
         <div className="flex flex-col items-center gap-2 text-foreground-muted">
-          <ImageIcon size={iconSize} weight="duotone" />
+          <ImageIcon size={iconSize} />
           <span className="text-xs">Không có hình ảnh</span>
         </div>
       </div>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Plus, PencilSimple, Trash, X } from "@phosphor-icons/react";
+import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -385,14 +385,14 @@ export function DefinitionsTab({ entityType, propertyTypeId }: DefinitionsTabPro
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
                       <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(def)}>
-                        <PencilSimple size={14} />
+                        <Pencil size={14} />
                       </Button>
                       <Button variant="ghost" size="icon-sm" onClick={() => {
                         if (confirm(`Xóa trường "${def.fieldLabel}"?`)) {
                           deleteDefinition({ id: def.id });
                         }
                       }}>
-                        <Trash size={14} />
+                        <Trash2 size={14} />
                       </Button>
                     </div>
                   </TableCell>

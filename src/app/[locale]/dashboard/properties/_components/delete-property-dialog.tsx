@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Trash } from "@phosphor-icons/react";
+import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -88,7 +88,7 @@ export function DeletePropertyDialog({
             onClick={handleConfirm}
             loading={isPending || deleting}
           >
-            <Trash size={14} />
+            <Trash2 size={14} />
             Xóa
           </Button>
         </DialogFooter>

@@ -4,27 +4,23 @@ import { useState, useEffect, useRef } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import {
-  List,
-  X,
   ArrowUpRight,
-  MagnifyingGlass,
-  CaretDown,
-  Phone,
-  House,
-  Building,
-  Warehouse,
-  MapTrifold,
-  Storefront,
+  ChevronDown,
+  CircleUser,
   Globe,
-  SignOut,
-  UserCircle,
+  List,
+  LogOut,
+  Phone,
+  Search,
   User,
-} from "@phosphor-icons/react";
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useUserStore } from "@/lib/stores/user-store";
 import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { propertyCategories } from "@/config/property-categories";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,39 +28,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const propertyCategories = [
-  {
-    icon: House,
-    label: "Căn hộ",
-    desc: "Chung cư, studio, penthouse",
-    href: "/listings?types=APARTMENT"
-  },
-  {
-    icon: Building,
-    label: "Biệt thự",
-    desc: "Biệt thự đơn lập, song lập",
-    href: "/listings?types=VILLA"
-  },
-  {
-    icon: Warehouse,
-    label: "Nhà phố",
-    desc: "Nhà phố, nhà mặt tiền",
-    href: "/listings?types=HOUSE,SHOPHOUSE"
-  },
-  {
-    icon: MapTrifold,
-    label: "Đất nền",
-    desc: "Đất thổ cư, đất dự án",
-    href: "/listings?types=LAND"
-  },
-  {
-    icon: Storefront,
-    label: "Mặt bằng",
-    desc: "Văn phòng, shop, kho xưởng",
-    href: "/listings?types=OFFICE,WAREHOUSE,SHOP"
-  },
-];
 
 export function PublicHeader() {
   const t = useTranslations("public");
@@ -137,7 +100,7 @@ export function PublicHeader() {
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-8 py-2 lg:px-12">
           <div className="flex items-center gap-6 text-xs text-primary-foreground/60">
             <span className="flex items-center gap-1.5">
-              <Phone size={12} weight="fill" />
+              <Phone size={12} />
               <span className="font-mono tabular-nums">1900 1234</span>
             </span>
             <span className="h-3 w-px bg-primary-foreground/15" />
@@ -152,7 +115,7 @@ export function PublicHeader() {
             >
               <Globe size={12} />
               <span>VI</span>
-              <CaretDown size={10} className={cn("transition-transform duration-300", localeOpen && "rotate-180")} />
+              <ChevronDown size={10} className={cn("transition-transform duration-300", localeOpen && "rotate-180")} />
             </button>
             {localeOpen && (
               <div className="absolute right-0 top-full mt-2 w-32 overflow-hidden rounded-lg border border-border bg-surface py-1 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)]">
@@ -216,7 +179,7 @@ export function PublicHeader() {
                 )}
               >
                 {t("browseProperties")}
-                <CaretDown
+                <ChevronDown
                   size={12}
                   className={cn("transition-transform duration-300", megaOpen && "rotate-180")}
                 />
@@ -245,7 +208,7 @@ export function PublicHeader() {
                         className="group flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-surface-muted"
                       >
                         <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/8 text-primary transition-transform duration-300 group-hover:scale-110">
-                          <cat.icon size={20} weight="duotone" />
+                          <cat.icon size={20} />
                         </span>
                         <div className="flex flex-col gap-0.5">
                           <span className="text-sm font-medium text-foreground">{cat.label}</span>
@@ -265,7 +228,7 @@ export function PublicHeader() {
                       className="flex items-center justify-between text-sm font-medium text-primary transition-colors hover:text-primary/80"
                     >
                       Xem tất cả bất động sản
-                      <ArrowUpRight size={14} weight="bold" />
+                      <ArrowUpRight size={14} />
                     </Link>
                   </div>
                 </div>
@@ -309,12 +272,12 @@ export function PublicHeader() {
                 className="flex size-9 items-center justify-center rounded-lg text-primary-foreground/70 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground"
                 aria-label="Search"
               >
-                <MagnifyingGlass size={18} />
+                <Search size={18} />
               </button>
               {searchOpen && (
                 <div className="absolute right-0 top-full mt-2 w-80 overflow-hidden rounded-lg border border-border bg-surface shadow-[0_16px_48px_-12px_rgba(0,0,0,0.12)]">
                   <div className="flex items-center gap-3 border-b border-border px-4 py-3">
-                    <MagnifyingGlass size={18} className="text-foreground-muted" />
+                    <Search size={18} className="text-foreground-muted" />
                     <input
                       autoFocus
                       type="text"
@@ -352,6 +315,9 @@ export function PublicHeader() {
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-2 rounded-full p-0 hover:bg-transparent transition-all duration-300">
                   <Avatar className="size-8 rounded-full overflow-hidden">
+                    {user?.avatarUrl && (
+                      <AvatarImage src={user.avatarUrl} alt={user?.fullName ?? "User"} />
+                    )}
                     <AvatarFallback className="flex size-8 items-center justify-center rounded-full bg-primary-foreground/15 text-xs font-medium text-primary-foreground">
                       {initials}
                     </AvatarFallback>
@@ -380,7 +346,7 @@ export function PublicHeader() {
                     onClick={() => { logout(); router.push("/login"); }}
                     className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-accent-red-text hover:bg-accent-red/10 cursor-pointer outline-none transition-colors"
                   >
-                    <SignOut size={16} />
+                    <LogOut size={16} />
                     <span>Đăng xuất</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -402,7 +368,7 @@ export function PublicHeader() {
                 >
                   <span>{t("signUp")}</span>
                   <span className="flex size-5 items-center justify-center rounded-full bg-primary/15 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-px">
-                    <ArrowUpRight size={12} weight="bold" />
+                    <ArrowUpRight size={12} />
                   </span>
                 </Link>
               </>
@@ -430,7 +396,7 @@ export function PublicHeader() {
         <nav className="flex flex-col gap-1 px-6 py-4">
           {/* Mobile Search */}
           <div className="mb-3 flex items-center gap-3 rounded-lg bg-primary-foreground/10 px-4 py-3">
-            <MagnifyingGlass size={18} className="text-primary-foreground/50" />
+            <Search size={18} className="text-primary-foreground/50" />
             <input
               type="text"
               placeholder="Tìm kiếm bất động sản..."
@@ -445,7 +411,7 @@ export function PublicHeader() {
               className="flex items-center justify-between rounded-lg px-4 py-3 text-sm font-medium text-primary-foreground/70 transition-colors hover:bg-primary-foreground/10"
             >
               {t("browseProperties")}
-              <CaretDown size={14} className={cn("transition-transform duration-300", mobileMegaOpen && "rotate-180")} />
+              <ChevronDown size={14} className={cn("transition-transform duration-300", mobileMegaOpen && "rotate-180")} />
             </button>
             {mobileMegaOpen && (
               <div className="flex flex-col gap-0.5 pb-2 pl-4">
@@ -456,7 +422,7 @@ export function PublicHeader() {
                     onClick={() => setMobileOpen(false)}
                     className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm text-primary-foreground/60 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground"
                   >
-                    <cat.icon size={16} weight="duotone" />
+                    <cat.icon size={16} />
                     {cat.label}
                   </Link>
                 ))}
@@ -466,7 +432,7 @@ export function PublicHeader() {
                   className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-primary-foreground"
                 >
                   Xem tất cả
-                  <ArrowUpRight size={12} weight="bold" />
+                  <ArrowUpRight size={12} />
                 </Link>
               </div>
             )}
@@ -498,6 +464,9 @@ export function PublicHeader() {
               <>
                 <div className="flex items-center gap-3 rounded-lg bg-primary-foreground/10 px-4 py-3">
                   <Avatar className="size-9 rounded-full overflow-hidden">
+                    {user?.avatarUrl && (
+                      <AvatarImage src={user.avatarUrl} alt={user?.fullName ?? "User"} />
+                    )}
                     <AvatarFallback className="flex size-9 items-center justify-center rounded-full bg-primary-foreground/15 text-xs font-medium text-primary-foreground">
                       {initials}
                     </AvatarFallback>
@@ -511,7 +480,7 @@ export function PublicHeader() {
                   onClick={() => { logout(); router.push("/login"); setMobileOpen(false); }}
                   className="flex items-center justify-center gap-2 rounded-lg border border-primary-foreground/20 px-4 py-3 text-sm font-medium text-primary-foreground/80 transition-colors hover:bg-primary-foreground/10"
                 >
-                  <SignOut size={16} />
+                  <LogOut size={16} />
                   Đăng xuất
                 </button>
               </>
@@ -530,7 +499,7 @@ export function PublicHeader() {
                   className="flex items-center justify-center gap-2 rounded-lg bg-primary-foreground px-4 py-3 text-sm font-medium text-primary transition-colors"
                 >
                   {t("signUp")}
-                  <ArrowUpRight size={14} weight="bold" />
+                  <ArrowUpRight size={14} />
                 </Link>
               </>
             )}

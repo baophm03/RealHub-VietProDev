@@ -43,7 +43,6 @@ export function Sidebar() {
                     >
                       <Icon
                         size={18}
-                        weight={isActive ? "fill" : "regular"}
                         className={cn(
                           "transition-transform duration-300",
                           isActive ? "" : "group-hover:scale-110"

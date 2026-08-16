@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowLeft } from "@phosphor-icons/react";
+import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";

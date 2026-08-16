@@ -1,6 +1,14 @@
 "use client";
 
-import { TrendUp, TrendDown, Buildings, Users, Handshake, UserCircle, ArrowUpRight } from "@phosphor-icons/react";
+import {
+  ArrowUpRight,
+  Building2,
+  CircleUser,
+  Handshake,
+  TrendingDown,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useGetApiLeads } from "@/lib/api/endpoints/leads";
@@ -14,7 +22,7 @@ const stats = [
     value: "1,247",
     change: "+12.4%",
     trend: "up" as const,
-    icon: Buildings,
+    icon: Building2,
   },
   {
     label: "Khách hàng",
@@ -28,7 +36,7 @@ const stats = [
     value: "156",
     change: "+23.1%",
     trend: "up" as const,
-    icon: UserCircle,
+    icon: CircleUser,
   },
   {
     label: "Giao dịch tháng",
@@ -93,7 +101,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 animate-fade-up-delay-1">
         {stats.map((stat) => {
           const Icon = stat.icon;
-          const TrendIcon = stat.trend === "up" ? TrendUp : TrendDown;
+          const TrendIcon = stat.trend === "up" ? TrendingUp : TrendingDown;
           return (
             <div
               key={stat.label}
@@ -101,13 +109,13 @@ export default function DashboardPage() {
             >
               <div className="flex items-center justify-between">
                 <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 md:size-11">
-                  <Icon size={18} weight="duotone" className="text-primary md:size-5" />
+                  <Icon size={18} className="text-primary md:size-5" />
                 </div>
                 <span
                   className={`flex items-center gap-1 text-xs font-medium tabular-nums ${stat.trend === "up" ? "text-accent-green-text" : "text-accent-red-text"
                     }`}
                 >
-                  <TrendIcon size={12} weight="bold" />
+                  <TrendIcon size={12} />
                   {stat.change}
                 </span>
               </div>

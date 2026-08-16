@@ -1,12 +1,20 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Key, Users, Plus, Pencil, Trash, Spinner } from "@phosphor-icons/react";
+import {
+  Key,
+  Loader2,
+  Pencil,
+  Plus,
+  Trash2,
+  Users,
+} from "lucide-react";
 import { Can } from "@casl/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -143,7 +151,7 @@ export default function RolesPage() {
                 title="Xóa"
                 disabled={row.original.isSystem}
               >
-                <Trash size={14} />
+                <Trash2 size={14} />
               </Button>
             </Can>
           </div>
@@ -183,22 +191,26 @@ export default function RolesPage() {
           onChange={(e) => setSearch(e.target.value)}
           className="w-full sm:w-auto min-w-[260px]"
         />
-        <select
+        <Select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as GetApiRolesStatus | "ALL")}
-          className="h-9 rounded-md border border-input bg-surface px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          onValueChange={(value) => setStatusFilter(value as GetApiRolesStatus | "ALL")}
         >
-          {statusFilters.map((f) => (
-            <option key={f.value} value={f.value}>
-              {f.label}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Tất cả trạng thái" />
+          </SelectTrigger>
+          <SelectContent>
+            {statusFilters.map((f) => (
+              <SelectItem key={f.value} value={f.value} label={f.label}>
+                {f.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12 text-sm text-foreground-muted">
-          <Spinner size={20} className="mr-2 animate-spin" />
+          <Loader2 size={20} className="mr-2 animate-spin" />
           Đang tải...
         </div>
       ) : roles.length > 0 ? (

@@ -2,7 +2,17 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Trash, Clock, MapPin, User, House, Kanban, Bell } from "@phosphor-icons/react";
+import {
+  ArrowLeft,
+  Bell,
+  Clock,
+  House,
+  MapPin,
+  Pencil,
+  SquareKanban,
+  Trash2,
+  User,
+} from "lucide-react";
 import { Can } from "@casl/react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
@@ -151,7 +161,7 @@ export default function AppointmentDetailPage() {
           </Can>
           <Can I="DELETE" a="APPOINTMENT">
             <Button variant="destructive" onClick={() => setDeleteOpen(true)}>
-              <Trash size={16} />
+              <Trash2 size={16} />
               Xóa
             </Button>
           </Can>
@@ -262,7 +272,7 @@ export default function AppointmentDetailPage() {
               )}
               {appointment.lead && (
                 <div className="flex items-start gap-2">
-                  <Kanban size={16} className="text-foreground-muted shrink-0 mt-0.5" />
+                  <SquareKanban size={16} className="text-foreground-muted shrink-0 mt-0.5" />
                   <div className="flex flex-col">
                     <span className="text-xs text-foreground-muted">Lead</span>
                     <button

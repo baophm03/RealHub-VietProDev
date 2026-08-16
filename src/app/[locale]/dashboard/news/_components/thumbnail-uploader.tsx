@@ -2,7 +2,13 @@
 
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { UploadSimple, Spinner, X, Image as ImageIcon, Stack } from "@phosphor-icons/react";
+import {
+  Image as ImageIcon,
+  Layers,
+  Loader2,
+  Upload,
+  X,
+} from "lucide-react";
 import { toast } from "sonner";
 import { usePostApiFileUpload } from "@/lib/api/endpoints/files";
 import type { NewsThumbnail } from "@/lib/api/types/news";
@@ -95,7 +101,7 @@ export function ThumbnailUploader({ fileId, thumbnail, onChange }: ThumbnailUplo
                 size="sm"
                 onClick={() => setPickerOpen(true)}
               >
-                <Stack size={14} />
+                <Layers size={14} />
                 Đổi ảnh
               </Button>
               <button
@@ -119,12 +125,12 @@ export function ThumbnailUploader({ fileId, thumbnail, onChange }: ThumbnailUplo
             <input {...getInputProps()} />
             {uploading ? (
               <>
-                <Spinner size={20} className="animate-spin text-primary" />
+                <Loader2 size={20} className="animate-spin text-primary" />
                 <p className="text-xs text-foreground-muted">Đang tải lên...</p>
               </>
             ) : (
               <>
-                <UploadSimple size={20} className="text-foreground-muted" />
+                <Upload size={20} className="text-foreground-muted" />
                 <p className="text-xs text-foreground-muted">
                   Kéo thả hoặc click để chọn ảnh thumbnail
                 </p>
@@ -137,7 +143,7 @@ export function ThumbnailUploader({ fileId, thumbnail, onChange }: ThumbnailUplo
             size="sm"
             onClick={() => setPickerOpen(true)}
           >
-            <Stack size={14} />
+            <Layers size={14} />
             Chọn từ thư viện
           </Button>
         </div>

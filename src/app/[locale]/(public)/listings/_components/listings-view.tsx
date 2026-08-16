@@ -1,19 +1,13 @@
-"use client";
-
-import { useSearchParams } from "next/navigation";
-import { MapPin, Spinner } from "@phosphor-icons/react";
+import { MapPin } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import {
   formatPriceWithTransaction as formatPrice,
   formatPricePerSqm,
 } from "@/utils";
-import { useGetApiProperties, useGetApiPropertyTypes } from "@/lib/api/endpoints/properties";
-import { useGetApiLocations } from "@/lib/api/endpoints/locations";
-import { GetPropertiesResponse } from "@/lib/api/types/properties";
+import type { Property } from "@/lib/api/types/properties";
 import type { Location } from "@/lib/api/types/locations";
 import { ListingsFilter } from "./listings-filter";
 import { ListingsToolbar } from "./listings-toolbar";
-import { PropertyCardImage } from "@/components/shared/property-card-image";
 
 type PropertyType = {
   id: string;
@@ -37,80 +31,31 @@ const txLabel: Record<string, string> = {
   INVESTMENT: "Đầu tư",
 };
 
+interface ListingsViewProps {
+  propertyTypes: PropertyType[];
+  provinces: Location[];
+  properties: Property[];
+  propertyImageMap: Map<string, string | null>;
+  currentTransactionType: string;
+  currentProvinceId: string;
+  currentTypes: string[];
+  currentPriceFrom: string;
+  currentPriceTo: string;
+  currentSort: string;
+}
 
-export function ListingsView() {
-  const sp = useSearchParams();
-
-  const transactionType = sp.get("transactionType") ?? "";
-  const provinceId = sp.get("provinceId") ?? "";
-  const typesRaw = sp.get("types") ?? "";
-  const types = typesRaw ? typesRaw.split(",").filter(Boolean) : [];
-  const minPrice = sp.get("minPrice") ?? "";
-  const maxPrice = sp.get("maxPrice") ?? "";
-  const sort = sp.get("sort") ?? "newest";
-
-  const priceMultiplier = transactionType === "RENT" ? 1000000 : 1000000000;
-  const currentPriceFrom = minPrice ? String(Number(minPrice) / priceMultiplier) : "";
-  const currentPriceTo = maxPrice ? String(Number(maxPrice) / priceMultiplier) : "";
-
-  const { data: propertyTypesData } = useGetApiPropertyTypes();
-  const { data: provincesData } = useGetApiLocations({ type: "PROVINCE" as any, limit: 100 } as any);
-
-  const propertyTypes = ((propertyTypesData as unknown as { data?: PropertyType[] })?.data) || [];
-  const provinces = ((provincesData as unknown as { data?: Location[] })?.data) || [];
-
-  // Map property type code → id for API filter
-  const codeToId = Object.fromEntries(propertyTypes.map((t) => [t.code, t.id]));
-  const selectedTypeIds = types.map((c) => codeToId[c]).filter(Boolean);
-
-  // Build API params from searchParams
-  const apiParams: Record<string, string> = {
-    verificationStatus: "VERIFIED",
-    publicationStatus: "PUBLIC",
-  };
-  if (transactionType) apiParams.transactionType = transactionType;
-  if (provinceId) apiParams.provinceId = provinceId;
-  if (selectedTypeIds.length === 1) apiParams.propertyTypeId = selectedTypeIds[0];
-  if (minPrice) apiParams.minPrice = minPrice;
-  if (maxPrice) apiParams.maxPrice = maxPrice;
-  apiParams.limit = "100";
-
-  const { data: propertiesData, isLoading } = useGetApiProperties(apiParams as any);
-  let properties = ((propertiesData as unknown as GetPropertiesResponse)?.data) || [];
-
-  // Client-side filtering for multiple property types (by code)
-  if (types.length > 1) {
-    properties = properties.filter(
-      (p) => p.propertyType && types.includes(p.propertyType.code),
-    );
-  }
-
-  // Client-side sorting
-  switch (sort) {
-    case "price-asc":
-      properties = [...properties].sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
-      break;
-    case "price-desc":
-      properties = [...properties].sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
-      break;
-    case "area-desc":
-      properties = [...properties].sort((a, b) => (b.area || 0) - (a.area || 0));
-      break;
-    default:
-      properties = [...properties].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      );
-      break;
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Spinner size={32} className="animate-spin text-foreground-muted" />
-      </div>
-    );
-  }
-
+export function ListingsView({
+  propertyTypes,
+  provinces,
+  properties,
+  propertyImageMap,
+  currentTransactionType,
+  currentProvinceId,
+  currentTypes,
+  currentPriceFrom,
+  currentPriceTo,
+  currentSort,
+}: ListingsViewProps) {
   return (
     <div className="mx-auto max-w-[1440px] px-6 py-8 md:px-8">
       <div className="flex flex-1 gap-6 flex-col lg:flex-row">
@@ -119,9 +64,9 @@ export function ListingsView() {
           <ListingsFilter
             propertyTypes={propertyTypes}
             provinces={provinces}
-            currentTransactionType={transactionType}
-            currentProvinceId={provinceId}
-            currentTypes={types}
+            currentTransactionType={currentTransactionType}
+            currentProvinceId={currentProvinceId}
+            currentTypes={currentTypes}
             currentPriceFrom={currentPriceFrom}
             currentPriceTo={currentPriceTo}
           />
@@ -129,7 +74,7 @@ export function ListingsView() {
 
         {/* Main Content */}
         <main className="flex-1 flex flex-col gap-6 min-w-0">
-          <ListingsToolbar currentSort={sort} resultCount={properties.length} />
+          <ListingsToolbar currentSort={currentSort} resultCount={properties.length} />
 
           {/* Property Grid */}
           {properties.length === 0 ? (
@@ -143,6 +88,7 @@ export function ListingsView() {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {properties.map((property) => {
                 const badge = statusBadge[property.businessStatus ?? ""];
+                const imageUrl = propertyImageMap.get(property.id) ?? null;
                 return (
                   <Link
                     key={property.id}
@@ -151,11 +97,18 @@ export function ListingsView() {
                   >
                     {/* Image */}
                     <div className="relative h-52 overflow-hidden">
-                      <PropertyCardImage
-                        propertyId={property.id}
-                        alt={property.title}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
+                      {imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={imageUrl}
+                          alt={property.title}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-surface-muted">
+                          <span className="text-xs text-foreground-muted">Không có hình ảnh</span>
+                        </div>
+                      )}
                       {badge && (
                         <div className="absolute top-3 right-3 z-10">
                           <span
@@ -181,7 +134,7 @@ export function ListingsView() {
                       </div>
 
                       <p className="text-sm text-foreground-muted flex items-center gap-1">
-                        <MapPin size={16} weight="fill" />
+                        <MapPin size={16} />
                         <span>
                           {property?.district?.name ?? "Đang cập nhật"},{" "}
                           {property?.province?.name ?? "Đang cập nhật"}

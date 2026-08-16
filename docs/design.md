@@ -259,15 +259,15 @@ Button-in-Button pattern cho CTA có arrow:
 
 ### 6.1 Icon Library
 
-Sử dụng **Phosphor Icons** (`@phosphor-icons/react`), weight `regular` hoặc `duotone`.
+Sử dụng **Lucide Icons** (`lucide-react`).
 
 ```tsx
-import { House, Users, Calendar, ChartBar } from '@phosphor-icons/react'
+import { House, Users, Calendar, BarChart3 } from 'lucide-react'
 
-<House size={20} weight="regular" />
+<House size={20} />
 ```
 
-> **Banned**: Lucide default thick-stroke, FontAwesome, Material Icons, emoji
+> **Banned**: FontAwesome, Material Icons, emoji
 
 ### 6.2 Icon Rules
 

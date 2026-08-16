@@ -1,10 +1,6 @@
-"use client";
-
-import { useSearchParams } from "next/navigation";
-import { useGetApiNews } from "@/lib/api/endpoints/news";
-import type { GetNewsResponse } from "@/lib/api/types/news";
+import type { News } from "@/lib/api/types/news";
 import { Link } from "@/i18n/navigation";
-import { ArrowRight, Calendar, Newspaper, Spinner, Image as ImageIcon } from "@phosphor-icons/react";
+import { ArrowRight, Calendar, Newspaper, ImageIcon } from "lucide-react";
 
 function formatDate(iso: string): string {
   if (!iso) return "";
@@ -33,7 +29,7 @@ function NewsImage({
   if (!url) {
     return (
       <div className={`flex items-center justify-center bg-surface-muted ${className ?? ""}`}>
-        <ImageIcon size={iconSize} weight="duotone" className="text-foreground-muted" />
+        <ImageIcon size={iconSize} className="text-foreground-muted" />
       </div>
     );
   }
@@ -43,29 +39,12 @@ function NewsImage({
   );
 }
 
-export function NewsGrid() {
-  const searchParams = useSearchParams();
-  const category = searchParams.get("category") ?? undefined;
-
-  const { data: newsData, isLoading: isLoadingNews } = useGetApiNews(
-    category ? { categoryNewsId: category, limit: "100" } : { limit: "100" },
-  );
-
-  const news = (newsData as unknown as GetNewsResponse)?.data ?? [];
-
+export function NewsGrid({ news }: { news: News[] }) {
   const sorted = [...news].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
   const featured = sorted.slice(0, 2);
   const regular = sorted.slice(2);
-
-  if (isLoadingNews) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Spinner size={32} className="animate-spin text-foreground-muted" />
-      </div>
-    );
-  }
 
   if (sorted.length === 0) {
     return (
