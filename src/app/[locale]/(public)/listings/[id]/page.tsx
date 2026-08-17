@@ -43,6 +43,19 @@ function findFieldValue(
   dynamicValues: Record<string, unknown> | undefined,
   patterns: string[],
 ): string | null {
+  // 1) Đọc trực tiếp từ dynamicValuesJson theo key phổ biến (nhanh, không cần schema)
+  const directKeysBed = ["bed_room_count", "bedroom_count", "bedrooms", "beds", "phong_ngu"];
+  const directKeysBath = ["pathroom_count", "bathroom_count", "bathrooms", "baths", "phong_tam"];
+  const isBedroom = patterns.some((p) => p.includes("bed") || p.includes("ngu"));
+  const isBathroom = patterns.some((p) => p.includes("bath") || p.includes("tam") || p.includes("path"));
+  if (dynamicValues) {
+    const keys = isBedroom ? directKeysBed : isBathroom ? directKeysBath : [];
+    for (const k of keys) {
+      const v = dynamicValues[k];
+      if (v !== undefined && v !== null && v !== "") return String(v);
+    }
+  }
+  // 2) Fallback: tìm qua form schemas theo fieldKey/fieldLabel
   for (const schema of schemas) {
     for (const f of schema.fields || []) {
       const field = f.field;
@@ -159,8 +172,8 @@ export default async function ListingDetailPage({ params }: Props) {
   );
   const dynamicValues = (property as any)?.dynamicValuesJson as Record<string, unknown> | undefined;
 
-  const bedrooms = findFieldValue(relevantSchemas, dynamicValues, ["bedroom", "beds", "phong_ngu", "phòng ngủ"]);
-  const bathrooms = findFieldValue(relevantSchemas, dynamicValues, ["bathroom", "baths", "phong_tam", "phòng tắm"]);
+  const bedrooms = findFieldValue(relevantSchemas, dynamicValues, ["bedroom", "beds", "bed_room", "phong_ngu", "phòng ngủ"]);
+  const bathrooms = findFieldValue(relevantSchemas, dynamicValues, ["bathroom", "baths", "pathroom", "phong_tam", "phòng tắm"]);
   const legalStatus = findFieldValue(relevantSchemas, dynamicValues, ["legal", "phap_ly", "pháp lý", "ownership"]);
   const direction = findFieldValue(relevantSchemas, dynamicValues, ["direction", "huong", "hướng"]);
 

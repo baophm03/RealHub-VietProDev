@@ -32,7 +32,7 @@ const stats = [
     icon: Users,
   },
   {
-    label: "Leads mới",
+    label: "Khách hàng tiềm năng mới",
     value: "156",
     change: "+23.1%",
     trend: "up" as const,
@@ -133,7 +133,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 animate-fade-up-delay-2">
         <Card className="lg:col-span-2">
           <CardHeader className="flex-row items-center justify-between gap-2">
-            <CardTitle>Lead gần đây</CardTitle>
+            <CardTitle>Khách hàng tiềm năng gần đây</CardTitle>
             <a
               href="/dashboard/leads"
               className="group inline-flex items-center gap-1.5 text-xs font-medium text-foreground-muted transition-colors hover:text-foreground shrink-0"
@@ -166,7 +166,7 @@ export default function DashboardPage() {
                   );
                 })
               ) : (
-                <div className="py-8 text-center text-sm text-foreground-muted">Chưa có lead nào</div>
+                <div className="py-8 text-center text-sm text-foreground-muted">Chưa có khách hàng tiềm năng nào</div>
               )}
             </div>
           </CardContent>

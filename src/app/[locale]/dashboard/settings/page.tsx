@@ -8,11 +8,7 @@ import { FormSection, FormField } from "@/components/shared/form-section";
 import { Switch } from "@/components/ui/switch";
 import { Link } from "@/i18n/navigation";
 import {
-  ArrowRightLeft,
   Columns2,
-  Eye,
-  MapPin,
-  Shield,
 } from "lucide-react";
 
 const settingModules = [
@@ -22,39 +18,12 @@ const settingModules = [
     title: "Trường động",
     description: "Nhóm trường, định nghĩa và form schema — render động theo đối tượng",
   },
-  {
-    href: "/dashboard/settings/lead-protection",
-    icon: Shield,
-    title: "Bảo hộ lead",
-    description: "Chính sách bảo hộ lead và xử lý tranh chấp",
-  },
-  {
-    href: "/dashboard/settings/locations",
-    icon: MapPin,
-    title: "Địa lý",
-    description: "Cây địa lý: Tỉnh → Quận → Phường → Đường",
-  },
-  {
-    href: "/dashboard/settings/visibility",
-    icon: Eye,
-    title: "Chính sách hiển thị",
-    description: "Ẩn/mask dữ liệu theo role và context",
-  },
-  {
-    href: "/dashboard/settings/workflows",
-    icon: ArrowRightLeft,
-    title: "Workflow",
-    description: "Định nghĩa luồng trạng thái cho deal, lead, property",
-  },
 ];
 
 const features = [
   { key: "CRM", label: "CRM module", enabled: true },
   { key: "COMMISSION", label: "Hoa hồng", enabled: true },
-  { key: "LEAD_PROTECTION", label: "Bảo hộ lead", enabled: true },
-  { key: "WORKFLOW", label: "Workflow engine", enabled: true },
   { key: "DYNAMIC_FIELDS", label: "Trường động", enabled: true },
-  { key: "VISIBILITY_MASKING", label: "Masking dữ liệu", enabled: false },
 ];
 
 export default function SettingsPage() {

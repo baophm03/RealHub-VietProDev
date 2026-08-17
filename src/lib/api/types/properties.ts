@@ -58,4 +58,6 @@ export interface Property {
   address?: string;
   latitude?: number;
   longitude?: number;
+  bedrooms?: number;
+  bathrooms?: number;
 }

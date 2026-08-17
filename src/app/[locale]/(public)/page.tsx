@@ -2,6 +2,8 @@ import { setRequestLocale } from "next-intl/server";
 import { Hero } from "@/components/sections/hero";
 import { StatsBar } from "@/components/sections/stats-bar";
 import { FeaturedProperties } from "@/components/sections/featured-properties";
+import { FeaturedProjects } from "@/components/sections/featured-projects";
+import { FeaturedNews } from "@/components/sections/featured-news";
 import { UserPathways } from "@/components/sections/user-pathways";
 import { WhyRealHub } from "@/components/sections/why-realhub";
 import { Testimonials } from "@/components/sections/testimonials";
@@ -20,6 +22,8 @@ export default async function HomePage({ params }: Props) {
       <Hero />
       <StatsBar />
       <FeaturedProperties />
+      <FeaturedProjects />
+      <FeaturedNews />
       <UserPathways />
       <WhyRealHub />
       <Testimonials />

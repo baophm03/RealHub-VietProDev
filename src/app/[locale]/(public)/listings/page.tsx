@@ -1,6 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 import { getApiProperties, getApiPropertyTypes, getApiPropertyMedia } from "@/lib/api/endpoints/properties";
 import { getApiLocations } from "@/lib/api/endpoints/locations";
+import { getApiFormSchemas } from "@/lib/api/endpoints/dynamic-fields";
 import type { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
 import type { Location } from "@/lib/api/types/locations";
 import { ListingsView } from "./_components/listings-view";
@@ -27,6 +28,44 @@ function extractFirstImageUrl(mediaRes: unknown): string | null {
   return imageItem?.file?.url ?? null;
 }
 
+function findFieldValue(
+  schemas: any[],
+  dynamicValues: Record<string, unknown> | undefined,
+  patterns: string[],
+): string | null {
+  // 1) Đọc trực tiếp từ dynamicValuesJson theo key phổ biến (nhanh, không cần schema)
+  const directKeys = ["bed_room_count", "bedroom_count", "bedrooms", "beds", "phong_ngu"];
+  const directKeysBath = ["pathroom_count", "bathroom_count", "bathrooms", "baths", "phong_tam"];
+  const isBedroom = patterns.some((p) => p.includes("bed") || p.includes("ngu"));
+  const isBathroom = patterns.some((p) => p.includes("bath") || p.includes("tam") || p.includes("path"));
+  if (dynamicValues) {
+    const keys = isBedroom ? directKeys : isBathroom ? directKeysBath : [];
+    for (const k of keys) {
+      const v = dynamicValues[k];
+      if (v !== undefined && v !== null && v !== "") return String(v);
+    }
+  }
+  // 2) Fallback: tìm qua form schemas theo fieldKey/fieldLabel
+  for (const schema of schemas) {
+    for (const f of schema.fields || []) {
+      const field = f.field;
+      if (!field) continue;
+      const key = (field.fieldKey || "").toLowerCase();
+      const label = (field.fieldLabel || "").toLowerCase();
+      if (patterns.some((p) => key.includes(p) || label.includes(p))) {
+        const rawValue = dynamicValues?.[field.fieldKey];
+        if (rawValue === undefined || rawValue === null || rawValue === "") return null;
+        if (field.options && Array.isArray(field.options)) {
+          const opt = field.options.find((o: any) => o.value === String(rawValue));
+          if (opt) return opt.label;
+        }
+        return String(rawValue);
+      }
+    }
+  }
+  return null;
+}
+
 export default async function ListingsPage({ searchParams, params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
@@ -40,13 +79,15 @@ export default async function ListingsPage({ searchParams, params }: Props) {
   const maxPrice = typeof sp.maxPrice === "string" ? sp.maxPrice : "";
   const sort = typeof sp.sort === "string" ? sp.sort : "newest";
 
-  // Fetch property types + provinces in parallel (needed for filter UI + code→id mapping)
-  const [propertyTypesRes, provincesRes] = await Promise.all([
+  // Fetch property types + provinces + form schemas in parallel (needed for filter UI + code→id mapping + dynamic fields)
+  const [propertyTypesRes, provincesRes, schemaRes] = await Promise.all([
     getApiPropertyTypes(),
     getApiLocations({ type: "PROVINCE" as any, limit: 100 } as any),
+    getApiFormSchemas({ entityType: "PROPERTY" } as any),
   ]);
   const propertyTypes = ((propertyTypesRes as unknown as { data?: PropertyType[] })?.data) || [];
   const provinces = ((provincesRes as unknown as { data?: Location[] })?.data) || [];
+  const schemas = ((schemaRes as any)?.data as any[]) || [];
 
   // Map property type code → id for API filter
   const codeToId = Object.fromEntries(propertyTypes.map((t) => [t.code, t.id]));
@@ -105,6 +146,19 @@ export default async function ListingsPage({ searchParams, params }: Props) {
       .map((r) => [r.value.id, r.value.url]),
   );
 
+  // Tính bedrooms/bathrooms từ dynamicValuesJson + form schemas (giống trang detail)
+  const bedroomsMap = new Map<string, string | null>();
+  const bathroomsMap = new Map<string, string | null>();
+  for (const p of properties) {
+    const propertyTypeId = p.propertyType?.id;
+    const relevantSchemas = schemas.filter(
+      (s) => s.propertyTypeId === null || s.propertyTypeId === undefined || s.propertyTypeId === propertyTypeId,
+    );
+    const dynamicValues = (p as any)?.dynamicValuesJson as Record<string, unknown> | undefined;
+    bedroomsMap.set(p.id, findFieldValue(relevantSchemas, dynamicValues, ["bedroom", "beds", "bed_room", "phong_ngu", "phòng ngủ"]));
+    bathroomsMap.set(p.id, findFieldValue(relevantSchemas, dynamicValues, ["bathroom", "baths", "pathroom", "phong_tam", "phòng tắm"]));
+  }
+
   const priceMultiplier = transactionType === "RENT" ? 1000000 : 1000000000;
   const currentPriceFrom = minPrice ? String(Number(minPrice) / priceMultiplier) : "";
   const currentPriceTo = maxPrice ? String(Number(maxPrice) / priceMultiplier) : "";
@@ -115,6 +169,8 @@ export default async function ListingsPage({ searchParams, params }: Props) {
       provinces={provinces}
       properties={properties}
       propertyImageMap={propertyImageMap}
+      bedroomsMap={bedroomsMap}
+      bathroomsMap={bathroomsMap}
       currentTransactionType={transactionType}
       currentProvinceId={provinceId}
       currentTypes={types}

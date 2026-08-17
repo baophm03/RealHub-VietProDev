@@ -24,6 +24,7 @@ import {
   DialogPortal,
   DialogOverlay,
 } from "@/components/ui/dialog";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { useGetApiAppointments, useDeleteApiAppointment } from "@/lib/api/endpoints/appointments";
 import type { GetApiAppointmentsStatus } from "@/lib/api/models/getApiAppointmentsStatus";
 
@@ -83,6 +84,7 @@ export default function AppointmentsPage() {
   const router = useRouter();
   const [view, setView] = useState<"list" | "calendar">("list");
   const [statusFilter, setStatusFilter] = useState<GetApiAppointmentsStatus | "ALL">("ALL");
+  const [search, setSearch] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<Appointment | null>(null);
 
   const { data: appointmentsData, isLoading, refetch } = useGetApiAppointments({
@@ -90,7 +92,19 @@ export default function AppointmentsPage() {
     limit: "50",
     offset: "0",
   });
-  const appointments = ((appointmentsData as unknown as AppointmentsResponse)?.data) || [];
+  const allAppointments = ((appointmentsData as unknown as AppointmentsResponse)?.data) || [];
+
+  // Client-side search (API chưa hỗ trợ param search)
+  const searchStr = search.trim().toLowerCase();
+  const appointments = searchStr
+    ? allAppointments.filter((a) =>
+      a.title?.toLowerCase().includes(searchStr) ||
+      a.customer?.fullName?.toLowerCase().includes(searchStr) ||
+      a.property?.title?.toLowerCase().includes(searchStr) ||
+      a.assignedUser?.fullName?.toLowerCase().includes(searchStr) ||
+      a.locationText?.toLowerCase().includes(searchStr)
+    )
+    : allAppointments;
 
   const { mutateAsync: deleteAppointment, isPending: isDeleting } = useDeleteApiAppointment();
 
@@ -134,16 +148,32 @@ export default function AppointmentsPage() {
         }
       />
 
-      <div className="flex items-center justify-end gap-2">
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as GetApiAppointmentsStatus | "ALL")}
-          className="h-9 rounded-md border border-border bg-surface px-3 text-sm text-foreground outline-none focus:border-ring"
-        >
-          {statusFilters.map((f) => (
-            <option key={f.value} value={f.value}>{f.label}</option>
-          ))}
-        </select>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <input
+          type="search"
+          placeholder="Tìm theo tiêu đề, khách hàng, BĐS, địa điểm..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="h-9 w-full rounded-md border border-border bg-surface px-3 text-sm text-foreground outline-none focus:border-ring sm:w-auto sm:min-w-[280px]"
+        />
+        <div className="flex items-center justify-end gap-2">
+          <Select
+            value={statusFilter}
+            items={Object.fromEntries(statusFilters.map((f) => [f.value, f.label]))}
+            onValueChange={(v) => setStatusFilter((v ?? "ALL") as GetApiAppointmentsStatus | "ALL")}
+          >
+            <SelectTrigger className="h-9 w-[200px]">
+              <SelectValue placeholder="Tất cả trạng thái" />
+            </SelectTrigger>
+            <SelectContent>
+              {statusFilters.map((f) => (
+                <SelectItem key={f.value} value={f.value} label={f.label}>
+                  {f.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {isLoading ? (
