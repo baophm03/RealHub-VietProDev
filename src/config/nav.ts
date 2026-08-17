@@ -66,7 +66,7 @@ export const navGroups: NavGroup[] = [
         permission: { action: "READ", subject: "CUSTOMER" },
       },
       {
-        label: "Leads",
+        label: "KH tiềm năng",
         href: "/dashboard/leads",
         icon: CircleUser,
         permission: { action: "READ", subject: "LEAD" },

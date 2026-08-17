@@ -77,19 +77,21 @@ const statusConfig: Record<
   REPLIED: { label: "Đã phản hồi", variant: "green" },
 };
 
-const statusFilters: { value: PropertyContact["status"] | "ALL"; label: string }[] = [
-  { value: "ALL", label: "Tất cả" },
-  { value: "UNREAD", label: "Chưa đọc" },
-  { value: "READ", label: "Đã đọc" },
-  { value: "REPLIED", label: "Đã phản hồi" },
-];
-
 export default function ConsultationsPage() {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<PropertyContact["status"] | "ALL">("ALL");
   const [detailContact, setDetailContact] = useState<PropertyContact | null>(null);
 
+  // Query for counts (no status filter)
+  const { data: allContactsData } = useGetApiPropertyContacts({
+    limit: "50",
+    offset: "0",
+  });
+  const allContacts =
+    ((allContactsData as unknown as PropertyContactsResponse)?.data) || [];
+
+  // Query for table (with filters)
   const { data: contactsData, isLoading, refetch } = useGetApiPropertyContacts({
     status: statusFilter === "ALL" ? undefined : (statusFilter as GetApiPropertyContactsStatus),
     search: search.trim() || undefined,
@@ -191,11 +193,18 @@ export default function ConsultationsPage() {
     [router],
   );
 
-  const totalCount = (contactsData as unknown as PropertyContactsResponse)?.meta?.total ?? contacts.length;
+  const totalCount = (allContactsData as unknown as PropertyContactsResponse)?.meta?.total ?? allContacts.length;
   const unreadCount = useMemo(
-    () => contacts.filter((c) => c.status === "UNREAD").length,
-    [contacts],
+    () => allContacts.filter((c) => c.status === "UNREAD").length,
+    [allContacts],
   );
+
+  const filterTabs: { value: PropertyContact["status"] | "ALL"; label: string }[] = [
+    { value: "ALL", label: "Tất cả" },
+    { value: "UNREAD", label: "Chưa đọc" },
+    { value: "READ", label: "Đã đọc" },
+    { value: "REPLIED", label: "Đã phản hồi" },
+  ];
 
   return (
     <div className="flex flex-col gap-6">
@@ -203,44 +212,51 @@ export default function ConsultationsPage() {
         eyebrow="CRM"
         title="Tư vấn"
         description="Yêu cầu tư vấn từ khách hàng qua form liên hệ bất động sản"
-        actions={
-          <div className="flex items-center gap-2">
-            {unreadCount > 0 && (
-              <Badge variant="red">{unreadCount} chưa đọc</Badge>
-            )}
-            <Badge variant="secondary">{totalCount} yêu cầu</Badge>
-          </div>
-        }
       />
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2">
-          <Input
-            type="search"
-            placeholder="Tìm theo tên, SĐT, nội dung..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full sm:w-auto min-w-0 sm:min-w-[260px]"
-          />
-          <Button variant="outline" size="icon" aria-label="Bộ lọc" className="shrink-0">
-            <Filter size={16} />
-          </Button>
-        </div>
-
-        <div className="flex items-center gap-1 rounded-md border border-border p-1 overflow-x-auto">
-          {statusFilters.map((filter) => (
+      {/* Filter tabs */}
+      <div className="flex flex-wrap items-center gap-2">
+        {filterTabs.map((tab) => {
+          const count =
+            tab.value === "ALL"
+              ? allContacts.length
+              : allContacts.filter((c) => c.status === tab.value).length;
+          const active = statusFilter === tab.value;
+          return (
             <button
-              key={filter.value}
-              onClick={() => setStatusFilter(filter.value)}
-              className={`rounded-sm px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors ${statusFilter === filter.value
-                ? "bg-surface-muted text-foreground"
-                : "text-foreground-muted hover:text-foreground"
+              key={tab.value}
+              onClick={() => setStatusFilter(tab.value)}
+              className={`inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm transition-colors ${active
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border bg-surface text-foreground-muted hover:bg-surface-muted"
                 }`}
             >
-              {filter.label}
+              {tab.label}
+              <span
+                className={`rounded-full px-1.5 text-xs tabular-nums ${active
+                  ? "bg-primary/20 text-primary"
+                  : "bg-surface-muted text-foreground-muted"
+                  }`}
+              >
+                {count}
+              </span>
             </button>
-          ))}
-        </div>
+          );
+        })}
+      </div>
+
+      {/* Search */}
+      <div className="flex items-center gap-2">
+        <Input
+          type="search"
+          placeholder="Tìm theo tên, SĐT, nội dung..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full sm:w-auto min-w-0"
+        />
+        <Button variant="outline" size="icon" aria-label="Bộ lọc" className="shrink-0">
+          <Filter size={16} />
+        </Button>
       </div>
 
       {isLoading ? (

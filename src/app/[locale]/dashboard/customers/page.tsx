@@ -8,6 +8,13 @@ import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import {
@@ -245,24 +252,38 @@ export default function CustomersPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <select
+          <Select
             value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value as GetApiCustomersType | "ALL")}
-            className="h-9 rounded-md border border-border bg-surface px-3 text-sm text-foreground outline-none focus:border-ring"
+            onValueChange={(value) => setTypeFilter((value as GetApiCustomersType | "ALL") ?? "ALL")}
+            items={typeFilters}
           >
-            {typeFilters.map((f) => (
-              <option key={f.value} value={f.value}>{f.label}</option>
-            ))}
-          </select>
-          <select
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Tất cả loại" />
+            </SelectTrigger>
+            <SelectContent>
+              {typeFilters.map((f) => (
+                <SelectItem key={f.value} value={f.value} label={f.label}>
+                  {f.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as GetApiCustomersStatus | "ALL")}
-            className="h-9 rounded-md border border-border bg-surface px-3 text-sm text-foreground outline-none focus:border-ring"
+            onValueChange={(value) => setStatusFilter((value as GetApiCustomersStatus | "ALL") ?? "ALL")}
+            items={statusFilters}
           >
-            {statusFilters.map((f) => (
-              <option key={f.value} value={f.value}>{f.label}</option>
-            ))}
-          </select>
+            <SelectTrigger className="w-[170px]">
+              <SelectValue placeholder="Tất cả trạng thái" />
+            </SelectTrigger>
+            <SelectContent>
+              {statusFilters.map((f) => (
+                <SelectItem key={f.value} value={f.value} label={f.label}>
+                  {f.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

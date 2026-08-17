@@ -1,38 +1,54 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormSection, FormField } from "@/components/shared/form-section";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { useGetApiDealId, usePatchApiDeal } from "@/lib/api/endpoints/deals-reservations";
+import { useGetApiUsers } from "@/lib/api/endpoints/users";
+import type { UpdateDealDtoStatus } from "@/lib/api/models/updateDealDtoStatus";
 
 interface Deal {
   id: string;
   dealCode: string;
-  customerId?: string;
-  propertyId: string;
-  transactionType: string;
+  status: string;
   expectedValue?: string;
-  leadId?: string;
-  salesUserId?: string;
-  currentWorkflowState?: string;
+  finalValue?: string;
+  salesUserId?: string | null;
+  ownerUserId?: string | null;
+  currentWorkflowState?: string | null;
+}
+interface User {
+  id: string;
+  fullName: string;
+  email?: string;
 }
 
+const statusOptions = [
+  { value: "SOFT_RESERVED", label: "Đặt cọc mềm" },
+  { value: "NEGOTIATING", label: "Đàm phán" },
+  { value: "SUCCESS", label: "Thành công" },
+  { value: "FAILED", label: "Thất bại" },
+  { value: "CANCELLED", label: "Hủy" },
+  { value: "DISPUTED", label: "Tranh chấp" },
+];
+
+// UpdateDealDto allows: status, currentWorkflowState, salesUserId, ownerUserId,
+// expectedValue, finalValue, metadata
 const dealSchema = z.object({
-  dealCode: z.string().min(1, "Vui long nhap ma giao dich"),
-  customerId: z.string().optional(),
-  propertyId: z.string().min(1, "Vui long chon BDS"),
-  transactionType: z.enum(["SALE", "RENT", "TRANSFER"]),
-  expectedValue: z.string().optional(),
-  leadId: z.string().optional(),
+  status: z.enum(["SOFT_RESERVED", "NEGOTIATING", "SUCCESS", "FAILED", "CANCELLED", "DISPUTED"]),
   salesUserId: z.string().optional(),
+  expectedValue: z.string().optional(),
+  finalValue: z.string().optional(),
+  currentWorkflowState: z.string().optional(),
 });
 
 type DealFormData = z.infer<typeof dealSchema>;
@@ -42,40 +58,61 @@ export default function DealEditPage() {
   const router = useRouter();
   const id = params.id as string;
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState("SOFT_RESERVED");
+  const [selectedSalesId, setSelectedSalesId] = useState("");
 
   const { data: dealData, isLoading } = useGetApiDealId(id);
   const deal = (dealData as unknown as { data: Deal })?.data;
 
-  const { mutate: updateDeal } = usePatchApiDeal();
+  const { mutateAsync: updateDeal } = usePatchApiDeal();
+
+  const { data: usersData } = useGetApiUsers({ limit: "100", offset: "0" });
+  const users = ((usersData as unknown as { data: User[] })?.data) || [];
+
+  const salesItems = useMemo(() => {
+    const map: Record<string, string> = { __none__: "— Không chọn —" };
+    for (const u of users) {
+      map[u.id] = `${u.fullName}${u.email ? ` · ${u.email}` : ""}`;
+    }
+    return map;
+  }, [users]);
 
   const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<DealFormData>({
     resolver: zodResolver(dealSchema),
-    defaultValues: { transactionType: "SALE" },
+    defaultValues: { status: "SOFT_RESERVED" },
   });
 
   useEffect(() => {
     if (deal) {
       reset({
-        dealCode: deal.dealCode || "",
-        customerId: deal.customerId || "",
-        propertyId: deal.propertyId || "",
-        transactionType: (deal.transactionType as DealFormData["transactionType"]) || "SALE",
-        expectedValue: deal.expectedValue || "",
-        leadId: deal.leadId || "",
+        status: (deal.status as DealFormData["status"]) || "SOFT_RESERVED",
         salesUserId: deal.salesUserId || "",
+        expectedValue: deal.expectedValue || "",
+        finalValue: deal.finalValue || "",
+        currentWorkflowState: deal.currentWorkflowState || "",
       });
+      setSelectedStatus(deal.status || "SOFT_RESERVED");
+      setSelectedSalesId(deal.salesUserId || "");
     }
   }, [deal, reset]);
 
   const onSubmit = async (data: DealFormData) => {
     setLoading(true);
-    setError(null);
     try {
-      await updateDeal({ id, data });
+      await updateDeal({
+        id,
+        data: {
+          status: data.status as UpdateDealDtoStatus,
+          salesUserId: data.salesUserId || undefined,
+          expectedValue: data.expectedValue || undefined,
+          finalValue: data.finalValue || undefined,
+          currentWorkflowState: data.currentWorkflowState || undefined,
+        },
+      });
+      toast.success("Đã cập nhật giao dịch");
       router.push(`/dashboard/deals/${id}`);
     } catch (err) {
-      setError("Co loi xay ra khi cap nhat giao dich. Vui long thu lai.");
+      toast.error("Có lỗi xảy ra khi cập nhật giao dịch, vui lòng thử lại");
       console.error(err);
     } finally {
       setLoading(false);
@@ -97,60 +134,98 @@ export default function DealEditPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => router.push("/dashboard/deals")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
+        <button
+          onClick={() => router.push(`/dashboard/deals/${id}`)}
+          className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
+          aria-label="Quay lại"
+        >
           <ArrowLeft size={20} />
         </button>
-        <PageHeader eyebrow="Giao dich" title="Chỉnh sửa giao dich" />
+        <PageHeader eyebrow="Giao dịch" title={`Chỉnh sửa giao dịch ${deal?.dealCode ?? ""}`} />
       </div>
 
-      {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-          {error}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <FormSection title="Thong tin giao dich">
-          <FormField label="Ma giao dich" htmlFor="dealCode" required error={errors.dealCode?.message}>
-            <Input id="dealCode" placeholder="DEAL-001" {...register("dealCode")} />
-          </FormField>
+        <FormSection
+          title="Thông tin giao dịch"
+          description="Có thể cập nhật trạng thái, sales phụ trách, giá trị và workflow state."
+        >
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Khach hang" htmlFor="customerId" error={errors.customerId?.message}>
-              <Input id="customerId" placeholder="Chon khach hang" {...register("customerId")} />
-            </FormField>
-            <FormField label="BDS" htmlFor="propertyId" required error={errors.propertyId?.message}>
-              <Input id="propertyId" placeholder="Chon BDS" {...register("propertyId")} />
-            </FormField>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Loai giao dich" required>
-              <Select defaultValue="SALE" onValueChange={(v) => v && setValue("transactionType", v as DealFormData["transactionType"])}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+            <FormField label="Trạng thái" required>
+              <Select
+                value={selectedStatus}
+                items={Object.fromEntries(statusOptions.map((o) => [o.value, o.label]))}
+                onValueChange={(v) => {
+                  if (v) {
+                    setSelectedStatus(v);
+                    setValue("status", v as DealFormData["status"]);
+                  }
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Chọn trạng thái" />
+                </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="SALE" label="Ban">Ban</SelectItem>
-                  <SelectItem value="RENT" label="Cho thue">Cho thue</SelectItem>
-                  <SelectItem value="TRANSFER" label="Chuyen nhuong">Chuyen nhuong</SelectItem>
+                  {statusOptions.map((o) => (
+                    <SelectItem key={o.value} value={o.value} label={o.label}>
+                      {o.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </FormField>
-            <FormField label="Gia tri du kien (VND)" htmlFor="expectedValue">
-              <Input id="expectedValue" placeholder="5000000000" {...register("expectedValue")} />
+            <FormField label="Sales phụ trách">
+              <Select
+                value={selectedSalesId || "__none__"}
+                items={salesItems}
+                onValueChange={(v) => {
+                  const val = (v ?? "") === "__none__" ? "" : (v ?? "");
+                  setSelectedSalesId(val);
+                  setValue("salesUserId", val || undefined);
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Chọn sales" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__" label="— Không chọn —">— Không chọn —</SelectItem>
+                  {users.map((u) => {
+                    const label = `${u.fullName}${u.email ? ` · ${u.email}` : ""}`;
+                    return (
+                      <SelectItem key={u.id} value={u.id} label={label}>
+                        {label}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
             </FormField>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Lead" htmlFor="leadId">
-              <Input id="leadId" placeholder="ID lead" {...register("leadId")} />
+            <FormField label="Giá trị dự kiến (VND)" htmlFor="expectedValue">
+              <Input id="expectedValue" placeholder="5000000000" {...register("expectedValue")} />
             </FormField>
-            <FormField label="Sales phu trach" htmlFor="salesUserId">
-              <Input id="salesUserId" placeholder="ID sales" {...register("salesUserId")} />
+            <FormField label="Giá trị cuối (VND)" htmlFor="finalValue">
+              <Input id="finalValue" placeholder="950000000" {...register("finalValue")} />
             </FormField>
           </div>
+          <FormField label="Workflow state" htmlFor="currentWorkflowState">
+            <Input
+              id="currentWorkflowState"
+              placeholder="VD: NEGOTIATION"
+              {...register("currentWorkflowState")}
+            />
+          </FormField>
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push(`/dashboard/deals/${id}`)}>Huy</Button>
-          <Button type="submit" disabled={loading}>{loading ? "Dang luu..." : "Cap nhat giao dich"}</Button>
+          <Button type="button" variant="secondary" onClick={() => router.push(`/dashboard/deals/${id}`)}>
+            Hủy
+          </Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Đang lưu..." : "Cập nhật giao dịch"}
+          </Button>
         </div>
       </form>
-    </div>);
+    </div>
+  );
 }

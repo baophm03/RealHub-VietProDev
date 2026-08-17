@@ -1,8 +1,7 @@
-import { MapPin } from "lucide-react";
+import { MapPin, Square, BedDouble, Bath, ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import {
   formatPriceWithTransaction as formatPrice,
-  formatPricePerSqm,
 } from "@/utils";
 import type { Property } from "@/lib/api/types/properties";
 import type { Location } from "@/lib/api/types/locations";
@@ -36,6 +35,8 @@ interface ListingsViewProps {
   provinces: Location[];
   properties: Property[];
   propertyImageMap: Map<string, string | null>;
+  bedroomsMap: Map<string, string | null>;
+  bathroomsMap: Map<string, string | null>;
   currentTransactionType: string;
   currentProvinceId: string;
   currentTypes: string[];
@@ -49,6 +50,8 @@ export function ListingsView({
   provinces,
   properties,
   propertyImageMap,
+  bedroomsMap,
+  bathroomsMap,
   currentTransactionType,
   currentProvinceId,
   currentTypes,
@@ -112,14 +115,14 @@ export function ListingsView({
                       {badge && (
                         <div className="absolute top-3 right-3 z-10">
                           <span
-                            className={`text-xs font-semibold uppercase tracking-wide px-3 py-1 rounded-full shadow-sm ${badge.class}`}
+                            className={`text-[10px] font-semibold uppercase tracking-wide px-2.5 py-1 rounded-md shadow-sm ${badge.class}`}
                           >
                             {badge.label}
                           </span>
                         </div>
                       )}
                       <div className="absolute top-3 left-3 z-10">
-                        <span className="flex items-center gap-1 bg-surface/90 backdrop-blur-sm text-primary text-xs font-semibold uppercase tracking-wide px-2 py-1 rounded-md shadow-sm">
+                        <span className={`flex items-center gap-1 text-xs font-semibold uppercase tracking-wide px-2.5 py-1 rounded-md shadow-sm ${property.transactionType === "SALE" ? "bg-primary text-primary-foreground" : "bg-accent-blue text-accent-blue-text"}`}>
                           {txLabel[property.transactionType] ?? property.transactionType}
                         </span>
                       </div>
@@ -149,15 +152,44 @@ export function ListingsView({
                         </div>
                       )}
 
-                      <div className="flex justify-between items-end mt-auto pt-4 border-t border-border">
-                        <div>
-                          <div className="font-serif text-2xl font-bold text-primary">
-                            {formatPrice(property.price, property.transactionType)}
-                          </div>
-                          <div className="text-xs text-foreground-muted">
-                            {formatPricePerSqm(property.price, property.area)}
-                          </div>
+                      {/* Giá tiền */}
+                      <div className="flex flex-col items-start justify-start gap-1 mt-1">
+                        <div className="font-serif text-2xl font-bold text-primary">
+                          {formatPrice(property.price, property.transactionType)}
                         </div>
+                      </div>
+
+                      {/* Thông tin phòng ngủ, phòng tắm, diện tích */}
+                      <div className="flex flex-wrap items-center justify-start gap-3 mt-auto pt-4 border-t border-border text-xs text-foreground-muted">
+                        {bedroomsMap.get(property.id) && (
+                          <span className="flex items-center gap-1">
+                            <BedDouble size={13} className="shrink-0" />
+                            <span className="tabular-nums">{bedroomsMap.get(property.id)}</span>
+                            <span>PN</span>
+                          </span>
+                        )}
+                        {bathroomsMap.get(property.id) && (
+                          <span className="flex items-center gap-1">
+                            <Bath size={13} className="shrink-0" />
+                            <span className="tabular-nums">{bathroomsMap.get(property.id)}</span>
+                            <span>WC</span>
+                          </span>
+                        )}
+                        {property.area != null && (
+                          <span className="flex items-center gap-1">
+                            <Square size={13} className="shrink-0" />
+                            <span className="tabular-nums">
+                              {property.area.toLocaleString("vi-VN")}
+                            </span>
+                            <span>m²</span>
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Xem chi tiết */}
+                      <div className="flex items-center gap-1 pt-2 text-xs font-medium text-primary">
+                        Xem chi tiết
+                        <ArrowRight size={13} className="shrink-0" />
                       </div>
                     </div>
                   </Link>

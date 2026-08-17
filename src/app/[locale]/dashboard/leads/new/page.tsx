@@ -1,18 +1,59 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { FormSection, FormField } from "@/components/shared/form-section";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { usePostApiLead } from "@/lib/api/endpoints/leads";
+import { useGetApiCustomers } from "@/lib/api/endpoints/customers";
+import { useGetApiProperties } from "@/lib/api/endpoints/properties";
+import { useGetApiUsers } from "@/lib/api/endpoints/users";
+
+interface Customer {
+  id: string;
+  fullName: string;
+  phone?: string;
+}
+interface Property {
+  id: string;
+  title: string;
+  propertyCode: string;
+}
+interface User {
+  id: string;
+  fullName: string;
+  email?: string;
+}
+
+const sourceOptions = [
+  { value: "WEBSITE", label: "Website" },
+  { value: "PROPERTY_DETAIL", label: "Trang BĐS" },
+  { value: "OWNER_PAGE", label: "Trang chủ" },
+  { value: "SALES_LINK", label: "Link sales" },
+  { value: "CTV_LINK", label: "Link CTV" },
+  { value: "AGENCY_MARKETING", label: "Marketing" },
+  { value: "MANUAL_INPUT", label: "Nhập tay" },
+  { value: "LEAD_POOL", label: "Lead pool" },
+  { value: "IMPORT", label: "Nhập file" },
+];
+
+const statusOptions = [
+  { value: "NEW", label: "Mới" },
+  { value: "CONTACTED", label: "Đã liên hệ" },
+  { value: "INTERESTED", label: "Quan tâm" },
+  { value: "NEGOTIATING", label: "Đàm phán" },
+  { value: "CONVERTED", label: "Chuyển đổi" },
+  { value: "LOST", label: "Mất" },
+  { value: "RECYCLED", label: "Tái chế" },
+];
 
 const leadSchema = z.object({
   customerId: z.string().optional(),
@@ -20,6 +61,7 @@ const leadSchema = z.object({
   source: z.enum(["WEBSITE", "PROPERTY_DETAIL", "OWNER_PAGE", "SALES_LINK", "CTV_LINK", "AGENCY_MARKETING", "MANUAL_INPUT", "LEAD_POOL", "IMPORT"]),
   status: z.enum(["NEW", "CONTACTED", "INTERESTED", "NEGOTIATING", "CONVERTED", "LOST", "RECYCLED"]),
   assignedSalesId: z.string().optional(),
+  phoneNormalized: z.string().optional(),
 });
 
 type LeadFormData = z.infer<typeof leadSchema>;
@@ -27,9 +69,46 @@ type LeadFormData = z.infer<typeof leadSchema>;
 export default function LeadFormPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [selectedSource, setSelectedSource] = useState("MANUAL_INPUT");
+  const [selectedStatus, setSelectedStatus] = useState("NEW");
+  const [selectedCustomerId, setSelectedCustomerId] = useState("");
+  const [selectedPropertyId, setSelectedPropertyId] = useState("");
+  const [selectedSalesId, setSelectedSalesId] = useState("");
 
-  const { mutate: createLead } = usePostApiLead();
+  const { mutateAsync: createLead } = usePostApiLead();
+
+  const { data: customersData } = useGetApiCustomers({ limit: "100", offset: "0" });
+  const customers = ((customersData as unknown as { data: Customer[] })?.data) || [];
+
+  const { data: propertiesData } = useGetApiProperties({ limit: "100", offset: "0" });
+  const properties = ((propertiesData as unknown as { data: Property[] })?.data) || [];
+
+  const { data: usersData } = useGetApiUsers({ limit: "100", offset: "0" });
+  const users = ((usersData as unknown as { data: User[] })?.data) || [];
+
+  const customerItems = useMemo(() => {
+    const map: Record<string, string> = { __none__: "— Không chọn —" };
+    for (const c of customers) {
+      map[c.id] = `${c.fullName}${c.phone ? ` · ${c.phone}` : ""}`;
+    }
+    return map;
+  }, [customers]);
+
+  const propertyItems = useMemo(() => {
+    const map: Record<string, string> = { __none__: "— Không chọn —" };
+    for (const p of properties) {
+      map[p.id] = `${p.title} (#${p.propertyCode})`;
+    }
+    return map;
+  }, [properties]);
+
+  const salesItems = useMemo(() => {
+    const map: Record<string, string> = { __none__: "— Không chọn —" };
+    for (const u of users) {
+      map[u.id] = `${u.fullName}${u.email ? ` · ${u.email}` : ""}`;
+    }
+    return map;
+  }, [users]);
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<LeadFormData>({
     resolver: zodResolver(leadSchema),
@@ -38,12 +117,21 @@ export default function LeadFormPage() {
 
   const onSubmit = async (data: LeadFormData) => {
     setLoading(true);
-    setError(null);
     try {
-      await createLead({ data });
+      await createLead({
+        data: {
+          source: data.source,
+          status: data.status,
+          customerId: data.customerId || undefined,
+          propertyId: data.propertyId || undefined,
+          assignedSalesId: data.assignedSalesId || undefined,
+          phoneNormalized: data.phoneNormalized || undefined,
+        },
+      });
+      toast.success("Đã tạo khách hàng tiềm năng mới");
       router.push("/dashboard/leads");
     } catch (err) {
-      setError("Co loi xay ra khi tao lead. Vui long thu lai.");
+      toast.error("Có lỗi xảy ra khi tạo khách hàng tiềm năng, vui lòng thử lại");
       console.error(err);
     } finally {
       setLoading(false);
@@ -53,69 +141,168 @@ export default function LeadFormPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => router.push("/dashboard/leads")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
+        <button
+          onClick={() => router.push("/dashboard/leads")}
+          className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
+          aria-label="Quay lại"
+        >
           <ArrowLeft size={20} />
         </button>
-        <PageHeader eyebrow="CRM" title="Them lead" />
+        <PageHeader eyebrow="CRM" title="Thêm khách hàng tiềm năng" />
       </div>
 
-      {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-          {error}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <FormSection title="Thong tin lead">
+        <FormSection title="Thông tin khách hàng tiềm năng">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Khach hang" htmlFor="customerId" error={errors.customerId?.message}>
-              <Input id="customerId" placeholder="Chon khach hang" {...register("customerId")} />
-            </FormField>
-            <FormField label="BÄS quan tam">
-              <Input placeholder="Chon BÄS (tuong tac)" {...register("propertyId")} />
-            </FormField>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Nguon lead" required>
-              <Select defaultValue="MANUAL_INPUT" onValueChange={(v) => setValue("source", v as LeadFormData["source"])}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+            <FormField label="Khách hàng">
+              <Select
+                value={selectedCustomerId || "__none__"}
+                items={customerItems}
+                onValueChange={(v) => {
+                  const val = (v ?? "") === "__none__" ? "" : (v ?? "");
+                  setSelectedCustomerId(val);
+                  setValue("customerId", val || undefined);
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Chọn khách hàng" />
+                </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="WEBSITE" label="Website">Website</SelectItem>
-                  <SelectItem value="PROPERTY_DETAIL" label="Trang BÄS">Trang BÄS</SelectItem>
-                  <SelectItem value="OWNER_PAGE" label="Trang chu">Trang chu</SelectItem>
-                  <SelectItem value="SALES_LINK" label="Link sales">Link sales</SelectItem>
-                  <SelectItem value="CTV_LINK" label="Link CTV">Link CTV</SelectItem>
-                  <SelectItem value="AGENCY_MARKETING" label="Marketing">Marketing</SelectItem>
-                  <SelectItem value="MANUAL_INPUT" label="Nhap tay">Nhap tay</SelectItem>
-                  <SelectItem value="LEAD_POOL" label="Lead pool">Lead pool</SelectItem>
-                  <SelectItem value="IMPORT" label="Nhap file">Nhap file</SelectItem>
+                  <SelectItem value="__none__" label="— Không chọn —">— Không chọn —</SelectItem>
+                  {customers.map((c) => {
+                    const label = `${c.fullName}${c.phone ? ` · ${c.phone}` : ""}`;
+                    return (
+                      <SelectItem key={c.id} value={c.id} label={label}>
+                        {label}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </FormField>
-            <FormField label="Trang thai">
-              <Select defaultValue="NEW" onValueChange={(v) => setValue("status", v as LeadFormData["status"])}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+            <FormField label="BĐS quan tâm">
+              <Select
+                value={selectedPropertyId || "__none__"}
+                items={propertyItems}
+                onValueChange={(v) => {
+                  const val = (v ?? "") === "__none__" ? "" : (v ?? "");
+                  setSelectedPropertyId(val);
+                  setValue("propertyId", val || undefined);
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Chọn BĐS" />
+                </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="NEW" label="Moi">Moi</SelectItem>
-                  <SelectItem value="CONTACTED" label="Da lien he">Da lien he</SelectItem>
-                  <SelectItem value="INTERESTED" label="Quan tam">Quan tam</SelectItem>
-                  <SelectItem value="NEGOTIATING" label="Dam phan">Dam phan</SelectItem>
-                  <SelectItem value="CONVERTED" label="Chuyen doi">Chuyen doi</SelectItem>
-                  <SelectItem value="LOST" label="Mat">Mat</SelectItem>
-                  <SelectItem value="RECYCLED" label="Tai che">Tai che</SelectItem>
+                  <SelectItem value="__none__" label="— Không chọn —">— Không chọn —</SelectItem>
+                  {properties.map((p) => {
+                    const label = `${p.title} (#${p.propertyCode})`;
+                    return (
+                      <SelectItem key={p.id} value={p.id} label={label}>
+                        {label}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </FormField>
           </div>
-          <FormField label="Ghi chu" htmlFor="assignedSalesId">
-            <Input id="assignedSalesId" placeholder="ID sales phu trach" {...register("assignedSalesId")} />
-          </FormField>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField label="Nguồn khách hàng tiềm năng" required>
+              <Select
+                value={selectedSource}
+                items={Object.fromEntries(sourceOptions.map((o) => [o.value, o.label]))}
+                onValueChange={(v) => {
+                  if (v) {
+                    setSelectedSource(v);
+                    setValue("source", v as LeadFormData["source"]);
+                  }
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Chọn nguồn khách hàng tiềm năng" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sourceOptions.map((o) => (
+                    <SelectItem key={o.value} value={o.value} label={o.label}>
+                      {o.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormField>
+            <FormField label="Trạng thái">
+              <Select
+                value={selectedStatus}
+                items={Object.fromEntries(statusOptions.map((o) => [o.value, o.label]))}
+                onValueChange={(v) => {
+                  if (v) {
+                    setSelectedStatus(v);
+                    setValue("status", v as LeadFormData["status"]);
+                  }
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Chọn trạng thái" />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusOptions.map((o) => (
+                    <SelectItem key={o.value} value={o.value} label={o.label}>
+                      {o.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormField>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField label="Sales phụ trách">
+              <Select
+                value={selectedSalesId || "__none__"}
+                items={salesItems}
+                onValueChange={(v) => {
+                  const val = (v ?? "") === "__none__" ? "" : (v ?? "");
+                  setSelectedSalesId(val);
+                  setValue("assignedSalesId", val || undefined);
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Chọn sales" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__" label="— Không chọn —">— Không chọn —</SelectItem>
+                  {users.map((u) => {
+                    const label = `${u.fullName}${u.email ? ` · ${u.email}` : ""}`;
+                    return (
+                      <SelectItem key={u.id} value={u.id} label={label}>
+                        {label}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </FormField>
+            <FormField label="Số điện thoại" htmlFor="phoneNormalized">
+              <Input
+                id="phoneNormalized"
+                placeholder="0901234567"
+                {...register("phoneNormalized")}
+              />
+            </FormField>
+          </div>
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push("/dashboard/leads")}>Huy</Button>
-          <Button type="submit" disabled={loading}>{loading ? "Dang luu..." : "Luu lead"}</Button>
+          <Button type="button" variant="secondary" onClick={() => router.push("/dashboard/leads")}>
+            Hủy
+          </Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Đang lưu..." : "Lưu khách hàng tiềm năng"}
+          </Button>
         </div>
       </form>
-    </div>);
+    </div>
+  );
 }

@@ -21,11 +21,6 @@ export function HeroSearch() {
 
   return (
     <>
-      {/* Eyebrow pill — green accent */}
-      <span className="w-fit rounded-full bg-primary/8 px-3.5 py-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-primary">
-        Nền tảng Bất động sản
-      </span>
-
       {/* Headline — mixed serif/sans, editorial */}
       <h1 className="font-serif text-5xl font-semibold leading-[1.05] tracking-tighter text-balance text-foreground md:text-6xl lg:text-[4.25rem]">
         Kết nối toàn vòng đời{" "}
