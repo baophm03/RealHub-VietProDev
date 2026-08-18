@@ -14,6 +14,17 @@ type Props = {
   params: Promise<{ locale: string; id: string }>;
 };
 
+export const dynamic = "force-static";
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const projectsRes = await getApiProjects({ limit: "100" });
+  const projects = (projectsRes as unknown as GetProjectsResponse)?.data ?? [];
+  return ["vi", "en"].flatMap((locale) =>
+    projects.map((p) => ({ locale, id: p.id })),
+  );
+}
+
 const projectStatusLabels: Record<string, string> = {
   ACTIVE: "Đang hoạt động",
   INACTIVE: "Ngừng hoạt động",

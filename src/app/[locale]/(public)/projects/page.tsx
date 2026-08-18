@@ -8,10 +8,8 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-const projectStatusLabels: Record<string, string> = {
-  ACTIVE: "Đang hoạt động",
-  INACTIVE: "Ngừng hoạt động",
-};
+export const dynamic = "force-static";
+export const revalidate = 3600;
 
 function getProjectLocation(project: Project): string {
   const parts: string[] = [];

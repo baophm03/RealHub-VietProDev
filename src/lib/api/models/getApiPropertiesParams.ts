@@ -28,4 +28,8 @@ maxArea?: string;
 search?: string;
 limit?: string;
 offset?: string;
+/**
+ * Comma-separated relations to embed. Supported: "media".
+ */
+include?: string;
 };

@@ -17,6 +17,19 @@ export interface GetPropertyItemResponse {
   timestamp: string;
 }
 
+export interface PropertyMedia {
+  id: string;
+  type: string;
+  caption?: string | null;
+  sortOrder?: number;
+  file?: {
+    id: string;
+    url: string;
+    mimeType?: string;
+    originalName?: string;
+  };
+}
+
 export interface Property {
   id: string;
   propertyCode: string;
@@ -60,4 +73,5 @@ export interface Property {
   longitude?: number;
   bedrooms?: number;
   bathrooms?: number;
+  media?: PropertyMedia[];
 }

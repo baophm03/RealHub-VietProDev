@@ -15,10 +15,11 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Omit<Props, "children">): Promise<Metadata> {
   const { locale } = await params;
-  const baseUrl = locale === "vi" ? "https://realhub.vn" : "https://en.realhub.vn";
+  const siteUrl = "https://realhub.vn";
+  const localeUrl = `${siteUrl}/${locale}`;
 
   return {
-    metadataBase: new URL(baseUrl),
+    metadataBase: new URL(siteUrl),
     title: {
       default: "RealHub — Nền tảng Bất động sản",
       template: "%s — RealHub",
@@ -29,16 +30,17 @@ export async function generateMetadata({ params }: Omit<Props, "children">): Pro
       type: "website",
       locale: locale === "vi" ? "vi_VN" : "en_US",
       siteName: "RealHub",
-      url: baseUrl,
+      url: localeUrl,
     },
     twitter: {
       card: "summary_large_image",
     },
     alternates: {
-      canonical: baseUrl,
+      canonical: localeUrl,
       languages: {
-        vi: "https://realhub.vn",
-        en: "https://en.realhub.vn",
+        vi: `${siteUrl}/vi`,
+        en: `${siteUrl}/en`,
+        "x-default": `${siteUrl}/vi`,
       },
     },
   };

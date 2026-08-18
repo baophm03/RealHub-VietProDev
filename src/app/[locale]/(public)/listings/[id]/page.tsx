@@ -2,13 +2,13 @@ import { setRequestLocale } from "next-intl/server";
 import {
   getApiPropertyId,
   getApiProperties,
-  getApiPropertyMedia,
 } from "@/lib/api/endpoints/properties";
 import { getApiFormSchemas } from "@/lib/api/endpoints/dynamic-fields";
 import type {
   GetPropertiesResponse,
   GetPropertyItemResponse,
   Property,
+  PropertyMedia,
 } from "@/lib/api/types/properties";
 import { Link } from "@/i18n/navigation";
 import {
@@ -22,6 +22,22 @@ import { ListingContactSidebar } from "./_components/listing-contact-sidebar";
 type Props = {
   params: Promise<{ locale: string; id: string }>;
 };
+
+export const dynamic = "force-static";
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const propertiesRes = await getApiProperties({
+    verificationStatus: "VERIFIED" as any,
+    publicationStatus: "PUBLIC" as any,
+    limit: "100",
+    include: "media",
+  } as any);
+  const properties = (propertiesRes as unknown as GetPropertiesResponse)?.data ?? [];
+  return ["vi", "en"].flatMap((locale) =>
+    properties.map((p) => ({ locale, id: p.id })),
+  );
+}
 
 const txLabel: Record<string, string> = {
   SALE: "Bán",
@@ -101,11 +117,9 @@ function getFieldsByGroupCode(
   return result;
 }
 
-function extractFirstImageUrl(mediaRes: unknown): string | null {
-  const raw = mediaRes as any;
-  const items: any[] = Array.isArray(raw?.data) ? raw.data : Array.isArray(raw) ? raw : [];
-  if (items.length === 0) return null;
-  const imageItem = items
+function extractFirstImageUrlFromMedia(media: PropertyMedia[] | undefined): string | null {
+  if (!media || media.length === 0) return null;
+  const imageItem = media
     .filter((m) => m.type === "IMAGE" || m.file?.mimeType?.startsWith("image/"))
     .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))[0];
   return imageItem?.file?.url ?? null;
@@ -132,25 +146,16 @@ export default async function ListingDetailPage({ params }: Props) {
   if (property) {
     const similarRes = await getApiProperties(
       propertyTypeId
-        ? { propertyTypeId, verificationStatus: "VERIFIED", publicationStatus: "PUBLIC", limit: "10" }
-        : { verificationStatus: "VERIFIED", publicationStatus: "PUBLIC", limit: "10" } as any,
+        ? { propertyTypeId, verificationStatus: "VERIFIED", publicationStatus: "PUBLIC", limit: "10", include: "media" }
+        : { verificationStatus: "VERIFIED", publicationStatus: "PUBLIC", limit: "10", include: "media" } as any,
     );
     similarProperties = (((similarRes as unknown as GetPropertiesResponse)?.data) || [])
       .filter((p: Property) => p.id !== id)
       .slice(0, 3);
 
-    // Fetch media for similar properties in parallel
-    const similarMediaSettled = await Promise.allSettled(
-      similarProperties.map(async (p) => {
-        const mediaRes = await getApiPropertyMedia(p.id);
-        return { id: p.id, url: extractFirstImageUrl(mediaRes) };
-      }),
-    );
-    similarImageMap = new Map(
-      similarMediaSettled
-        .filter((r): r is PromiseFulfilledResult<{ id: string; url: string | null }> => r.status === "fulfilled")
-        .map((r) => [r.value.id, r.value.url]),
-    );
+    for (const p of similarProperties) {
+      similarImageMap.set(p.id, extractFirstImageUrlFromMedia(p.media));
+    }
   }
 
   if (!property) {

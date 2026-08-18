@@ -1,8 +1,8 @@
 import { setRequestLocale } from "next-intl/server";
-import { getApiProperties, getApiPropertyTypes, getApiPropertyMedia } from "@/lib/api/endpoints/properties";
+import { getApiProperties, getApiPropertyTypes } from "@/lib/api/endpoints/properties";
 import { getApiLocations } from "@/lib/api/endpoints/locations";
 import { getApiFormSchemas } from "@/lib/api/endpoints/dynamic-fields";
-import type { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
+import type { GetPropertiesResponse, Property, PropertyMedia } from "@/lib/api/types/properties";
 import type { Location } from "@/lib/api/types/locations";
 import { ListingsView } from "./_components/listings-view";
 
@@ -18,11 +18,12 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-function extractFirstImageUrl(mediaRes: unknown): string | null {
-  const raw = mediaRes as any;
-  const items: any[] = Array.isArray(raw?.data) ? raw.data : Array.isArray(raw) ? raw : [];
-  if (items.length === 0) return null;
-  const imageItem = items
+export const dynamic = "force-static";
+export const revalidate = 3600;
+
+function extractFirstImageUrlFromMedia(media: PropertyMedia[] | undefined): string | null {
+  if (!media || media.length === 0) return null;
+  const imageItem = media
     .filter((m) => m.type === "IMAGE" || m.file?.mimeType?.startsWith("image/"))
     .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))[0];
   return imageItem?.file?.url ?? null;
@@ -33,7 +34,6 @@ function findFieldValue(
   dynamicValues: Record<string, unknown> | undefined,
   patterns: string[],
 ): string | null {
-  // 1) Đọc trực tiếp từ dynamicValuesJson theo key phổ biến (nhanh, không cần schema)
   const directKeys = ["bed_room_count", "bedroom_count", "bedrooms", "beds", "phong_ngu"];
   const directKeysBath = ["pathroom_count", "bathroom_count", "bathrooms", "baths", "phong_tam"];
   const isBedroom = patterns.some((p) => p.includes("bed") || p.includes("ngu"));
@@ -45,7 +45,6 @@ function findFieldValue(
       if (v !== undefined && v !== null && v !== "") return String(v);
     }
   }
-  // 2) Fallback: tìm qua form schemas theo fieldKey/fieldLabel
   for (const schema of schemas) {
     for (const f of schema.fields || []) {
       const field = f.field;
@@ -79,7 +78,6 @@ export default async function ListingsPage({ searchParams, params }: Props) {
   const maxPrice = typeof sp.maxPrice === "string" ? sp.maxPrice : "";
   const sort = typeof sp.sort === "string" ? sp.sort : "newest";
 
-  // Fetch property types + provinces + form schemas in parallel (needed for filter UI + code→id mapping + dynamic fields)
   const [propertyTypesRes, provincesRes, schemaRes] = await Promise.all([
     getApiPropertyTypes(),
     getApiLocations({ type: "PROVINCE" as any, limit: 100 } as any),
@@ -89,14 +87,13 @@ export default async function ListingsPage({ searchParams, params }: Props) {
   const provinces = ((provincesRes as unknown as { data?: Location[] })?.data) || [];
   const schemas = ((schemaRes as any)?.data as any[]) || [];
 
-  // Map property type code → id for API filter
   const codeToId = Object.fromEntries(propertyTypes.map((t) => [t.code, t.id]));
   const selectedTypeIds = types.map((c) => codeToId[c]).filter(Boolean);
 
-  // Build API params from searchParams
   const apiParams: Record<string, string> = {
     verificationStatus: "VERIFIED",
     publicationStatus: "PUBLIC",
+    include: "media",
   };
   if (transactionType) apiParams.transactionType = transactionType;
   if (provinceId) apiParams.provinceId = provinceId;
@@ -108,7 +105,6 @@ export default async function ListingsPage({ searchParams, params }: Props) {
   const propertiesRes = await getApiProperties(apiParams as any);
   let properties: Property[] = ((propertiesRes as unknown as GetPropertiesResponse)?.data) || [];
 
-  // Client-side filtering for multiple property types (by code)
   if (types.length > 1) {
     properties = properties.filter(
       (p) => p.propertyType && types.includes(p.propertyType.code),
@@ -133,20 +129,11 @@ export default async function ListingsPage({ searchParams, params }: Props) {
       break;
   }
 
-  // Fetch media for each property in parallel (allSettled so 404s don't break)
-  const mediaSettled = await Promise.allSettled(
-    properties.map(async (p) => {
-      const mediaRes = await getApiPropertyMedia(p.id);
-      return { id: p.id, url: extractFirstImageUrl(mediaRes) };
-    }),
-  );
-  const propertyImageMap = new Map(
-    mediaSettled
-      .filter((r): r is PromiseFulfilledResult<{ id: string; url: string | null }> => r.status === "fulfilled")
-      .map((r) => [r.value.id, r.value.url]),
-  );
+  const propertyImageMap = new Map<string, string | null>();
+  for (const p of properties) {
+    propertyImageMap.set(p.id, extractFirstImageUrlFromMedia(p.media));
+  }
 
-  // Tính bedrooms/bathrooms từ dynamicValuesJson + form schemas (giống trang detail)
   const bedroomsMap = new Map<string, string | null>();
   const bathroomsMap = new Map<string, string | null>();
   for (const p of properties) {

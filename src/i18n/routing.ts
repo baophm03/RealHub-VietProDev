@@ -5,16 +5,4 @@ export const routing = defineRouting({
   defaultLocale: "vi",
   localePrefix: "always",
   localeDetection: false,
-  domains: [
-    {
-      domain: "realhub.vn",
-      defaultLocale: "vi",
-      locales: ["vi"],
-    },
-    {
-      domain: "realhub.vn",
-      defaultLocale: "en",
-      locales: ["en"],
-    },
-  ],
 });

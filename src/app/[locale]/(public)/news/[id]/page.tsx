@@ -12,6 +12,17 @@ type Props = {
   params: Promise<{ locale: string; id: string }>;
 };
 
+export const dynamic = "force-static";
+export const revalidate = 1800;
+
+export async function generateStaticParams() {
+  const newsRes = await getApiNews({ limit: "100" });
+  const news = (newsRes as unknown as GetNewsResponse)?.data ?? [];
+  return ["vi", "en"].flatMap((locale) =>
+    news.map((n) => ({ locale, id: n.id })),
+  );
+}
+
 function formatDate(iso: string): string {
   if (!iso) return "";
   try {

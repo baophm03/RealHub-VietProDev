@@ -15,6 +15,9 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
+export const dynamic = "force-static";
+export const revalidate = 1800;
+
 export default async function NewsPage({ searchParams, params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
