@@ -1,9 +1,8 @@
 import { getApiProperties, getApiPropertyMedia } from "@/lib/api/endpoints/properties";
 import type { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
 import { Link } from "@/i18n/navigation";
-import { formatPriceWithTransaction as formatPrice } from "@/utils";
-import { ArrowRight, MapPin, Square, ArrowUpRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ArrowRight } from "lucide-react";
+import { FeaturedPropertiesCarousel } from "@/components/sections/featured-properties-carousel";
 
 function extractFirstImageUrl(mediaRes: unknown): string | null {
   const raw = mediaRes as any;
@@ -15,25 +14,6 @@ function extractFirstImageUrl(mediaRes: unknown): string | null {
   return imageItem?.file?.url ?? null;
 }
 
-const statusBadgeMap: Record<string, { className: string; label: string }> = {
-  AVAILABLE: { className: "bg-accent-green text-accent-green-text", label: "Sẵn có" },
-  RESERVED: { className: "bg-accent-yellow text-accent-yellow-text", label: "Đặt cọc" },
-  SOLD: { className: "bg-accent-red text-accent-red-text", label: "Đã bán" },
-  RENTED: { className: "bg-accent-blue text-accent-blue-text", label: "Đã thuê" },
-  OFF_MARKET: { className: "bg-secondary text-secondary-foreground", label: "Ngừng bán" },
-};
-
-const BENTO_SPANS = [
-  "lg:col-span-2 lg:row-span-2",
-  "",
-  "",
-  "",
-  "lg:col-span-2",
-];
-
-const badgeBase =
-  "inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap";
-
 export async function FeaturedProperties() {
   let properties: Property[] = [];
   let propertyImageMap = new Map<string, string | null>();
@@ -42,7 +22,7 @@ export async function FeaturedProperties() {
     const propertiesRes = await getApiProperties({
       verificationStatus: "VERIFIED",
       publicationStatus: "PUBLIC",
-      limit: "5",
+      limit: "40",
     } as any);
     properties = (propertiesRes as unknown as GetPropertiesResponse)?.data ?? [];
 
@@ -88,85 +68,9 @@ export async function FeaturedProperties() {
           </Link>
         </div>
 
-        {/* Bento grid */}
+        {/* Carousel */}
         {properties.length > 0 && (
-          <div className="grid auto-rows-[240px] grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:auto-rows-[280px]">
-            {properties.slice(0, 5).map((prop, i) => {
-              const badge = statusBadgeMap[prop.businessStatus ?? ""];
-              const span = BENTO_SPANS[i] ?? "";
-              const featured = i === 0;
-              const location = [prop?.district?.name, prop?.province?.name].filter(Boolean).join(", ");
-              const imageUrl = propertyImageMap.get(prop.id) ?? null;
-              return (
-                <div key={prop.id} className={span}>
-                  <Link
-                    href={`/listings/${prop.id}`}
-                    className="group/property relative flex h-full flex-col justify-end overflow-hidden rounded-[1.5rem] ring-1 ring-black/5"
-                  >
-                    {/* Image */}
-                    <div className="absolute inset-0 overflow-hidden transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/property:scale-105">
-                      {imageUrl ? (
-                        <img
-                          src={imageUrl}
-                          alt={prop.title}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-surface-muted">
-                          <span className="text-xs text-foreground-muted">Không có hình ảnh</span>
-                        </div>
-                      )}
-                    </div>
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-
-                    {/* Badge */}
-                    {badge && (
-                      <div className="absolute top-5 left-5 z-10">
-                        <span className={cn(badgeBase, badge.className)}>
-                          {badge.label}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Price tag */}
-                    <div className="absolute top-5 right-5 z-10 rounded-full bg-primary-foreground/95 px-3.5 py-1.5 text-sm font-semibold text-primary backdrop-blur-sm">
-                      {formatPrice(prop.price, prop.transactionType)}
-                    </div>
-
-                    {/* Content */}
-                    <div className="relative z-10 p-6 text-white">
-                      <div className="flex items-center gap-1.5 text-xs text-white/50">
-                        <MapPin size={12} />
-                        {location || "Đang cập nhật"}
-                      </div>
-                      <h3 className={cn(
-                        "mt-2 font-serif font-semibold leading-tight",
-                        featured ? "text-2xl" : "text-lg",
-                      )}>
-                        {prop.title}
-                      </h3>
-                      <div className="mt-3 flex items-center gap-4 text-xs text-white/60">
-                        <span className="flex items-center gap-1.5">
-                          <Square size={14} /> {prop.area ? `${prop.area}m²` : "--"}
-                        </span>
-                        {prop.propertyType?.name && (
-                          <span className="flex items-center gap-1.5">
-                            {prop.propertyType.name}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Hover arrow */}
-                    <div className="absolute bottom-6 right-6 z-10 flex size-10 translate-y-2 items-center justify-center rounded-full bg-primary-foreground/95 text-primary opacity-0 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/property:translate-y-0 group-hover/property:opacity-100">
-                      <ArrowUpRight size={16} />
-                    </div>
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
+          <FeaturedPropertiesCarousel properties={properties} imageMap={propertyImageMap} />
         )}
 
         {/* Empty state */}
