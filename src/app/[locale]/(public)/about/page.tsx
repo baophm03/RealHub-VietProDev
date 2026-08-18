@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import {
   Eye,
   Globe,
@@ -10,15 +7,12 @@ import {
   Users,
 } from "lucide-react";
 
+export const dynamic = "force-static";
+
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-16 md:px-8 md:py-24 lg:px-12">
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        className="mb-16 flex flex-col gap-4"
-      >
+      <div className="mb-16 flex flex-col gap-4 animate-[fade-up_0.7s_ease-out]">
         <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-primary">
           Về chúng tôi
         </span>
@@ -29,7 +23,7 @@ export default function AboutPage() {
           RealHub là hệ sinh thái đa tenant cho Agency, Developer và Distributor —
           kết nối sản phẩm, khách hàng, lịch hẹn, giao dịch và hoa hồng trên một nền tảng duy nhất.
         </p>
-      </motion.div>
+      </div>
 
       <div className="mb-20 grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-8">
@@ -57,19 +51,15 @@ export default function AboutPage() {
             { icon: Users, title: "Con người là trọng tâm", desc: "Mỗi tính năng đều được thiết kế cho người dùng — từ khách hàng đến sales, từ owner đến admin." },
             { icon: Handshake, title: "Minh bạch & Tin cậy", desc: "Mọi giao dịch, hoa hồng, phân bổ lead đều có audit log rõ ràng, không mập mờ." },
             { icon: Globe, title: "Hệ sinh thái mở", desc: "Kết nối Agency, Developer, Distributor và đối tác trên một nền tảng chung." },
-          ].map((v, i) => (
-            <motion.div
+          ].map((v) => (
+            <div
               key={v.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="flex flex-col gap-3"
+              className="flex flex-col gap-3 animate-[fade-up_0.5s_ease-out_both]"
             >
               <v.icon size={24} className="text-primary" />
               <h3 className="font-serif text-lg font-semibold">{v.title}</h3>
               <p className="text-sm leading-relaxed text-foreground-muted">{v.desc}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

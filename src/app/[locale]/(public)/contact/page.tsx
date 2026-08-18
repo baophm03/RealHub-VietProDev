@@ -1,18 +1,12 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Mail, MapPin, Phone, Send } from "lucide-react";
+
+export const dynamic = "force-static";
 
 export default function ContactPage() {
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-16 md:px-8 md:py-24 lg:px-12">
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        className="mb-12 flex flex-col gap-4"
-      >
+      <div className="mb-12 flex flex-col gap-4 animate-[fade-up_0.7s_ease-out]">
         <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-primary">
           Liên hệ
         </span>
@@ -22,7 +16,7 @@ export default function ContactPage() {
         <p className="max-w-[56ch] text-base leading-relaxed text-foreground-muted">
           Đội ngũ RealHub sẵn sàng tư vấn giải pháp phù hợp cho agency, developer hoặc distributor của bạn.
         </p>
-      </motion.div>
+      </div>
 
       <div className="grid gap-10 lg:grid-cols-[1fr_400px]">
         <div className="flex flex-col gap-6 rounded-lg border border-border bg-surface p-8">
