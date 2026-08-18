@@ -5,6 +5,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import {
   ArrowUpRight,
+  Building2,
   ChevronDown,
   CircleUser,
   Globe,
@@ -104,7 +105,7 @@ export function PublicHeader() {
               <span className="font-mono tabular-nums">1900 1234</span>
             </span>
             <span className="h-3 w-px bg-primary-foreground/15" />
-            <span className="max-w-[60ch] truncate">{t("tagline")}</span>
+            <span className="max-w-[60ch] truncate">Nền tảng bất động sản chuyên nghiệp hàng đầu Việt Nam.</span>
           </div>
 
           {/* Locale Switcher */}
@@ -148,12 +149,8 @@ export function PublicHeader() {
         <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-6 md:h-18 md:px-8 lg:px-12">
           {/* Logo */}
           <Link href="/" className="group flex items-center gap-2.5">
-            <span className="flex size-9 items-center justify-center rounded-lg bg-primary-foreground/15 text-primary-foreground transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="shrink-0">
-                <path d="M2 14.5L9 3.5L16 14.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M5.5 14.5V10H12.5V14.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M8 14.5V12H10V14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+            <span className="flex size-9 items-center justify-center rounded-lg bg-white text-primary-foreground transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105">
+              <Building2 size={22} className="text-primary" />
             </span>
             <div className="flex flex-col leading-none">
               <span className="font-serif text-lg font-semibold tracking-tight text-primary-foreground">

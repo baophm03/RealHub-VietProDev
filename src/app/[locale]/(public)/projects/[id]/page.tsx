@@ -1,13 +1,14 @@
 import { setRequestLocale } from "next-intl/server";
 import { getApiProjectId, getApiProjects } from "@/lib/api/endpoints/projects";
-import { getApiPropertyMedia } from "@/lib/api/endpoints/properties";
 import type {
   GetProjectItemResponse,
   GetProjectsResponse,
   Project,
 } from "@/lib/api/types/projects";
 import { Link } from "@/i18n/navigation";
-import { MapPin, ArrowLeft, Phone, Calendar, ArrowRight, Camera } from "lucide-react";
+import { MapPin, ArrowLeft, Phone, Calendar, ArrowRight, Camera, Building2, Hash, Ruler, Tag, Home, BedDouble, Bath, Square, ImageIcon } from "lucide-react";
+import { formatPriceWithTransaction } from "@/utils";
+import type { ProjectProperty } from "@/lib/api/types/projects";
 
 type Props = {
   params: Promise<{ locale: string; id: string }>;
@@ -40,20 +41,49 @@ function getProjectImages(project: Project): { url: string; caption: string | nu
     .map((m) => ({ url: m.file?.url ?? "", caption: m.caption, id: m.id }));
 }
 
-function extractFirstImageUrl(mediaRes: unknown): string | null {
-  const raw = mediaRes as any;
-  const items: any[] = Array.isArray(raw?.data) ? raw.data : Array.isArray(raw) ? raw : [];
-  if (items.length === 0) return null;
-  const imageItem = items
-    .filter((m) => m.type === "IMAGE" || m.file?.mimeType?.startsWith("image/"))
-    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))[0];
-  return imageItem?.file?.url ?? null;
-}
-
 const buttonBase =
   "inline-flex shrink-0 items-center justify-center rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none select-none gap-1.5 h-10 px-2.5 w-full";
 const buttonPrimary = `${buttonBase} bg-primary text-primary-foreground hover:bg-primary/80`;
 const buttonOutline = `${buttonBase} border border-border bg-background shadow-xs hover:bg-muted hover:text-foreground`;
+
+const businessStatusBadge: Record<string, { label: string; class: string }> = {
+  AVAILABLE: { label: "Sẵn có", class: "bg-accent-green text-accent-green-text" },
+  RESERVED: { label: "Đặt cọc", class: "bg-accent-yellow text-accent-yellow-text" },
+  SOLD: { label: "Đã bán", class: "bg-accent-red text-accent-red-text" },
+  RENTED: { label: "Đã thuê", class: "bg-accent-blue text-accent-blue-text" },
+  OFF_MARKET: { label: "Ngừng bán", class: "bg-surface-muted text-foreground-muted" },
+};
+
+const txLabel: Record<string, string> = {
+  SALE: "Bán",
+  RENT: "Cho thuê",
+  TRANSFER: "Chuyển nhượng",
+  INVESTMENT: "Đầu tư",
+};
+
+const propertyBadgeBase =
+  "inline-flex h-6 min-w-[3.25rem] items-center justify-center px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide rounded-md shadow-sm whitespace-nowrap";
+
+const BEDROOM_KEYS = ["bed_room_count", "bedroom_count", "bedrooms", "beds", "phong_ngu"];
+const BATHROOM_KEYS = ["bathroom_count", "bathrooms", "baths", "pathroom_count", "phong_tam"];
+
+function pickDynamicValue(
+  dynamicValues: Record<string, unknown> | null | undefined,
+  keys: string[],
+): string | null {
+  if (!dynamicValues) return null;
+  for (const k of keys) {
+    const v = dynamicValues[k];
+    if (v !== undefined && v !== null && v !== "") return String(v);
+  }
+  return null;
+}
+
+function firstPropertyImageUrl(property: ProjectProperty): string | null {
+  if (!property.media || property.media.length === 0) return null;
+  const imageItem = property.media.filter((m) => m.file?.url)[0];
+  return imageItem?.file?.url ?? null;
+}
 
 export default async function ProjectDetailPage({ params }: Props) {
   const { locale, id } = await params;
@@ -68,20 +98,8 @@ export default async function ProjectDetailPage({ params }: Props) {
   const allProjects = (projectsRes as unknown as GetProjectsResponse)?.data ?? [];
   const relatedProjects = allProjects.filter((p) => p.id !== id).slice(0, 3);
 
-  // Fetch property media in parallel for properties in this project.
-  // Use allSettled so a 404 for one property doesn't break the whole page.
+  // Properties trong dự án — media đã được embed trong ProjectProperty
   const properties = project?.properties ?? [];
-  const propertyMediaSettled = await Promise.allSettled(
-    properties.map(async (item) => {
-      const mediaRes = await getApiPropertyMedia(item.id);
-      return { id: item.id, url: extractFirstImageUrl(mediaRes) };
-    }),
-  );
-  const propertyImageMap = new Map(
-    propertyMediaSettled
-      .filter((r): r is PromiseFulfilledResult<{ id: string; url: string | null }> => r.status === "fulfilled")
-      .map((r) => [r.value.id, r.value.url]),
-  );
 
   if (!project) {
     return (
@@ -162,93 +180,54 @@ export default async function ProjectDetailPage({ params }: Props) {
         </div>
       )}
 
-      {/* Quick Info */}
-      <div className="mb-10 grid grid-cols-2 gap-4 md:grid-cols-4">
-        {[
-          { label: "Giá từ", value: "Đang cập nhật" },
-          { label: "Quy mô", value: scale },
-          { label: "Loại hình", value: "Đang cập nhật" },
-          { label: "Bàn giao", value: "Đang cập nhật" },
-        ].map((item) => (
-          <div key={item.label} className="flex flex-col gap-1 rounded-lg border border-border bg-surface p-4">
-            <span className="text-[10px] font-medium uppercase tracking-wide text-foreground-muted">{item.label}</span>
-            <span className="text-sm font-semibold text-foreground">{item.value}</span>
-          </div>
-        ))}
-      </div>
-
-      <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
-        <div className="flex flex-col gap-8">
+      <div className="grid gap-10 lg:grid-cols-12">
+        {/* Left column — Giới thiệu + Thông tin chi tiết */}
+        <div className="flex flex-col gap-8 lg:col-span-8">
           {/* Description */}
           <div>
             <h2 className="mb-3 font-serif text-xl font-semibold">Giới thiệu dự án</h2>
             <p className="text-base leading-relaxed text-foreground-muted">Đang cập nhật thông tin giới thiệu cho dự án {project.name}.</p>
           </div>
 
-          {/* Details */}
+          {/* Details — gộp Quick Info + Thông tin chi tiết, mỗi mục có icon */}
           <div>
             <h2 className="mb-4 font-serif text-xl font-semibold">Thông tin chi tiết</h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
               {[
-                { label: "Tên dự án", value: project.name },
-                { label: "Mã dự án", value: project.code },
-                { label: "Vị trí", value: location },
-                { label: "Chủ đầu tư", value: project.developer ?? "Đang cập nhật" },
-                { label: "Quy mô", value: scale },
-                { label: "Trạng thái", value: projectStatusLabels[project.status] ?? project.status },
-              ].map((row) => (
-                <div key={row.label} className="flex justify-between border-b border-border pt-1 pb-2">
-                  <span className="text-sm text-foreground-muted">{row.label}</span>
-                  <span className="text-sm font-medium text-foreground">{row.value}</span>
+                { label: "Tên dự án", value: project.name, icon: Building2 },
+                { label: "Mã dự án", value: project.code, icon: Hash },
+                { label: "Vị trí", value: location, icon: MapPin },
+                { label: "Chủ đầu tư", value: project.developer ?? "Đang cập nhật", icon: Building2 },
+                { label: "Quy mô", value: scale, icon: Ruler },
+                {
+                  label: "Trạng thái",
+                  value: projectStatusLabels[project.status] ?? project.status,
+                  icon: Tag,
+                },
+                { label: "Loại hình", value: "Đang cập nhật", icon: Home },
+                { label: "Bàn giao", value: "Đang cập nhật", icon: Calendar },
+              ].map(({ label, value, icon: Icon }) => (
+                <div
+                  key={label}
+                  className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4"
+                >
+                  <div className="flex items-center gap-2 text-foreground-muted">
+                    <Icon size={14} className="shrink-0 text-primary" />
+                    <span className="text-[10px] font-medium uppercase tracking-wide">
+                      {label}
+                    </span>
+                  </div>
+                  <span className="text-sm font-semibold text-foreground line-clamp-2">
+                    {value}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
-
-          {/* Properties in project */}
-          {properties.length > 0 && (
-            <div>
-              <h2 className="mb-4 font-serif text-xl font-semibold">Bất động sản thuộc dự án</h2>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                {properties.map((item) => {
-                  const imageUrl = propertyImageMap.get(item.id);
-                  return (
-                    <Link
-                      key={item.id}
-                      href={`/listings/${item.id}`}
-                      className="group flex flex-col gap-3 overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_8px_24px_-12px_rgba(45,95,63,0.12)]"
-                    >
-                      <div className="relative h-40 overflow-hidden">
-                        {imageUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={imageUrl}
-                            alt={item.title}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center bg-surface-muted">
-                            <Camera size={24} className="text-foreground-muted" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex flex-col gap-2 p-4">
-                        <h3 className="text-sm font-semibold tracking-tight text-foreground line-clamp-1">{item.title}</h3>
-                        <p className="flex items-center gap-1.5 text-xs text-foreground-muted">
-                          <MapPin size={12} className="text-primary" />
-                          {item.propertyCode}
-                        </p>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Sidebar */}
-        <aside className="lg:sticky lg:top-24 lg:self-start">
+        {/* Right column — Sidebar liên hệ (4/12) */}
+        <aside className="lg:col-span-4 lg:sticky lg:top-24 lg:self-start">
           <div className="flex flex-col gap-5 rounded-lg border border-border bg-surface p-6">
             <div>
               <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Khoảng giá</span>
@@ -258,10 +237,6 @@ export default async function ProjectDetailPage({ params }: Props) {
             <div className="h-px w-full bg-border" />
 
             <div className="flex flex-col gap-3">
-              <h3 className="text-sm font-semibold">Đăng ký tư vấn</h3>
-              <p className="text-xs text-foreground-muted">
-                Đội ngũ RealHub sẵn sàng tư vấn chi tiết về dự án {project.name}.
-              </p>
               <button type="button" className={buttonPrimary}>
                 <Phone size={16} />
                 Liên hệ ngay
@@ -271,26 +246,126 @@ export default async function ProjectDetailPage({ params }: Props) {
                 Đặt lịch xem dự án
               </button>
             </div>
-
-            <div className="h-px w-full bg-border" />
-
-            <div className="flex flex-col gap-2 text-xs text-foreground-muted">
-              <div className="flex justify-between">
-                <span>Chủ đầu tư</span>
-                <span className="font-medium text-foreground">{project.developer ?? "Đang cập nhật"}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Vị trí</span>
-                <span className="font-medium text-foreground">{location}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Quy mô</span>
-                <span className="font-medium text-foreground">{scale}</span>
-              </div>
-            </div>
           </div>
         </aside>
       </div>
+
+      {/* Properties in project — full width, bên dưới grid info + liên hệ */}
+      {properties.length > 0 && (
+        <div className="mt-10">
+          <h2 className="mb-4 font-serif text-xl font-semibold">Bất động sản thuộc dự án</h2>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {properties.map((property) => {
+              const badge = businessStatusBadge[property.businessStatus ?? ""];
+              const imageUrl = firstPropertyImageUrl(property);
+              const bedrooms = pickDynamicValue(property.dynamicValuesJson, BEDROOM_KEYS);
+              const bathrooms = pickDynamicValue(property.dynamicValuesJson, BATHROOM_KEYS);
+              const tx = property.transactionType ?? "";
+              return (
+                <Link
+                  key={property.id}
+                  href={`/listings/${property.id}`}
+                  className="group flex flex-col bg-surface rounded-xl border border-border overflow-hidden hover:border-primary transition-colors shadow-sm hover:shadow-md"
+                >
+                  {/* Image */}
+                  <div className="relative h-52 overflow-hidden">
+                    {imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={imageUrl}
+                        alt={property.title}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-surface-muted">
+                        <span className="text-xs text-foreground-muted">Không có hình ảnh</span>
+                      </div>
+                    )}
+                    {badge && (
+                      <div className="absolute top-3 right-3 z-10">
+                        <span className={`${propertyBadgeBase} ${badge.class}`}>{badge.label}</span>
+                      </div>
+                    )}
+                    <div className="absolute top-3 left-3 z-10">
+                      <span
+                        className={`${propertyBadgeBase} ${tx === "SALE"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-accent-blue text-accent-blue-text"
+                          }`}
+                      >
+                        {txLabel[tx] ?? tx}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-4 flex flex-col gap-2 flex-1">
+                    <h3 className="font-serif text-lg font-medium text-primary truncate pr-2 group-hover:text-primary/80 transition-colors">
+                      {property.title}
+                    </h3>
+
+                    <p className="text-sm text-foreground-muted flex items-center gap-1">
+                      <MapPin size={16} />
+                      <span>
+                        {property?.district?.name ?? "Đang cập nhật"},{" "}
+                        {property?.province?.name ?? "Đang cập nhật"}
+                      </span>
+                    </p>
+
+                    {property.propertyType?.name && (
+                      <div className="flex gap-2 mt-1">
+                        <span className="bg-surface-muted text-xs px-2 py-1 rounded text-foreground-muted">
+                          {property.propertyType.name}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Giá tiền */}
+                    <div className="flex flex-col items-start justify-start gap-1 mt-1">
+                      <div className="font-serif text-2xl font-bold text-primary">
+                        {formatPriceWithTransaction(String(property.price ?? 0), tx)}
+                      </div>
+                    </div>
+
+                    {/* Thông tin phòng ngủ, phòng tắm, diện tích */}
+                    <div className="flex flex-wrap items-center justify-start gap-3 mt-auto pt-4 border-t border-border text-xs text-foreground-muted">
+                      {bedrooms && (
+                        <span className="flex items-center gap-1">
+                          <BedDouble size={13} className="shrink-0" />
+                          <span className="tabular-nums">{bedrooms}</span>
+                          <span>PN</span>
+                        </span>
+                      )}
+                      {bathrooms && (
+                        <span className="flex items-center gap-1">
+                          <Bath size={13} className="shrink-0" />
+                          <span className="tabular-nums">{bathrooms}</span>
+                          <span>WC</span>
+                        </span>
+                      )}
+                      {property.area != null && (
+                        <span className="flex items-center gap-1">
+                          <Square size={13} className="shrink-0" />
+                          <span className="tabular-nums">
+                            {property.area.toLocaleString("vi-VN")}
+                          </span>
+                          <span>m²</span>
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Xem chi tiết */}
+                    <div className="flex items-center gap-1 pt-2 text-xs font-medium text-primary">
+                      Xem chi tiết
+                      <ArrowRight size={13} className="shrink-0" />
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Related Projects */}
       {relatedProjects.length > 0 && (
@@ -312,7 +387,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                 <Link
                   key={p.id}
                   href={`/projects/${p.id}`}
-                  className="group flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
+                  className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden">
                     {imageUrl ? (
@@ -324,16 +399,48 @@ export default async function ProjectDetailPage({ params }: Props) {
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-surface-muted">
-                        <Camera size={24} className="text-foreground-muted" />
+                        <div className="flex flex-col items-center gap-2 text-foreground-muted">
+                          <ImageIcon size={32} />
+                          <span className="text-xs">Không có hình ảnh</span>
+                        </div>
                       </div>
                     )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   </div>
-                  <div className="flex flex-col gap-2 p-4">
-                    <h3 className="font-serif text-base font-medium transition-colors group-hover:text-primary">{p.name}</h3>
-                    <p className="flex items-center gap-1.5 text-xs text-foreground-muted">
-                      <MapPin size={12} /> {getProjectLocation(p)}
+
+                  <div className="flex flex-1 flex-col gap-3 p-5">
+                    <h3 className="font-serif text-xl font-semibold leading-snug tracking-tight transition-colors group-hover:text-primary">
+                      {p.name}
+                    </h3>
+
+                    <p className="flex items-center gap-1.5 text-sm text-foreground-muted">
+                      <MapPin size={14} />
+                      <span className="line-clamp-1">{getProjectLocation(p)}</span>
                     </p>
-                    <span className="text-sm font-semibold text-primary">{getProjectScale(p)}</span>
+
+                    <p className="text-sm leading-relaxed text-foreground-muted line-clamp-2">
+                      Đang cập nhật thông tin giới thiệu cho dự án {p.name}.
+                    </p>
+
+                    <div className="flex flex-col gap-2 border-t border-border pt-3 text-sm">
+                      <div className="flex items-center justify-between">
+                        <span className="text-foreground-muted">Giá từ</span>
+                        <span className="font-semibold text-primary">Đang cập nhật</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-foreground-muted">Quy mô</span>
+                        <span className="font-medium text-foreground">{getProjectScale(p)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-foreground-muted">Chủ đầu tư</span>
+                        <span className="font-medium text-foreground">{p.developer ?? "Đang cập nhật"}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-foreground-muted">Bàn giao</span>
+                        <span className="font-medium text-foreground">Đang cập nhật</span>
+                      </div>
+                    </div>
+
                   </div>
                 </Link>
               );

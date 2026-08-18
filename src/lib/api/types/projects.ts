@@ -39,15 +39,40 @@ export interface Project {
   updatedAt: string;
   province: { id: string; name: string; code: string } | null;
   district: { id: string; name: string; code: string } | null;
-  properties: {
-    id: string;
-    propertyCode: string;
-    title: string;
-    businessStatus: string;
-    publicationStatus: string;
-  }[];
+  properties: ProjectProperty[];
   media: ProjectMedia[];
   _count: {
     properties: number;
   };
+}
+
+export interface ProjectProperty {
+  id: string;
+  propertyCode: string;
+  title: string;
+  description: string | null;
+  slug: string | null;
+  transactionType: string | null;
+  sellingMode: string | null;
+  visibilityScope: string | null;
+  price: number | null;
+  priceUnit: string | null;
+  area: number | null;
+  areaUnit: string | null;
+  addressPublic: string | null;
+  verificationStatus: string | null;
+  publicationStatus: string | null;
+  businessStatus: string | null;
+  dynamicValuesJson: Record<string, unknown> | null;
+  createdAt: string;
+  updatedAt: string;
+  propertyType: { id: string; name: string; code: string; group: string | null } | null;
+  province: { id: string; name: string; code: string } | null;
+  district: { id: string; name: string; code: string } | null;
+  ward: { id: string; name: string; code: string } | null;
+  media: {
+    id: string;
+    fileId: string;
+    file: { id: string; url: string; original: string } | null;
+  }[];
 }

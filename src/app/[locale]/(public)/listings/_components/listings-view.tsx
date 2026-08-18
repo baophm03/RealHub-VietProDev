@@ -30,6 +30,9 @@ const txLabel: Record<string, string> = {
   INVESTMENT: "Đầu tư",
 };
 
+const badgeBase =
+  "inline-flex h-6 min-w-[3.25rem] items-center justify-center px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide rounded-md shadow-sm whitespace-nowrap";
+
 interface ListingsViewProps {
   propertyTypes: PropertyType[];
   provinces: Location[];
@@ -114,15 +117,13 @@ export function ListingsView({
                       )}
                       {badge && (
                         <div className="absolute top-3 right-3 z-10">
-                          <span
-                            className={`text-[10px] font-semibold uppercase tracking-wide px-2.5 py-1 rounded-md shadow-sm ${badge.class}`}
-                          >
+                          <span className={`${badgeBase} ${badge.class}`}>
                             {badge.label}
                           </span>
                         </div>
                       )}
                       <div className="absolute top-3 left-3 z-10">
-                        <span className={`flex items-center gap-1 text-xs font-semibold uppercase tracking-wide px-2.5 py-1 rounded-md shadow-sm ${property.transactionType === "SALE" ? "bg-primary text-primary-foreground" : "bg-accent-blue text-accent-blue-text"}`}>
+                        <span className={`${badgeBase} ${property.transactionType === "SALE" ? "bg-primary text-primary-foreground" : "bg-accent-blue text-accent-blue-text"}`}>
                           {txLabel[property.transactionType] ?? property.transactionType}
                         </span>
                       </div>

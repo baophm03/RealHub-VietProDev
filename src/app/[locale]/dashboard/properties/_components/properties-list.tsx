@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import {
   Building2,
   Filter,
-  List as ListIcon,
-  Map,
   Plus,
   Send,
   Trash2,
@@ -67,7 +65,6 @@ const verificationStatusLabel: Record<string, string> = {
 export function PropertiesList() {
   const router = useRouter();
   const [search, setSearch] = useState("");
-  const [view, setView] = useState<"list" | "map">("list");
   const [pendingSubmit, setPendingSubmit] = useState<Property | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Property | null>(null);
 
@@ -215,36 +212,27 @@ export function PropertiesList() {
         </div>
       </div>
 
-      {view === "list" ? (
-        filtered.length > 0 ? (
-          <DataTable
-            columns={columns}
-            data={filtered}
-            onRowClick={(row) => router.push(`/dashboard/properties/${row.id}`)}
-            emptyMessage="Không tìm thấy bất động sản nào"
-          />
-        ) : (
-          <EmptyState
-            icon={<Building2 size={24} />}
-            title="Chưa có bất động sản"
-            description="Tạo bất động sản đầu tiên để bắt đầu bán hàng"
-            action={
-              <Can I="CREATE" a="PROPERTY">
-                <Button onClick={() => router.push("/dashboard/properties/new")}>
-                  <Plus size={16} />
-                  Thêm BĐS
-                </Button>
-              </Can>
-            }
-          />
-        )
+      {filtered.length > 0 ? (
+        <DataTable
+          columns={columns}
+          data={filtered}
+          onRowClick={(row) => router.push(`/dashboard/properties/${row.id}`)}
+          emptyMessage="Không tìm thấy bất động sản nào"
+        />
       ) : (
-        <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-dashed border-border bg-surface-muted/30 p-8 md:min-h-[400px]">
-          <div className="flex flex-col items-center gap-2 text-foreground-muted">
-            <Map size={32} />
-            <p className="text-sm">Bản đồ sẽ hiển thị tại đây</p>
-          </div>
-        </div>
+        <EmptyState
+          icon={<Building2 size={24} />}
+          title="Chưa có bất động sản"
+          description="Tạo bất động sản đầu tiên để bắt đầu bán hàng"
+          action={
+            <Can I="CREATE" a="PROPERTY">
+              <Button onClick={() => router.push("/dashboard/properties/new")}>
+                <Plus size={16} />
+                Thêm BĐS
+              </Button>
+            </Can>
+          }
+        />
       )}
 
       <SubmitVerificationDialog

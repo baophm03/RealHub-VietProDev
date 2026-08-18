@@ -1,17 +1,13 @@
-import { setRequestLocale } from "next-intl/server";
-import { getApiProjects } from "@/lib/api/endpoints/projects";
-import type { GetProjectsResponse, Project } from "@/lib/api/types/projects";
+"use client";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination } from "swiper/modules";
+import type { Project } from "@/lib/api/types/projects";
 import { Link } from "@/i18n/navigation";
 import { MapPin, ImageIcon } from "lucide-react";
 
-type Props = {
-  params: Promise<{ locale: string }>;
-};
-
-const projectStatusLabels: Record<string, string> = {
-  ACTIVE: "Đang hoạt động",
-  INACTIVE: "Ngừng hoạt động",
-};
+import "swiper/css";
+import "swiper/css/pagination";
 
 function getProjectLocation(project: Project): string {
   const parts: string[] = [];
@@ -35,52 +31,47 @@ function getProjectImage(project: Project): string | null {
   return imageItem?.file?.url ?? null;
 }
 
-export default async function ProjectsPage({ params }: Props) {
-  const { locale } = await params;
-  setRequestLocale(locale);
+interface FeaturedProjectsCarouselProps {
+  projects: Project[];
+}
 
-  const projectsRes = await getApiProjects({ limit: "100" });
-  const projects = (projectsRes as unknown as GetProjectsResponse)?.data ?? [];
+export function FeaturedProjectsCarousel({ projects }: FeaturedProjectsCarouselProps) {
+  if (projects.length === 0) return null;
 
   return (
-    <div className="mx-auto max-w-[1400px] px-6 py-12 md:px-8 md:py-16 lg:px-12">
-      {/* Header */}
-      <div className="mb-10 flex flex-col gap-4">
-        <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-primary">
-          Dự án
-        </span>
-        <h1 className="font-serif text-4xl font-semibold tracking-tight md:text-5xl">
-          Dự án bất động sản
-        </h1>
-        <p className="max-w-[56ch] text-base leading-relaxed text-foreground-muted">
-          Khám phá các dự án bất động sản nổi bật từ các chủ đầu tư uy tín trên toàn hệ sinh thái RealHub.
-        </p>
-      </div>
-
-      <p className="mb-6 text-sm text-foreground-muted">
-        Hiển thị <span className="font-medium text-foreground">{projects.length}</span> dự án
-      </p>
-
-      {projects.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-          <p className="text-base text-foreground-muted">Chưa có dự án nào.</p>
-        </div>
-      ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => {
-            const imageUrl = getProjectImage(project);
-            return (
+    <div className="featured-projects-carousel relative">
+      <Swiper
+        modules={[Autoplay, Pagination]}
+        slidesPerView={1}
+        spaceBetween={24}
+        loop={projects.length > 3}
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        }}
+        pagination={{ clickable: true }}
+        breakpoints={{
+          640: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 },
+        }}
+        className="!pb-12"
+      >
+        {projects.map((project) => {
+          const imageUrl = getProjectImage(project);
+          return (
+            <SwiperSlide key={project.id} className="!h-auto">
               <Link
-                key={project.id}
                 href={`/projects/${project.id}`}
-                className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
+                className="group/project flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
                   {imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={imageUrl}
                       alt={project.name}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover/project:scale-105"
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-surface-muted">
@@ -94,17 +85,13 @@ export default async function ProjectsPage({ params }: Props) {
                 </div>
 
                 <div className="flex flex-1 flex-col gap-3 p-5">
-                  <h3 className="font-serif text-xl font-semibold leading-snug tracking-tight transition-colors group-hover:text-primary">
+                  <h3 className="font-serif text-xl font-semibold leading-snug tracking-tight transition-colors group-hover/project:text-primary">
                     {project.name}
                   </h3>
 
                   <p className="flex items-center gap-1.5 text-sm text-foreground-muted">
-                    <MapPin size={14} />
-                    <span className="line-clamp-1">{getProjectLocation(project)}</span>
-                  </p>
-
-                  <p className="text-sm leading-relaxed text-foreground-muted line-clamp-2">
-                    Đang cập nhật thông tin giới thiệu cho dự án {project.name}.
+                    <MapPin size={14} className="shrink-0 mt-0.5" />
+                    <span className="line-clamp-2">{getProjectLocation(project)}</span>
                   </p>
 
                   <div className="flex flex-col gap-2 border-t border-border pt-3 text-sm">
@@ -125,13 +112,12 @@ export default async function ProjectsPage({ params }: Props) {
                       <span className="font-medium text-foreground">Đang cập nhật</span>
                     </div>
                   </div>
-
                 </div>
               </Link>
-            );
-          })}
-        </div>
-      )}
+            </SwiperSlide>
+          );
+        })}
+      </Swiper>
     </div>
   );
 }

@@ -35,13 +35,12 @@ export function PublicFooter() {
     <footer className="border-t border-border bg-surface-muted">
       <div className="mx-auto max-w-[1400px] px-6 py-12 md:px-8 lg:px-12">
         <div className="grid grid-cols-12 gap-8">
-          {/* RealHub info — 4/12 */}
           <div className="col-span-12 md:col-span-4">
             <div className="flex items-center gap-2">
               <Building2 size={22} className="text-primary" />
-              <span className="font-serif text-xl font-semibold tracking-tight">
+              <p className="font-serif text-xl font-semibold tracking-tight">
                 RealHub
-              </span>
+              </p>
             </div>
             <p className="mt-3 max-w-[40ch] text-sm leading-relaxed text-foreground-muted">
               {t("tagline") === "tagline"
@@ -50,10 +49,9 @@ export function PublicFooter() {
             </p>
           </div>
 
-          {/* Mua bán — 2/12 */}
           {footerLinks.map((group) => (
             <div key={group.title} className="col-span-6 md:col-span-2 flex flex-col gap-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-foreground">
+              <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
                 {group.title}
               </p>
               {group.links.map((link) => (
@@ -70,7 +68,7 @@ export function PublicFooter() {
 
           {/* Liên hệ — 2/12 */}
           <div className="col-span-6 md:col-span-2 flex flex-col gap-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-foreground">
+            <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
               Liên hệ
             </p>
             <div className="flex items-center gap-2 text-sm text-foreground-muted">
@@ -95,19 +93,19 @@ export function PublicFooter() {
         </div>
 
         <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 md:flex-row md:items-center">
-          <p className="text-xs text-foreground-muted">
+          <p className="text-sm text-foreground-muted">
             © {new Date().getFullYear()} RealHub. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <Link
               href="/about"
-              className="text-xs text-foreground-muted transition-colors hover:text-foreground"
+              className="text-sm text-foreground-muted transition-colors hover:text-foreground"
             >
               Điều khoản
             </Link>
             <Link
               href="/about"
-              className="text-xs text-foreground-muted transition-colors hover:text-foreground"
+              className="text-sm text-foreground-muted transition-colors hover:text-foreground"
             >
               Bảo mật
             </Link>

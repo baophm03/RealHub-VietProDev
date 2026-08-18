@@ -40,12 +40,10 @@ export async function FeaturedNews() {
           </div>
           <Link
             href="/news"
-            className="group inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-md border border-border bg-background px-2.5 text-sm font-medium shadow-xs transition-all hover:bg-muted hover:text-foreground"
+            className="group inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-foreground-muted transition-colors hover:text-foreground"
           >
             Xem tất cả
-            <span className="flex size-6 items-center justify-center rounded-full bg-primary/8">
-              <ArrowRight size={12} />
-            </span>
+            <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
 
