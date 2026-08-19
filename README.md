@@ -37,9 +37,9 @@ pnpm dev
 ## Environment Variables
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:3001/api
+NEXT_PUBLIC_API_URL=https://real-hub-vpd.vercel.app/vi
 NEXT_PUBLIC_TENANT_CODE=DEMO
-NEXT_PUBLIC_SWAGGER_URL=http://localhost:3001/api/docs
+NEXT_PUBLIC_SWAGGER_URL=https://realhub.vietprodev.com/api/swagger
 ```
 
 ## Seed Accounts (Dev)
@@ -88,8 +88,8 @@ src/
 ### Base URL & Prefix
 
 ```
-Base URL:     http://localhost:3001/api
-Swagger:      http://localhost:3001/api/docs
+Base URL:     https://real-hub-vpd.vercel.app/vi
+Swagger:      https://realhub.vietprodev.com/api/swagger
 ```
 
 ### Authentication
