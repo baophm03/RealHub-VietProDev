@@ -7,28 +7,38 @@ import type {
   News,
   NewsCategory,
 } from "@/lib/api/types/news";
-import { NewsFilter } from "./_components/news-filter";
-import { NewsGrid } from "./_components/news-grid";
+import { NewsFilter } from "../_components/news-filter";
+import { NewsGrid } from "../_components/news-grid";
+
+export const ALL_SLUG = "all";
 
 type Props = {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: string; categoryId: string }>;
 };
 
 export const dynamic = "force-static";
 export const revalidate = 1800;
 
-export default async function NewsPage({ searchParams, params }: Props) {
-  const { locale } = await params;
+export async function generateStaticParams() {
+  const catsRes = await getApiNewsCategories({ limit: "100" });
+  const cats =
+    (catsRes as unknown as GetNewsCategoriesResponse)?.data ?? ([] as NewsCategory[]);
+  return ["vi", "en"].flatMap((locale) => [
+    { locale, categoryId: ALL_SLUG },
+    ...cats.map((c) => ({ locale, categoryId: c.id })),
+  ]);
+}
+
+export default async function NewsListPage({ params }: Props) {
+  const { locale, categoryId } = await params;
   setRequestLocale(locale);
 
-  const sp = await searchParams;
-  const category = typeof sp.category === "string" ? sp.category : undefined;
+  const isAll = categoryId === ALL_SLUG;
 
   const [newsRes, categoriesRes] = await Promise.all([
-    getApiNews(
-      category ? { categoryNewsId: category, limit: "100" } : { limit: "100" },
-    ),
+    isAll
+      ? getApiNews({ limit: "100" })
+      : getApiNews({ categoryNewsId: categoryId, limit: "100" }),
     getApiNewsCategories({ limit: "100" }),
   ]);
 
@@ -36,6 +46,10 @@ export default async function NewsPage({ searchParams, params }: Props) {
   const categories =
     (categoriesRes as unknown as GetNewsCategoriesResponse)?.data ??
     ([] as NewsCategory[]);
+
+  const active = isAll
+    ? undefined
+    : categories.find((c) => c.id === categoryId);
 
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-12 md:px-8 md:py-16 lg:px-12">
@@ -45,14 +59,14 @@ export default async function NewsPage({ searchParams, params }: Props) {
           Tin tức
         </span>
         <h1 className="font-serif text-4xl font-semibold tracking-tight md:text-5xl">
-          Tin tức bất động sản
+          {active ? active.name : "Tin tức bất động sản"}
         </h1>
         <p className="max-w-[56ch] text-base leading-relaxed text-foreground-muted">
           Cập nhật xu hướng, phân tích thị trường và hướng dẫn đầu tư bất động sản từ đội ngũ RealHub.
         </p>
       </div>
 
-      <NewsFilter categories={categories} activeCategory={category} />
+      <NewsFilter categories={categories} activeCategory={isAll ? undefined : categoryId} />
       <NewsGrid news={news} />
     </div>
   );

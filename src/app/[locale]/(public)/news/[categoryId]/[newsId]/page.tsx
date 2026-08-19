@@ -1,5 +1,8 @@
 import { setRequestLocale } from "next-intl/server";
-import { getApiNewsId, getApiNews } from "@/lib/api/endpoints/news";
+import {
+  getApiNews,
+  getApiNewsId,
+} from "@/lib/api/endpoints/news";
 import type {
   GetNewsItemResponse,
   GetNewsResponse,
@@ -9,7 +12,7 @@ import { Link } from "@/i18n/navigation";
 import { ArrowLeft, ArrowRight, Calendar, ImageIcon } from "lucide-react";
 
 type Props = {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: string; categoryId: string; newsId: string }>;
 };
 
 export const dynamic = "force-static";
@@ -17,9 +20,19 @@ export const revalidate = 1800;
 
 export async function generateStaticParams() {
   const newsRes = await getApiNews({ limit: "100" });
-  const news = (newsRes as unknown as GetNewsResponse)?.data ?? [];
+  const news = (newsRes as unknown as GetNewsResponse)?.data ?? ([] as News[]);
+
+  const byCategory = new Map<string, News[]>();
+  for (const n of news) {
+    const catId = n.category?.id ?? "uncategorized";
+    if (!byCategory.has(catId)) byCategory.set(catId, []);
+    byCategory.get(catId)!.push(n);
+  }
+
   return ["vi", "en"].flatMap((locale) =>
-    news.map((n) => ({ locale, id: n.id })),
+    Array.from(byCategory.entries()).flatMap(([catId, articles]) =>
+      articles.map((n) => ({ locale, categoryId: catId, newsId: n.id })),
+    ),
   );
 }
 
@@ -70,24 +83,26 @@ function renderContent(content: string) {
 }
 
 export default async function NewsDetailPage({ params }: Props) {
-  const { locale, id } = await params;
+  const { locale, categoryId, newsId } = await params;
   setRequestLocale(locale);
 
   const [articleRes, relatedRes] = await Promise.all([
-    getApiNewsId(id),
+    getApiNewsId(newsId),
     getApiNews({ limit: "4" }),
   ]);
 
   const article = (articleRes as unknown as GetNewsItemResponse)?.data ?? null;
   const relatedNews = (((relatedRes as unknown as GetNewsResponse)?.data) ?? [])
-    .filter((n: News) => n.id !== id)
+    .filter((n: News) => n.id !== newsId)
     .slice(0, 3);
+
+  console.log(relatedNews)
 
   if (!article) {
     return (
       <div className="mx-auto max-w-[1400px] px-6 py-8 md:px-8 md:py-12 lg:px-12">
         <Link
-          href="/news"
+          href={`/news/${categoryId}`}
           className="mb-6 inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
         >
           <ArrowLeft size={16} /> Quay lại tin tức
@@ -103,7 +118,7 @@ export default async function NewsDetailPage({ params }: Props) {
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-8 md:px-8 md:py-12 lg:px-12">
       <Link
-        href="/news"
+        href={`/news/${categoryId}`}
         className="mb-6 inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
       >
         <ArrowLeft size={16} /> Quay lại tin tức
@@ -157,41 +172,49 @@ export default async function NewsDetailPage({ params }: Props) {
             Bài viết liên quan
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {relatedNews.map((n) => (
-              <Link
-                key={n.id}
-                href={`/news/${n.id}`}
-                className="group flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
-              >
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  <NewsImage
-                    url={n.thumbnail?.url}
-                    alt={n.title}
-                    className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    iconSize={24}
-                  />
-                </div>
-                <div className="flex flex-1 flex-col gap-2 p-4">
-                  {n.category && (
-                    <span className="text-[10px] font-medium uppercase tracking-wide text-primary">
-                      {n.category.name}
-                    </span>
-                  )}
-                  <h3 className="font-serif text-base font-medium leading-snug tracking-tight transition-colors group-hover:text-primary">
-                    {n.title}
-                  </h3>
-                  <div className="mt-auto flex items-center justify-between border-t border-border pt-3 text-xs text-foreground-muted">
-                    <span className="flex items-center gap-1">
-                      <Calendar size={12} /> {formatDate(n.createdAt)}
-                    </span>
-                    <ArrowRight
-                      size={14}
-                      className="transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary"
+            {relatedNews.map((n) => {
+              const catId = n.category?.id ?? categoryId;
+              return (
+                <Link
+                  key={n.id}
+                  href={`/news/${catId}/${n.id}`}
+                  className="group flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <NewsImage
+                      url={n.thumbnail?.url}
+                      alt={n.title}
+                      className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      iconSize={24}
                     />
                   </div>
-                </div>
-              </Link>
-            ))}
+                  <div className="flex flex-1 flex-col gap-2 p-4">
+                    {n.category && (
+                      <span className="text-[10px] font-medium uppercase tracking-wide text-primary">
+                        {n.category.name}
+                      </span>
+                    )}
+                    <h3 className="font-serif text-base font-medium leading-snug tracking-tight transition-colors group-hover:text-primary">
+                      {n.title}
+                    </h3>
+                    {n.description && (
+                      <p className="line-clamp-2 text-sm leading-relaxed text-foreground-muted">
+                        {n.description}
+                      </p>
+                    )}
+                    <div className="mt-auto flex items-center justify-between border-t border-border pt-3 text-xs text-foreground-muted">
+                      <span className="flex items-center gap-1">
+                        <Calendar size={12} /> {formatDate(n.createdAt)}
+                      </span>
+                      <ArrowRight
+                        size={14}
+                        className="transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary"
+                      />
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       )}

@@ -39,7 +39,7 @@ export async function FeaturedNews() {
             </p>
           </div>
           <Link
-            href="/news"
+            href="/news/all"
             className="group inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-foreground-muted transition-colors hover:text-foreground"
           >
             Xem tất cả

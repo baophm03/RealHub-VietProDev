@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FormSection, FormField } from "@/components/shared/form-section";
+import { FormField } from "@/components/shared/form-section";
 import { useUserStore } from "@/lib/stores/user-store";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useGetApiUserId, usePatchApiUserId } from "@/lib/api/endpoints/users";
@@ -145,22 +145,20 @@ export default function ProfilePage() {
           <CardHeader><CardTitle>Thông tin cá nhân</CardTitle></CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-              <FormSection title="Hồ sơ">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <FormField label="Họ và tên" htmlFor="fullName" required error={errors.fullName?.message}>
-                    <Input id="fullName" placeholder="Nguyễn Văn An" {...register("fullName")} />
-                  </FormField>
-                  <FormField label="Email" htmlFor="email">
-                    <Input id="email" defaultValue={current?.email ?? ""} disabled />
-                  </FormField>
-                  <FormField label="Số điện thoại" htmlFor="phone" error={errors.phone?.message}>
-                    <Input id="phone" placeholder="0901234567" {...register("phone")} />
-                  </FormField>
-                  <FormField label="Ảnh đại diện URL" htmlFor="avatarUrl" error={errors.avatarUrl?.message}>
-                    <Input id="avatarUrl" placeholder="https://..." {...register("avatarUrl")} />
-                  </FormField>
-                </div>
-              </FormSection>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FormField label="Họ và tên" htmlFor="fullName" required error={errors.fullName?.message}>
+                  <Input id="fullName" placeholder="Nguyễn Văn An" {...register("fullName")} />
+                </FormField>
+                <FormField label="Email" htmlFor="email">
+                  <Input id="email" defaultValue={current?.email ?? ""} disabled />
+                </FormField>
+                <FormField label="Số điện thoại" htmlFor="phone" error={errors.phone?.message}>
+                  <Input id="phone" placeholder="0901234567" {...register("phone")} />
+                </FormField>
+                <FormField label="Ảnh đại diện URL" htmlFor="avatarUrl" error={errors.avatarUrl?.message}>
+                  <Input id="avatarUrl" placeholder="https://..." {...register("avatarUrl")} />
+                </FormField>
+              </div>
               <div className="flex justify-end">
                 <Button type="submit" disabled={loading}>{loading ? "Đang lưu..." : "Lưu thay đổi"}</Button>
               </div>

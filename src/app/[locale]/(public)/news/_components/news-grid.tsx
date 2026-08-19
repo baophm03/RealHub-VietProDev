@@ -63,7 +63,7 @@ export function NewsGrid({ news }: { news: News[] }) {
           {featured.map((article) => (
             <Link
               key={article.id}
-              href={`/news/${article.id}`}
+              href={`/news/${article.category?.id ?? "uncategorized"}/${article.id}`}
               className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
             >
               <div className="relative aspect-[16/9] overflow-hidden">
@@ -72,22 +72,20 @@ export function NewsGrid({ news }: { news: News[] }) {
                   alt={article.title}
                   className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                {article.category && (
-                  <div className="absolute left-3 top-3">
-                    <span className="rounded-full bg-primary px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-primary-foreground">
-                      {article.category.name}
-                    </span>
-                  </div>
-                )}
               </div>
               <div className="flex flex-1 flex-col gap-3 p-5">
+                {article.category && (
+                  <span className="text-[10px] font-medium uppercase tracking-wide text-primary">
+                    {article.category.name}
+                  </span>
+                )}
                 <h2 className="font-serif text-xl font-medium leading-snug tracking-tight transition-colors group-hover:text-primary">
                   {article.title}
                 </h2>
                 <p className="line-clamp-2 text-sm leading-relaxed text-foreground-muted">
                   {article.description ?? ""}
                 </p>
-                <div className="mt-auto flex items-center gap-4 text-xs text-foreground-muted">
+                <div className="mt-auto flex items-center gap-4 text-xs text-foreground-muted border-t border-border pt-3">
                   <span className="flex items-center gap-1">
                     <Calendar size={12} /> {formatDate(article.createdAt)}
                   </span>
@@ -108,7 +106,7 @@ export function NewsGrid({ news }: { news: News[] }) {
             {regular.map((article) => (
               <Link
                 key={article.id}
-                href={`/news/${article.id}`}
+                href={`/news/${article.category?.id ?? "uncategorized"}/${article.id}`}
                 className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
@@ -118,15 +116,13 @@ export function NewsGrid({ news }: { news: News[] }) {
                     className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
                     iconSize={24}
                   />
-                  {article.category && (
-                    <div className="absolute left-3 top-3">
-                      <span className="rounded-full bg-primary/90 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-primary-foreground backdrop-blur-sm">
-                        {article.category.name}
-                      </span>
-                    </div>
-                  )}
                 </div>
                 <div className="flex flex-1 flex-col gap-3 p-4">
+                  {article.category && (
+                    <span className="text-[10px] font-medium uppercase tracking-wide text-primary">
+                      {article.category.name}
+                    </span>
+                  )}
                   <h3 className="font-serif text-base font-medium leading-snug tracking-tight transition-colors group-hover:text-primary">
                     {article.title}
                   </h3>

@@ -1,35 +1,9 @@
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { propertyCategories } from "@/config/property-categories";
 import { Building2, Mail, MapPin, Phone } from "lucide-react";
 
 export function PublicFooter() {
   const t = useTranslations("public");
-
-  const footerLinks = [
-    {
-      title: "Mua bán",
-      links: propertyCategories.map((cat) => ({
-        label: cat.label,
-        href: `${cat.href}&transactionType=SALE`,
-      })),
-    },
-    {
-      title: "Cho thuê",
-      links: propertyCategories.map((cat) => ({
-        label: cat.label,
-        href: `${cat.href}&transactionType=RENT`,
-      })),
-    },
-    {
-      title: "Khám phá",
-      links: [
-        { label: "Dự án", href: "/projects" },
-        { label: "Tin tức", href: "/news" },
-        { label: t("about"), href: "/about" },
-      ],
-    },
-  ];
 
   return (
     <footer className="border-t border-border bg-surface-muted">
@@ -49,24 +23,63 @@ export function PublicFooter() {
             </p>
           </div>
 
-          {footerLinks.map((group) => (
-            <div key={group.title} className="col-span-6 md:col-span-2 flex flex-col gap-3">
-              <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
-                {group.title}
-              </p>
-              {group.links.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm text-foreground-muted transition-colors hover:text-foreground"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          ))}
+          <div className="col-span-6 md:col-span-2 flex flex-col gap-3">
+            <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
+              Mua bán
+            </p>
+            <Link href="/listings?types=APARTMENT&transactionType=SALE" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
+              Căn hộ
+            </Link>
+            <Link href="/listings?types=VILLA&transactionType=SALE" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
+              Biệt thự
+            </Link>
+            <Link href="/listings?types=HOUSE,SHOPHOUSE&transactionType=SALE" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
+              Nhà phố
+            </Link>
+            <Link href="/listings?types=LAND&transactionType=SALE" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
+              Đất nền
+            </Link>
+            <Link href="/listings?types=OFFICE,WAREHOUSE,SHOP&transactionType=SALE" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
+              Mặt bằng
+            </Link>
+          </div>
 
-          {/* Liên hệ — 2/12 */}
+          <div className="col-span-6 md:col-span-2 flex flex-col gap-3">
+            <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
+              Cho thuê
+            </p>
+            <Link href="/listings?types=APARTMENT&transactionType=RENT" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
+              Căn hộ
+            </Link>
+            <Link href="/listings?types=VILLA&transactionType=RENT" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
+              Biệt thự
+            </Link>
+            <Link href="/listings?types=HOUSE,SHOPHOUSE&transactionType=RENT" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
+              Nhà phố
+            </Link>
+            <Link href="/listings?types=LAND&transactionType=RENT" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
+              Đất nền
+            </Link>
+            <Link href="/listings?types=OFFICE,WAREHOUSE,SHOP&transactionType=RENT" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
+              Mặt bằng
+            </Link>
+          </div>
+
+          <div className="col-span-6 md:col-span-2 flex flex-col gap-3">
+            <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
+              Khám phá
+            </p>
+            <Link href="/projects" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
+              Dự án
+            </Link>
+            <Link href="/news/all" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
+              Tin tức
+            </Link>
+            <Link href="/about" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
+              {t("about")}
+            </Link>
+          </div>
+
           <div className="col-span-6 md:col-span-2 flex flex-col gap-3">
             <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
               Liên hệ

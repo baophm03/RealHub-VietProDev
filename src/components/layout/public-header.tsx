@@ -234,8 +234,8 @@ export function PublicHeader() {
 
             {/* Regular Nav Links */}
             {[
-              { label: "Dự án", href: "/projects" },
-              { label: "Tin tức", href: "/news" },
+              { label: t("projects"), href: "/projects" },
+              { label: t("news"), href: "/news/all" },
               { label: t("about"), href: "/about" },
               { label: t("contact"), href: "/contact" },
             ].map((link) => (

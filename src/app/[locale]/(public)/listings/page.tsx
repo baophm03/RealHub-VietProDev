@@ -1,7 +1,23 @@
+import {
+  QueryClient,
+  dehydrate,
+  HydrationBoundary,
+} from "@tanstack/react-query";
 import { setRequestLocale } from "next-intl/server";
-import { getApiProperties, getApiPropertyTypes } from "@/lib/api/endpoints/properties";
-import { getApiLocations } from "@/lib/api/endpoints/locations";
-import { getApiFormSchemas } from "@/lib/api/endpoints/dynamic-fields";
+import {
+  prefetchGetApiPropertiesQuery,
+  prefetchGetApiPropertyTypesQuery,
+  getGetApiPropertiesQueryKey,
+  getGetApiPropertyTypesQueryKey,
+} from "@/lib/api/endpoints/properties";
+import {
+  prefetchGetApiLocationsQuery,
+  getGetApiLocationsQueryKey,
+} from "@/lib/api/endpoints/locations";
+import {
+  prefetchGetApiFormSchemasQuery,
+  getGetApiFormSchemasQueryKey,
+} from "@/lib/api/endpoints/dynamic-fields";
 import type { GetPropertiesResponse, Property, PropertyMedia } from "@/lib/api/types/properties";
 import type { Location } from "@/lib/api/types/locations";
 import { ListingsView } from "./_components/listings-view";
@@ -17,9 +33,6 @@ type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
   params: Promise<{ locale: string }>;
 };
-
-export const dynamic = "force-static";
-export const revalidate = 3600;
 
 function extractFirstImageUrlFromMedia(media: PropertyMedia[] | undefined): string | null {
   if (!media || media.length === 0) return null;
@@ -78,17 +91,10 @@ export default async function ListingsPage({ searchParams, params }: Props) {
   const maxPrice = typeof sp.maxPrice === "string" ? sp.maxPrice : "";
   const sort = typeof sp.sort === "string" ? sp.sort : "newest";
 
-  const [propertyTypesRes, provincesRes, schemaRes] = await Promise.all([
-    getApiPropertyTypes(),
-    getApiLocations({ type: "PROVINCE" as any, limit: 100 } as any),
-    getApiFormSchemas({ entityType: "PROPERTY" } as any),
-  ]);
-  const propertyTypes = ((propertyTypesRes as unknown as { data?: PropertyType[] })?.data) || [];
-  const provinces = ((provincesRes as unknown as { data?: Location[] })?.data) || [];
-  const schemas = ((schemaRes as any)?.data as any[]) || [];
+  const queryClient = new QueryClient();
 
-  const codeToId = Object.fromEntries(propertyTypes.map((t) => [t.code, t.id]));
-  const selectedTypeIds = types.map((c) => codeToId[c]).filter(Boolean);
+  const locationsParams = { type: "PROVINCE" as any, limit: 100 } as any;
+  const schemasParams = { entityType: "PROPERTY" } as any;
 
   const apiParams: Record<string, string> = {
     verificationStatus: "VERIFIED",
@@ -97,15 +103,28 @@ export default async function ListingsPage({ searchParams, params }: Props) {
   };
   if (transactionType) apiParams.transactionType = transactionType;
   if (provinceId) apiParams.provinceId = provinceId;
-  if (selectedTypeIds.length === 1) apiParams.propertyTypeId = selectedTypeIds[0];
   if (minPrice) apiParams.minPrice = minPrice;
   if (maxPrice) apiParams.maxPrice = maxPrice;
   apiParams.limit = "100";
 
-  const propertiesRes = await getApiProperties(apiParams as any);
+  await Promise.all([
+    prefetchGetApiPropertyTypesQuery(queryClient),
+    prefetchGetApiLocationsQuery(queryClient, locationsParams),
+    prefetchGetApiFormSchemasQuery(queryClient, schemasParams),
+    prefetchGetApiPropertiesQuery(queryClient, apiParams as any),
+  ]);
+
+  const propertyTypesRes = queryClient.getQueryData(getGetApiPropertyTypesQueryKey());
+  const provincesRes = queryClient.getQueryData(getGetApiLocationsQueryKey(locationsParams));
+  const schemaRes = queryClient.getQueryData(getGetApiFormSchemasQueryKey(schemasParams));
+  const propertiesRes = queryClient.getQueryData(getGetApiPropertiesQueryKey(apiParams as any));
+
+  const propertyTypes = ((propertyTypesRes as unknown as { data?: PropertyType[] })?.data) || [];
+  const provinces = ((provincesRes as unknown as { data?: Location[] })?.data) || [];
+  const schemas = ((schemaRes as any)?.data as any[]) || [];
   let properties: Property[] = ((propertiesRes as unknown as GetPropertiesResponse)?.data) || [];
 
-  if (types.length > 1) {
+  if (types.length > 0) {
     properties = properties.filter(
       (p) => p.propertyType && types.includes(p.propertyType.code),
     );
@@ -151,19 +170,21 @@ export default async function ListingsPage({ searchParams, params }: Props) {
   const currentPriceTo = maxPrice ? String(Number(maxPrice) / priceMultiplier) : "";
 
   return (
-    <ListingsView
-      propertyTypes={propertyTypes}
-      provinces={provinces}
-      properties={properties}
-      propertyImageMap={propertyImageMap}
-      bedroomsMap={bedroomsMap}
-      bathroomsMap={bathroomsMap}
-      currentTransactionType={transactionType}
-      currentProvinceId={provinceId}
-      currentTypes={types}
-      currentPriceFrom={currentPriceFrom}
-      currentPriceTo={currentPriceTo}
-      currentSort={sort}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <ListingsView
+        propertyTypes={propertyTypes}
+        provinces={provinces}
+        properties={properties}
+        propertyImageMap={propertyImageMap}
+        bedroomsMap={bedroomsMap}
+        bathroomsMap={bathroomsMap}
+        currentTransactionType={transactionType}
+        currentProvinceId={provinceId}
+        currentTypes={types}
+        currentPriceFrom={currentPriceFrom}
+        currentPriceTo={currentPriceTo}
+        currentSort={sort}
+      />
+    </HydrationBoundary>
   );
 }
