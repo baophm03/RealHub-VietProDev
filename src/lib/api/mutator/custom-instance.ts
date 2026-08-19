@@ -26,9 +26,11 @@ apiClient.interceptors.request.use((request) => {
   if (token) request.headers.set("x-csrf-token", token);
   request.headers.set("x-tenant-code", process.env.NEXT_PUBLIC_TENANT_CODE ?? "DEMO");
 
-  const authStore = useAuthStore.getState();
-  if (authStore.accessToken) {
-    request.headers.set("Authorization", `Bearer ${authStore.accessToken}`);
+  if (typeof window !== "undefined") {
+    const authStore = useAuthStore.getState();
+    if (authStore.accessToken) {
+      request.headers.set("Authorization", `Bearer ${authStore.accessToken}`);
+    }
   }
 
   return request;
