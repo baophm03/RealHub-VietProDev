@@ -194,6 +194,7 @@ export default function RolesPage() {
         <Select
           value={statusFilter}
           onValueChange={(value) => setStatusFilter(value as GetApiRolesStatus | "ALL")}
+          items={statusFilters.map((f) => ({ value: f.value, label: f.label }))}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Tất cả trạng thái" />

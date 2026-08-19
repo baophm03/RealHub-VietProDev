@@ -11,6 +11,8 @@ interface AuthState {
   expiresIn: number | null;
   roleInTenant: string | null;
   sessionId: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   _hasHydrated: boolean
   setHasHydrated: (val: boolean) => void
   setAuth: (data: {
@@ -18,6 +20,8 @@ interface AuthState {
     expiresIn: number;
     roleInTenant: string;
     sessionId: string;
+    accessToken: string;
+    refreshToken: string;
   }) => void;
   setTenantCode: (code: string) => void;
   logout: () => void;
@@ -32,16 +36,20 @@ export const useAuthStore = create<AuthState>()(
       expiresIn: null,
       roleInTenant: null,
       sessionId: null,
+      accessToken: null,
+      refreshToken: null,
       _hasHydrated: false,
 
       setHasHydrated: (val: boolean) => set({ _hasHydrated: val }),
-      setAuth: ({ activeTenantId, expiresIn, roleInTenant, sessionId }) =>
+      setAuth: ({ activeTenantId, expiresIn, roleInTenant, sessionId, accessToken, refreshToken }) =>
         set({
           isAuthenticated: true,
           activeTenantId,
           expiresIn,
           roleInTenant,
           sessionId,
+          accessToken,
+          refreshToken,
         }),
 
       setTenantCode: (code) => set({ tenantCode: code }),
@@ -54,6 +62,8 @@ export const useAuthStore = create<AuthState>()(
           expiresIn: null,
           roleInTenant: null,
           sessionId: null,
+          accessToken: null,
+          refreshToken: null,
         });
       },
     }),
@@ -65,6 +75,8 @@ export const useAuthStore = create<AuthState>()(
         expiresIn: state.expiresIn,
         roleInTenant: state.roleInTenant,
         sessionId: state.sessionId,
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
       }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true)

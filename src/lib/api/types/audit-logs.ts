@@ -1,9 +1,16 @@
-export interface GetAuditLogsResponse {
-  items: AuditLog[];
+export interface GetAuditLogsMeta {
   total: number;
+  limit: number;
+  offset: number;
   page: number;
-  pageSize: number;
   totalPages: number;
+}
+
+export interface GetAuditLogsResponse {
+  success: boolean;
+  data: AuditLog[];
+  meta: GetAuditLogsMeta;
+  timestamp: string;
 }
 
 export interface AuditLog {

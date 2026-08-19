@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 import config from "@/config";
+import { useAuthStore } from "@/lib/stores/auth-store";
 
 // API client (axios instance)
 const apiClient = axios.create({
@@ -23,8 +24,12 @@ const getCookie = (name: string): string | null => {
 apiClient.interceptors.request.use((request) => {
   const token = csrfToken || getCookie("csrf-token");
   if (token) request.headers.set("x-csrf-token", token);
-
   request.headers.set("x-tenant-code", process.env.NEXT_PUBLIC_TENANT_CODE ?? "DEMO");
+
+  const authStore = useAuthStore.getState();
+  if (authStore.accessToken) {
+    request.headers.set("Authorization", `Bearer ${authStore.accessToken}`);
+  }
 
   return request;
 });

@@ -1,12 +1,22 @@
-export interface GetProjectsResponse {
-  data: Project[];
+export interface GetProjectsMeta {
   total: number;
   limit: number;
   offset: number;
+  page: number;
+  totalPages: number;
+}
+
+export interface GetProjectsResponse {
+  success: boolean;
+  data: Project[];
+  meta: GetProjectsMeta;
+  timestamp: string;
 }
 
 export interface GetProjectItemResponse {
+  success: boolean;
   data: Project;
+  timestamp: string;
 }
 
 export interface ProjectMedia {

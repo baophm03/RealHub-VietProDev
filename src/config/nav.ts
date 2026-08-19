@@ -11,6 +11,7 @@ import {
   Percent,
   Settings,
   ShieldCheck,
+  UserCog,
   Users,
 } from "lucide-react";
 import type { Actions, Features } from "@/config/casl/ability";
@@ -117,6 +118,12 @@ export const navGroups: NavGroup[] = [
         href: "/dashboard/roles",
         icon: Key,
         permission: { action: "READ", subject: "TENANT" },
+      },
+      {
+        label: "Người dùng",
+        href: "/dashboard/users",
+        icon: UserCog,
+        permission: { action: "READ", subject: "USER" },
       },
       {
         label: "Cài đặt",

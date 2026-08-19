@@ -51,6 +51,8 @@ export default function LoginPage() {
           expiresIn: res?.data?.expiresIn,
           roleInTenant: res?.data?.roleInTenant,
           sessionId: res?.data?.sessionId,
+          accessToken: res?.data?.accessToken,
+          refreshToken: res?.data?.refreshToken,
         });
 
         const profile = await getProfile();
@@ -83,8 +85,12 @@ export default function LoginPage() {
         router.push("/dashboard");
       },
       onError: (err: any) => {
-        const errorMessage = err?.response?.data?.message || "Đã có lỗi xảy ra vui lòng thử lại";
-        console.error(errorMessage);
+        const apiError = err?.response?.data?.error;
+        const messages = apiError?.message;
+        const errorMessage = Array.isArray(messages)
+          ? messages[0]
+          : messages || "Đã có lỗi xảy ra vui lòng thử lại";
+        setError(errorMessage);
       }
     },
   });

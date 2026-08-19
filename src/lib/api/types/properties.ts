@@ -42,9 +42,10 @@ export interface Property {
   priceUnit: string;
   area: number;
   areaUnit: string;
+  verificationStatus: string;
   publicationStatus: string;
   businessStatus: string;
-  verificationStatus?: string;
+  dynamicValuesJson: Record<string, unknown> | null;
   createdAt: string;
   updatedAt: string;
   propertyType: {
@@ -53,21 +54,9 @@ export interface Property {
     code: string;
     group: string;
   };
-  province: {
-    id: string;
-    name: string;
-    code: string;
-  };
-  district: {
-    id: string;
-    name: string;
-    code: string;
-  };
-  ward: {
-    id: string;
-    name: string;
-    code: string;
-  };
+  province: { id: string; name: string; code: string } | null;
+  district: { id: string; name: string; code: string } | null;
+  ward: { id: string; name: string; code: string } | null;
   address?: string;
   latitude?: number;
   longitude?: number;

@@ -1,9 +1,16 @@
-export interface GetLeadsResponse {
-  items: Lead[];
+export interface GetLeadsMeta {
   total: number;
   limit: number;
   offset: number;
-  nextCursor: string | null;
+  page: number;
+  totalPages: number;
+}
+
+export interface GetLeadsResponse {
+  success: boolean;
+  data: Lead[];
+  meta: GetLeadsMeta;
+  timestamp: string;
 }
 
 export interface Lead {

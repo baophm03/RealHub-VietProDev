@@ -14,11 +14,19 @@ export interface FileItem {
   updatedAt: string;
 }
 
-export interface GetFilesResponse {
-  items: FileItem[];
+export interface GetFilesMeta {
   total: number;
   limit: number;
   offset: number;
+  page: number;
+  totalPages: number;
+}
+
+export interface GetFilesResponse {
+  success: boolean;
+  data: FileItem[];
+  meta: GetFilesMeta;
+  timestamp: string;
 }
 
 export interface UploadFileResponse {

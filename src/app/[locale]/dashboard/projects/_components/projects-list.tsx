@@ -30,10 +30,7 @@ export function ProjectsList() {
   const { data: projectsData } = useGetApiProjects();
   const projects = useMemo(() => {
     const raw = projectsData as any;
-    if (Array.isArray(raw)) return raw as Project[];
-    if (Array.isArray(raw?.data)) return raw.data as Project[];
-    if (Array.isArray(raw?.items)) return raw.items as Project[];
-    return [];
+    return (raw?.data ?? []) as Project[];
   }, [projectsData]);
 
   const filtered = projects.filter(

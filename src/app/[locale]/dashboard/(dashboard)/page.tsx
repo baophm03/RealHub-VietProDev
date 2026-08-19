@@ -5,47 +5,20 @@ import {
   Building2,
   CircleUser,
   Handshake,
-  TrendingDown,
-  TrendingUp,
   Users,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useGetApiLeads } from "@/lib/api/endpoints/leads";
 import { useGetApiAuditLogs } from "@/lib/api/endpoints/audit-logs";
+import { useGetApiDashboardSummary } from "@/lib/api/endpoints/dashboard";
 import type { GetLeadsResponse } from "@/lib/api/types/leads";
 import type { GetAuditLogsResponse } from "@/lib/api/types/audit-logs";
+import type { DashboardSummary } from "@/lib/api/types/dashboard";
 
-const stats = [
-  {
-    label: "Tổng bất động sản",
-    value: "1,247",
-    change: "+12.4%",
-    trend: "up" as const,
-    icon: Building2,
-  },
-  {
-    label: "Khách hàng",
-    value: "3,891",
-    change: "+8.2%",
-    trend: "up" as const,
-    icon: Users,
-  },
-  {
-    label: "Khách hàng tiềm năng mới",
-    value: "156",
-    change: "+23.1%",
-    trend: "up" as const,
-    icon: CircleUser,
-  },
-  {
-    label: "Giao dịch tháng",
-    value: "42",
-    change: "-3.5%",
-    trend: "down" as const,
-    icon: Handshake,
-  },
-];
+function formatNumber(n: number): string {
+  return new Intl.NumberFormat("vi-VN").format(n);
+}
 
 const leadStatusConfig: Record<string, { label: string; variant: "blue" | "yellow" | "purple" | "green" | "red" | "default" }> = {
   NEW: { label: "Mới", variant: "blue" },
@@ -72,7 +45,9 @@ function formatRelativeTime(dateString: string): string {
 }
 
 export default function DashboardPage() {
-  // server
+  const { data: summaryData } = useGetApiDashboardSummary();
+  const summary = (summaryData as unknown as DashboardSummary)?.data;
+
   const { data: leadsData } = useGetApiLeads({
     limit: "5",
     offset: "0",
@@ -81,8 +56,31 @@ export default function DashboardPage() {
     pageSize: "5",
   });
 
-  const leads = ((leadsData as unknown as GetLeadsResponse)?.items) || [];
-  const auditLogs = ((auditLogsData as unknown as GetAuditLogsResponse)?.items) || [];
+  const leads = ((leadsData as unknown as GetLeadsResponse)?.data) || [];
+  const auditLogs = ((auditLogsData as unknown as GetAuditLogsResponse)?.data) || [];
+
+  const stats = [
+    {
+      label: "Tổng bất động sản",
+      value: summary ? formatNumber(summary.properties) : "—",
+      icon: Building2,
+    },
+    {
+      label: "Khách hàng",
+      value: summary ? formatNumber(summary.customers) : "—",
+      icon: Users,
+    },
+    {
+      label: "Khách hàng tiềm năng",
+      value: summary ? formatNumber(summary.leads) : "—",
+      icon: CircleUser,
+    },
+    {
+      label: `Giao dịch ${summary?.month?.label ?? "tháng này"}`,
+      value: summary ? formatNumber(summary.dealsThisMonth) : "—",
+      icon: Handshake,
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-8">
@@ -101,7 +99,6 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 animate-fade-up-delay-1">
         {stats.map((stat) => {
           const Icon = stat.icon;
-          const TrendIcon = stat.trend === "up" ? TrendingUp : TrendingDown;
           return (
             <div
               key={stat.label}
@@ -111,13 +108,6 @@ export default function DashboardPage() {
                 <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 md:size-11">
                   <Icon size={18} className="text-primary md:size-5" />
                 </div>
-                <span
-                  className={`flex items-center gap-1 text-xs font-medium tabular-nums ${stat.trend === "up" ? "text-accent-green-text" : "text-accent-red-text"
-                    }`}
-                >
-                  <TrendIcon size={12} />
-                  {stat.change}
-                </span>
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-2xl font-semibold tabular-nums tracking-tight md:text-3xl">

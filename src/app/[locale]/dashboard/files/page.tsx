@@ -111,10 +111,7 @@ export default function FilesPage() {
   const { data: filesData, isLoading } = useGetApiFiles(params);
   const files = useMemo(() => {
     const raw = filesData as any;
-    if (Array.isArray(raw)) return raw as FileItem[];
-    if (Array.isArray(raw?.items)) return raw.items as FileItem[];
-    if (Array.isArray(raw?.data)) return raw.data as FileItem[];
-    return [];
+    return (raw?.data ?? []) as FileItem[];
   }, [filesData]);
 
   const { mutateAsync: uploadFile } = usePostApiFileUpload();
