@@ -40,7 +40,7 @@ export default function RegisterPage() {
         router.push("/login");
       },
       onError: (err: any) => {
-        const errorMessage = err?.response?.data?.message || "Đã có lỗi xảy ra vui lòng thử lại";
+        const errorMessage = err?.response?.data?.error?.message?.[0] || "Đã có lỗi xảy ra vui lòng thử lại";
         setError(errorMessage);
       },
     },

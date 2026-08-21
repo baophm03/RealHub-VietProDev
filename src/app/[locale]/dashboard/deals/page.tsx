@@ -124,7 +124,7 @@ export default function DealsPage() {
       toast.success(`Đã chuyển giao dịch sang "${statusLabel[targetStatus] ?? targetStatus}"`);
       refetch();
     } catch (err) {
-      toast.error("Cập nhật trạng thái giao dịch thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Cập nhật trạng thái giao dịch thất bại");
       console.error(err);
     }
   };
@@ -137,7 +137,7 @@ export default function DealsPage() {
       setDeleteTarget(null);
       refetch();
     } catch (err) {
-      toast.error("Xóa giao dịch thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa giao dịch thất bại");
       console.error(err);
     }
   };

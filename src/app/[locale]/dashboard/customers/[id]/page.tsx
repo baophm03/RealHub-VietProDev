@@ -108,7 +108,7 @@ export default function CustomerDetailPage() {
       toast.success(`Đã xóa khách hàng "${customer?.fullName}"`);
       router.push("/dashboard/customers");
     } catch (err) {
-      toast.error("Xóa khách hàng thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa khách hàng thất bại");
       console.error(err);
     }
   };

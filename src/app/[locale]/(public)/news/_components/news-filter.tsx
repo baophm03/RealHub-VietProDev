@@ -21,8 +21,8 @@ export function NewsFilter({ categories, activeCategory }: Props) {
       {categories.map((cat) => (
         <Link
           key={cat.id}
-          href={`/news/${cat.id}`}
-          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${activeCategory === cat.id
+          href={`/news/${cat.code}`}
+          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${activeCategory === cat.code
             ? "bg-primary text-primary-foreground"
             : "bg-surface-muted text-foreground-muted hover:bg-border/40"
             }`}

@@ -61,7 +61,7 @@ export function CategoriesList() {
       await refetchCategories();
       toast.success("Đã xóa chuyên mục");
     } catch (err) {
-      toast.error("Không thể xóa chuyên mục");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Không thể xóa chuyên mục");
       console.error(err);
     } finally {
       setDeletingId(null);

@@ -1,6 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
 import { getApiNewsCategories } from "@/lib/api/endpoints/news-categories";
-import { getApiNews } from "@/lib/api/endpoints/news";
+import { getApiNews, getApiNewsCategoryCode } from "@/lib/api/endpoints/news";
 import type {
   GetNewsResponse,
   GetNewsCategoriesResponse,
@@ -13,7 +13,7 @@ import { NewsGrid } from "../_components/news-grid";
 export const ALL_SLUG = "all";
 
 type Props = {
-  params: Promise<{ locale: string; categoryId: string }>;
+  params: Promise<{ locale: string; categoryCode: string }>;
 };
 
 export const dynamic = "force-static";
@@ -24,32 +24,28 @@ export async function generateStaticParams() {
   const cats =
     (catsRes as unknown as GetNewsCategoriesResponse)?.data ?? ([] as NewsCategory[]);
   return ["vi", "en"].flatMap((locale) => [
-    { locale, categoryId: ALL_SLUG },
-    ...cats.map((c) => ({ locale, categoryId: c.id })),
+    { locale, categoryCode: ALL_SLUG },
+    ...cats.map((c) => ({ locale, categoryCode: c.code })),
   ]);
 }
 
 export default async function NewsListPage({ params }: Props) {
-  const { locale, categoryId } = await params;
+  const { locale, categoryCode } = await params;
   setRequestLocale(locale);
 
-  const isAll = categoryId === ALL_SLUG;
+  const isAll = categoryCode === ALL_SLUG;
 
   const [newsRes, categoriesRes] = await Promise.all([
     isAll
       ? getApiNews({ limit: "100" })
-      : getApiNews({ categoryNewsId: categoryId, limit: "100" }),
+      : getApiNewsCategoryCode(categoryCode, { limit: "100" }),
     getApiNewsCategories({ limit: "100" }),
   ]);
 
+  const categories = (categoriesRes as unknown as GetNewsCategoriesResponse)?.data ?? ([] as NewsCategory[]);
   const news = (newsRes as unknown as GetNewsResponse)?.data ?? ([] as News[]);
-  const categories =
-    (categoriesRes as unknown as GetNewsCategoriesResponse)?.data ??
-    ([] as NewsCategory[]);
 
-  const active = isAll
-    ? undefined
-    : categories.find((c) => c.id === categoryId);
+  const active = isAll ? undefined : categories.find((c) => c.code === categoryCode);
 
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-12 md:px-8 md:py-16 lg:px-12">
@@ -66,7 +62,7 @@ export default async function NewsListPage({ params }: Props) {
         </p>
       </div>
 
-      <NewsFilter categories={categories} activeCategory={isAll ? undefined : categoryId} />
+      <NewsFilter categories={categories} activeCategory={isAll ? undefined : categoryCode} />
       <NewsGrid news={news} />
     </div>
   );

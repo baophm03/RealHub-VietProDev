@@ -7,6 +7,8 @@
  */
 
 export interface CreateNewsCategoryDto {
+  /** Unique code within tenant (uppercase, no spaces) */
+  code: string;
   name: string;
   description?: string;
 }

@@ -131,7 +131,7 @@ export default function LeadFormPage() {
       toast.success("Đã tạo khách hàng tiềm năng mới");
       router.push("/dashboard/leads");
     } catch (err) {
-      toast.error("Có lỗi xảy ra khi tạo khách hàng tiềm năng, vui lòng thử lại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo khách hàng tiềm năng, vui lòng thử lại");
       console.error(err);
     } finally {
       setLoading(false);

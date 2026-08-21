@@ -175,8 +175,8 @@ function PropertyFormContent() {
         router.push("/dashboard/properties");
       }
     } catch (err) {
-      setError("Có lỗi xảy ra khi tạo bất động sản. Vui lòng thử lại.");
-      toast.error("Có lỗi xảy ra khi tạo bất động sản");
+      setError((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo bất động sản. Vui lòng thử lại.");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo bất động sản");
       console.error(err);
     } finally {
       setLoading(false);

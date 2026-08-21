@@ -1,5 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
-import { getApiProjectId, getApiProjects } from "@/lib/api/endpoints/projects";
+import { getApiProjectCode, getApiProjects } from "@/lib/api/endpoints/projects";
 import type {
   GetProjectItemResponse,
   GetProjectsResponse,
@@ -11,7 +11,7 @@ import { formatPriceWithTransaction } from "@/utils";
 import type { ProjectProperty } from "@/lib/api/types/projects";
 
 type Props = {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: string; code: string }>;
 };
 
 export const dynamic = "force-static";
@@ -21,7 +21,7 @@ export async function generateStaticParams() {
   const projectsRes = await getApiProjects({ limit: "100" });
   const projects = (projectsRes as unknown as GetProjectsResponse)?.data ?? [];
   return ["vi", "en"].flatMap((locale) =>
-    projects.map((p) => ({ locale, id: p.id })),
+    projects.map((p) => ({ locale, code: p.code })),
   );
 }
 
@@ -97,17 +97,17 @@ function firstPropertyImageUrl(property: ProjectProperty): string | null {
 }
 
 export default async function ProjectDetailPage({ params }: Props) {
-  const { locale, id } = await params;
+  const { locale, code } = await params;
   setRequestLocale(locale);
 
   const [projectRes, projectsRes] = await Promise.all([
-    getApiProjectId(id),
+    getApiProjectCode(code),
     getApiProjects({ limit: "10" }),
   ]);
 
   const project = (projectRes as unknown as GetProjectItemResponse)?.data ?? null;
   const allProjects = (projectsRes as unknown as GetProjectsResponse)?.data ?? [];
-  const relatedProjects = allProjects.filter((p) => p.id !== id).slice(0, 3);
+  const relatedProjects = allProjects.filter((p) => p.code !== code).slice(0, 3);
 
   // Properties trong dự án — media đã được embed trong ProjectProperty
   const properties = project?.properties ?? [];
@@ -275,7 +275,7 @@ export default async function ProjectDetailPage({ params }: Props) {
               return (
                 <Link
                   key={property.id}
-                  href={`/listings/${property.id}`}
+                  href={`/listings/${property.propertyCode}`}
                   className="group flex flex-col bg-surface rounded-xl border border-border overflow-hidden hover:border-primary transition-colors shadow-sm hover:shadow-md"
                 >
                   {/* Image */}
@@ -397,7 +397,7 @@ export default async function ProjectDetailPage({ params }: Props) {
               return (
                 <Link
                   key={p.id}
-                  href={`/projects/${p.id}`}
+                  href={`/projects/${p.code}`}
                   className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden">

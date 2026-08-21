@@ -111,8 +111,8 @@ export default function ProjectEditPage() {
       toast.success("Cập nhật dự án thành công");
       router.push(`/dashboard/projects/${id}`);
     } catch (err) {
-      setError("Có lỗi xảy ra khi cập nhật dự án. Vui lòng thử lại.");
-      toast.error("Có lỗi xảy ra khi cập nhật dự án");
+      setError((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật dự án. Vui lòng thử lại.");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật dự án");
       console.error(err);
     } finally {
       setLoading(false);

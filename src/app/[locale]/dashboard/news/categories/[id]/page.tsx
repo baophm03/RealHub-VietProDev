@@ -22,6 +22,10 @@ import {
 import type { GetNewsCategoryItemResponse } from "@/lib/api/types/news";
 
 const categorySchema = z.object({
+  code: z
+    .string()
+    .min(1, "Vui lòng nhập mã chuyên mục")
+    .regex(/^[A-Z0-9_]+$/, "Mã chỉ chứa chữ hoa, số và dấu gạch dưới"),
   name: z.string().min(1, "Vui lòng nhập tên chuyên mục"),
   description: z.string().optional(),
 });
@@ -60,6 +64,7 @@ export default function CategoryFormPage() {
   useEffect(() => {
     if (category && !initialized) {
       reset({
+        code: category.code ?? "",
         name: category.name,
         description: category.description ?? "",
       });
@@ -72,6 +77,7 @@ export default function CategoryFormPage() {
     setError(null);
     try {
       const payload = {
+        code: data.code,
         name: data.name,
         description: data.description || undefined,
       };
@@ -94,7 +100,7 @@ export default function CategoryFormPage() {
           ? "Có lỗi xảy ra khi tạo chuyên mục. Vui lòng thử lại."
           : "Có lỗi xảy ra khi cập nhật chuyên mục. Vui lòng thử lại.",
       );
-      toast.error(isCreate ? "Có lỗi xảy ra khi tạo chuyên mục" : "Có lỗi xảy ra khi cập nhật chuyên mục");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || (isCreate ? "Có lỗi xảy ra khi tạo chuyên mục" : "Có lỗi xảy ra khi cập nhật chuyên mục"));
       console.error(err);
     } finally {
       setLoading(false);
@@ -144,7 +150,19 @@ export default function CategoryFormPage() {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <FormSection title="Thông tin chuyên mục" description="Nhập tên và mô tả chuyên mục">
+        <FormSection title="Thông tin chuyên mục" description="Nhập mã, tên và mô tả chuyên mục">
+          <FormField label="Mã chuyên mục" htmlFor="code" required error={errors.code?.message}>
+            <Input
+              id="code"
+              placeholder="MARKET"
+              {...register("code")}
+              disabled={!isCreate}
+            />
+            <p className="text-xs text-foreground-muted">
+              Mã duy nhất trong tenant, chỉ chứa chữ hoa, số và dấu gạch dưới. Không thể sửa sau khi tạo.
+            </p>
+          </FormField>
+
           <FormField label="Tên chuyên mục" htmlFor="name" required error={errors.name?.message}>
             <Input id="name" placeholder="Thị trường" {...register("name")} />
           </FormField>

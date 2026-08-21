@@ -139,7 +139,7 @@ export default function FilesPage() {
         toast.success(`Đã upload ${acceptedFiles.length} file thành công`);
       } catch (err) {
         console.error(err);
-        toast.error("Có lỗi xảy ra khi upload file");
+        toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi upload file");
       } finally {
         setUploading(false);
       }
@@ -182,7 +182,7 @@ export default function FilesPage() {
       toast.success("Đã xóa file");
     } catch (err) {
       console.error(err);
-      toast.error("Có lỗi khi xóa file");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi khi xóa file");
     }
   };
 
@@ -197,7 +197,7 @@ export default function FilesPage() {
       }
     } catch (err) {
       console.error(err);
-      toast.error("Có lỗi khi lấy URL download");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi khi lấy URL download");
     }
   };
 
@@ -209,7 +209,7 @@ export default function FilesPage() {
       setMenuOpenId(null);
     } catch (err) {
       console.error(err);
-      toast.error("Có lỗi khi cập nhật visibility");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi khi cập nhật visibility");
     }
   };
 

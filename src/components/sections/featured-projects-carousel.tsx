@@ -62,7 +62,7 @@ export function FeaturedProjectsCarousel({ projects }: FeaturedProjectsCarouselP
           return (
             <SwiperSlide key={project.id} className="!h-auto">
               <Link
-                href={`/projects/${project.id}`}
+                href={`/projects/${project.code}`}
                 className="group/project flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">

@@ -119,7 +119,7 @@ export function FormSchemasTab({ entityType, propertyTypeId }: FormSchemasTabPro
         refetch();
       },
       onError: (err: any) => {
-        toast.error(err?.message || "Có lỗi xảy ra khi tạo form schema");
+        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo form schema");
       },
     },
   });
@@ -132,7 +132,7 @@ export function FormSchemasTab({ entityType, propertyTypeId }: FormSchemasTabPro
         refetch();
       },
       onError: (err: any) => {
-        toast.error(err?.message || "Có lỗi xảy ra khi cập nhật form schema");
+        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật form schema");
       },
     },
   });
@@ -144,7 +144,7 @@ export function FormSchemasTab({ entityType, propertyTypeId }: FormSchemasTabPro
         refetch();
       },
       onError: (err: any) => {
-        toast.error(err?.message || "Có lỗi xảy ra khi xóa form schema");
+        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi xóa form schema");
       },
     },
   });

@@ -46,7 +46,7 @@ export function DeletePropertyDialog({
       onOpenChange(false);
     } catch (err) {
       console.error(err);
-      toast.error("Có lỗi xảy ra khi xóa bất động sản");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi xóa bất động sản");
     } finally {
       setDeleting(false);
     }

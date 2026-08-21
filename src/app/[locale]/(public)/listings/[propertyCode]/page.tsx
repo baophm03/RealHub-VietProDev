@@ -1,6 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
 import {
-  getApiPropertyId,
+  getApiPropertyCode,
   getApiProperties,
 } from "@/lib/api/endpoints/properties";
 import { getApiFormSchemas } from "@/lib/api/endpoints/dynamic-fields";
@@ -20,7 +20,7 @@ import { ListingGallery } from "./_components/listing-gallery";
 import { ListingContactSidebar } from "./_components/listing-contact-sidebar";
 
 type Props = {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: string; propertyCode: string }>;
 };
 
 export const dynamic = "force-static";
@@ -35,7 +35,7 @@ export async function generateStaticParams() {
   } as any);
   const properties = (propertiesRes as unknown as GetPropertiesResponse)?.data ?? [];
   return ["vi", "en"].flatMap((locale) =>
-    properties.map((p) => ({ locale, id: p.id })),
+    properties.map((p) => ({ locale, propertyCode: p.propertyCode })),
   );
 }
 
@@ -59,7 +59,6 @@ function findFieldValue(
   dynamicValues: Record<string, unknown> | undefined,
   patterns: string[],
 ): string | null {
-  // 1) Đọc trực tiếp từ dynamicValuesJson theo key phổ biến (nhanh, không cần schema)
   const directKeysBed = ["bed_room_count", "bedroom_count", "bedrooms", "beds", "phong_ngu"];
   const directKeysBath = ["pathroom_count", "bathroom_count", "bathrooms", "baths", "phong_tam"];
   const isBedroom = patterns.some((p) => p.includes("bed") || p.includes("ngu"));
@@ -71,7 +70,6 @@ function findFieldValue(
       if (v !== undefined && v !== null && v !== "") return String(v);
     }
   }
-  // 2) Fallback: tìm qua form schemas theo fieldKey/fieldLabel
   for (const schema of schemas) {
     for (const f of schema.fields || []) {
       const field = f.field;
@@ -126,19 +124,17 @@ function extractFirstImageUrlFromMedia(media: PropertyMedia[] | undefined): stri
 }
 
 export default async function ListingDetailPage({ params }: Props) {
-  const { locale, id } = await params;
+  const { locale, propertyCode } = await params;
   setRequestLocale(locale);
 
-  // Fetch property + form schemas in parallel
   const [propertyRes, schemaRes] = await Promise.all([
-    getApiPropertyId(id),
+    getApiPropertyCode(propertyCode),
     getApiFormSchemas({ entityType: "PROPERTY" } as any),
   ]);
 
   const property = (propertyRes as unknown as GetPropertyItemResponse)?.data ?? null;
   const schemas = ((schemaRes as any)?.data as any[]) || [];
 
-  // Fetch similar properties (need propertyTypeId from property)
   const propertyTypeId = property?.propertyType?.id;
   let similarProperties: Property[] = [];
   let similarImageMap = new Map<string, string | null>();
@@ -150,7 +146,7 @@ export default async function ListingDetailPage({ params }: Props) {
         : { verificationStatus: "VERIFIED", publicationStatus: "PUBLIC", limit: "10", include: "media" } as any,
     );
     similarProperties = (((similarRes as unknown as GetPropertiesResponse)?.data) || [])
-      .filter((p: Property) => p.id !== id)
+      .filter((p: Property) => p.propertyCode !== propertyCode)
       .slice(0, 3);
 
     for (const p of similarProperties) {
@@ -372,7 +368,7 @@ export default async function ListingDetailPage({ params }: Props) {
               return (
                 <Link
                   key={p.id}
-                  href={`/listings/${p.id}`}
+                  href={`/listings/${p.propertyCode}`}
                   className="group bg-surface rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow flex flex-col"
                 >
                   <div className="relative h-48 overflow-hidden">

@@ -33,6 +33,7 @@ import type {
   CreatePropertyDto,
   CreatePropertyMediaDto,
   CreatePropertyTypeDto,
+  GetApiPropertiesAdminParams,
   GetApiPropertiesParams,
   ReorderPropertyMediaDto,
   UpdatePropertyDto,
@@ -46,7 +47,7 @@ import { customInstance } from '../mutator/custom-instance';
 
 
 /**
- * @summary List properties with filters
+ * @summary List public properties with filters
  */
 export const getApiProperties = (
     params?: GetApiPropertiesParams,
@@ -124,7 +125,7 @@ export function useGetApiPropertiesInfinite<TData = InfiniteData<Awaited<ReturnT
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary List properties with filters
+ * @summary List public properties with filters
  */
 
 export function useGetApiPropertiesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProperties>>>, TError = unknown>(
@@ -142,7 +143,7 @@ export function useGetApiPropertiesInfinite<TData = InfiniteData<Awaited<ReturnT
 }
 
 /**
- * @summary List properties with filters
+ * @summary List public properties with filters
  */
 export const prefetchGetApiPropertiesInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiProperties>>, TError = unknown>(
  queryClient: QueryClient, params?: GetApiPropertiesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, }
@@ -205,7 +206,7 @@ export function useGetApiProperties<TData = Awaited<ReturnType<typeof getApiProp
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary List properties with filters
+ * @summary List public properties with filters
  */
 
 export function useGetApiProperties<TData = Awaited<ReturnType<typeof getApiProperties>>, TError = unknown>(
@@ -223,7 +224,7 @@ export function useGetApiProperties<TData = Awaited<ReturnType<typeof getApiProp
 }
 
 /**
- * @summary List properties with filters
+ * @summary List public properties with filters
  */
 export const prefetchGetApiPropertiesQuery = async <TData = Awaited<ReturnType<typeof getApiProperties>>, TError = unknown>(
  queryClient: QueryClient, params?: GetApiPropertiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProperties>>, TError, TData>>, }
@@ -304,6 +305,200 @@ export const usePostApiProperty = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary List all properties for admin management
+ */
+export const getApiPropertiesAdmin = (
+    params?: GetApiPropertiesAdminParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/properties/admin`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiPropertiesAdminInfiniteQueryKey = (params?: GetApiPropertiesAdminParams,) => {
+    return [
+    'infinite', `/api/properties/admin`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiPropertiesAdminQueryKey = (params?: GetApiPropertiesAdminParams,) => {
+    return [
+    `/api/properties/admin`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiPropertiesAdminInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertiesAdmin>>>, TError = unknown>(params?: GetApiPropertiesAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPropertiesAdminInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPropertiesAdmin>>> = ({ signal }) => getApiPropertiesAdmin(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPropertiesAdminInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPropertiesAdmin>>>
+export type GetApiPropertiesAdminInfiniteQueryError = unknown
+
+
+export function useGetApiPropertiesAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertiesAdmin>>>, TError = unknown>(
+ params: undefined |  GetApiPropertiesAdminParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertiesAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertiesAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertiesAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertiesAdmin>>>, TError = unknown>(
+ params?: GetApiPropertiesAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertiesAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertiesAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertiesAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertiesAdmin>>>, TError = unknown>(
+ params?: GetApiPropertiesAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all properties for admin management
+ */
+
+export function useGetApiPropertiesAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertiesAdmin>>>, TError = unknown>(
+ params?: GetApiPropertiesAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPropertiesAdminInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all properties for admin management
+ */
+export const prefetchGetApiPropertiesAdminInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiPropertiesAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiPropertiesAdminInfiniteQueryOptions(params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiPropertiesAdminQueryOptions = <TData = Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError = unknown>(params?: GetApiPropertiesAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPropertiesAdminQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPropertiesAdmin>>> = ({ signal }) => getApiPropertiesAdmin(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPropertiesAdminQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPropertiesAdmin>>>
+export type GetApiPropertiesAdminQueryError = unknown
+
+
+export function useGetApiPropertiesAdmin<TData = Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError = unknown>(
+ params: undefined |  GetApiPropertiesAdminParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertiesAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertiesAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertiesAdmin<TData = Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError = unknown>(
+ params?: GetApiPropertiesAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertiesAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertiesAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertiesAdmin<TData = Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError = unknown>(
+ params?: GetApiPropertiesAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all properties for admin management
+ */
+
+export function useGetApiPropertiesAdmin<TData = Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError = unknown>(
+ params?: GetApiPropertiesAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPropertiesAdminQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all properties for admin management
+ */
+export const prefetchGetApiPropertiesAdminQuery = async <TData = Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiPropertiesAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAdmin>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiPropertiesAdminQueryOptions(params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * @summary List property types
  */
 export const getApiPropertyTypes = (
@@ -1073,6 +1268,199 @@ export const usePatchApiPropertyMediaSetPrimary = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary Get property by propertyCode
+ */
+export const getApiPropertyCode = (
+    propertyCode: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/properties/code/${propertyCode}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiPropertyCodeInfiniteQueryKey = (propertyCode?: string,) => {
+    return [
+    'infinite', `/api/properties/code/${propertyCode}`
+    ] as const;
+    }
+
+export const getGetApiPropertyCodeQueryKey = (propertyCode?: string,) => {
+    return [
+    `/api/properties/code/${propertyCode}`
+    ] as const;
+    }
+
+    
+export const getGetApiPropertyCodeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyCode>>>, TError = unknown>(propertyCode: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyCode>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPropertyCodeInfiniteQueryKey(propertyCode);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPropertyCode>>> = ({ signal }) => getApiPropertyCode(propertyCode, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(propertyCode),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyCode>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPropertyCodeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPropertyCode>>>
+export type GetApiPropertyCodeInfiniteQueryError = unknown
+
+
+export function useGetApiPropertyCodeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyCode>>>, TError = unknown>(
+ propertyCode: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyCode>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertyCode>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertyCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertyCodeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyCode>>>, TError = unknown>(
+ propertyCode: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyCode>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertyCode>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertyCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertyCodeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyCode>>>, TError = unknown>(
+ propertyCode: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyCode>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get property by propertyCode
+ */
+
+export function useGetApiPropertyCodeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyCode>>>, TError = unknown>(
+ propertyCode: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyCode>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPropertyCodeInfiniteQueryOptions(propertyCode,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get property by propertyCode
+ */
+export const prefetchGetApiPropertyCodeInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiPropertyCode>>, TError = unknown>(
+ queryClient: QueryClient, propertyCode: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyCode>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiPropertyCodeInfiniteQueryOptions(propertyCode,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiPropertyCodeQueryOptions = <TData = Awaited<ReturnType<typeof getApiPropertyCode>>, TError = unknown>(propertyCode: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyCode>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPropertyCodeQueryKey(propertyCode);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPropertyCode>>> = ({ signal }) => getApiPropertyCode(propertyCode, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(propertyCode),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyCode>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPropertyCodeQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPropertyCode>>>
+export type GetApiPropertyCodeQueryError = unknown
+
+
+export function useGetApiPropertyCode<TData = Awaited<ReturnType<typeof getApiPropertyCode>>, TError = unknown>(
+ propertyCode: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyCode>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertyCode>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertyCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertyCode<TData = Awaited<ReturnType<typeof getApiPropertyCode>>, TError = unknown>(
+ propertyCode: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyCode>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertyCode>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertyCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertyCode<TData = Awaited<ReturnType<typeof getApiPropertyCode>>, TError = unknown>(
+ propertyCode: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyCode>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get property by propertyCode
+ */
+
+export function useGetApiPropertyCode<TData = Awaited<ReturnType<typeof getApiPropertyCode>>, TError = unknown>(
+ propertyCode: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyCode>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPropertyCodeQueryOptions(propertyCode,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get property by propertyCode
+ */
+export const prefetchGetApiPropertyCodeQuery = async <TData = Awaited<ReturnType<typeof getApiPropertyCode>>, TError = unknown>(
+ queryClient: QueryClient, propertyCode: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyCode>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiPropertyCodeQueryOptions(propertyCode,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * @summary Get property by ID
  */
 export const getApiPropertyId = (

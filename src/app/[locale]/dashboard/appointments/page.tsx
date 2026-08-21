@@ -25,7 +25,7 @@ import {
   DialogOverlay,
 } from "@/components/ui/dialog";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { useGetApiAppointments, useDeleteApiAppointment } from "@/lib/api/endpoints/appointments";
+import { useGetApiAppointmentsAdmin, useDeleteApiAppointment } from "@/lib/api/endpoints/appointments";
 import type { GetApiAppointmentsStatus } from "@/lib/api/models/getApiAppointmentsStatus";
 
 interface Appointment {
@@ -87,7 +87,7 @@ export default function AppointmentsPage() {
   const [search, setSearch] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<Appointment | null>(null);
 
-  const { data: appointmentsData, isLoading, refetch } = useGetApiAppointments({
+  const { data: appointmentsData, isLoading, refetch } = useGetApiAppointmentsAdmin({
     status: statusFilter === "ALL" ? undefined : (statusFilter as GetApiAppointmentsStatus),
     limit: "50",
     offset: "0",
@@ -117,7 +117,7 @@ export default function AppointmentsPage() {
       setDeleteTarget(null);
       refetch();
     } catch (err) {
-      toast.error("Xóa lịch hẹn thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa lịch hẹn thất bại");
       console.error(err);
     }
   };

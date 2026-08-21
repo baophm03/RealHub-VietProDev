@@ -60,7 +60,7 @@ export function ListingContactSidebar({
       toast.success("Gửi yêu cầu thành công. Chúng tôi sẽ liên hệ với bạn sớm.");
       setForm({ name: "", phone: "", message: "" });
     } catch (err) {
-      toast.error("Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại.");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại.");
       console.error(err);
     }
   };

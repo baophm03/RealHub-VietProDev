@@ -156,7 +156,7 @@ export default function LeadDetailPage() {
       toast.success("Đã cập nhật trạng thái");
       refetch();
     } catch (err) {
-      toast.error("Cập nhật trạng thái thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Cập nhật trạng thái thất bại");
       console.error(err);
     }
   };
@@ -167,7 +167,7 @@ export default function LeadDetailPage() {
       toast.success(`Đã xóa khách hàng tiềm năng "${lead?.leadCode}"`);
       router.push("/dashboard/leads");
     } catch (err) {
-      toast.error("Xóa lead thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa lead thất bại");
       console.error(err);
     }
   };
@@ -186,7 +186,7 @@ export default function LeadDetailPage() {
       setActivityContent("");
       refetchActivities();
     } catch (err) {
-      toast.error("Thêm hoạt động thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Thêm hoạt động thất bại");
       console.error(err);
     }
   };

@@ -68,7 +68,7 @@ export function EditRoleDialog({ role, open, onOpenChange }: EditRoleDialogProps
       toast.success(`Đã cập nhật role "${name.trim()}"`);
       onOpenChange(false);
     } catch (err: any) {
-      const msg = err?.response?.data?.message ?? "Cập nhật role thất bại";
+      const msg = err?.response?.data?.error?.message?.[0] ?? "Cập nhật role thất bại";
       toast.error(msg);
     }
   };

@@ -80,8 +80,8 @@ export default function ProjectFormPage() {
       toast.success("Tạo dự án thành công");
       router.push("/dashboard/projects");
     } catch (err) {
-      setError("Có lỗi xảy ra khi tạo dự án. Vui lòng thử lại.");
-      toast.error("Có lỗi xảy ra khi tạo dự án");
+      setError((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo dự án. Vui lòng thử lại.");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo dự án");
       console.error(err);
     } finally {
       setLoading(false);

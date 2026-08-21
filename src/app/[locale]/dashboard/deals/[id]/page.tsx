@@ -198,7 +198,7 @@ export default function DealDetailPage() {
       toast.success("Đã cập nhật trạng thái");
       refetch();
     } catch (err) {
-      toast.error("Cập nhật trạng thái thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Cập nhật trạng thái thất bại");
       console.error(err);
     }
   };
@@ -209,7 +209,7 @@ export default function DealDetailPage() {
       toast.success(`Đã xóa giao dịch "${deal?.dealCode}"`);
       router.push("/dashboard/deals");
     } catch (err) {
-      toast.error("Xóa giao dịch thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa giao dịch thất bại");
       console.error(err);
     }
   };
@@ -228,7 +228,7 @@ export default function DealDetailPage() {
       setActivityContent("");
       refetchActivities();
     } catch (err) {
-      toast.error("Thêm hoạt động thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Thêm hoạt động thất bại");
       console.error(err);
     }
   };
@@ -254,7 +254,7 @@ export default function DealDetailPage() {
       setResvNote("");
       refetchReservations();
     } catch (err) {
-      toast.error("Tạo reservation thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Tạo reservation thất bại");
       console.error(err);
     }
   };
@@ -265,7 +265,7 @@ export default function DealDetailPage() {
       toast.success("Đã duyệt reservation");
       refetchReservations();
     } catch (err) {
-      toast.error("Duyệt reservation thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Duyệt reservation thất bại");
       console.error(err);
     }
   };
@@ -276,7 +276,7 @@ export default function DealDetailPage() {
       toast.success("Đã từ chối reservation");
       refetchReservations();
     } catch (err) {
-      toast.error("Từ chối reservation thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Từ chối reservation thất bại");
       console.error(err);
     }
   };

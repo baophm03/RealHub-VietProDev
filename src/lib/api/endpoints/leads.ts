@@ -32,6 +32,7 @@ import type {
 import type {
   CreateLeadActivityDto,
   CreateLeadDto,
+  GetApiLeadsAdminParams,
   GetApiLeadsParams,
   UpdateLeadDto
 } from '../models';
@@ -301,6 +302,200 @@ export const usePostApiLead = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary List all leads for admin management
+ */
+export const getApiLeadsAdmin = (
+    params?: GetApiLeadsAdminParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/leads/admin`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiLeadsAdminInfiniteQueryKey = (params?: GetApiLeadsAdminParams,) => {
+    return [
+    'infinite', `/api/leads/admin`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiLeadsAdminQueryKey = (params?: GetApiLeadsAdminParams,) => {
+    return [
+    `/api/leads/admin`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiLeadsAdminInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadsAdmin>>>, TError = unknown>(params?: GetApiLeadsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiLeadsAdminInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLeadsAdmin>>> = ({ signal }) => getApiLeadsAdmin(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiLeadsAdminInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiLeadsAdmin>>>
+export type GetApiLeadsAdminInfiniteQueryError = unknown
+
+
+export function useGetApiLeadsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadsAdmin>>>, TError = unknown>(
+ params: undefined |  GetApiLeadsAdminParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiLeadsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiLeadsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiLeadsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadsAdmin>>>, TError = unknown>(
+ params?: GetApiLeadsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiLeadsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiLeadsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiLeadsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadsAdmin>>>, TError = unknown>(
+ params?: GetApiLeadsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all leads for admin management
+ */
+
+export function useGetApiLeadsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadsAdmin>>>, TError = unknown>(
+ params?: GetApiLeadsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiLeadsAdminInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all leads for admin management
+ */
+export const prefetchGetApiLeadsAdminInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiLeadsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiLeadsAdminInfiniteQueryOptions(params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiLeadsAdminQueryOptions = <TData = Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError = unknown>(params?: GetApiLeadsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiLeadsAdminQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLeadsAdmin>>> = ({ signal }) => getApiLeadsAdmin(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiLeadsAdminQueryResult = NonNullable<Awaited<ReturnType<typeof getApiLeadsAdmin>>>
+export type GetApiLeadsAdminQueryError = unknown
+
+
+export function useGetApiLeadsAdmin<TData = Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError = unknown>(
+ params: undefined |  GetApiLeadsAdminParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiLeadsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiLeadsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiLeadsAdmin<TData = Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError = unknown>(
+ params?: GetApiLeadsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiLeadsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiLeadsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiLeadsAdmin<TData = Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError = unknown>(
+ params?: GetApiLeadsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all leads for admin management
+ */
+
+export function useGetApiLeadsAdmin<TData = Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError = unknown>(
+ params?: GetApiLeadsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiLeadsAdminQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all leads for admin management
+ */
+export const prefetchGetApiLeadsAdminQuery = async <TData = Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiLeadsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadsAdmin>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiLeadsAdminQueryOptions(params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * @summary Get lead by ID
  */
 export const getApiLeadId = (

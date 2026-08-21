@@ -99,7 +99,7 @@ export default function AppointmentDetailPage() {
       toast.success("Đã cập nhật trạng thái");
       refetch();
     } catch (err) {
-      toast.error("Cập nhật trạng thái thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Cập nhật trạng thái thất bại");
       console.error(err);
     }
   };
@@ -110,7 +110,7 @@ export default function AppointmentDetailPage() {
       toast.success(`Đã xóa lịch hẹn "${appointment?.title}"`);
       router.push("/dashboard/appointments");
     } catch (err) {
-      toast.error("Xóa lịch hẹn thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa lịch hẹn thất bại");
       console.error(err);
     }
   };

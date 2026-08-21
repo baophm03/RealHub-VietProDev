@@ -154,7 +154,7 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
       toast.success(`Đã cập nhật quyền cho role "${role.name}"`);
       onOpenChange(false);
     } catch (err: any) {
-      const msg = err?.response?.data?.message ?? "Lưu quyền thất bại";
+      const msg = err?.response?.data?.error?.message?.[0] ?? "Lưu quyền thất bại";
       toast.error(msg);
     } finally {
       setSaving(false);

@@ -63,7 +63,7 @@ export function NewsGrid({ news }: { news: News[] }) {
           {featured.map((article) => (
             <Link
               key={article.id}
-              href={`/news/${article.category?.id ?? "uncategorized"}/${article.id}`}
+              href={`/news/${article.category?.code ?? "uncategorized"}/${article.slug}`}
               className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
             >
               <div className="relative aspect-[16/9] overflow-hidden">
@@ -106,7 +106,7 @@ export function NewsGrid({ news }: { news: News[] }) {
             {regular.map((article) => (
               <Link
                 key={article.id}
-                href={`/news/${article.category?.id ?? "uncategorized"}/${article.id}`}
+                href={`/news/${article.category?.code ?? "uncategorized"}/${article.slug}`}
                 className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">

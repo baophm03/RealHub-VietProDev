@@ -116,7 +116,7 @@ export default function DealFormPage() {
       toast.success("Đã tạo giao dịch mới");
       router.push("/dashboard/deals");
     } catch (err) {
-      toast.error("Có lỗi xảy ra khi tạo giao dịch, vui lòng thử lại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo giao dịch, vui lòng thử lại");
       console.error(err);
     } finally {
       setLoading(false);

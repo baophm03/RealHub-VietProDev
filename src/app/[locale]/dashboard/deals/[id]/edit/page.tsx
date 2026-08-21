@@ -112,7 +112,7 @@ export default function DealEditPage() {
       toast.success("Đã cập nhật giao dịch");
       router.push(`/dashboard/deals/${id}`);
     } catch (err) {
-      toast.error("Có lỗi xảy ra khi cập nhật giao dịch, vui lòng thử lại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật giao dịch, vui lòng thử lại");
       console.error(err);
     } finally {
       setLoading(false);

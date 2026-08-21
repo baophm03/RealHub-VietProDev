@@ -33,6 +33,7 @@ import type {
   CreateCustomerDto,
   CreateCustomerNeedDto,
   GetApiCustomerNeedsParams,
+  GetApiCustomersAdminParams,
   GetApiCustomersParams,
   UpdateCustomerDto
 } from '../models';
@@ -302,6 +303,200 @@ export const usePostApiCustomer = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary List all customers for admin management
+ */
+export const getApiCustomersAdmin = (
+    params?: GetApiCustomersAdminParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/customers/admin`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiCustomersAdminInfiniteQueryKey = (params?: GetApiCustomersAdminParams,) => {
+    return [
+    'infinite', `/api/customers/admin`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiCustomersAdminQueryKey = (params?: GetApiCustomersAdminParams,) => {
+    return [
+    `/api/customers/admin`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiCustomersAdminInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomersAdmin>>>, TError = unknown>(params?: GetApiCustomersAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCustomersAdminInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCustomersAdmin>>> = ({ signal }) => getApiCustomersAdmin(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiCustomersAdminInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCustomersAdmin>>>
+export type GetApiCustomersAdminInfiniteQueryError = unknown
+
+
+export function useGetApiCustomersAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomersAdmin>>>, TError = unknown>(
+ params: undefined |  GetApiCustomersAdminParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCustomersAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCustomersAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCustomersAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomersAdmin>>>, TError = unknown>(
+ params?: GetApiCustomersAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCustomersAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCustomersAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCustomersAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomersAdmin>>>, TError = unknown>(
+ params?: GetApiCustomersAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all customers for admin management
+ */
+
+export function useGetApiCustomersAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomersAdmin>>>, TError = unknown>(
+ params?: GetApiCustomersAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiCustomersAdminInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all customers for admin management
+ */
+export const prefetchGetApiCustomersAdminInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiCustomersAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiCustomersAdminInfiniteQueryOptions(params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiCustomersAdminQueryOptions = <TData = Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError = unknown>(params?: GetApiCustomersAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCustomersAdminQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCustomersAdmin>>> = ({ signal }) => getApiCustomersAdmin(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiCustomersAdminQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCustomersAdmin>>>
+export type GetApiCustomersAdminQueryError = unknown
+
+
+export function useGetApiCustomersAdmin<TData = Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError = unknown>(
+ params: undefined |  GetApiCustomersAdminParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCustomersAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCustomersAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCustomersAdmin<TData = Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError = unknown>(
+ params?: GetApiCustomersAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCustomersAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCustomersAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCustomersAdmin<TData = Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError = unknown>(
+ params?: GetApiCustomersAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all customers for admin management
+ */
+
+export function useGetApiCustomersAdmin<TData = Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError = unknown>(
+ params?: GetApiCustomersAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiCustomersAdminQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all customers for admin management
+ */
+export const prefetchGetApiCustomersAdminQuery = async <TData = Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiCustomersAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomersAdmin>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiCustomersAdminQueryOptions(params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * @summary Get customer by ID
  */
 export const getApiCustomerId = (

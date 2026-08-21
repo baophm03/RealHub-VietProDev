@@ -55,7 +55,7 @@ export async function FeaturedNews() {
               return (
                 <Link
                   key={news.id}
-                  href={`/news/${news.id}`}
+                  href={`/news/${news.category?.code ?? "uncategorized"}/${news.slug}`}
                   className="group flex flex-col overflow-hidden rounded-xl border border-border bg-surface transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.08)]"
                 >
                   {/* Image */}

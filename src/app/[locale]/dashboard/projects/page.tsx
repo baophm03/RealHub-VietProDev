@@ -11,7 +11,7 @@ import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
 import type { ColumnDef } from "@tanstack/react-table";
-import { useGetApiProjects } from "@/lib/api/endpoints/projects";
+import { useGetApiProjectsAdmin } from "@/lib/api/endpoints/projects";
 import { Project } from "@/lib/api/types/projects";
 
 const statusVariant: Record<string, "green" | "default"> = {
@@ -28,7 +28,7 @@ export default function ProjectsPage() {
   const router = useRouter();
   const [search, setSearch] = useState("");
 
-  const { data: projectsData } = useGetApiProjects();
+  const { data: projectsData } = useGetApiProjectsAdmin();
   const projects = useMemo(() => {
     const raw = projectsData as any;
     return (raw?.data ?? []) as Project[];
