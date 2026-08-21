@@ -49,7 +49,7 @@ export default function CustomerFormPage() {
       toast.success("Đã tạo khách hàng mới");
       router.push("/dashboard/customers");
     } catch (err) {
-      toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra, vui lòng thử lại");
       console.error(err);
     } finally {
       setLoading(false);

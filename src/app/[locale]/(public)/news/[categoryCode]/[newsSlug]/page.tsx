@@ -1,7 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 import {
   getApiNews,
-  getApiNewsId,
+  getApiNewsSlug,
 } from "@/lib/api/endpoints/news";
 import type {
   GetNewsItemResponse,
@@ -12,7 +12,7 @@ import { Link } from "@/i18n/navigation";
 import { ArrowLeft, ArrowRight, Calendar, ImageIcon } from "lucide-react";
 
 type Props = {
-  params: Promise<{ locale: string; categoryId: string; newsId: string }>;
+  params: Promise<{ locale: string; categoryCode: string; newsSlug: string }>;
 };
 
 export const dynamic = "force-static";
@@ -24,14 +24,14 @@ export async function generateStaticParams() {
 
   const byCategory = new Map<string, News[]>();
   for (const n of news) {
-    const catId = n.category?.id ?? "uncategorized";
-    if (!byCategory.has(catId)) byCategory.set(catId, []);
-    byCategory.get(catId)!.push(n);
+    const catCode = n.category?.code ?? "uncategorized";
+    if (!byCategory.has(catCode)) byCategory.set(catCode, []);
+    byCategory.get(catCode)!.push(n);
   }
 
   return ["vi", "en"].flatMap((locale) =>
-    Array.from(byCategory.entries()).flatMap(([catId, articles]) =>
-      articles.map((n) => ({ locale, categoryId: catId, newsId: n.id })),
+    Array.from(byCategory.entries()).flatMap(([catCode, articles]) =>
+      articles.map((n) => ({ locale, categoryCode: catCode, newsSlug: n.slug })),
     ),
   );
 }
@@ -83,26 +83,24 @@ function renderContent(content: string) {
 }
 
 export default async function NewsDetailPage({ params }: Props) {
-  const { locale, categoryId, newsId } = await params;
+  const { locale, categoryCode, newsSlug } = await params;
   setRequestLocale(locale);
 
   const [articleRes, relatedRes] = await Promise.all([
-    getApiNewsId(newsId),
+    getApiNewsSlug(newsSlug),
     getApiNews({ limit: "4" }),
   ]);
 
   const article = (articleRes as unknown as GetNewsItemResponse)?.data ?? null;
   const relatedNews = (((relatedRes as unknown as GetNewsResponse)?.data) ?? [])
-    .filter((n: News) => n.id !== newsId)
+    .filter((n: News) => n.slug !== newsSlug)
     .slice(0, 3);
-
-  console.log(relatedNews)
 
   if (!article) {
     return (
       <div className="mx-auto max-w-[1400px] px-6 py-8 md:px-8 md:py-12 lg:px-12">
         <Link
-          href={`/news/${categoryId}`}
+          href={`/news/${categoryCode}`}
           className="mb-6 inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
         >
           <ArrowLeft size={16} /> Quay lại tin tức
@@ -118,7 +116,7 @@ export default async function NewsDetailPage({ params }: Props) {
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-8 md:px-8 md:py-12 lg:px-12">
       <Link
-        href={`/news/${categoryId}`}
+        href={`/news/${categoryCode}`}
         className="mb-6 inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
       >
         <ArrowLeft size={16} /> Quay lại tin tức
@@ -173,11 +171,11 @@ export default async function NewsDetailPage({ params }: Props) {
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {relatedNews.map((n) => {
-              const catId = n.category?.id ?? categoryId;
+              const catCode = n.category?.code ?? categoryCode;
               return (
                 <Link
                   key={n.id}
-                  href={`/news/${catId}/${n.id}`}
+                  href={`/news/${catCode}/${n.slug}`}
                   className="group flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden">

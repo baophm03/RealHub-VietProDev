@@ -7,6 +7,8 @@
  */
 
 export interface UpdateNewsDto {
+  /** URL-friendly slug (lowercase, hyphens). Auto-generated from title if omitted. */
+  slug?: string;
   /** ID of the thumbnail File record */
   thumbnailId?: string;
   title?: string;

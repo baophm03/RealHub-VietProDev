@@ -21,7 +21,7 @@ import {
   DialogOverlay,
 } from "@/components/ui/dialog";
 import {
-  useGetApiLeads,
+  useGetApiLeadsAdmin,
   usePatchApiLead,
   useDeleteApiLead,
 } from "@/lib/api/endpoints/leads";
@@ -133,7 +133,7 @@ export default function LeadsPage() {
   const [search, setSearch] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<Lead | null>(null);
 
-  const { data: leadsData, isLoading, refetch } = useGetApiLeads({
+  const { data: leadsData, isLoading, refetch } = useGetApiLeadsAdmin({
     status: statusFilter === "ALL" ? undefined : (statusFilter as GetApiLeadsStatus),
     source: sourceFilter === "ALL" ? undefined : (sourceFilter as GetApiLeadsSource),
     search: search.trim() || undefined,
@@ -153,7 +153,7 @@ export default function LeadsPage() {
       toast.success(`Đã chuyển lead sang "${statusLabel[targetStatus] ?? targetStatus}"`);
       refetch();
     } catch (err) {
-      toast.error("Cập nhật trạng thái lead thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Cập nhật trạng thái lead thất bại");
       console.error(err);
     }
   };
@@ -166,7 +166,7 @@ export default function LeadsPage() {
       setDeleteTarget(null);
       refetch();
     } catch (err) {
-      toast.error("Xóa lead thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa lead thất bại");
       console.error(err);
     }
   };

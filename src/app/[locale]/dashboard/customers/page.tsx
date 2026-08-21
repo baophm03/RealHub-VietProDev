@@ -27,7 +27,7 @@ import {
   DialogOverlay,
 } from "@/components/ui/dialog";
 import {
-  useGetApiCustomers,
+  useGetApiCustomersAdmin,
   useDeleteApiCustomer,
 } from "@/lib/api/endpoints/customers";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -101,7 +101,7 @@ export default function CustomersPage() {
   const [statusFilter, setStatusFilter] = useState<GetApiCustomersStatus | "ALL">("ALL");
   const [deleteTarget, setDeleteTarget] = useState<CustomerRow | null>(null);
 
-  const { data: customersData, isLoading, refetch } = useGetApiCustomers({
+  const { data: customersData, isLoading, refetch } = useGetApiCustomersAdmin({
     search: search.trim() || undefined,
     type: typeFilter === "ALL" ? undefined : (typeFilter as GetApiCustomersType),
     status: statusFilter === "ALL" ? undefined : (statusFilter as GetApiCustomersStatus),
@@ -120,7 +120,7 @@ export default function CustomersPage() {
       setDeleteTarget(null);
       refetch();
     } catch (err) {
-      toast.error("Xóa khách hàng thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa khách hàng thất bại");
       console.error(err);
     }
   };

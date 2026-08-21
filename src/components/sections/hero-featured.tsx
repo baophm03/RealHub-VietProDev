@@ -48,7 +48,7 @@ export async function HeroFeatured() {
       <div className="rounded-[1.5rem] bg-black/5 p-1.5 ring-1 ring-black/5">
         <div className="relative aspect-[4/3] overflow-hidden rounded-[calc(1.5rem-0.375rem)]">
           {featured ? (
-            <Link href={`/listings/${featured.id}`} className="group/featured relative block h-full">
+            <Link href={`/listings/${featured.propertyCode}`} className="group/featured relative block h-full">
               <div className="absolute inset-0 overflow-hidden transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/featured:scale-105">
                 {featuredImageUrl ? (
                   <img

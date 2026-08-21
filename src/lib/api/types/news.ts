@@ -1,5 +1,6 @@
 export interface NewsCategory {
   id: string;
+  code: string;
   name: string;
   description?: string | null;
   createdBy?: string | null;
@@ -21,6 +22,7 @@ export interface NewsThumbnail {
 
 export interface News {
   id: string;
+  slug: string;
   thumbnailId?: string | null;
   title: string;
   description?: string | null;
@@ -31,7 +33,7 @@ export interface News {
   createdAt: string;
   updatedAt: string;
   thumbnail?: NewsThumbnail | null;
-  category?: { id: string; name: string; description?: string | null } | null;
+  category?: { id: string; code: string; name: string; description?: string | null } | null;
   creator?: { id: string; fullName: string } | null;
   updater?: { id: string; fullName: string } | null;
 }
@@ -74,6 +76,19 @@ export interface GetNewsItemResponse {
 export interface GetNewsCategoryItemResponse {
   success: boolean;
   data: NewsCategory;
+  timestamp: string;
+  statusCode?: number;
+}
+
+export interface GetNewsByCategoryCodeResponse {
+  success: boolean;
+  data: {
+    category: { id: string; code: string; name: string; description?: string | null };
+    items: News[];
+    total: number;
+    limit: number;
+    offset: number;
+  };
   timestamp: string;
   statusCode?: number;
 }

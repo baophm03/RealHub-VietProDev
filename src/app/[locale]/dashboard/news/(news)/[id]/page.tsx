@@ -33,6 +33,13 @@ import { ThumbnailUploader } from "../../_components/thumbnail-uploader";
 
 const newsSchema = z.object({
   title: z.string().min(5, "Tiêu đề phải có ít nhất 5 ký tự"),
+  slug: z
+    .string()
+    .optional()
+    .refine(
+      (v) => !v || /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(v),
+      "Slug chỉ chứa chữ thường, số và dấu gạch nối",
+    ),
   description: z.string().optional(),
   content: z.string().optional(),
   categoryNewsId: z.string().optional(),
@@ -75,10 +82,13 @@ export default function NewsFormPage() {
     defaultValues: {},
   });
 
+  const [slugTouched, setSlugTouched] = useState(false);
+
   useEffect(() => {
     if (article && !initialized) {
       reset({
         title: article.title,
+        slug: article.slug ?? "",
         description: article.description ?? "",
         content: article.content ?? "",
         categoryNewsId: article.categoryNewsId ?? undefined,
@@ -88,6 +98,21 @@ export default function NewsFormPage() {
     }
   }, [article, initialized, reset]);
 
+  // Auto-generate slug from title when user hasn't manually edited slug
+  const watchedTitle = watch("title");
+  useEffect(() => {
+    if (!slugTouched && watchedTitle) {
+      const generated = watchedTitle
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+      setValue("slug", generated);
+    }
+  }, [watchedTitle, slugTouched, setValue]);
+
   const watchedCategory = watch("categoryNewsId");
 
   const onSubmit = async (data: NewsFormData) => {
@@ -96,6 +121,7 @@ export default function NewsFormPage() {
     try {
       const payload = {
         title: data.title,
+        slug: data.slug || undefined,
         description: data.description || undefined,
         content: data.content || undefined,
         categoryNewsId: data.categoryNewsId || undefined,
@@ -116,11 +142,19 @@ export default function NewsFormPage() {
       router.push("/dashboard/news");
     } catch (err) {
       setError(
-        isCreate
-          ? "Có lỗi xảy ra khi tạo bài viết. Vui lòng thử lại."
-          : "Có lỗi xảy ra khi cập nhật bài viết. Vui lòng thử lại.",
+        (err as any)?.response?.data?.error?.message?.[0] ||
+        (isCreate ?
+          "Có lỗi xảy ra khi tạo bài viết" :
+          "Có lỗi xảy ra khi cập nhật bài viết"
+        )
       );
-      toast.error(isCreate ? "Có lỗi xảy ra khi tạo bài viết" : "Có lỗi xảy ra khi cập nhật bài viết");
+      toast.error(
+        (err as any)?.response?.data?.error?.message?.[0] ||
+        (isCreate ?
+          "Có lỗi xảy ra khi tạo bài viết" :
+          "Có lỗi xảy ra khi cập nhật bài viết"
+        )
+      );
       console.error(err);
     } finally {
       setLoading(false);
@@ -173,6 +207,18 @@ export default function NewsFormPage() {
         <FormSection title="Nội dung bài viết" description="Thông tin chính của bài viết">
           <FormField label="Tiêu đề" htmlFor="title" required error={errors.title?.message}>
             <Input id="title" placeholder="Thị trường bất động sản 2026..." {...register("title")} />
+          </FormField>
+
+          <FormField label="Slug" htmlFor="slug" error={errors.slug?.message}>
+            <Input
+              id="slug"
+              placeholder="thi-truong-bat-dong-san-2026"
+              {...register("slug")}
+              onChange={(e) => {
+                setSlugTouched(true);
+                register("slug").onChange(e);
+              }}
+            />
           </FormField>
 
           <FormField label="Mô tả ngắn" htmlFor="description" error={errors.description?.message}>

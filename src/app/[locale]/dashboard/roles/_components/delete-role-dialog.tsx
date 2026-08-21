@@ -42,7 +42,7 @@ export function DeleteRoleDialog({ role, open, onOpenChange }: DeleteRoleDialogP
       toast.success(`Đã xóa role "${role.name}"`);
       onOpenChange(false);
     } catch (err: any) {
-      const msg = err?.response?.data?.message ?? "Xóa role thất bại";
+      const msg = err?.response?.data?.error?.message?.[0] ?? "Xóa role thất bại";
       toast.error(msg);
     }
   };

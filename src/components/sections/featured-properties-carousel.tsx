@@ -97,7 +97,7 @@ export function FeaturedPropertiesCarousel({
           return (
             <SwiperSlide key={prop.id} className="!h-auto">
               <Link
-                href={`/listings/${prop.id}`}
+                href={`/listings/${prop.propertyCode}`}
                 className="group/property flex h-full flex-col bg-surface rounded-xl border border-border overflow-hidden hover:border-primary transition-colors shadow-sm hover:shadow-md"
               >
                 {/* Image */}

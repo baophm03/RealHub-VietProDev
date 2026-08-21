@@ -155,7 +155,7 @@ export function DefinitionsTab({ entityType, propertyTypeId }: DefinitionsTabPro
         refetch();
       },
       onError: (err: any) => {
-        toast.error(err?.message || "Có lỗi xảy ra khi tạo định nghĩa trường");
+        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo định nghĩa trường");
       },
     },
   });
@@ -169,7 +169,7 @@ export function DefinitionsTab({ entityType, propertyTypeId }: DefinitionsTabPro
       refetch();
     },
     onError: (err: any) => {
-      toast.error(err?.message || "Có lỗi xảy ra khi cập nhật định nghĩa trường");
+      toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật định nghĩa trường");
     },
   });
 
@@ -180,7 +180,7 @@ export function DefinitionsTab({ entityType, propertyTypeId }: DefinitionsTabPro
         refetch();
       },
       onError: (err: any) => {
-        toast.error(err?.message || "Có lỗi xảy ra khi xóa định nghĩa trường");
+        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi xóa định nghĩa trường");
       },
     },
   });

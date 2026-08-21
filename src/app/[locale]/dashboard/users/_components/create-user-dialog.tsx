@@ -59,7 +59,7 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
       reset();
       onOpenChange(false);
     } catch (err: any) {
-      const msg = err?.response?.data?.message ?? "Tạo người dùng thất bại";
+      const msg = err?.response?.data?.error?.message?.[0] ?? "Tạo người dùng thất bại";
       toast.error(msg);
     }
   };

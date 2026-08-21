@@ -49,7 +49,7 @@ export function SubmitVerificationDialog({
       onOpenChange(false);
     } catch (err) {
       console.error(err);
-      toast.error("Có lỗi xảy ra khi gửi duyệt");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi gửi duyệt");
     } finally {
       setSubmitting(false);
     }

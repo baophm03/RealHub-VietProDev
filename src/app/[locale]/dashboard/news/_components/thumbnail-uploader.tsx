@@ -44,7 +44,7 @@ export function ThumbnailUploader({ fileId, thumbnail, onChange }: ThumbnailUplo
         onChange(newId);
         toast.success("Đã tải lên ảnh thumbnail");
       } catch (err) {
-        toast.error("Tải lên ảnh thất bại");
+        toast.error((err as any)?.response?.data?.error?.message?.[0] || "Tải lên ảnh thất bại");
         console.error(err);
         setLocalPreview(null);
       } finally {

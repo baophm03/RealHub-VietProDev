@@ -105,7 +105,7 @@ export default function LeadEditPage() {
       toast.success("Đã cập nhật khách hàng tiềm năng");
       router.push(`/dashboard/leads/${id}`);
     } catch (err) {
-      toast.error("Có lỗi xảy ra khi cập nhật khách hàng tiềm năng, vui lòng thử lại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật khách hàng tiềm năng, vui lòng thử lại");
       console.error(err);
     } finally {
       setLoading(false);

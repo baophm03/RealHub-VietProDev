@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/dialog";
 import { Can } from "@casl/react";
 import {
-  useGetApiPropertyContacts,
+  useGetApiPropertyContactsAdmin,
   usePatchApiPropertyContactsId,
 } from "@/lib/api/endpoints/property-contacts";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -84,7 +84,7 @@ export default function ConsultationsPage() {
   const [detailContact, setDetailContact] = useState<PropertyContact | null>(null);
 
   // Query for counts (no status filter)
-  const { data: allContactsData } = useGetApiPropertyContacts({
+  const { data: allContactsData } = useGetApiPropertyContactsAdmin({
     limit: "50",
     offset: "0",
   });
@@ -92,7 +92,7 @@ export default function ConsultationsPage() {
     ((allContactsData as unknown as PropertyContactsResponse)?.data) || [];
 
   // Query for table (with filters)
-  const { data: contactsData, isLoading, refetch } = useGetApiPropertyContacts({
+  const { data: contactsData, isLoading, refetch } = useGetApiPropertyContactsAdmin({
     status: statusFilter === "ALL" ? undefined : (statusFilter as GetApiPropertyContactsStatus),
     search: search.trim() || undefined,
     limit: "50",
@@ -113,7 +113,7 @@ export default function ConsultationsPage() {
       setDetailContact((prev) => (prev && prev.id === id ? { ...prev, status } : prev));
       refetch();
     } catch (err) {
-      toast.error("Cập nhật trạng thái thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Cập nhật trạng thái thất bại");
       console.error(err);
     }
   };

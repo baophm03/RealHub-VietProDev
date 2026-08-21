@@ -60,7 +60,7 @@ export function NewsList() {
       await refetchNews();
       toast.success("Đã xóa bài viết");
     } catch (err) {
-      toast.error("Không thể xóa bài viết");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Không thể xóa bài viết");
       console.error(err);
     } finally {
       setDeletingId(null);

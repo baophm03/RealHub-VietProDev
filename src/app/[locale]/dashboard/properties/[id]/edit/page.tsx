@@ -190,8 +190,8 @@ export default function PropertyEditPage() {
       toast.success("Cập nhật bất động sản thành công");
       router.push(`/dashboard/properties/${id}`);
     } catch (err) {
-      setError("Có lỗi xảy ra khi cập nhật bất động sản. Vui lòng thử lại.");
-      toast.error("Có lỗi xảy ra khi cập nhật bất động sản");
+      setError((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật bất động sản. Vui lòng thử lại.");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật bất động sản");
       console.error(err);
     } finally {
       setLoading(false);

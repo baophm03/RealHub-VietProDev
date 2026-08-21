@@ -106,7 +106,7 @@ export function EditUserDialog({ membership, open, onOpenChange }: EditUserDialo
       );
       onOpenChange(false);
     } catch (err: any) {
-      const msg = err?.response?.data?.message ?? "Cập nhật thất bại";
+      const msg = err?.response?.data?.error?.message?.[0] ?? "Cập nhật thất bại";
       toast.error(msg);
     }
   };

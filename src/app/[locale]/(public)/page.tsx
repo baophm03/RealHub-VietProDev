@@ -5,8 +5,6 @@ import { FeaturedProperties } from "@/components/sections/featured-properties";
 import { FeaturedProjects } from "@/components/sections/featured-projects";
 import { FeaturedNews } from "@/components/sections/featured-news";
 import { UserPathways } from "@/components/sections/user-pathways";
-import { WhyRealHub } from "@/components/sections/why-realhub";
-import { Testimonials } from "@/components/sections/testimonials";
 import { CtaSection } from "@/components/sections/cta-section";
 
 type Props = {
@@ -27,8 +25,6 @@ export default async function HomePage({ params }: Props) {
       <FeaturedProjects />
       <FeaturedNews />
       <UserPathways />
-      <WhyRealHub />
-      <Testimonials />
       <CtaSection />
     </>
   );

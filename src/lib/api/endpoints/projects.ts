@@ -32,6 +32,7 @@ import type {
 import type {
   CreateProjectDto,
   CreateProjectMediaDto,
+  GetApiProjectsAdminParams,
   GetApiProjectsParams,
   ReorderProjectMediaDto,
   UpdateProjectDto,
@@ -303,6 +304,393 @@ export const usePostApiProject = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary List all projects for admin management
+ */
+export const getApiProjectsAdmin = (
+    params?: GetApiProjectsAdminParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/projects/admin`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiProjectsAdminInfiniteQueryKey = (params?: GetApiProjectsAdminParams,) => {
+    return [
+    'infinite', `/api/projects/admin`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiProjectsAdminQueryKey = (params?: GetApiProjectsAdminParams,) => {
+    return [
+    `/api/projects/admin`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiProjectsAdminInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectsAdmin>>>, TError = unknown>(params?: GetApiProjectsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiProjectsAdminInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiProjectsAdmin>>> = ({ signal }) => getApiProjectsAdmin(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiProjectsAdminInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiProjectsAdmin>>>
+export type GetApiProjectsAdminInfiniteQueryError = unknown
+
+
+export function useGetApiProjectsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectsAdmin>>>, TError = unknown>(
+ params: undefined |  GetApiProjectsAdminParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiProjectsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiProjectsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiProjectsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectsAdmin>>>, TError = unknown>(
+ params?: GetApiProjectsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiProjectsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiProjectsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiProjectsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectsAdmin>>>, TError = unknown>(
+ params?: GetApiProjectsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all projects for admin management
+ */
+
+export function useGetApiProjectsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectsAdmin>>>, TError = unknown>(
+ params?: GetApiProjectsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiProjectsAdminInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all projects for admin management
+ */
+export const prefetchGetApiProjectsAdminInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiProjectsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiProjectsAdminInfiniteQueryOptions(params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiProjectsAdminQueryOptions = <TData = Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError = unknown>(params?: GetApiProjectsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiProjectsAdminQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiProjectsAdmin>>> = ({ signal }) => getApiProjectsAdmin(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiProjectsAdminQueryResult = NonNullable<Awaited<ReturnType<typeof getApiProjectsAdmin>>>
+export type GetApiProjectsAdminQueryError = unknown
+
+
+export function useGetApiProjectsAdmin<TData = Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError = unknown>(
+ params: undefined |  GetApiProjectsAdminParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiProjectsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiProjectsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiProjectsAdmin<TData = Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError = unknown>(
+ params?: GetApiProjectsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiProjectsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiProjectsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiProjectsAdmin<TData = Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError = unknown>(
+ params?: GetApiProjectsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all projects for admin management
+ */
+
+export function useGetApiProjectsAdmin<TData = Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError = unknown>(
+ params?: GetApiProjectsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiProjectsAdminQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all projects for admin management
+ */
+export const prefetchGetApiProjectsAdminQuery = async <TData = Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiProjectsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectsAdmin>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiProjectsAdminQueryOptions(params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Get project by code
+ */
+export const getApiProjectCode = (
+    code: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/projects/code/${code}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiProjectCodeInfiniteQueryKey = (code?: string,) => {
+    return [
+    'infinite', `/api/projects/code/${code}`
+    ] as const;
+    }
+
+export const getGetApiProjectCodeQueryKey = (code?: string,) => {
+    return [
+    `/api/projects/code/${code}`
+    ] as const;
+    }
+
+    
+export const getGetApiProjectCodeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectCode>>>, TError = unknown>(code: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectCode>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiProjectCodeInfiniteQueryKey(code);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiProjectCode>>> = ({ signal }) => getApiProjectCode(code, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(code),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectCode>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiProjectCodeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiProjectCode>>>
+export type GetApiProjectCodeInfiniteQueryError = unknown
+
+
+export function useGetApiProjectCodeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectCode>>>, TError = unknown>(
+ code: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectCode>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiProjectCode>>,
+          TError,
+          Awaited<ReturnType<typeof getApiProjectCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiProjectCodeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectCode>>>, TError = unknown>(
+ code: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectCode>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiProjectCode>>,
+          TError,
+          Awaited<ReturnType<typeof getApiProjectCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiProjectCodeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectCode>>>, TError = unknown>(
+ code: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectCode>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get project by code
+ */
+
+export function useGetApiProjectCodeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiProjectCode>>>, TError = unknown>(
+ code: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectCode>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiProjectCodeInfiniteQueryOptions(code,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get project by code
+ */
+export const prefetchGetApiProjectCodeInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiProjectCode>>, TError = unknown>(
+ queryClient: QueryClient, code: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiProjectCode>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiProjectCodeInfiniteQueryOptions(code,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiProjectCodeQueryOptions = <TData = Awaited<ReturnType<typeof getApiProjectCode>>, TError = unknown>(code: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectCode>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiProjectCodeQueryKey(code);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiProjectCode>>> = ({ signal }) => getApiProjectCode(code, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(code),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiProjectCode>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiProjectCodeQueryResult = NonNullable<Awaited<ReturnType<typeof getApiProjectCode>>>
+export type GetApiProjectCodeQueryError = unknown
+
+
+export function useGetApiProjectCode<TData = Awaited<ReturnType<typeof getApiProjectCode>>, TError = unknown>(
+ code: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectCode>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiProjectCode>>,
+          TError,
+          Awaited<ReturnType<typeof getApiProjectCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiProjectCode<TData = Awaited<ReturnType<typeof getApiProjectCode>>, TError = unknown>(
+ code: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectCode>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiProjectCode>>,
+          TError,
+          Awaited<ReturnType<typeof getApiProjectCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiProjectCode<TData = Awaited<ReturnType<typeof getApiProjectCode>>, TError = unknown>(
+ code: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectCode>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get project by code
+ */
+
+export function useGetApiProjectCode<TData = Awaited<ReturnType<typeof getApiProjectCode>>, TError = unknown>(
+ code: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectCode>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiProjectCodeQueryOptions(code,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get project by code
+ */
+export const prefetchGetApiProjectCodeQuery = async <TData = Awaited<ReturnType<typeof getApiProjectCode>>, TError = unknown>(
+ queryClient: QueryClient, code: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiProjectCode>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiProjectCodeQueryOptions(code,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * @summary Get project by ID
  */
 export const getApiProjectId = (

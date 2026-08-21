@@ -31,6 +31,7 @@ import type {
 
 import type {
   CreateAppointmentDto,
+  GetApiAppointmentsAdminParams,
   GetApiAppointmentsParams,
   UpdateAppointmentDto
 } from '../models';
@@ -300,6 +301,200 @@ export const usePostApiAppointment = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary List all appointments for admin management
+ */
+export const getApiAppointmentsAdmin = (
+    params?: GetApiAppointmentsAdminParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/appointments/admin`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiAppointmentsAdminInfiniteQueryKey = (params?: GetApiAppointmentsAdminParams,) => {
+    return [
+    'infinite', `/api/appointments/admin`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiAppointmentsAdminQueryKey = (params?: GetApiAppointmentsAdminParams,) => {
+    return [
+    `/api/appointments/admin`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiAppointmentsAdminInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>>, TError = unknown>(params?: GetApiAppointmentsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiAppointmentsAdminInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>> = ({ signal }) => getApiAppointmentsAdmin(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiAppointmentsAdminInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>>
+export type GetApiAppointmentsAdminInfiniteQueryError = unknown
+
+
+export function useGetApiAppointmentsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>>, TError = unknown>(
+ params: undefined |  GetApiAppointmentsAdminParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiAppointmentsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiAppointmentsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiAppointmentsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>>, TError = unknown>(
+ params?: GetApiAppointmentsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiAppointmentsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiAppointmentsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiAppointmentsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>>, TError = unknown>(
+ params?: GetApiAppointmentsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all appointments for admin management
+ */
+
+export function useGetApiAppointmentsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>>, TError = unknown>(
+ params?: GetApiAppointmentsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiAppointmentsAdminInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all appointments for admin management
+ */
+export const prefetchGetApiAppointmentsAdminInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiAppointmentsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiAppointmentsAdminInfiniteQueryOptions(params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiAppointmentsAdminQueryOptions = <TData = Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError = unknown>(params?: GetApiAppointmentsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiAppointmentsAdminQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>> = ({ signal }) => getApiAppointmentsAdmin(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiAppointmentsAdminQueryResult = NonNullable<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>>
+export type GetApiAppointmentsAdminQueryError = unknown
+
+
+export function useGetApiAppointmentsAdmin<TData = Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError = unknown>(
+ params: undefined |  GetApiAppointmentsAdminParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiAppointmentsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiAppointmentsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiAppointmentsAdmin<TData = Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError = unknown>(
+ params?: GetApiAppointmentsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiAppointmentsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiAppointmentsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiAppointmentsAdmin<TData = Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError = unknown>(
+ params?: GetApiAppointmentsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all appointments for admin management
+ */
+
+export function useGetApiAppointmentsAdmin<TData = Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError = unknown>(
+ params?: GetApiAppointmentsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiAppointmentsAdminQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all appointments for admin management
+ */
+export const prefetchGetApiAppointmentsAdminQuery = async <TData = Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiAppointmentsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAppointmentsAdmin>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiAppointmentsAdminQueryOptions(params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * @summary Get appointment by ID
  */
 export const getApiAppointmentId = (

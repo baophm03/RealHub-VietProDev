@@ -142,7 +142,7 @@ export function VerificationList() {
       setPendingAction(null);
     } catch (err) {
       console.error(err);
-      toast.error("Có lỗi xảy ra khi cập nhật trạng thái kiểm duyệt");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật trạng thái kiểm duyệt");
     }
   };
 

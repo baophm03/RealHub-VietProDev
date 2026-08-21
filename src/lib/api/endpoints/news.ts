@@ -31,6 +31,7 @@ import type {
 
 import type {
   CreateNewsDto,
+  GetApiNewsCategoryCodeParams,
   GetApiNewsParams,
   UpdateNewsDto
 } from '../models';
@@ -300,6 +301,408 @@ export const usePostApiNews = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary List news by category code
+ */
+export const getApiNewsCategoryCode = (
+    code: string,
+    params?: GetApiNewsCategoryCodeParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/news/category/${code}`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiNewsCategoryCodeInfiniteQueryKey = (code?: string,
+    params?: GetApiNewsCategoryCodeParams,) => {
+    return [
+    'infinite', `/api/news/category/${code}`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiNewsCategoryCodeQueryKey = (code?: string,
+    params?: GetApiNewsCategoryCodeParams,) => {
+    return [
+    `/api/news/category/${code}`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiNewsCategoryCodeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiNewsCategoryCode>>>, TError = unknown>(code: string,
+    params?: GetApiNewsCategoryCodeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiNewsCategoryCodeInfiniteQueryKey(code,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiNewsCategoryCode>>> = ({ signal }) => getApiNewsCategoryCode(code,params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(code),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiNewsCategoryCodeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiNewsCategoryCode>>>
+export type GetApiNewsCategoryCodeInfiniteQueryError = unknown
+
+
+export function useGetApiNewsCategoryCodeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNewsCategoryCode>>>, TError = unknown>(
+ code: string,
+    params: undefined |  GetApiNewsCategoryCodeParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiNewsCategoryCode>>,
+          TError,
+          Awaited<ReturnType<typeof getApiNewsCategoryCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiNewsCategoryCodeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNewsCategoryCode>>>, TError = unknown>(
+ code: string,
+    params?: GetApiNewsCategoryCodeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiNewsCategoryCode>>,
+          TError,
+          Awaited<ReturnType<typeof getApiNewsCategoryCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiNewsCategoryCodeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNewsCategoryCode>>>, TError = unknown>(
+ code: string,
+    params?: GetApiNewsCategoryCodeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List news by category code
+ */
+
+export function useGetApiNewsCategoryCodeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNewsCategoryCode>>>, TError = unknown>(
+ code: string,
+    params?: GetApiNewsCategoryCodeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiNewsCategoryCodeInfiniteQueryOptions(code,params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List news by category code
+ */
+export const prefetchGetApiNewsCategoryCodeInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError = unknown>(
+ queryClient: QueryClient, code: string,
+    params?: GetApiNewsCategoryCodeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiNewsCategoryCodeInfiniteQueryOptions(code,params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiNewsCategoryCodeQueryOptions = <TData = Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError = unknown>(code: string,
+    params?: GetApiNewsCategoryCodeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiNewsCategoryCodeQueryKey(code,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiNewsCategoryCode>>> = ({ signal }) => getApiNewsCategoryCode(code,params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(code),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiNewsCategoryCodeQueryResult = NonNullable<Awaited<ReturnType<typeof getApiNewsCategoryCode>>>
+export type GetApiNewsCategoryCodeQueryError = unknown
+
+
+export function useGetApiNewsCategoryCode<TData = Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError = unknown>(
+ code: string,
+    params: undefined |  GetApiNewsCategoryCodeParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiNewsCategoryCode>>,
+          TError,
+          Awaited<ReturnType<typeof getApiNewsCategoryCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiNewsCategoryCode<TData = Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError = unknown>(
+ code: string,
+    params?: GetApiNewsCategoryCodeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiNewsCategoryCode>>,
+          TError,
+          Awaited<ReturnType<typeof getApiNewsCategoryCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiNewsCategoryCode<TData = Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError = unknown>(
+ code: string,
+    params?: GetApiNewsCategoryCodeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List news by category code
+ */
+
+export function useGetApiNewsCategoryCode<TData = Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError = unknown>(
+ code: string,
+    params?: GetApiNewsCategoryCodeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiNewsCategoryCodeQueryOptions(code,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List news by category code
+ */
+export const prefetchGetApiNewsCategoryCodeQuery = async <TData = Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError = unknown>(
+ queryClient: QueryClient, code: string,
+    params?: GetApiNewsCategoryCodeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNewsCategoryCode>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiNewsCategoryCodeQueryOptions(code,params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Get news by slug
+ */
+export const getApiNewsSlug = (
+    slug: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/news/slug/${slug}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiNewsSlugInfiniteQueryKey = (slug?: string,) => {
+    return [
+    'infinite', `/api/news/slug/${slug}`
+    ] as const;
+    }
+
+export const getGetApiNewsSlugQueryKey = (slug?: string,) => {
+    return [
+    `/api/news/slug/${slug}`
+    ] as const;
+    }
+
+    
+export const getGetApiNewsSlugInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiNewsSlug>>>, TError = unknown>(slug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNewsSlug>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiNewsSlugInfiniteQueryKey(slug);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiNewsSlug>>> = ({ signal }) => getApiNewsSlug(slug, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(slug),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNewsSlug>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiNewsSlugInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiNewsSlug>>>
+export type GetApiNewsSlugInfiniteQueryError = unknown
+
+
+export function useGetApiNewsSlugInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNewsSlug>>>, TError = unknown>(
+ slug: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNewsSlug>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiNewsSlug>>,
+          TError,
+          Awaited<ReturnType<typeof getApiNewsSlug>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiNewsSlugInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNewsSlug>>>, TError = unknown>(
+ slug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNewsSlug>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiNewsSlug>>,
+          TError,
+          Awaited<ReturnType<typeof getApiNewsSlug>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiNewsSlugInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNewsSlug>>>, TError = unknown>(
+ slug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNewsSlug>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get news by slug
+ */
+
+export function useGetApiNewsSlugInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiNewsSlug>>>, TError = unknown>(
+ slug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNewsSlug>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiNewsSlugInfiniteQueryOptions(slug,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get news by slug
+ */
+export const prefetchGetApiNewsSlugInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiNewsSlug>>, TError = unknown>(
+ queryClient: QueryClient, slug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiNewsSlug>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiNewsSlugInfiniteQueryOptions(slug,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiNewsSlugQueryOptions = <TData = Awaited<ReturnType<typeof getApiNewsSlug>>, TError = unknown>(slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNewsSlug>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiNewsSlugQueryKey(slug);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiNewsSlug>>> = ({ signal }) => getApiNewsSlug(slug, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(slug),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiNewsSlug>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiNewsSlugQueryResult = NonNullable<Awaited<ReturnType<typeof getApiNewsSlug>>>
+export type GetApiNewsSlugQueryError = unknown
+
+
+export function useGetApiNewsSlug<TData = Awaited<ReturnType<typeof getApiNewsSlug>>, TError = unknown>(
+ slug: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNewsSlug>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiNewsSlug>>,
+          TError,
+          Awaited<ReturnType<typeof getApiNewsSlug>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiNewsSlug<TData = Awaited<ReturnType<typeof getApiNewsSlug>>, TError = unknown>(
+ slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNewsSlug>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiNewsSlug>>,
+          TError,
+          Awaited<ReturnType<typeof getApiNewsSlug>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiNewsSlug<TData = Awaited<ReturnType<typeof getApiNewsSlug>>, TError = unknown>(
+ slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNewsSlug>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get news by slug
+ */
+
+export function useGetApiNewsSlug<TData = Awaited<ReturnType<typeof getApiNewsSlug>>, TError = unknown>(
+ slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNewsSlug>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiNewsSlugQueryOptions(slug,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get news by slug
+ */
+export const prefetchGetApiNewsSlugQuery = async <TData = Awaited<ReturnType<typeof getApiNewsSlug>>, TError = unknown>(
+ queryClient: QueryClient, slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiNewsSlug>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiNewsSlugQueryOptions(slug,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * @summary Get news by ID
  */
 export const getApiNewsId = (

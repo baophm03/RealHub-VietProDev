@@ -115,7 +115,7 @@ export default function AppointmentFormPage() {
       toast.success("Đã tạo lịch hẹn mới");
       router.push("/dashboard/appointments");
     } catch (err) {
-      toast.error("Có lỗi xảy ra khi tạo lịch hẹn, vui lòng thử lại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo lịch hẹn, vui lòng thử lại");
       console.error(err);
     } finally {
       setLoading(false);

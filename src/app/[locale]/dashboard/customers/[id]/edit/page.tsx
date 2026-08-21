@@ -89,7 +89,7 @@ export default function CustomerEditPage() {
       toast.success("Đã cập nhật khách hàng");
       router.push(`/dashboard/customers/${id}`);
     } catch (err) {
-      toast.error("Có lỗi xảy ra khi cập nhật, vui lòng thử lại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật, vui lòng thử lại");
       console.error(err);
     } finally {
       setLoading(false);

@@ -89,7 +89,7 @@ export function RoleUsersTab({ roleId, isLocked }: RoleUsersTabProps) {
       setShowPicker(false);
       setUserSearch("");
     } catch (err: any) {
-      const msg = err?.response?.data?.message ?? "Gán người dùng thất bại";
+      const msg = err?.response?.data?.error?.message?.[0] ?? "Gán người dùng thất bại";
       toast.error(msg);
     }
   };
@@ -103,7 +103,7 @@ export function RoleUsersTab({ roleId, isLocked }: RoleUsersTabProps) {
       await queryClient.invalidateQueries({ queryKey: getGetApiRolesQueryKey() });
       toast.success(`Đã xóa "${fullName}" khỏi role`);
     } catch (err: any) {
-      const msg = err?.response?.data?.message ?? "Xóa người dùng thất bại";
+      const msg = err?.response?.data?.error?.message?.[0] ?? "Xóa người dùng thất bại";
       toast.error(msg);
     }
   };

@@ -60,7 +60,7 @@ export function CreateRoleDialog({ open, onOpenChange }: CreateRoleDialogProps) 
       reset();
       onOpenChange(false);
     } catch (err: any) {
-      const msg = err?.response?.data?.message ?? "Tạo role thất bại";
+      const msg = err?.response?.data?.error?.message?.[0] ?? "Tạo role thất bại";
       toast.error(msg);
     }
   };

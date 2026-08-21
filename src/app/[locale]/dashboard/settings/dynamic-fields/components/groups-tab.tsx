@@ -122,7 +122,7 @@ export function GroupsTab({ entityType, propertyTypeId }: GroupsTabProps) {
       refetchDefs();
     },
     onError: (err: any) => {
-      toast.error(err?.message || "Có lỗi xảy ra khi gán trường");
+      toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi gán trường");
     },
   });
 
@@ -135,7 +135,7 @@ export function GroupsTab({ entityType, propertyTypeId }: GroupsTabProps) {
       refetchDefs();
     },
     onError: (err: any) => {
-      toast.error(err?.message || "Có lỗi xảy ra khi gỡ trường");
+      toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi gỡ trường");
     },
   });
 
@@ -147,7 +147,7 @@ export function GroupsTab({ entityType, propertyTypeId }: GroupsTabProps) {
         refetch();
       },
       onError: (err: any) => {
-        toast.error(err?.message || "Có lỗi xảy ra khi tạo nhóm trường");
+        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo nhóm trường");
       },
     },
   });
@@ -160,7 +160,7 @@ export function GroupsTab({ entityType, propertyTypeId }: GroupsTabProps) {
         refetch();
       },
       onError: (err: any) => {
-        toast.error(err?.message || "Có lỗi xảy ra khi cập nhật nhóm trường");
+        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật nhóm trường");
       },
     },
   });
@@ -172,7 +172,7 @@ export function GroupsTab({ entityType, propertyTypeId }: GroupsTabProps) {
         refetch();
       },
       onError: (err: any) => {
-        toast.error(err?.message || "Có lỗi xảy ra khi xóa nhóm trường");
+        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi xóa nhóm trường");
       },
     },
   });

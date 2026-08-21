@@ -31,6 +31,7 @@ import type {
 
 import type {
   CreatePropertyContactDto,
+  GetApiPropertyContactsAdminParams,
   GetApiPropertyContactsParams,
   UpdatePropertyContactDto
 } from '../models';
@@ -300,6 +301,200 @@ export const usePostApiPropertyContacts = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary List all property contacts for admin management
+ */
+export const getApiPropertyContactsAdmin = (
+    params?: GetApiPropertyContactsAdminParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/property-contacts/admin`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiPropertyContactsAdminInfiniteQueryKey = (params?: GetApiPropertyContactsAdminParams,) => {
+    return [
+    'infinite', `/api/property-contacts/admin`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiPropertyContactsAdminQueryKey = (params?: GetApiPropertyContactsAdminParams,) => {
+    return [
+    `/api/property-contacts/admin`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiPropertyContactsAdminInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>>, TError = unknown>(params?: GetApiPropertyContactsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPropertyContactsAdminInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>> = ({ signal }) => getApiPropertyContactsAdmin(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPropertyContactsAdminInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>>
+export type GetApiPropertyContactsAdminInfiniteQueryError = unknown
+
+
+export function useGetApiPropertyContactsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>>, TError = unknown>(
+ params: undefined |  GetApiPropertyContactsAdminParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertyContactsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>>, TError = unknown>(
+ params?: GetApiPropertyContactsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertyContactsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>>, TError = unknown>(
+ params?: GetApiPropertyContactsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all property contacts for admin management
+ */
+
+export function useGetApiPropertyContactsAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>>, TError = unknown>(
+ params?: GetApiPropertyContactsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPropertyContactsAdminInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all property contacts for admin management
+ */
+export const prefetchGetApiPropertyContactsAdminInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiPropertyContactsAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiPropertyContactsAdminInfiniteQueryOptions(params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiPropertyContactsAdminQueryOptions = <TData = Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError = unknown>(params?: GetApiPropertyContactsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPropertyContactsAdminQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>> = ({ signal }) => getApiPropertyContactsAdmin(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPropertyContactsAdminQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>>
+export type GetApiPropertyContactsAdminQueryError = unknown
+
+
+export function useGetApiPropertyContactsAdmin<TData = Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError = unknown>(
+ params: undefined |  GetApiPropertyContactsAdminParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertyContactsAdmin<TData = Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError = unknown>(
+ params?: GetApiPropertyContactsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertyContactsAdmin<TData = Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError = unknown>(
+ params?: GetApiPropertyContactsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all property contacts for admin management
+ */
+
+export function useGetApiPropertyContactsAdmin<TData = Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError = unknown>(
+ params?: GetApiPropertyContactsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPropertyContactsAdminQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all property contacts for admin management
+ */
+export const prefetchGetApiPropertyContactsAdminQuery = async <TData = Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiPropertyContactsAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyContactsAdmin>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiPropertyContactsAdminQueryOptions(params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * @summary Get a property contact request by ID
  */
 export const getApiPropertyContactsId = (

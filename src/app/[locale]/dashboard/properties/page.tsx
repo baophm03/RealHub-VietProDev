@@ -18,7 +18,7 @@ import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
 import type { ColumnDef } from "@tanstack/react-table";
-import { useGetApiProperties } from "@/lib/api/endpoints/properties";
+import { useGetApiPropertiesAdmin } from "@/lib/api/endpoints/properties";
 import { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
 import { SubmitVerificationDialog } from "./_components/submit-verification-dialog";
 import { DeletePropertyDialog } from "./_components/delete-property-dialog";
@@ -69,7 +69,7 @@ export default function PropertiesPage() {
   const [pendingSubmit, setPendingSubmit] = useState<Property | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Property | null>(null);
 
-  const { data: propertiesData } = useGetApiProperties();
+  const { data: propertiesData } = useGetApiPropertiesAdmin();
   const properties = ((propertiesData as unknown as GetPropertiesResponse)?.data) || [];
 
   const filtered = useMemo(
@@ -89,10 +89,10 @@ export default function PropertiesPage() {
 
   const columns: ColumnDef<Property>[] = [
     {
-      accessorKey: "id",
+      accessorKey: "propertyCode",
       header: "Mã BĐS",
       cell: ({ row }) => (
-        <span className="font-mono text-xs tabular-nums">{row.original.id.slice(0, 8)}</span>
+        <span className="font-mono text-xs tabular-nums">{row.original.propertyCode}</span>
       ),
     },
     {
