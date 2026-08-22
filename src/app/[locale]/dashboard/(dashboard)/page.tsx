@@ -10,10 +10,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useGetApiLeads } from "@/lib/api/endpoints/leads";
-import { useGetApiAuditLogs } from "@/lib/api/endpoints/audit-logs";
 import { useGetApiDashboardSummary } from "@/lib/api/endpoints/dashboard";
 import type { GetLeadsResponse } from "@/lib/api/types/leads";
-import type { GetAuditLogsResponse } from "@/lib/api/types/audit-logs";
 import type { DashboardSummary } from "@/lib/api/types/dashboard";
 
 function formatNumber(n: number): string {
@@ -29,21 +27,6 @@ const leadStatusConfig: Record<string, { label: string; variant: "blue" | "yello
   LOST: { label: "Mất", variant: "red" },
 };
 
-function formatRelativeTime(dateString: string): string {
-  const now = new Date();
-  const date = new Date(dateString);
-  const diffMs = now.getTime() - date.getTime();
-  const diffMin = Math.floor(diffMs / 60000);
-  const diffHour = Math.floor(diffMin / 60);
-  const diffDay = Math.floor(diffHour / 24);
-
-  if (diffMin < 1) return "Vừa xong";
-  if (diffMin < 60) return `${diffMin} phút trước`;
-  if (diffHour < 24) return `${diffHour} giờ trước`;
-  if (diffDay < 30) return `${diffDay} ngày trước`;
-  return date.toLocaleDateString("vi-VN");
-}
-
 export default function DashboardPage() {
   const { data: summaryData } = useGetApiDashboardSummary();
   const summary = (summaryData as unknown as DashboardSummary)?.data;
@@ -52,12 +35,8 @@ export default function DashboardPage() {
     limit: "5",
     offset: "0",
   });
-  const { data: auditLogsData } = useGetApiAuditLogs({
-    pageSize: "5",
-  });
 
   const leads = ((leadsData as unknown as GetLeadsResponse)?.data) || [];
-  const auditLogs = ((auditLogsData as unknown as GetAuditLogsResponse)?.data) || [];
 
   const stats = [
     {
@@ -121,7 +100,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 animate-fade-up-delay-2">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-3">
           <CardHeader className="flex-row items-center justify-between gap-2">
             <CardTitle>Khách hàng tiềm năng gần đây</CardTitle>
             <a
@@ -157,28 +136,6 @@ export default function DashboardPage() {
                 })
               ) : (
                 <div className="py-8 text-center text-sm text-foreground-muted">Chưa có khách hàng tiềm năng nào</div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Hoạt động</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-4">
-              {auditLogs.length > 0 ? (
-                auditLogs.map((log) => (
-                  <div key={log.id} className="flex flex-col gap-0.5 border-l-2 border-border pl-4">
-                    <span className="text-sm leading-snug">
-                      {log.user?.fullName ?? "He thong"} - {log.action} ({log.entityType})
-                    </span>
-                    <span className="text-xs text-foreground-muted tabular-nums">{formatRelativeTime(log.createdAt)}</span>
-                  </div>
-                ))
-              ) : (
-                <div className="py-8 text-center text-sm text-foreground-muted">Chưa có hoạt động nào</div>
               )}
             </div>
           </CardContent>

@@ -25,8 +25,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
-  useGetApiFiles,
-  getGetApiFilesQueryKey,
+  useGetApiFilesAdmin,
+  getGetApiFilesAdminQueryKey,
   usePostApiFileUpload,
 } from "@/lib/api/endpoints/files";
 import type { FileItem } from "@/lib/api/types/files";
@@ -85,7 +85,7 @@ export function FilePickerModal({
     }
   }, [open]);
 
-  const { data: filesData, isLoading } = useGetApiFiles(undefined);
+  const { data: filesData, isLoading } = useGetApiFilesAdmin(undefined);
   const allFiles = useMemo(() => {
     const raw = filesData as any;
     return (raw?.data ?? []) as FileItem[];
@@ -110,7 +110,7 @@ export function FilePickerModal({
   const { mutateAsync: uploadFile } = usePostApiFileUpload();
 
   const invalidateFiles = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: getGetApiFilesQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getGetApiFilesAdminQueryKey() });
   }, [queryClient]);
 
   const onDrop = useCallback(

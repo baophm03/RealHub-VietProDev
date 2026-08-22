@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -20,6 +20,7 @@ import {
   Ruler,
   Square,
   Tag,
+  Trash2,
   Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { useGetApiProjectId } from "@/lib/api/endpoints/projects";
 import { Project, ProjectProperty } from "@/lib/api/types/projects";
 import { formatPriceWithTransaction } from "@/utils";
+import { DeleteProjectDialog } from "../_components/delete-project-dialog";
 
 const projectStatusLabels: Record<string, string> = {
   ACTIVE: "Đang hoạt động",
@@ -101,6 +103,7 @@ export default function ProjectDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const { data: projectData, isLoading } = useGetApiProjectId(id);
   const project = (projectData as unknown as { data: Project })?.data ?? null;
@@ -176,7 +179,7 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      <div className="mb-6 flex items-center justify-end">
+      <div className="mb-6 flex items-center justify-end gap-2">
         <Button
           variant="outline"
           size="sm"
@@ -184,6 +187,15 @@ export default function ProjectDetailPage() {
         >
           <Pencil size={14} />
           Chỉnh sửa
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+          onClick={() => setDeleteOpen(true)}
+        >
+          <Trash2 size={14} />
+          Xóa dự án
         </Button>
       </div>
 
@@ -419,6 +431,12 @@ export default function ProjectDetailPage() {
           )}
         </div>
       </div>
+
+      <DeleteProjectDialog
+        project={project}
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+      />
     </div>
   );
 }
