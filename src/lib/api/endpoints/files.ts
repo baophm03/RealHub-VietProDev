@@ -30,6 +30,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  GetApiFilesAdminParams,
   GetApiFilesParams,
   PostApiFileUploadBody,
   PostApiFileUploadMultipleBody,
@@ -382,6 +383,200 @@ export const prefetchGetApiFilesQuery = async <TData = Awaited<ReturnType<typeof
   ): Promise<QueryClient> => {
 
   const queryOptions = getGetApiFilesQueryOptions(params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary List all files for admin management
+ */
+export const getApiFilesAdmin = (
+    params?: GetApiFilesAdminParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/files/admin`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiFilesAdminInfiniteQueryKey = (params?: GetApiFilesAdminParams,) => {
+    return [
+    'infinite', `/api/files/admin`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiFilesAdminQueryKey = (params?: GetApiFilesAdminParams,) => {
+    return [
+    `/api/files/admin`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiFilesAdminInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFilesAdmin>>>, TError = unknown>(params?: GetApiFilesAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFilesAdmin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiFilesAdminInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiFilesAdmin>>> = ({ signal }) => getApiFilesAdmin(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFilesAdmin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiFilesAdminInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiFilesAdmin>>>
+export type GetApiFilesAdminInfiniteQueryError = unknown
+
+
+export function useGetApiFilesAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFilesAdmin>>>, TError = unknown>(
+ params: undefined |  GetApiFilesAdminParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFilesAdmin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiFilesAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiFilesAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiFilesAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFilesAdmin>>>, TError = unknown>(
+ params?: GetApiFilesAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFilesAdmin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiFilesAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiFilesAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiFilesAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFilesAdmin>>>, TError = unknown>(
+ params?: GetApiFilesAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFilesAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all files for admin management
+ */
+
+export function useGetApiFilesAdminInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFilesAdmin>>>, TError = unknown>(
+ params?: GetApiFilesAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFilesAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiFilesAdminInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all files for admin management
+ */
+export const prefetchGetApiFilesAdminInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiFilesAdmin>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiFilesAdminParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFilesAdmin>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiFilesAdminInfiniteQueryOptions(params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiFilesAdminQueryOptions = <TData = Awaited<ReturnType<typeof getApiFilesAdmin>>, TError = unknown>(params?: GetApiFilesAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFilesAdmin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiFilesAdminQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiFilesAdmin>>> = ({ signal }) => getApiFilesAdmin(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiFilesAdmin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiFilesAdminQueryResult = NonNullable<Awaited<ReturnType<typeof getApiFilesAdmin>>>
+export type GetApiFilesAdminQueryError = unknown
+
+
+export function useGetApiFilesAdmin<TData = Awaited<ReturnType<typeof getApiFilesAdmin>>, TError = unknown>(
+ params: undefined |  GetApiFilesAdminParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFilesAdmin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiFilesAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiFilesAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiFilesAdmin<TData = Awaited<ReturnType<typeof getApiFilesAdmin>>, TError = unknown>(
+ params?: GetApiFilesAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFilesAdmin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiFilesAdmin>>,
+          TError,
+          Awaited<ReturnType<typeof getApiFilesAdmin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiFilesAdmin<TData = Awaited<ReturnType<typeof getApiFilesAdmin>>, TError = unknown>(
+ params?: GetApiFilesAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFilesAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all files for admin management
+ */
+
+export function useGetApiFilesAdmin<TData = Awaited<ReturnType<typeof getApiFilesAdmin>>, TError = unknown>(
+ params?: GetApiFilesAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFilesAdmin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiFilesAdminQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all files for admin management
+ */
+export const prefetchGetApiFilesAdminQuery = async <TData = Awaited<ReturnType<typeof getApiFilesAdmin>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiFilesAdminParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFilesAdmin>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiFilesAdminQueryOptions(params,options)
 
   await queryClient.prefetchQuery(queryOptions);
 

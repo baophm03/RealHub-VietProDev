@@ -14,8 +14,7 @@ import { FormSection, FormField } from "@/components/shared/form-section";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { usePostApiLead } from "@/lib/api/endpoints/leads";
 import { useGetApiCustomers } from "@/lib/api/endpoints/customers";
-import { useGetApiProperties } from "@/lib/api/endpoints/properties";
-import { useGetApiUsers } from "@/lib/api/endpoints/users";
+import { useGetApiPropertiesAdmin } from "@/lib/api/endpoints/properties";
 
 interface Customer {
   id: string;
@@ -26,11 +25,6 @@ interface Property {
   id: string;
   title: string;
   propertyCode: string;
-}
-interface User {
-  id: string;
-  fullName: string;
-  email?: string;
 }
 
 const sourceOptions = [
@@ -60,7 +54,6 @@ const leadSchema = z.object({
   propertyId: z.string().optional(),
   source: z.enum(["WEBSITE", "PROPERTY_DETAIL", "OWNER_PAGE", "SALES_LINK", "CTV_LINK", "AGENCY_MARKETING", "MANUAL_INPUT", "LEAD_POOL", "IMPORT"]),
   status: z.enum(["NEW", "CONTACTED", "INTERESTED", "NEGOTIATING", "CONVERTED", "LOST", "RECYCLED"]),
-  assignedSalesId: z.string().optional(),
   phoneNormalized: z.string().optional(),
 });
 
@@ -73,18 +66,14 @@ export default function LeadFormPage() {
   const [selectedStatus, setSelectedStatus] = useState("NEW");
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [selectedPropertyId, setSelectedPropertyId] = useState("");
-  const [selectedSalesId, setSelectedSalesId] = useState("");
 
   const { mutateAsync: createLead } = usePostApiLead();
 
   const { data: customersData } = useGetApiCustomers({ limit: "100", offset: "0" });
   const customers = ((customersData as unknown as { data: Customer[] })?.data) || [];
 
-  const { data: propertiesData } = useGetApiProperties({ limit: "100", offset: "0" });
+  const { data: propertiesData } = useGetApiPropertiesAdmin({ limit: "100", offset: "0" });
   const properties = ((propertiesData as unknown as { data: Property[] })?.data) || [];
-
-  const { data: usersData } = useGetApiUsers({ limit: "100", offset: "0" });
-  const users = ((usersData as unknown as { data: User[] })?.data) || [];
 
   const customerItems = useMemo(() => {
     const map: Record<string, string> = { __none__: "— Không chọn —" };
@@ -102,14 +91,6 @@ export default function LeadFormPage() {
     return map;
   }, [properties]);
 
-  const salesItems = useMemo(() => {
-    const map: Record<string, string> = { __none__: "— Không chọn —" };
-    for (const u of users) {
-      map[u.id] = `${u.fullName}${u.email ? ` · ${u.email}` : ""}`;
-    }
-    return map;
-  }, [users]);
-
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<LeadFormData>({
     resolver: zodResolver(leadSchema),
     defaultValues: { source: "MANUAL_INPUT", status: "NEW" },
@@ -124,7 +105,6 @@ export default function LeadFormPage() {
           status: data.status,
           customerId: data.customerId || undefined,
           propertyId: data.propertyId || undefined,
-          assignedSalesId: data.assignedSalesId || undefined,
           phoneNormalized: data.phoneNormalized || undefined,
         },
       });
@@ -257,41 +237,13 @@ export default function LeadFormPage() {
             </FormField>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Sales phụ trách">
-              <Select
-                value={selectedSalesId || "__none__"}
-                items={salesItems}
-                onValueChange={(v) => {
-                  const val = (v ?? "") === "__none__" ? "" : (v ?? "");
-                  setSelectedSalesId(val);
-                  setValue("assignedSalesId", val || undefined);
-                }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn sales" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__none__" label="— Không chọn —">— Không chọn —</SelectItem>
-                  {users.map((u) => {
-                    const label = `${u.fullName}${u.email ? ` · ${u.email}` : ""}`;
-                    return (
-                      <SelectItem key={u.id} value={u.id} label={label}>
-                        {label}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            </FormField>
-            <FormField label="Số điện thoại" htmlFor="phoneNormalized">
-              <Input
-                id="phoneNormalized"
-                placeholder="0901234567"
-                {...register("phoneNormalized")}
-              />
-            </FormField>
-          </div>
+          <FormField label="Số điện thoại" htmlFor="phoneNormalized">
+            <Input
+              id="phoneNormalized"
+              placeholder="0901234567"
+              {...register("phoneNormalized")}
+            />
+          </FormField>
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">

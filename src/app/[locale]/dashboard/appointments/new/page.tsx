@@ -15,7 +15,7 @@ import { FormSection, FormField } from "@/components/shared/form-section";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { usePostApiAppointment } from "@/lib/api/endpoints/appointments";
 import { useGetApiCustomers } from "@/lib/api/endpoints/customers";
-import { useGetApiProperties } from "@/lib/api/endpoints/properties";
+import { useGetApiPropertiesAdmin } from "@/lib/api/endpoints/properties";
 
 interface Customer {
   id: string;
@@ -68,7 +68,7 @@ export default function AppointmentFormPage() {
   const customers = ((customersData as unknown as { data: Customer[] })?.data) || [];
 
   // Fetch properties for dropdown
-  const { data: propertiesData } = useGetApiProperties({
+  const { data: propertiesData } = useGetApiPropertiesAdmin({
     limit: "100",
     offset: "0",
   });

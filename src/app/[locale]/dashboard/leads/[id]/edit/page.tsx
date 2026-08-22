@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,21 +13,13 @@ import { Input } from "@/components/ui/input";
 import { FormSection, FormField } from "@/components/shared/form-section";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { useGetApiLeadId, usePatchApiLead } from "@/lib/api/endpoints/leads";
-import { useGetApiUsers } from "@/lib/api/endpoints/users";
 import type { UpdateLeadDtoStatus } from "@/lib/api/models/updateLeadDtoStatus";
 
 interface Lead {
   id: string;
   leadCode: string;
   status: string;
-  assignedSalesId: string | null;
   phoneNormalized: string | null;
-  assignedSales?: { id: string; fullName: string; email?: string } | null;
-}
-interface User {
-  id: string;
-  fullName: string;
-  email?: string;
 }
 
 const statusOptions = [
@@ -40,11 +32,8 @@ const statusOptions = [
   { value: "RECYCLED", label: "Tái chế" },
 ];
 
-// UpdateLeadDto only allows: status, assignedSalesId, assignedTeamId,
-// phoneNormalized, protectionUntil, duplicateStatus, metadata
 const leadSchema = z.object({
   status: z.enum(["NEW", "CONTACTED", "INTERESTED", "NEGOTIATING", "CONVERTED", "LOST", "RECYCLED"]),
-  assignedSalesId: z.string().optional(),
   phoneNormalized: z.string().optional(),
 });
 
@@ -56,23 +45,11 @@ export default function LeadEditPage() {
   const id = params.id as string;
   const [loading, setLoading] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("NEW");
-  const [selectedSalesId, setSelectedSalesId] = useState("");
 
   const { data: leadData, isLoading } = useGetApiLeadId(id);
   const lead = (leadData as unknown as { data: Lead })?.data;
 
   const { mutateAsync: updateLead } = usePatchApiLead();
-
-  const { data: usersData } = useGetApiUsers({ limit: "100", offset: "0" });
-  const users = ((usersData as unknown as { data: User[] })?.data) || [];
-
-  const salesItems = useMemo(() => {
-    const map: Record<string, string> = { __none__: "— Không chọn —" };
-    for (const u of users) {
-      map[u.id] = `${u.fullName}${u.email ? ` · ${u.email}` : ""}`;
-    }
-    return map;
-  }, [users]);
 
   const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<LeadFormData>({
     resolver: zodResolver(leadSchema),
@@ -83,11 +60,9 @@ export default function LeadEditPage() {
     if (lead) {
       reset({
         status: (lead.status as LeadFormData["status"]) || "NEW",
-        assignedSalesId: lead.assignedSalesId || "",
         phoneNormalized: lead.phoneNormalized || "",
       });
       setSelectedStatus(lead.status || "NEW");
-      setSelectedSalesId(lead.assignedSalesId || "");
     }
   }, [lead, reset]);
 
@@ -98,7 +73,6 @@ export default function LeadEditPage() {
         id,
         data: {
           status: data.status as UpdateLeadDtoStatus,
-          assignedSalesId: data.assignedSalesId || undefined,
           phoneNormalized: data.phoneNormalized || undefined,
         },
       });
@@ -140,59 +114,31 @@ export default function LeadEditPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <FormSection
           title="Thông tin khách hàng tiềm năng"
-          description="Chỉ có thể cập nhật trạng thái, sales phụ trách và số điện thoại."
+          description="Chỉ có thể cập nhật trạng thái và số điện thoại."
         >
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Trạng thái" required>
-              <Select
-                value={selectedStatus}
-                items={Object.fromEntries(statusOptions.map((o) => [o.value, o.label]))}
-                onValueChange={(v) => {
-                  if (v) {
-                    setSelectedStatus(v);
-                    setValue("status", v as LeadFormData["status"]);
-                  }
-                }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn trạng thái" />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusOptions.map((o) => (
-                    <SelectItem key={o.value} value={o.value} label={o.label}>
-                      {o.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormField>
-            <FormField label="Sales phụ trách">
-              <Select
-                value={selectedSalesId || "__none__"}
-                items={salesItems}
-                onValueChange={(v) => {
-                  const val = (v ?? "") === "__none__" ? "" : (v ?? "");
-                  setSelectedSalesId(val);
-                  setValue("assignedSalesId", val || undefined);
-                }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn sales" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__none__" label="— Không chọn —">— Không chọn —</SelectItem>
-                  {users.map((u) => {
-                    const label = `${u.fullName}${u.email ? ` · ${u.email}` : ""}`;
-                    return (
-                      <SelectItem key={u.id} value={u.id} label={label}>
-                        {label}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            </FormField>
-          </div>
+          <FormField label="Trạng thái" required>
+            <Select
+              value={selectedStatus}
+              items={Object.fromEntries(statusOptions.map((o) => [o.value, o.label]))}
+              onValueChange={(v) => {
+                if (v) {
+                  setSelectedStatus(v);
+                  setValue("status", v as LeadFormData["status"]);
+                }
+              }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Chọn trạng thái" />
+              </SelectTrigger>
+              <SelectContent>
+                {statusOptions.map((o) => (
+                  <SelectItem key={o.value} value={o.value} label={o.label}>
+                    {o.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FormField>
           <FormField label="Số điện thoại" htmlFor="phoneNormalized" error={errors.phoneNormalized?.message}>
             <Input
               id="phoneNormalized"

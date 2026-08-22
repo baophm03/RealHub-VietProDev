@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Building2, Filter, Plus } from "lucide-react";
+import { Building2, Filter, Plus, Trash2 } from "lucide-react";
 import { Can } from "@casl/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useGetApiProjectsAdmin } from "@/lib/api/endpoints/projects";
 import { Project } from "@/lib/api/types/projects";
+import { DeleteProjectDialog } from "./_components/delete-project-dialog";
 
 const statusVariant: Record<string, "green" | "default"> = {
   ACTIVE: "green",
@@ -27,6 +28,7 @@ const statusLabel: Record<string, string> = {
 export default function ProjectsPage() {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [pendingDelete, setPendingDelete] = useState<Project | null>(null);
 
   const { data: projectsData } = useGetApiProjectsAdmin();
   const projects = useMemo(() => {
@@ -96,6 +98,26 @@ export default function ProjectsPage() {
         </Badge>
       ),
     },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <Can I="DELETE" a="PROPERTY">
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Xóa dự án"
+            className="text-foreground-muted hover:text-destructive"
+            onClick={(e) => {
+              e.stopPropagation();
+              setPendingDelete(row.original);
+            }}
+          >
+            <Trash2 size={14} />
+          </Button>
+        </Can>
+      ),
+    },
   ];
 
   return (
@@ -151,6 +173,12 @@ export default function ProjectsPage() {
           />
         )}
       </div>
+
+      <DeleteProjectDialog
+        project={pendingDelete}
+        open={!!pendingDelete}
+        onOpenChange={(open) => !open && setPendingDelete(null)}
+      />
     </div>
   );
 }

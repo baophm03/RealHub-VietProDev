@@ -24,8 +24,8 @@ import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ability } from "@/config/casl/ability";
 import {
-  useGetApiFiles,
-  getGetApiFilesQueryKey,
+  useGetApiFilesAdmin,
+  getGetApiFilesAdminQueryKey,
   usePostApiFileUpload,
   useDeleteApiFile,
   usePatchApiFileVisibility,
@@ -108,7 +108,7 @@ export default function FilesPage() {
     [visibilityFilter],
   );
 
-  const { data: filesData, isLoading } = useGetApiFiles(params);
+  const { data: filesData, isLoading } = useGetApiFilesAdmin(params);
   const files = useMemo(() => {
     const raw = filesData as any;
     return (raw?.data ?? []) as FileItem[];
@@ -119,7 +119,7 @@ export default function FilesPage() {
   const { mutateAsync: patchVisibility } = usePatchApiFileVisibility();
 
   const invalidateFiles = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: getGetApiFilesQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getGetApiFilesAdminQueryKey() });
   }, [queryClient]);
 
   const onDrop = useCallback(
@@ -257,8 +257,9 @@ export default function FilesPage() {
             className="w-full sm:w-auto min-w-0"
           />
           <Select
-            value={visibilityFilter || "ALL"}
+            value={visibilityFilter}
             onValueChange={(value) => setVisibilityFilter(!value || value === "ALL" ? "" : value)}
+            items={visibilityFilter ? [{ value: visibilityFilter, label: visibilityLabel[visibilityFilter] }] : []}
           >
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Tất cả" />

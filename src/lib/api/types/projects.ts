@@ -45,10 +45,14 @@ export interface Project {
   code: string;
   developer: string | null;
   status: string;
+  createdBy: string | null;
+  updatedBy: string | null;
   createdAt: string;
   updatedAt: string;
   province: { id: string; name: string; code: string } | null;
   district: { id: string; name: string; code: string } | null;
+  creator: { id: string; fullName: string } | null;
+  updater: { id: string; fullName: string } | null;
   properties: ProjectProperty[];
   media: ProjectMedia[];
   _count: {

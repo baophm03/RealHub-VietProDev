@@ -231,7 +231,7 @@ export default function LeadDetailPage() {
           >
             <ArrowLeft size={20} />
           </button>
-          <PageHeader eyebrow="CRM" title={lead.leadCode} />
+          <PageHeader eyebrow="CRM" title={lead.customer?.fullName || lead.phoneNormalized || lead.leadCode} />
         </div>
         <div className="flex items-center gap-2">
           <Can I="UPDATE" a="LEAD">
