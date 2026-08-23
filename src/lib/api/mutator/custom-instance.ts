@@ -61,15 +61,15 @@ apiClient.interceptors.response.use(
               refreshPromise = apiClient
                 .post("/api/auth/refresh", refreshToken ? { refreshToken } : undefined)
                 .then((res) => {
-                  const data = res.data;
-                  if (data?.accessToken) {
+                  const payload = res.data?.data ?? res.data;
+                  if (payload?.accessToken) {
                     useAuthStore.getState().setAuth({
-                      activeTenantId: data.activeTenantId,
-                      expiresIn: data.expiresIn,
-                      roleInTenant: data.roleInTenant,
-                      sessionId: data.sessionId,
-                      accessToken: data.accessToken,
-                      refreshToken: data.refreshToken,
+                      activeTenantId: payload.activeTenantId,
+                      expiresIn: payload.expiresIn,
+                      roleInTenant: payload.roleInTenant,
+                      sessionId: payload.sessionId,
+                      accessToken: payload.accessToken,
+                      refreshToken: payload.refreshToken,
                     });
                   }
                   const newCsrf = getCookie("csrf-token");

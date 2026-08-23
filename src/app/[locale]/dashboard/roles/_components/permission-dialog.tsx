@@ -23,7 +23,6 @@ import {
   DialogPortal,
   DialogOverlay,
 } from "@/components/ui/dialog";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useGetApiPermissions } from "@/lib/api/endpoints/permissions";
 import {
@@ -39,8 +38,8 @@ import {
   togglePermissionInSet,
   type PermissionKey,
 } from "@/config/permissions";
-import { cn } from "@/lib/utils";
 import { RoleUsersTab } from "./role-users-tab";
+import { ModuleRow } from "./module-row";
 import type {
   Role,
   RoleDetailResponse,
@@ -70,6 +69,11 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
   const [permissionSet, setPermissionSet] = useState<Set<PermissionKey>>(new Set());
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState("");
+
+  const originalPermissionSet = useMemo(
+    () => (role ? buildPermissionSet(role.permissions.map((p) => ({ module: p.module, action: p.action }))) : new Set<PermissionKey>()),
+    [role?.id, role?.permissions],
+  );
 
   useEffect(() => {
     if (role) {
@@ -125,15 +129,12 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
 
   const hasChanges = useMemo(() => {
     if (!role) return false;
-    const original = buildPermissionSet(
-      role.permissions.map((p) => ({ module: p.module, action: p.action })),
-    );
-    if (permissionSet.size !== original.size) return true;
+    if (permissionSet.size !== originalPermissionSet.size) return true;
     for (const key of permissionSet) {
-      if (!original.has(key)) return true;
+      if (!originalPermissionSet.has(key)) return true;
     }
     return false;
-  }, [role, permissionSet]);
+  }, [role, permissionSet, originalPermissionSet]);
 
   const handleSave = async () => {
     if (!role || !roleId) return;
@@ -224,78 +225,16 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2">
-                    {filteredModules.map((mod) => {
-                      const allChecked = mod.actions.every((a) =>
-                        hasPermissionInSet(permissionSet, mod.module, a.action),
-                      );
-                      const someChecked = mod.actions.some((a) =>
-                        hasPermissionInSet(permissionSet, mod.module, a.action),
-                      );
-
-                      return (
-                        <div
-                          key={mod.module}
-                          className="rounded-lg border border-border bg-surface/50 p-3"
-                        >
-                          <div className="flex items-center gap-3 pb-2 border-b border-border">
-                            <Checkbox
-                              checked={allChecked}
-                              indeterminate={!allChecked && someChecked}
-                              disabled={isLocked}
-                              onCheckedChange={() =>
-                                handleToggleModule(mod.actions, mod.module)
-                              }
-                            />
-                            <div className="flex flex-col">
-                              <span className="text-sm font-medium">{mod.label}</span>
-                              <span className="text-[10px] font-mono uppercase tracking-wide text-foreground-muted">
-                                {mod.module}
-                              </span>
-                            </div>
-                            {mod.description && (
-                              <span className="ml-auto text-xs text-foreground-muted">
-                                {mod.description}
-                              </span>
-                            )}
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-1 pt-2 sm:grid-cols-3 md:grid-cols-4">
-                            {mod.actions.map((act) => {
-                              const checked = hasPermissionInSet(
-                                permissionSet,
-                                mod.module,
-                                act.action,
-                              );
-                              return (
-                                <label
-                                  key={act.action}
-                                  className={cn(
-                                    "flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
-                                    isLocked
-                                      ? "cursor-not-allowed opacity-60"
-                                      : "hover:bg-surface-muted",
-                                  )}
-                                >
-                                  <Checkbox
-                                    checked={checked}
-                                    disabled={isLocked}
-                                    onCheckedChange={() =>
-                                      handleToggle(mod.module, act.action)
-                                    }
-                                  />
-                                  <span className="flex flex-col">
-                                    <span>{act.label}</span>
-                                    <span className="text-[10px] font-mono uppercase text-foreground-muted">
-                                      {act.action}
-                                    </span>
-                                  </span>
-                                </label>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      );
-                    })}
+                    {filteredModules.map((mod) => (
+                      <ModuleRow
+                        key={mod.module}
+                        mod={mod}
+                        permissionSet={permissionSet}
+                        isLocked={isLocked}
+                        onToggle={handleToggle}
+                        onToggleModule={handleToggleModule}
+                      />
+                    ))}
                   </div>
                 )}
               </div>
