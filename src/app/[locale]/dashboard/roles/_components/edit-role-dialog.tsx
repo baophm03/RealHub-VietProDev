@@ -25,6 +25,7 @@ import {
 } from "@/lib/api/endpoints/roles";
 import type { UpdateRoleDto } from "@/lib/api/models/updateRoleDto";
 import type { Role } from "./types";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface EditRoleDialogProps {
   role: Role | null;
@@ -135,16 +136,23 @@ export function EditRoleDialog({ role, open, onOpenChange }: EditRoleDialogProps
 
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="edit-role-status">Trạng thái</Label>
-              <select
-                id="edit-role-status"
+              <Select
                 value={status}
-                onChange={(e) => setStatus(e.target.value)}
+                items={[
+                  { value: "ACTIVE", label: "Hoạt động" },
+                  { value: "INACTIVE", label: "Tắt" },
+                ]}
+                onValueChange={(value) => setStatus(value as "ACTIVE" | "INACTIVE")}
                 disabled={isLocked}
-                className="h-9 rounded-md border border-input bg-surface px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
               >
-                <option value="ACTIVE">Hoạt động</option>
-                <option value="INACTIVE">Tắt</option>
-              </select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Tất cả trạng thái" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ACTIVE">Hoạt động</SelectItem>
+                  <SelectItem value="INACTIVE">Tắt</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
