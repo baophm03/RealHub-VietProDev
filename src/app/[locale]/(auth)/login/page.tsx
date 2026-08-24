@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { ArrowUpRight, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +18,6 @@ interface LoginFormData {
 }
 
 export default function LoginPage() {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -81,8 +79,6 @@ export default function LoginPage() {
             createdAt: profileData.createdAt,
           });
         }
-
-        router.push("/dashboard");
       },
       onError: (err: any) => {
         const apiError = err?.response?.data?.error;

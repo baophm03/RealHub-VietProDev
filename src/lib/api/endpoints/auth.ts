@@ -31,7 +31,9 @@ import type {
 
 import type {
   LoginDto,
-  RegisterDto
+  RegisterDto,
+  ReplaceProfileDto,
+  UpdateProfileDto
 } from '../models';
 
 import { customInstance } from '../mutator/custom-instance';
@@ -424,6 +426,132 @@ export const prefetchGetApiMeQuery = async <TData = Awaited<ReturnType<typeof ge
 
 
 /**
+ * @summary Update current user profile (self)
+ */
+export const patchApiMe = (
+    updateProfileDto: UpdateProfileDto,
+ ) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/auth/me`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: updateProfileDto
+    },
+      );
+    }
+  
+
+
+export const getPatchApiMeMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiMe>>, TError,{data: UpdateProfileDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiMe>>, TError,{data: UpdateProfileDto}, TContext> => {
+
+const mutationKey = ['patchApiMe'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiMe>>, {data: UpdateProfileDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  patchApiMe(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PatchApiMeMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiMe>>>
+    export type PatchApiMeMutationBody = UpdateProfileDto
+    export type PatchApiMeMutationError = unknown
+
+    /**
+ * @summary Update current user profile (self)
+ */
+export const usePatchApiMe = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiMe>>, TError,{data: UpdateProfileDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof patchApiMe>>,
+        TError,
+        {data: UpdateProfileDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPatchApiMeMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Replace current user profile (self, full update)
+ */
+export const putApiMe = (
+    replaceProfileDto: ReplaceProfileDto,
+ ) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/auth/me`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: replaceProfileDto
+    },
+      );
+    }
+  
+
+
+export const getPutApiMeMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiMe>>, TError,{data: ReplaceProfileDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putApiMe>>, TError,{data: ReplaceProfileDto}, TContext> => {
+
+const mutationKey = ['putApiMe'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiMe>>, {data: ReplaceProfileDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  putApiMe(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiMeMutationResult = NonNullable<Awaited<ReturnType<typeof putApiMe>>>
+    export type PutApiMeMutationBody = ReplaceProfileDto
+    export type PutApiMeMutationError = unknown
+
+    /**
+ * @summary Replace current user profile (self, full update)
+ */
+export const usePutApiMe = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiMe>>, TError,{data: ReplaceProfileDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiMe>>,
+        TError,
+        {data: ReplaceProfileDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPutApiMeMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
  * @summary Logout and revoke all tokens
  */
 export const postApiLogout = (

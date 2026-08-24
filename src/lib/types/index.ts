@@ -4,7 +4,9 @@ export type UserRole =
   | "TEAM_LEADER"
   | "SALES"
   | "COLLABORATOR"
-  | "OPERATOR";
+  | "OPERATOR"
+  | "CUSTOMER"
+  | "OWNER";
 
 export type TenantType = "AGENCY" | "DEVELOPER" | "DISTRIBUTOR";
 

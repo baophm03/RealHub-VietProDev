@@ -254,7 +254,7 @@ export function FilePickerModal({
                 />
                 <Input
                   type="search"
-                  placeholder="Tìm theo tên file..."
+                  placeholder="Tìm kiếm..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="pl-8"
