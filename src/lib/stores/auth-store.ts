@@ -6,7 +6,7 @@ import { useUserStore } from "@/lib/stores/user-store";
 
 interface AuthState {
   tenantCode: string | null;
-  isAuthenticated: boolean;
+  isAuthenticated: boolean | null;
   activeTenantId: string | null;
   expiresIn: number | null;
   roleInTenant: string | null;
@@ -14,6 +14,7 @@ interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
   _hasHydrated: boolean
+
   setHasHydrated: (val: boolean) => void
   setAuth: (data: {
     activeTenantId: string;
