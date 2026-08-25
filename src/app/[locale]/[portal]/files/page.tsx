@@ -214,7 +214,7 @@ export default function FilesPage() {
   };
 
   const canWrite = ability.can("CREATE", "FILE");
-  const canDelete = ability.can("DELETE", "FILE");
+  const canDelete = ability.can("DELETE_OWN", "FILE");
 
   return (
     <div className="flex flex-col gap-6">

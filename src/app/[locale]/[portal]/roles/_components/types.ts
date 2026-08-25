@@ -13,7 +13,6 @@ export interface Role {
   code: string;
   name: string;
   description: string | null;
-  isSystem: boolean;
   status: string;
   permissions: RolePermission[];
   _count?: { memberships: number; permissions: number };

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -35,6 +36,7 @@ type CategoryFormData = z.infer<typeof categorySchema>;
 export default function CategoryFormPage() {
   const params = useParams();
   const router = useRouter();
+  const portalPath = usePortalPath();
   const queryClient = useQueryClient();
   const id = params.id as string;
   const isCreate = id === "new";
@@ -93,7 +95,7 @@ export default function CategoryFormPage() {
         ]);
         toast.success("Cập nhật chuyên mục thành công");
       }
-      router.push("/dashboard/news");
+      router.push(portalPath("/news"));
     } catch (err) {
       setError(
         isCreate
@@ -119,7 +121,7 @@ export default function CategoryFormPage() {
     return (
       <div className="flex flex-col items-center gap-3 py-16 text-center">
         <p className="text-sm text-foreground-muted">Không tìm thấy chuyên mục.</p>
-        <Button variant="outline" onClick={() => router.push("/dashboard/news")}>
+        <Button variant="outline" onClick={() => router.push(portalPath("/news"))}>
           Quay lại
         </Button>
       </div>
@@ -130,7 +132,7 @@ export default function CategoryFormPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => router.push("/dashboard/news")}
+          onClick={() => router.push(portalPath("/news"))}
           className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
           aria-label="Quay lại"
         >
@@ -178,7 +180,7 @@ export default function CategoryFormPage() {
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="outline" onClick={() => router.push("/dashboard/news")}>
+          <Button type="button" variant="outline" onClick={() => router.push(portalPath("/news"))}>
             Hủy
           </Button>
           <Button type="submit" disabled={loading}>

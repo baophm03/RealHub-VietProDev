@@ -11,7 +11,6 @@ interface UserState {
   clearUser: () => void;
 }
 
-// helper
 const updateCaslAbility = (user: User | null) => {
   const rules =
     user?.role?.permissions.map((p) => ({

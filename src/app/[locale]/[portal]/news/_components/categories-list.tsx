@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
   Loader2,
   Pencil,
@@ -38,6 +39,7 @@ function formatDate(iso: string): string {
 
 export function CategoriesList() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [search, setSearch] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -107,14 +109,14 @@ export function CategoriesList() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/dashboard/news/categories/${row.original.id}`);
+              router.push(portalPath(`/news/categories/${row.original.id}`));
             }}
             className="rounded-md p-1.5 text-foreground-muted transition-colors hover:bg-surface-muted hover:text-foreground"
             aria-label="Sửa"
           >
             <Pencil size={16} />
           </button>
-          <Can I="DELETE" a="NEWS">
+          <Can I="DELETE_OWN" a="NEWS">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -147,7 +149,7 @@ export function CategoriesList() {
           className="w-full sm:w-auto min-w-0"
         />
         <Can I="CREATE" a="NEWS">
-          <Button onClick={() => router.push("/dashboard/news/categories/new")}>
+          <Button onClick={() => router.push(portalPath("/news/categories/new"))}>
             <Plus size={16} />
             Thêm chuyên mục
           </Button>
@@ -162,7 +164,7 @@ export function CategoriesList() {
         <DataTable
           columns={columns}
           data={filtered}
-          onRowClick={(row) => router.push(`/dashboard/news/categories/${row.id}`)}
+          onRowClick={(row) => router.push(portalPath(`/news/categories/${row.id}`))}
           emptyMessage="Không tìm thấy chuyên mục nào"
         />
       ) : (
@@ -172,7 +174,7 @@ export function CategoriesList() {
           description="Tạo chuyên mục đầu tiên để phân loại bài viết"
           action={
             <Can I="CREATE" a="NEWS">
-              <Button onClick={() => router.push("/dashboard/news/categories/new")}>
+              <Button onClick={() => router.push(portalPath("/news/categories/new"))}>
                 <Plus size={16} />
                 Thêm chuyên mục
               </Button>

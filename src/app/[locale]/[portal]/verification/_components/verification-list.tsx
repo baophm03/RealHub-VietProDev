@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatPrice } from "@/utils";
 import { toast } from "sonner";
@@ -93,6 +94,7 @@ const txLabel: Record<string, string> = {
 
 export function VerificationList() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const queryClient = useQueryClient();
 
   const [search, setSearch] = useState("");
@@ -348,7 +350,7 @@ export function VerificationList() {
         <DataTable
           columns={columns}
           data={filtered}
-          onRowClick={(row) => router.push(`/dashboard/properties/${row.id}`)}
+          onRowClick={(row) => router.push(portalPath(`/properties/${row.id}`))}
           emptyMessage="Không tìm thấy bất động sản nào"
         />
       ) : (

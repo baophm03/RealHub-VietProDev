@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
   ArrowLeft,
   House,
@@ -123,6 +124,7 @@ const leadStatusLabel: Record<string, { label: string; variant: "blue" | "yellow
 export default function CustomerDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const portalPath = usePortalPath();
   const id = params.id as string;
   const [deleteOpen, setDeleteOpen] = useState(false);
 
@@ -135,7 +137,7 @@ export default function CustomerDetailPage() {
     try {
       await deleteCustomer({ id });
       toast.success(`Đã xóa khách hàng "${customer?.fullName}"`);
-      router.push("/dashboard/customers");
+      router.push(portalPath("/customers"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa khách hàng thất bại");
       console.error(err);
@@ -158,7 +160,7 @@ export default function CustomerDetailPage() {
     return (
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/dashboard/customers")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lại">
+          <button onClick={() => router.push(portalPath("/customers"))} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lại">
             <ArrowLeft size={20} />
           </button>
           <PageHeader eyebrow="CRM" title="Không tìm thấy" />
@@ -173,7 +175,7 @@ export default function CustomerDetailPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/dashboard/customers")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lại">
+          <button onClick={() => router.push(portalPath("/customers"))} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lại">
             <ArrowLeft size={20} />
           </button>
           <PageHeader
@@ -182,7 +184,7 @@ export default function CustomerDetailPage() {
           />
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => router.push(`/dashboard/customers/${id}/edit`)}>
+          <Button variant="outline" onClick={() => router.push(portalPath(`/customers/${id}/edit`))}>
             <Pencil size={16} />
             Chỉnh sửa
           </Button>
@@ -291,7 +293,7 @@ export default function CustomerDetailPage() {
               return (
                 <button
                   key={lead.id}
-                  onClick={() => router.push(`/dashboard/leads/${lead.id}`)}
+                  onClick={() => router.push(portalPath(`/leads/${lead.id}`))}
                   className="flex flex-col gap-2 rounded-lg border border-border bg-surface-muted/40 p-4 text-left transition-colors hover:bg-surface-muted"
                 >
                   <div className="flex items-center justify-between gap-2">

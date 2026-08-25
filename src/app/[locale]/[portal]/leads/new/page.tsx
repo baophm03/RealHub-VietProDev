@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -61,6 +62,7 @@ type LeadFormData = z.infer<typeof leadSchema>;
 
 export default function LeadFormPage() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [loading, setLoading] = useState(false);
   const [selectedSource, setSelectedSource] = useState("MANUAL_INPUT");
   const [selectedStatus, setSelectedStatus] = useState("NEW");
@@ -109,7 +111,7 @@ export default function LeadFormPage() {
         },
       });
       toast.success("Đã tạo khách hàng tiềm năng mới");
-      router.push("/dashboard/leads");
+      router.push(portalPath("/leads"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo khách hàng tiềm năng, vui lòng thử lại");
       console.error(err);
@@ -122,7 +124,7 @@ export default function LeadFormPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => router.push("/dashboard/leads")}
+          onClick={() => router.push(portalPath("/leads"))}
           className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
           aria-label="Quay lại"
         >
@@ -247,7 +249,7 @@ export default function LeadFormPage() {
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push("/dashboard/leads")}>
+          <Button type="button" variant="secondary" onClick={() => router.push(portalPath("/leads"))}>
             Hủy
           </Button>
           <Button type="submit" disabled={loading}>

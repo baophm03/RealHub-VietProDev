@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { ArrowLeft } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,7 @@ interface CommissionPlan {
 export default function CommissionPlanEditPage() {
   const params = useParams();
   const router = useRouter();
+  const portalPath = usePortalPath();
   const id = params.id as string;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +48,7 @@ export default function CommissionPlanEditPage() {
     setError(null);
     try {
       await updateStatus({ id, data: { status } });
-      router.push(`/dashboard/commission/plans/${id}`);
+      router.push(portalPath(`/commission/plans/${id}`));
     } catch (err) {
       setError("Co loi xay ra khi cap nhat trang thai. Vui long thu lai.");
       console.error(err);
@@ -70,7 +72,7 @@ export default function CommissionPlanEditPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => router.push(`/dashboard/commission/plans/${id}`)} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
+        <button onClick={() => router.push(portalPath(`/commission/plans/${id}`))} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
           <ArrowLeft size={20} />
         </button>
         <PageHeader eyebrow="Hoa hong" title="Chỉnh sửa ke hoach" />
@@ -115,7 +117,7 @@ export default function CommissionPlanEditPage() {
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push(`/dashboard/commission/plans/${id}`)}>Huy</Button>
+          <Button type="button" variant="secondary" onClick={() => router.push(portalPath(`/commission/plans/${id}`))}>Huy</Button>
           <Button type="submit" disabled={loading}>{loading ? "Dang luu..." : "Cap nhat trang thai"}</Button>
         </div>
       </form>

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
   Building2,
   Filter,
@@ -65,6 +66,7 @@ const verificationStatusLabel: Record<string, string> = {
 
 export default function PropertiesPage() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [search, setSearch] = useState("");
   const [pendingSubmit, setPendingSubmit] = useState<Property | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Property | null>(null);
@@ -172,7 +174,7 @@ export default function PropertiesPage() {
                 Gửi duyệt
               </Button>
             ) : null}
-            <Can I="DELETE" a="PROPERTY">
+            <Can I="DELETE_OWN" a="PROPERTY">
               <Button
                 variant="ghost"
                 size="icon-sm"
@@ -212,7 +214,7 @@ export default function PropertiesPage() {
           </div>
           <div className="flex items-center gap-2">
             <Can I="CREATE" a="PROPERTY">
-              <Button onClick={() => router.push("/dashboard/properties/new")}>
+              <Button onClick={() => router.push(portalPath("/properties/new"))}>
                 <Plus size={16} />
                 Thêm mới
               </Button>
@@ -224,7 +226,7 @@ export default function PropertiesPage() {
           <DataTable
             columns={columns}
             data={filtered}
-            onRowClick={(row) => router.push(`/dashboard/properties/${row.id}`)}
+            onRowClick={(row) => router.push(portalPath(`/properties/${row.id}`))}
             emptyMessage="Không tìm thấy bất động sản nào"
           />
         ) : (
@@ -234,7 +236,7 @@ export default function PropertiesPage() {
             description="Tạo bất động sản đầu tiên để bắt đầu bán hàng"
             action={
               <Can I="CREATE" a="PROPERTY">
-                <Button onClick={() => router.push("/dashboard/properties/new")}>
+                <Button onClick={() => router.push(portalPath("/properties/new"))}>
                   <Plus size={16} />
                   Thêm mới
                 </Button>

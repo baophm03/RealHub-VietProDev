@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,7 @@ const statusLabel: Record<string, string> = {
 export default function CommissionPlanDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const portalPath = usePortalPath();
   const id = params.id as string;
 
   const { data: planData, isLoading } = useGetApiCommissionPlanId(id);
@@ -68,7 +70,7 @@ export default function CommissionPlanDetailPage() {
     return (
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/dashboard/commission/plans")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
+          <button onClick={() => router.push(portalPath("/commission/plans"))} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
             <ArrowLeft size={20} />
           </button>
           <PageHeader eyebrow="Hoa hong" title="Khong tim thay" />
@@ -80,14 +82,14 @@ export default function CommissionPlanDetailPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => router.push("/dashboard/commission/plans")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
+        <button onClick={() => router.push(portalPath("/commission/plans"))} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
           <ArrowLeft size={20} />
         </button>
         <PageHeader
           eyebrow="Hoa hong"
           title={plan.name}
           actions={
-            <Button variant="outline" onClick={() => router.push(`/dashboard/commission/plans/${id}/edit`)}>
+            <Button variant="outline" onClick={() => router.push(portalPath(`/commission/plans/${id}/edit`))}>
               <Pencil size={16} />
               Chỉnh sửa
             </Button>

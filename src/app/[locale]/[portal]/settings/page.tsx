@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +14,7 @@ import {
 
 const settingModules = [
   {
-    href: "/dashboard/settings/dynamic-fields",
+    href: "/settings/dynamic-fields",
     icon: Columns2,
     title: "Trường động",
     description: "Nhóm trường, định nghĩa và form schema — render động theo đối tượng",
@@ -27,6 +28,7 @@ const features = [
 ];
 
 export default function SettingsPage() {
+  const portalPath = usePortalPath();
   const [featureStates, setFeatureStates] = useState(features);
 
   const toggleFeature = (key: string) => {
@@ -45,7 +47,7 @@ export default function SettingsPage() {
           return (
             <Link
               key={mod.href}
-              href={mod.href}
+              href={portalPath(mod.href)}
               className="group flex flex-col gap-4 rounded-lg border border-border bg-surface p-6 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.08)]"
             >
               <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">

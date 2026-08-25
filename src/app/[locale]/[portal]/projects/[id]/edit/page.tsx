@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -48,6 +49,7 @@ const statusLabels: Record<string, string> = {
 export default function ProjectEditPage() {
   const params = useParams();
   const router = useRouter();
+  const portalPath = usePortalPath();
   const id = params.id as string;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -109,7 +111,7 @@ export default function ProjectEditPage() {
       await updateProject({ id, data });
       await queryClient.invalidateQueries({ queryKey: getGetApiProjectIdQueryKey(id) });
       toast.success("Cập nhật dự án thành công");
-      router.push(`/dashboard/projects/${id}`);
+      router.push(portalPath(`/projects/${id}`));
     } catch (err) {
       setError((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật dự án. Vui lòng thử lại.");
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật dự án");
@@ -135,7 +137,7 @@ export default function ProjectEditPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => router.push(`/dashboard/projects/${id}`)}
+          onClick={() => router.push(portalPath(`/projects/${id}`))}
           className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
           aria-label="Quay lại"
         >
@@ -245,7 +247,7 @@ export default function ProjectEditPage() {
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push(`/dashboard/projects/${id}`)}>
+          <Button type="button" variant="secondary" onClick={() => router.push(portalPath(`/projects/${id}`))}>
             Hủy
           </Button>
           <Button type="submit" disabled={loading}>

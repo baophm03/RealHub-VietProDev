@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -25,6 +26,7 @@ type CustomerFormData = z.infer<typeof customerSchema>;
 
 export default function CustomerFormPage() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [loading, setLoading] = useState(false);
   const [selectedType, setSelectedType] = useState("BUYER");
 
@@ -47,7 +49,7 @@ export default function CustomerFormPage() {
         },
       });
       toast.success("Đã tạo khách hàng mới");
-      router.push("/dashboard/customers");
+      router.push(portalPath("/customers"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra, vui lòng thử lại");
       console.error(err);
@@ -59,7 +61,7 @@ export default function CustomerFormPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => router.push("/dashboard/customers")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lại">
+        <button onClick={() => router.push(portalPath("/customers"))} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lại">
           <ArrowLeft size={20} />
         </button>
         <PageHeader eyebrow="CRM" title="Thêm khách hàng" />
@@ -103,7 +105,7 @@ export default function CustomerFormPage() {
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push("/dashboard/customers")}>Hủy</Button>
+          <Button type="button" variant="secondary" onClick={() => router.push(portalPath("/customers"))}>Hủy</Button>
           <Button type="submit" disabled={loading}>{loading ? "Đang lưu..." : "Lưu"}</Button>
         </div>
       </form>

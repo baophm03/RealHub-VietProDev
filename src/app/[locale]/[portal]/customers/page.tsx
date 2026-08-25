@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { Filter, Plus, Trash2, Users } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -86,6 +87,7 @@ const statusFilters: { value: GetApiCustomersStatus | "ALL"; label: string }[] =
 
 export default function CustomersPage() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<GetApiCustomersType | "ALL">("ALL");
   const [statusFilter, setStatusFilter] = useState<GetApiCustomersStatus | "ALL">("ALL");
@@ -177,7 +179,7 @@ export default function CustomersPage() {
         header: "Thao tác",
         cell: ({ row }) => (
           <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-            <Can I="DELETE" a="CUSTOMER">
+            <Can I="DELETE_OWN" a="CUSTOMER">
               <Button
                 variant="ghost"
                 size="icon-sm"
@@ -204,7 +206,7 @@ export default function CustomersPage() {
         description="Quản lý danh sách khách hàng"
         actions={
           <Can I="CREATE" a="CUSTOMER">
-            <Button onClick={() => router.push("/dashboard/customers/new")}>
+            <Button onClick={() => router.push(portalPath("/customers/new"))}>
               <Plus size={16} />
               Thêm khách hàng
             </Button>
@@ -270,7 +272,7 @@ export default function CustomersPage() {
           <DataTable
             columns={columns}
             data={customers}
-            onRowClick={(row) => router.push(`/dashboard/customers/${row.id}`)}
+            onRowClick={(row) => router.push(portalPath(`/customers/${row.id}`))}
             emptyMessage="Không có khách hàng"
           />
         </>
@@ -281,7 +283,7 @@ export default function CustomersPage() {
           description="Thêm khách hàng đầu tiên để bắt đầu quản lý CRM"
           action={
             <Can I="CREATE" a="CUSTOMER">
-              <Button onClick={() => router.push("/dashboard/customers/new")}>
+              <Button onClick={() => router.push(portalPath("/customers/new"))}>
                 <Plus size={16} />
                 Thêm khách hàng
               </Button>

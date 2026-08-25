@@ -11,6 +11,5 @@ export interface CreateRoleDto {
   code: string;
   name: string;
   description?: string;
-  isSystem?: boolean;
   permissions?: PermissionEntryDto[];
 }

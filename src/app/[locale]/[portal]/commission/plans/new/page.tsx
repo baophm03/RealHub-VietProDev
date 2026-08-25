@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ interface SplitRow {
 
 export default function CommissionPlanFormPage() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
@@ -63,7 +65,7 @@ export default function CommissionPlanFormPage() {
         rules,
       };
       await createPlan({ data });
-      router.push("/dashboard/commission/plans");
+      router.push(portalPath("/commission/plans"));
     } catch (err) {
       setError("Co loi xay ra khi tao ke hoach. Vui long thu lai.");
       console.error(err);
@@ -75,7 +77,7 @@ export default function CommissionPlanFormPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => router.push("/dashboard/commission/plans")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
+        <button onClick={() => router.push(portalPath("/commission/plans"))} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lai">
           <ArrowLeft size={20} />
         </button>
         <PageHeader eyebrow="Hoa hong" title="Tao ke hoach hoa hong" />
@@ -136,7 +138,7 @@ export default function CommissionPlanFormPage() {
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push("/dashboard/commission/plans")}>Huy</Button>
+          <Button type="button" variant="secondary" onClick={() => router.push(portalPath("/commission/plans"))}>Huy</Button>
           <Button type="submit" disabled={loading}>{loading ? "Dang luu..." : "Luu ke hoach"}</Button>
         </div>
       </form>

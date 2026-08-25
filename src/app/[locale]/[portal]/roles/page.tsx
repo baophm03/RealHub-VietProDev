@@ -1,14 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import {
-  Key,
-  Loader2,
-  Pencil,
-  Plus,
-  Trash2,
-  Users,
-} from "lucide-react";
+import { Key, Loader2, Pencil, Plus, Trash2, Users } from "lucide-react";
 import { Can } from "@casl/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -18,13 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import type { ColumnDef } from "@tanstack/react-table";
-import {
-  useGetApiRoles,
-} from "@/lib/api/endpoints/roles";
+import { useGetApiRoles } from "@/lib/api/endpoints/roles";
 import type { GetApiRolesStatus } from "@/lib/api/models/getApiRolesStatus";
 import { PermissionDialog } from "./_components/permission-dialog";
-import { CreateRoleDialog } from "./_components/create-role-dialog";
-import { EditRoleDialog } from "./_components/edit-role-dialog";
+import { RoleFormDialog } from "./_components/role-form-dialog";
 import { DeleteRoleDialog } from "./_components/delete-role-dialog";
 import type { Role, RolesResponse } from "./_components/types";
 
@@ -61,16 +51,10 @@ export default function RolesPage() {
       {
         accessorKey: "name",
         header: "Role",
+        size: 220,
         cell: ({ row }) => (
           <div className="flex flex-col gap-0.5">
-            <div className="flex items-center gap-2">
-              <span className="font-medium">{row.original.name}</span>
-              {row.original.isSystem && (
-                <Badge variant="blue" className="text-[10px]">
-                  System
-                </Badge>
-              )}
-            </div>
+            <span className="font-medium">{row.original.name}</span>
             <span className="text-xs font-mono uppercase tracking-wide text-foreground-muted">
               {row.original.code}
             </span>
@@ -80,8 +64,9 @@ export default function RolesPage() {
       {
         accessorKey: "description",
         header: "Mô tả",
+        size: 500,
         cell: ({ row }) => (
-          <span className="text-sm text-foreground-muted">
+          <span className="line-clamp-2 text-sm text-foreground-muted">
             {row.original.description || "—"}
           </span>
         ),
@@ -89,6 +74,7 @@ export default function RolesPage() {
       {
         id: "permissions",
         header: "Quyền",
+        size: 100,
         cell: ({ row }) => (
           <Badge variant="default" className="tabular-nums">
             {row.original._count?.permissions ?? 0} quyền
@@ -98,6 +84,7 @@ export default function RolesPage() {
       {
         id: "members",
         header: "Thành viên",
+        size: 120,
         cell: ({ row }) => (
           <span className="tabular-nums text-sm text-foreground-muted">
             {row.original._count?.memberships ?? 0}
@@ -130,26 +117,24 @@ export default function RolesPage() {
             >
               <Key size={14} />
             </Button>
-            <Can I="UPDATE" a="TENANT">
+            <Can I="UPDATE" a="ROLE">
               <Button
                 variant="ghost"
                 size="icon-sm"
                 aria-label="Chỉnh sửa"
                 onClick={() => handleOpenEdit(row.original)}
                 title="Chỉnh sửa"
-                disabled={row.original.code === "SUPER_ADMIN"}
               >
                 <Pencil size={14} />
               </Button>
             </Can>
-            <Can I="DELETE" a="TENANT">
+            <Can I="DELETE" a="ROLE">
               <Button
                 variant="ghost"
                 size="icon-sm"
                 aria-label="Xóa"
                 onClick={() => handleOpenDelete(row.original)}
                 title="Xóa"
-                disabled={row.original.isSystem}
               >
                 <Trash2 size={14} />
               </Button>
@@ -174,7 +159,7 @@ export default function RolesPage() {
         title="Phân quyền"
         description="Quản lý role và permission matrix cho tenant"
         actions={
-          <Can I="CREATE" a="TENANT">
+          <Can I="CREATE" a="ROLE">
             <Button onClick={() => setCreateDialogOpen(true)}>
               <Plus size={16} />
               Thêm role
@@ -226,7 +211,7 @@ export default function RolesPage() {
           title="Chưa có role"
           description="Role sẽ được hiển thị tại đây"
           action={
-            <Can I="CREATE" a="TENANT">
+            <Can I="CREATE" a="ROLE">
               <Button onClick={() => setCreateDialogOpen(true)}>
                 <Plus size={16} />
                 Thêm role
@@ -244,13 +229,15 @@ export default function RolesPage() {
       />
 
       {/* Create role dialog */}
-      <CreateRoleDialog
+      <RoleFormDialog
+        mode="create"
         open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
       />
 
       {/* Edit role dialog */}
-      <EditRoleDialog
+      <RoleFormDialog
+        mode="edit"
         role={editTarget}
         open={!!editTarget}
         onOpenChange={(open) => !open && setEditTarget(null)}

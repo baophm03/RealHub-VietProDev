@@ -224,3 +224,196 @@ export const prefetchGetApiDashboardSummaryQuery = async <TData = Awaited<Return
 
 
 
+/**
+ * @summary Get recent leads for dashboard
+ */
+export const getApiDashboardRecentLeads = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/dashboard/recent-leads`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiDashboardRecentLeadsInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/dashboard/recent-leads`
+    ] as const;
+    }
+
+export const getGetApiDashboardRecentLeadsQueryKey = () => {
+    return [
+    `/api/dashboard/recent-leads`
+    ] as const;
+    }
+
+    
+export const getGetApiDashboardRecentLeadsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiDashboardRecentLeadsInfiniteQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>> = ({ signal }) => getApiDashboardRecentLeads(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiDashboardRecentLeadsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>>
+export type GetApiDashboardRecentLeadsInfiniteQueryError = unknown
+
+
+export function useGetApiDashboardRecentLeadsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>>, TError = unknown>(
+  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDashboardRecentLeads>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDashboardRecentLeads>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDashboardRecentLeadsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDashboardRecentLeads>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDashboardRecentLeads>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDashboardRecentLeadsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get recent leads for dashboard
+ */
+
+export function useGetApiDashboardRecentLeadsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiDashboardRecentLeadsInfiniteQueryOptions(options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get recent leads for dashboard
+ */
+export const prefetchGetApiDashboardRecentLeadsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiDashboardRecentLeadsInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiDashboardRecentLeadsQueryOptions = <TData = Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiDashboardRecentLeadsQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>> = ({ signal }) => getApiDashboardRecentLeads(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiDashboardRecentLeadsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>>
+export type GetApiDashboardRecentLeadsQueryError = unknown
+
+
+export function useGetApiDashboardRecentLeads<TData = Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDashboardRecentLeads>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDashboardRecentLeads>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDashboardRecentLeads<TData = Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDashboardRecentLeads>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDashboardRecentLeads>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDashboardRecentLeads<TData = Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get recent leads for dashboard
+ */
+
+export function useGetApiDashboardRecentLeads<TData = Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiDashboardRecentLeadsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get recent leads for dashboard
+ */
+export const prefetchGetApiDashboardRecentLeadsQuery = async <TData = Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardRecentLeads>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiDashboardRecentLeadsQueryOptions(options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+

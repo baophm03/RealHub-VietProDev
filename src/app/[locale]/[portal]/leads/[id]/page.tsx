@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
   ArrowLeft,
   Clock,
@@ -134,6 +135,7 @@ const activityTypeLabel: Record<string, string> = {
 export default function LeadDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const portalPath = usePortalPath();
   const id = params.id as string;
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [activityType, setActivityType] = useState("NOTE");
@@ -165,7 +167,7 @@ export default function LeadDetailPage() {
     try {
       await deleteLead({ id });
       toast.success(`Đã xóa khách hàng tiềm năng "${lead?.leadCode}"`);
-      router.push("/dashboard/leads");
+      router.push(portalPath("/leads"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa lead thất bại");
       console.error(err);
@@ -208,7 +210,7 @@ export default function LeadDetailPage() {
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => router.push("/dashboard/leads")}
+            onClick={() => router.push(portalPath("/leads"))}
             className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
             aria-label="Quay lại"
           >
@@ -225,7 +227,7 @@ export default function LeadDetailPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => router.push("/dashboard/leads")}
+            onClick={() => router.push(portalPath("/leads"))}
             className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
             aria-label="Quay lại"
           >
@@ -234,13 +236,13 @@ export default function LeadDetailPage() {
           <PageHeader eyebrow="CRM" title={lead.customer?.fullName || lead.phoneNormalized || lead.leadCode} />
         </div>
         <div className="flex items-center gap-2">
-          <Can I="UPDATE" a="LEAD">
-            <Button variant="outline" onClick={() => router.push(`/dashboard/leads/${id}/edit`)}>
+          <Can I="UPDATE_OWN" a="LEAD">
+            <Button variant="outline" onClick={() => router.push(portalPath(`/leads/${id}/edit`))}>
               <Pencil size={16} />
               Chỉnh sửa
             </Button>
           </Can>
-          <Can I="DELETE" a="LEAD">
+          <Can I="DELETE_OWN" a="LEAD">
             <Button variant="destructive" onClick={() => setDeleteOpen(true)}>
               <Trash2 size={16} />
               Xóa
@@ -266,7 +268,7 @@ export default function LeadDetailPage() {
                   <div className="flex flex-col">
                     <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Khách hàng</span>
                     <button
-                      onClick={() => router.push(`/dashboard/customers/${lead.customer!.id}`)}
+                      onClick={() => router.push(portalPath(`/customers/${lead.customer!.id}`))}
                       className="text-left text-sm text-primary hover:underline"
                     >
                       {lead.customer.fullName}
@@ -283,7 +285,7 @@ export default function LeadDetailPage() {
                   <div className="flex flex-col">
                     <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">BĐS</span>
                     <button
-                      onClick={() => router.push(`/dashboard/properties/${lead.property!.id}`)}
+                      onClick={() => router.push(portalPath(`/properties/${lead.property!.id}`))}
                       className="text-left text-sm text-primary hover:underline"
                     >
                       {lead.property.title}
@@ -328,7 +330,7 @@ export default function LeadDetailPage() {
           </div>
 
           {/* Status update */}
-          <Can I="UPDATE" a="LEAD">
+          <Can I="UPDATE_OWN" a="LEAD">
             <div className="rounded-lg border border-border bg-surface p-6">
               <h3 className="text-sm font-semibold mb-4">Cập nhật trạng thái</h3>
               <div className="flex flex-wrap items-center gap-2">

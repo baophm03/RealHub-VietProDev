@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { Building2, Filter, Plus } from "lucide-react";
 import { Can } from "@casl/react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ const statusLabel: Record<string, string> = {
 
 export function ProjectsList() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [search, setSearch] = useState("");
 
   const { data: projectsData } = useGetApiProjects();
@@ -113,7 +115,7 @@ export function ProjectsList() {
           </Button>
         </div>
         <Can I="CREATE" a="PROPERTY">
-          <Button onClick={() => router.push("/dashboard/projects/new")}>
+          <Button onClick={() => router.push(portalPath("/projects/new"))}>
             <Plus size={16} />
             Thêm dự án
           </Button>
@@ -124,7 +126,7 @@ export function ProjectsList() {
         <DataTable
           columns={columns}
           data={filtered}
-          onRowClick={(row) => router.push(`/dashboard/projects/${row.id}`)}
+          onRowClick={(row) => router.push(portalPath(`/projects/${row.id}`))}
           emptyMessage="Không tìm thấy dự án nào"
         />
       ) : (
@@ -134,7 +136,7 @@ export function ProjectsList() {
           description="Tạo dự án đầu tiên để nhóm bất động sản theo dự án"
           action={
             <Can I="CREATE" a="PROPERTY">
-              <Button onClick={() => router.push("/dashboard/projects/new")}>
+              <Button onClick={() => router.push(portalPath("/projects/new"))}>
                 <Plus size={16} />
                 Thêm dự án
               </Button>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
   ArrowLeft,
   Bell,
@@ -83,6 +84,7 @@ const statusOptions = [
 export default function AppointmentDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const portalPath = usePortalPath();
   const id = params.id as string;
   const [deleteOpen, setDeleteOpen] = useState(false);
 
@@ -108,7 +110,7 @@ export default function AppointmentDetailPage() {
     try {
       await deleteAppointment({ id });
       toast.success(`Đã xóa lịch hẹn "${appointment?.title}"`);
-      router.push("/dashboard/appointments");
+      router.push(portalPath("/appointments"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa lịch hẹn thất bại");
       console.error(err);
@@ -131,7 +133,7 @@ export default function AppointmentDetailPage() {
     return (
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/dashboard/appointments")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lại">
+          <button onClick={() => router.push(portalPath("/appointments"))} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lại">
             <ArrowLeft size={20} />
           </button>
           <PageHeader eyebrow="Lịch hẹn" title="Không tìm thấy" />
@@ -147,19 +149,19 @@ export default function AppointmentDetailPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/dashboard/appointments")} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lại">
+          <button onClick={() => router.push(portalPath("/appointments"))} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lại">
             <ArrowLeft size={20} />
           </button>
           <PageHeader eyebrow="Lịch hẹn" title={appointment.title} />
         </div>
         <div className="flex items-center gap-2">
-          <Can I="UPDATE" a="APPOINTMENT">
-            <Button variant="outline" onClick={() => router.push(`/dashboard/appointments/${id}/edit`)}>
+          <Can I="UPDATE_OWN" a="APPOINTMENT">
+            <Button variant="outline" onClick={() => router.push(portalPath(`/appointments/${id}/edit`))}>
               <Pencil size={16} />
               Chỉnh sửa
             </Button>
           </Can>
-          <Can I="DELETE" a="APPOINTMENT">
+          <Can I="DELETE_OWN" a="APPOINTMENT">
             <Button variant="destructive" onClick={() => setDeleteOpen(true)}>
               <Trash2 size={16} />
               Xóa
@@ -210,7 +212,7 @@ export default function AppointmentDetailPage() {
           </div>
 
           {/* Status update */}
-          <Can I="UPDATE" a="APPOINTMENT">
+          <Can I="UPDATE_OWN" a="APPOINTMENT">
             <div className="rounded-lg border border-border bg-surface p-6">
               <h3 className="text-sm font-semibold mb-4">Cập nhật trạng thái</h3>
               <div className="flex flex-wrap items-center gap-2">
@@ -244,7 +246,7 @@ export default function AppointmentDetailPage() {
                   <div className="flex flex-col">
                     <span className="text-xs text-foreground-muted">Khách hàng</span>
                     <button
-                      onClick={() => router.push(`/dashboard/customers/${appointment.customer!.id}`)}
+                      onClick={() => router.push(portalPath(`/customers/${appointment.customer!.id}`))}
                       className="text-left text-primary hover:underline"
                     >
                       {appointment.customer.fullName}
@@ -261,7 +263,7 @@ export default function AppointmentDetailPage() {
                   <div className="flex flex-col">
                     <span className="text-xs text-foreground-muted">Bất động sản</span>
                     <button
-                      onClick={() => router.push(`/dashboard/properties/${appointment.property!.id}`)}
+                      onClick={() => router.push(portalPath(`/properties/${appointment.property!.id}`))}
                       className="text-left text-primary hover:underline"
                     >
                       {appointment.property.title}
@@ -276,7 +278,7 @@ export default function AppointmentDetailPage() {
                   <div className="flex flex-col">
                     <span className="text-xs text-foreground-muted">Khách hàng tiềm năng</span>
                     <button
-                      onClick={() => router.push(`/dashboard/leads/${appointment.lead!.id}`)}
+                      onClick={() => router.push(portalPath(`/leads/${appointment.lead!.id}`))}
                       className="text-left text-primary hover:underline"
                     >
                       {appointment.lead.leadCode}

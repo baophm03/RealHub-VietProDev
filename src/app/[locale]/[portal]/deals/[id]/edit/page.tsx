@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -54,6 +55,7 @@ type DealFormData = z.infer<typeof dealSchema>;
 export default function DealEditPage() {
   const params = useParams();
   const router = useRouter();
+  const portalPath = usePortalPath();
   const id = params.id as string;
   const [loading, setLoading] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("SOFT_RESERVED");
@@ -107,7 +109,7 @@ export default function DealEditPage() {
         },
       });
       toast.success("Đã cập nhật giao dịch");
-      router.push(`/dashboard/deals/${id}`);
+      router.push(portalPath(`/deals/${id}`));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật giao dịch, vui lòng thử lại");
       console.error(err);
@@ -132,7 +134,7 @@ export default function DealEditPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => router.push(`/dashboard/deals/${id}`)}
+          onClick={() => router.push(portalPath(`/deals/${id}`))}
           className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
           aria-label="Quay lại"
         >
@@ -204,7 +206,7 @@ export default function DealEditPage() {
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push(`/dashboard/deals/${id}`)}>
+          <Button type="button" variant="secondary" onClick={() => router.push(portalPath(`/deals/${id}`))}>
             Hủy
           </Button>
           <Button type="submit" disabled={loading}>

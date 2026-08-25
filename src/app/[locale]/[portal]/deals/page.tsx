@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { List as ListIcon, Plus, SquareKanban, Trash2 } from "lucide-react";
 import { formatPrice } from "@/utils";
 import { Can } from "@casl/react";
@@ -102,6 +103,7 @@ const statusFilters: { value: GetApiDealsStatus | "ALL"; label: string }[] = [
 
 export default function DealsPage() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [view, setView] = useState<"kanban" | "list">("kanban");
   const [statusFilter, setStatusFilter] = useState<GetApiDealsStatus | "ALL">("ALL");
   const [deleteTarget, setDeleteTarget] = useState<Deal | null>(null);
@@ -194,7 +196,7 @@ export default function DealsPage() {
               </button>
             </div>
             <Can I="CREATE" a="DEAL">
-              <Button onClick={() => router.push("/dashboard/deals/new")}>
+              <Button onClick={() => router.push(portalPath("/deals/new"))}>
                 <Plus size={16} />
                 Thêm giao dịch
               </Button>
@@ -231,7 +233,7 @@ export default function DealsPage() {
           description="Thêm giao dịch đầu tiên để bắt đầu quản lý"
           action={
             <Can I="CREATE" a="DEAL">
-              <Button onClick={() => router.push("/dashboard/deals/new")}>
+              <Button onClick={() => router.push(portalPath("/deals/new"))}>
                 <Plus size={16} />
                 Thêm giao dịch
               </Button>
@@ -244,7 +246,7 @@ export default function DealsPage() {
           {view === "kanban" ? (
             <KanbanBoard
               columns={columns}
-              onCardClick={(deal) => router.push(`/dashboard/deals/${deal.id}`)}
+              onCardClick={(deal) => router.push(portalPath(`/deals/${deal.id}`))}
               onDrop={handleDrop}
               renderCard={renderDealInfo}
             />
@@ -268,7 +270,7 @@ export default function DealsPage() {
                     return (
                       <tr
                         key={deal.id}
-                        onClick={() => router.push(`/dashboard/deals/${deal.id}`)}
+                        onClick={() => router.push(portalPath(`/deals/${deal.id}`))}
                         className="cursor-pointer border-b border-border hover:bg-surface-muted/30"
                       >
                         <td className="px-4 py-3 font-medium tabular-nums">{deal.dealCode}</td>
@@ -290,7 +292,7 @@ export default function DealsPage() {
                           </Badge>
                         </td>
                         <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
-                          <Can I="DELETE" a="DEAL">
+                          <Can I="DELETE_OWN" a="DEAL">
                             <Button
                               variant="ghost"
                               size="icon-sm"
@@ -335,7 +337,7 @@ export default function DealsPage() {
             )}
             <div className="flex items-center justify-end gap-2">
               <Button variant="outline" onClick={() => setDeleteTarget(null)}>Hủy</Button>
-              <Can I="DELETE" a="DEAL">
+              <Can I="DELETE_OWN" a="DEAL">
                 <Button variant="destructive" disabled={isDeleting} onClick={handleDelete}>
                   {isDeleting ? "Đang xóa..." : "Xóa"}
                 </Button>
