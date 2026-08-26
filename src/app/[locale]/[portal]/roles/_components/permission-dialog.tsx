@@ -6,7 +6,6 @@ import {
   Check,
   Key,
   Loader2,
-  Lock,
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -88,8 +87,6 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
 
   const { mutateAsync: updatePermissions } = usePutApiRoleIdPermissions();
 
-  const isLocked = role?.code === "SUPER_ADMIN";
-
   const filteredModules = useMemo(() => {
     if (!search.trim()) return permissionModules;
     const q = search.toLowerCase();
@@ -102,15 +99,13 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
 
   const handleToggle = useCallback(
     (module: string, action: string) => {
-      if (isLocked) return;
       setPermissionSet((prev) => togglePermissionInSet(prev, module, action));
     },
-    [isLocked],
+    [],
   );
 
   const handleToggleModule = useCallback(
     (moduleActions: PermissionActionDef[], module: string) => {
-      if (isLocked) return;
       setPermissionSet((prev) => {
         const next = new Set(prev);
         const allChecked = moduleActions.every((a) =>
@@ -124,7 +119,7 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
         return next;
       });
     },
-    [isLocked],
+    [],
   );
 
   const hasChanges = useMemo(() => {
@@ -140,10 +135,17 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
     if (!role || !roleId) return;
     setSaving(true);
     try {
-      const perms: PermissionEntryDto[] = Array.from(permissionSet).map((key) => {
-        const [module, action] = key.split(":");
-        return { module, action };
-      });
+      const validKeys = new Set<string>(
+        permissionModules.flatMap((m) =>
+          m.actions.map((a) => `${m.module}:${a.action}`),
+        ),
+      );
+      const perms: PermissionEntryDto[] = Array.from(permissionSet)
+        .filter((key) => validKeys.has(key))
+        .map((key) => {
+          const [module, action] = key.split(":");
+          return { module, action };
+        });
       await updatePermissions({
         id: roleId,
         data: { permissions: perms },
@@ -171,24 +173,11 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
             <DialogTitle className="flex items-center gap-2">
               <Key size={18} />
               Phân quyền: {roleLoading ? "..." : role?.name}
-              {isLocked && (
-                <Badge variant="yellow" className="ml-1">
-                  <Lock size={10} />
-                  Khóa
-                </Badge>
-              )}
             </DialogTitle>
             <DialogDescription>
               {role?.description || "Chọn các quyền cho role này"}
             </DialogDescription>
           </DialogHeader>
-
-          {isLocked && (
-            <div className="rounded-lg bg-accent-yellow/20 px-4 py-3 text-sm text-accent-yellow-text flex items-center gap-2">
-              <Lock size={14} />
-              SUPER_ADMIN có toàn quyền, không thể chỉnh sửa.
-            </div>
-          )}
 
           <Tabs defaultValue="permissions" className="flex-1 flex flex-col min-h-0">
             <TabsList className="w-full">
@@ -230,7 +219,6 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
                         key={mod.module}
                         mod={mod}
                         permissionSet={permissionSet}
-                        isLocked={isLocked}
                         onToggle={handleToggle}
                         onToggleModule={handleToggleModule}
                       />
@@ -252,10 +240,10 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
                   >
                     Hủy
                   </Button>
-                  <Can I="UPDATE" a="TENANT">
+                  <Can I="UPDATE" a="ROLE">
                     <Button
                       onClick={handleSave}
-                      disabled={saving || isLocked || !hasChanges}
+                      disabled={saving || !hasChanges}
                     >
                       {saving ? (
                         <>
@@ -277,7 +265,7 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
             {/* ── Tab: Users ── */}
             <TabsContent value="users" className="flex-1 flex flex-col min-h-0">
               {roleId && (
-                <RoleUsersTab roleId={roleId} isLocked={isLocked} />
+                <RoleUsersTab roleId={roleId} />
               )}
             </TabsContent>
           </Tabs>

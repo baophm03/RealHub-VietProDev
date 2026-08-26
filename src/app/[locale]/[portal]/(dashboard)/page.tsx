@@ -9,9 +9,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useGetApiLeads } from "@/lib/api/endpoints/leads";
-import { useGetApiDashboardSummary } from "@/lib/api/endpoints/dashboard";
-import type { GetLeadsResponse } from "@/lib/api/types/leads";
+import { useGetApiDashboardSummary, useGetApiDashboardRecentLeads } from "@/lib/api/endpoints/dashboard";
 import type { DashboardSummary } from "@/lib/api/types/dashboard";
 
 function formatNumber(n: number): string {
@@ -31,12 +29,8 @@ export default function DashboardPage() {
   const { data: summaryData } = useGetApiDashboardSummary();
   const summary = (summaryData as unknown as DashboardSummary)?.data;
 
-  const { data: leadsData } = useGetApiLeads({
-    limit: "5",
-    offset: "0",
-  });
-
-  const leads = ((leadsData as unknown as GetLeadsResponse)?.data) || [];
+  const { data: leadsData } = useGetApiDashboardRecentLeads();
+  const leads = ((leadsData as unknown as any)?.data) || [];
 
   const stats = [
     {
@@ -104,7 +98,7 @@ export default function DashboardPage() {
           <CardHeader className="flex-row items-center justify-between gap-2">
             <CardTitle>Khách hàng tiềm năng</CardTitle>
             <a
-              href="/dashboard/leads"
+              href="/leads"
               className="group inline-flex items-center gap-1.5 text-xs font-medium text-foreground-muted transition-colors hover:text-foreground shrink-0"
             >
               Xem tất cả
@@ -116,7 +110,7 @@ export default function DashboardPage() {
           <CardContent>
             <div className="flex flex-col divide-y divide-border">
               {leads.length > 0 ? (
-                leads.map((lead) => {
+                leads.map((lead: any) => {
                   const statusCfg = leadStatusConfig[lead.status] ?? { label: lead.status, variant: "default" as const };
                   return (
                     <div

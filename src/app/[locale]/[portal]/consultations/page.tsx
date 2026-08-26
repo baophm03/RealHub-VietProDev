@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
   Calendar,
   Check,
@@ -79,6 +80,7 @@ const statusConfig: Record<
 
 export default function ConsultationsPage() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<PropertyContact["status"] | "ALL">("ALL");
   const [detailContact, setDetailContact] = useState<PropertyContact | null>(null);
@@ -140,7 +142,7 @@ export default function ConsultationsPage() {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                router.push(`/dashboard/properties/${property.id}`);
+                router.push(portalPath(`/properties/${property.id}`));
               }}
               className="group flex flex-col gap-0.5 text-left"
             >
@@ -324,7 +326,7 @@ export default function ConsultationsPage() {
                             size="icon-sm"
                             aria-label="Xem bất động sản"
                             onClick={() => {
-                              router.push(`/dashboard/properties/${detailContact.property!.id}`);
+                              router.push(portalPath(`/properties/${detailContact.property!.id}`));
                               setDetailContact(null);
                             }}
                           >
@@ -381,7 +383,7 @@ export default function ConsultationsPage() {
                 </div>
 
                 {/* Status actions */}
-                <Can I="UPDATE" a="PROPERTY">
+                <Can I="UPDATE_OWN" a="PROPERTY">
                   <div className="flex flex-wrap items-center gap-2 border-t border-border pt-4">
                     <span className="text-xs font-medium text-foreground-muted mr-auto">
                       Cập nhật trạng thái:

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { Plus } from "lucide-react";
 import { Can } from "@casl/react";
 import { PageHeader } from "@/components/shared/page-header";
@@ -53,6 +54,7 @@ const columns: ColumnDef<PlanRow>[] = [
 
 export default function CommissionPlansPage() {
   const router = useRouter();
+  const portalPath = usePortalPath();
 
   const { data: plansData, isLoading } = useGetApiCommissionPlans({
     status: undefined
@@ -67,7 +69,7 @@ export default function CommissionPlansPage() {
         description="Quản lý kế hoạch hoa hồng, quy tắc và phân chia"
         actions={
           <Can I="CREATE" a="COMMISSION">
-            <Button onClick={() => router.push("/dashboard/commission/plans/new")}>
+            <Button onClick={() => router.push(portalPath("/commission/plans/new"))}>
               <Plus size={16} />
               Thêm kế hoạch
             </Button>
@@ -81,7 +83,7 @@ export default function CommissionPlansPage() {
         <DataTable
           columns={columns}
           data={plans}
-          onRowClick={(row) => router.push(`/dashboard/commission/plans/${row.id}`)}
+          onRowClick={(row) => router.push(portalPath(`/commission/plans/${row.id}`))}
         />
       )}
     </div>);

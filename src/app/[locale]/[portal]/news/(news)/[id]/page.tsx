@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -50,6 +51,7 @@ type NewsFormData = z.infer<typeof newsSchema>;
 export default function NewsFormPage() {
   const params = useParams();
   const router = useRouter();
+  const portalPath = usePortalPath();
   const queryClient = useQueryClient();
   const id = params.id as string;
   const isCreate = id === "new";
@@ -139,7 +141,7 @@ export default function NewsFormPage() {
         ]);
         toast.success("Cập nhật bài viết thành công");
       }
-      router.push("/dashboard/news");
+      router.push(portalPath("/news"));
     } catch (err) {
       setError(
         (err as any)?.response?.data?.error?.message?.[0] ||
@@ -173,7 +175,7 @@ export default function NewsFormPage() {
     return (
       <div className="flex flex-col items-center gap-3 py-16 text-center">
         <p className="text-sm text-foreground-muted">Không tìm thấy bài viết.</p>
-        <Button variant="outline" onClick={() => router.push("/dashboard/news")}>
+        <Button variant="outline" onClick={() => router.push(portalPath("/news"))}>
           Quay lại
         </Button>
       </div>
@@ -184,7 +186,7 @@ export default function NewsFormPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => router.push("/dashboard/news")}
+          onClick={() => router.push(portalPath("/news"))}
           className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
           aria-label="Quay lại"
         >
@@ -273,7 +275,7 @@ export default function NewsFormPage() {
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="outline" onClick={() => router.push("/dashboard/news")}>
+          <Button type="button" variant="outline" onClick={() => router.push(portalPath("/news"))}>
             Hủy
           </Button>
           <Button type="submit" disabled={loading}>

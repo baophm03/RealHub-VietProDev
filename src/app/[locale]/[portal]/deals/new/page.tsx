@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -46,6 +47,7 @@ type DealFormData = z.infer<typeof dealSchema>;
 
 export default function DealFormPage() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [loading, setLoading] = useState(false);
   const [selectedTx, setSelectedTx] = useState("SALE");
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
@@ -111,7 +113,7 @@ export default function DealFormPage() {
         },
       });
       toast.success("Đã tạo giao dịch mới");
-      router.push("/dashboard/deals");
+      router.push(portalPath("/deals"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo giao dịch, vui lòng thử lại");
       console.error(err);
@@ -124,7 +126,7 @@ export default function DealFormPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => router.push("/dashboard/deals")}
+          onClick={() => router.push(portalPath("/deals"))}
           className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
           aria-label="Quay lại"
         >
@@ -253,7 +255,7 @@ export default function DealFormPage() {
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push("/dashboard/deals")}>
+          <Button type="button" variant="secondary" onClick={() => router.push(portalPath("/deals"))}>
             Hủy
           </Button>
           <Button type="submit" disabled={loading}>

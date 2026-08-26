@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { List as ListIcon, Plus, SquareKanban, Trash2, Users } from "lucide-react";
 import { Can } from "@casl/react";
 import { toast } from "sonner";
@@ -118,6 +119,7 @@ const sourceFilters: { value: GetApiLeadsSource | "ALL"; label: string }[] = [
 
 export default function LeadsPage() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [view, setView] = useState<"kanban" | "list">("kanban");
   const [statusFilter, setStatusFilter] = useState<GetApiLeadsStatus | "ALL">("ALL");
   const [sourceFilter, setSourceFilter] = useState<GetApiLeadsSource | "ALL">("ALL");
@@ -205,7 +207,7 @@ export default function LeadsPage() {
               </button>
             </div>
             <Can I="CREATE" a="LEAD">
-              <Button onClick={() => router.push("/dashboard/leads/new")}>
+              <Button onClick={() => router.push(portalPath("/leads/new"))}>
                 <Plus size={16} />
                 Thêm khách hàng
               </Button>
@@ -267,7 +269,7 @@ export default function LeadsPage() {
           description="Thêm khách hàng tiềm năng đầu tiên để bắt đầu quản lý CRM"
           action={
             <Can I="CREATE" a="LEAD">
-              <Button onClick={() => router.push("/dashboard/leads/new")}>
+              <Button onClick={() => router.push(portalPath("/leads/new"))}>
                 <Plus size={16} />
                 Thêm khách hàng
               </Button>
@@ -280,7 +282,7 @@ export default function LeadsPage() {
           {view === "kanban" ? (
             <KanbanBoard
               columns={columns}
-              onCardClick={(lead) => router.push(`/dashboard/leads/${lead.id}`)}
+              onCardClick={(lead) => router.push(portalPath(`/leads/${lead.id}`))}
               onDrop={handleDrop}
               renderCard={renderLeadInfo}
             />
@@ -304,7 +306,7 @@ export default function LeadsPage() {
                     return (
                       <tr
                         key={lead.id}
-                        onClick={() => router.push(`/dashboard/leads/${lead.id}`)}
+                        onClick={() => router.push(portalPath(`/leads/${lead.id}`))}
                         className="cursor-pointer border-b border-border hover:bg-surface-muted/30"
                       >
                         <td className="px-4 py-3 font-medium tabular-nums">{lead.leadCode}</td>
@@ -326,7 +328,7 @@ export default function LeadsPage() {
                           </Badge>
                         </td>
                         <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
-                          <Can I="DELETE" a="LEAD">
+                          <Can I="DELETE_OWN" a="LEAD">
                             <Button
                               variant="ghost"
                               size="icon-sm"

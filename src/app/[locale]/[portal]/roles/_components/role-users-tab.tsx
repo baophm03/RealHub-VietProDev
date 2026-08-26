@@ -26,10 +26,9 @@ import type {
 
 interface RoleUsersTabProps {
   roleId: string;
-  isLocked: boolean;
 }
 
-export function RoleUsersTab({ roleId, isLocked }: RoleUsersTabProps) {
+export function RoleUsersTab({ roleId }: RoleUsersTabProps) {
   const queryClient = useQueryClient();
 
   const { data: roleUsersData, isLoading } = useGetApiRoleIdUsers(roleId, {
@@ -208,12 +207,11 @@ export function RoleUsersTab({ roleId, isLocked }: RoleUsersTabProps) {
         <span className="text-xs text-foreground-muted">
           {roleUsers.length} thành viên
         </span>
-        <Can I="UPDATE" a="TENANT">
+        <Can I="UPDATE" a="ROLE">
           <Button
             variant="outline"
             size="sm"
             onClick={() => setShowPicker(true)}
-            disabled={isLocked}
           >
             <UserPlus size={14} />
             Gán người dùng
@@ -247,13 +245,13 @@ export function RoleUsersTab({ roleId, isLocked }: RoleUsersTabProps) {
                 <span className="text-xs text-foreground-muted tabular-nums">
                   {new Date(u.joinedAt).toLocaleDateString("vi-VN")}
                 </span>
-                <Can I="UPDATE" a="TENANT">
+                <Can I="UPDATE" a="ROLE">
                   <Button
                     variant="ghost"
                     size="icon-sm"
                     aria-label="Xóa khỏi role"
                     onClick={() => handleRemove(u.userId, u.fullName)}
-                    disabled={isLocked || removing}
+                    disabled={removing}
                     title="Xóa khỏi role"
                   >
                     <X size={14} />

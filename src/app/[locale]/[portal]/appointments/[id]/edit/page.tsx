@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -72,6 +73,7 @@ function toLocalDatetimeInput(iso?: string): string {
 export default function AppointmentEditPage() {
   const params = useParams();
   const router = useRouter();
+  const portalPath = usePortalPath();
   const id = params.id as string;
   const [loading, setLoading] = useState(false);
   const [selectedType, setSelectedType] = useState("SITE_VISIT");
@@ -154,7 +156,7 @@ export default function AppointmentEditPage() {
         },
       });
       toast.success("Đã cập nhật lịch hẹn");
-      router.push(`/dashboard/appointments/${id}`);
+      router.push(portalPath(`/appointments/${id}`));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật, vui lòng thử lại");
       console.error(err);
@@ -178,7 +180,7 @@ export default function AppointmentEditPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => router.push(`/dashboard/appointments/${id}`)} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lại">
+        <button onClick={() => router.push(portalPath(`/appointments/${id}`))} className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted" aria-label="Quay lại">
           <ArrowLeft size={20} />
         </button>
         <PageHeader eyebrow="Lịch hẹn" title="Chỉnh sửa lịch hẹn" />
@@ -282,7 +284,7 @@ export default function AppointmentEditPage() {
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push(`/dashboard/appointments/${id}`)}>Hủy</Button>
+          <Button type="button" variant="secondary" onClick={() => router.push(portalPath(`/appointments/${id}`))}>Hủy</Button>
           <Button type="submit" disabled={loading}>{loading ? "Đang lưu..." : "Cập nhật lịch hẹn"}</Button>
         </div>
       </form>

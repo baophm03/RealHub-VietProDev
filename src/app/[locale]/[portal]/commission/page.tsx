@@ -1,10 +1,12 @@
 "use client";
 
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { PageHeader } from "@/components/shared/page-header";
 import { Link } from "@/i18n/navigation";
 import { BarChart3, Percent } from "lucide-react";
 
 export default function CommissionPage() {
+  const portalPath = usePortalPath();
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
@@ -15,7 +17,7 @@ export default function CommissionPage() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Link
-          href="/dashboard/commission/plans"
+          href={portalPath("/commission/plans")}
           className="group flex flex-col gap-4 rounded-lg border border-border bg-surface p-6 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.08)]"
         >
           <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
@@ -28,7 +30,7 @@ export default function CommissionPage() {
         </Link>
 
         <Link
-          href="/dashboard/commission/reports"
+          href={portalPath("/commission/reports")}
           className="group flex flex-col gap-4 rounded-lg border border-border bg-surface p-6 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.08)]"
         >
           <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">

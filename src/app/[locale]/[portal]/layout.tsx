@@ -22,11 +22,13 @@ export default function PortalLayout({ children, params }: {
   const router = useRouter();
   const user = useUserStore((s) => s.user);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const hasHydrated = useAuthStore((s) => s._hasHydrated);
 
   const isValidPortal = isValidPortalSlug(portal);
   const hasPermission = isValidPortal && canAccessPortal(portal, user?.role?.code);
 
   useEffect(() => {
+    if (!hasHydrated) return;
     if (!isValidPortal) {
       notFound();
       return;
@@ -38,9 +40,9 @@ export default function PortalLayout({ children, params }: {
     if (!isAuthenticated) {
       router.push("/login");
     }
-  }, [isValidPortal, hasPermission, isAuthenticated, router]);
+  }, [isValidPortal, hasPermission, isAuthenticated, hasHydrated, router]);
 
-  if (!isValidPortal || !hasPermission) return null;
+  if (!hasHydrated || !isValidPortal || !hasPermission) return null;
 
   return (
     <AuthGuard>

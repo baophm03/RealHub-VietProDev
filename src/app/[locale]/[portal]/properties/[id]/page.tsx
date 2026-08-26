@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import Link from "next/link";
 import { formatPrice } from "@/utils";
 import {
@@ -26,6 +27,7 @@ import { ImageLightbox, type LightboxImage } from "@/components/shared/image-lig
 export default function PropertyDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const portalPath = usePortalPath();
   const id = params.id as string;
 
   // server
@@ -185,7 +187,7 @@ export default function PropertyDetailPage() {
       {/* Back button + Edit */}
       <div className="flex items-center justify-between">
         <button
-          onClick={() => router.push("/dashboard/properties")}
+          onClick={() => router.push(portalPath("/properties"))}
           className="group inline-flex items-center gap-2 text-sm font-medium text-foreground-muted transition-colors hover:text-foreground"
         >
           <span className="inline-flex size-8 items-center justify-center rounded-lg bg-surface-muted transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:-translate-x-0.5">
@@ -196,7 +198,7 @@ export default function PropertyDetailPage() {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => router.push(`/dashboard/properties/${params.id}/edit`)}
+          onClick={() => router.push(portalPath(`/properties/${params.id}/edit`))}
         >
           <Pencil size={14} />
           Chỉnh sửa
@@ -206,7 +208,7 @@ export default function PropertyDetailPage() {
       {/* Breadcrumbs & Header */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2 text-sm text-foreground-muted">
-          <Link href="/dashboard/properties" className="transition-colors hover:text-foreground">
+          <Link href={portalPath("/properties")} className="transition-colors hover:text-foreground">
             Bất động sản
           </Link>
           <ChevronRight size={12} />

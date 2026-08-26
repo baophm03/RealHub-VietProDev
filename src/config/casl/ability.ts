@@ -3,8 +3,14 @@ import { createMongoAbility, MongoAbility } from '@casl/ability';
 export type Actions =
     | 'CREATE'
     | 'READ'
+    | 'READ_OWN'
+    | 'READ_ALL'
     | 'UPDATE'
+    | 'UPDATE_OWN'
+    | 'UPDATE_ALL'
     | 'DELETE'
+    | 'DELETE_OWN'
+    | 'DELETE_ALL'
     | 'EXPORT'
     | 'ASSIGN'
     | 'APPROVE';

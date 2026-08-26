@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
   ArrowLeft,
   Clock,
@@ -161,6 +162,7 @@ function toLocalDatetimeInput(iso?: string): string {
 export default function DealDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const portalPath = usePortalPath();
   const id = params.id as string;
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [activityType, setActivityType] = useState("NOTE");
@@ -207,7 +209,7 @@ export default function DealDetailPage() {
     try {
       await deleteDeal({ id });
       toast.success(`Đã xóa giao dịch "${deal?.dealCode}"`);
-      router.push("/dashboard/deals");
+      router.push(portalPath("/deals"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa giao dịch thất bại");
       console.error(err);
@@ -298,7 +300,7 @@ export default function DealDetailPage() {
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => router.push("/dashboard/deals")}
+            onClick={() => router.push(portalPath("/deals"))}
             className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
             aria-label="Quay lại"
           >
@@ -315,7 +317,7 @@ export default function DealDetailPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => router.push("/dashboard/deals")}
+            onClick={() => router.push(portalPath("/deals"))}
             className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
             aria-label="Quay lại"
           >
@@ -324,13 +326,13 @@ export default function DealDetailPage() {
           <PageHeader eyebrow="Giao dịch" title={deal.dealCode} />
         </div>
         <div className="flex items-center gap-2">
-          <Can I="UPDATE" a="DEAL">
-            <Button variant="outline" onClick={() => router.push(`/dashboard/deals/${id}/edit`)}>
+          <Can I="UPDATE_OWN" a="DEAL">
+            <Button variant="outline" onClick={() => router.push(portalPath(`/deals/${id}/edit`))}>
               <Pencil size={16} />
               Chỉnh sửa
             </Button>
           </Can>
-          <Can I="DELETE" a="DEAL">
+          <Can I="DELETE_OWN" a="DEAL">
             <Button variant="destructive" onClick={() => setDeleteOpen(true)}>
               <Trash2 size={16} />
               Xóa
@@ -375,7 +377,7 @@ export default function DealDetailPage() {
                   <div className="flex flex-col">
                     <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Khách hàng</span>
                     <button
-                      onClick={() => router.push(`/dashboard/customers/${deal.customer!.id}`)}
+                      onClick={() => router.push(portalPath(`/customers/${deal.customer!.id}`))}
                       className="text-left text-sm text-primary hover:underline"
                     >
                       {deal.customer.fullName}
@@ -389,7 +391,7 @@ export default function DealDetailPage() {
                   <div className="flex flex-col">
                     <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">BĐS</span>
                     <button
-                      onClick={() => router.push(`/dashboard/properties/${deal.property!.id}`)}
+                      onClick={() => router.push(portalPath(`/properties/${deal.property!.id}`))}
                       className="text-left text-sm text-primary hover:underline"
                     >
                       {deal.property.title}
@@ -404,7 +406,7 @@ export default function DealDetailPage() {
                   <div className="flex flex-col">
                     <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Khách hàng tiềm năng</span>
                     <button
-                      onClick={() => router.push(`/dashboard/leads/${deal.lead!.id}`)}
+                      onClick={() => router.push(portalPath(`/leads/${deal.lead!.id}`))}
                       className="text-left text-sm text-primary hover:underline"
                     >
                       {deal.lead.leadCode}
@@ -427,7 +429,7 @@ export default function DealDetailPage() {
           </div>
 
           {/* Status update */}
-          <Can I="UPDATE" a="DEAL">
+          <Can I="UPDATE_OWN" a="DEAL">
             <div className="rounded-lg border border-border bg-surface p-6">
               <h3 className="text-sm font-semibold mb-4">Cập nhật trạng thái</h3>
               <div className="flex flex-wrap items-center gap-2">

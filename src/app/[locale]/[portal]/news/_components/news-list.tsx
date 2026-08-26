@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
   Loader2,
   Newspaper,
@@ -38,6 +39,7 @@ function formatDate(iso: string): string {
 
 export function NewsList() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [search, setSearch] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -102,14 +104,14 @@ export function NewsList() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/dashboard/news/${row.original.id}`);
+              router.push(portalPath(`/news/${row.original.id}`));
             }}
             className="rounded-md p-1.5 text-foreground-muted transition-colors hover:bg-surface-muted hover:text-foreground"
             aria-label="Sửa"
           >
             <Pencil size={16} />
           </button>
-          <Can I="DELETE" a="NEWS">
+          <Can I="DELETE_OWN" a="NEWS">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -142,7 +144,7 @@ export function NewsList() {
           className="w-full sm:w-auto min-w-0"
         />
         <Can I="CREATE" a="NEWS">
-          <Button onClick={() => router.push("/dashboard/news/new")}>
+          <Button onClick={() => router.push(portalPath("/news/new"))}>
             <Plus size={16} />
             Thêm bài viết
           </Button>
@@ -157,7 +159,7 @@ export function NewsList() {
         <DataTable
           columns={columns}
           data={filtered}
-          onRowClick={(row) => router.push(`/dashboard/news/${row.id}`)}
+          onRowClick={(row) => router.push(portalPath(`/news/${row.id}`))}
           emptyMessage="Không tìm thấy bài viết nào"
         />
       ) : (
@@ -167,7 +169,7 @@ export function NewsList() {
           description="Tạo bài viết đầu tiên để hiển thị trên trang tin tức"
           action={
             <Can I="CREATE" a="NEWS">
-              <Button onClick={() => router.push("/dashboard/news/new")}>
+              <Button onClick={() => router.push(portalPath("/news/new"))}>
                 <Plus size={16} />
                 Thêm bài viết
               </Button>

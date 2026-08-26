@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -96,6 +97,7 @@ type PropertyFormData = z.infer<typeof propertySchema>;
 export default function PropertyEditPage() {
   const params = useParams();
   const router = useRouter();
+  const portalPath = usePortalPath();
   const id = params.id as string;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -188,7 +190,7 @@ export default function PropertyEditPage() {
       await updateProperty({ id, data: { ...data, dynamicValuesJson: Object.keys(dynamicValues).length > 0 ? dynamicValues : undefined } });
       await queryClient.invalidateQueries({ queryKey: getGetApiPropertyIdQueryKey(id) });
       toast.success("Cập nhật bất động sản thành công");
-      router.push(`/dashboard/properties/${id}`);
+      router.push(portalPath(`/properties/${id}`));
     } catch (err) {
       setError((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật bất động sản. Vui lòng thử lại.");
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật bất động sản");
@@ -214,7 +216,7 @@ export default function PropertyEditPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => router.push(`/dashboard/properties/${id}`)}
+          onClick={() => router.push(portalPath(`/properties/${id}`))}
           className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
           aria-label="Quay lai"
         >
@@ -485,7 +487,7 @@ export default function PropertyEditPage() {
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push(`/dashboard/properties/${id}`)}>
+          <Button type="button" variant="secondary" onClick={() => router.push(portalPath(`/properties/${id}`))}>
             Hủy
           </Button>
           <Button type="submit" disabled={loading}>

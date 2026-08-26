@@ -39,6 +39,7 @@ export function DataTable<TData, TValue>({
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
+                  style={{ width: header.getSize() ? header.getSize() : undefined }}
                   className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-foreground-muted"
                 >
                   {header.isPlaceholder
@@ -64,7 +65,11 @@ export function DataTable<TData, TValue>({
                 )}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-4 py-3">
+                  <td
+                    key={cell.id}
+                    style={{ width: cell.column.getSize() ? cell.column.getSize() : undefined }}
+                    className="px-4 py-3"
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}

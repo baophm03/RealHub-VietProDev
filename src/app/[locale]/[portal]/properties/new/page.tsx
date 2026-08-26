@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -100,6 +101,7 @@ export default function PropertyFormPage() {
 
 function PropertyFormContent() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -170,9 +172,9 @@ function PropertyFormContent() {
       const newId = (result as any)?.id || (result as any)?.data?.id;
       toast.success("Tạo bất động sản thành công");
       if (newId) {
-        router.push(`/dashboard/properties/${newId}/edit`);
+        router.push(portalPath(`/properties/${newId}/edit`));
       } else {
-        router.push("/dashboard/properties");
+        router.push(portalPath("/properties"));
       }
     } catch (err) {
       setError((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo bất động sản. Vui lòng thử lại.");
@@ -187,7 +189,7 @@ function PropertyFormContent() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => router.push("/dashboard/properties")}
+          onClick={() => router.push(portalPath("/properties"))}
           className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
           aria-label="Quay lại"
         >
@@ -452,7 +454,7 @@ function PropertyFormContent() {
         />
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push("/dashboard/properties")}>
+          <Button type="button" variant="secondary" onClick={() => router.push(portalPath("/properties"))}>
             Hủy
           </Button>
           <Button type="submit" disabled={loading}>

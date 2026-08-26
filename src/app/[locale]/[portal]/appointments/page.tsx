@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -73,6 +74,7 @@ const statusFilters: { value: GetApiAppointmentsStatus | "ALL"; label: string }[
 
 export default function AppointmentsPage() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [view, setView] = useState<"list" | "calendar">("list");
   const [statusFilter, setStatusFilter] = useState<GetApiAppointmentsStatus | "ALL">("ALL");
   const [search, setSearch] = useState("");
@@ -113,7 +115,7 @@ export default function AppointmentsPage() {
               </button>
             </div>
             <Can I="CREATE" a="APPOINTMENT">
-              <Button onClick={() => router.push("/dashboard/appointments/new")}>
+              <Button onClick={() => router.push(portalPath("/appointments/new"))}>
                 <Plus size={16} />
                 Thêm lịch hẹn
               </Button>
@@ -167,7 +169,7 @@ export default function AppointmentsPage() {
             return (
               <div
                 key={apt.id}
-                onClick={() => router.push(`/dashboard/appointments/${apt.id}`)}
+                onClick={() => router.push(portalPath(`/appointments/${apt.id}`))}
                 className="flex cursor-pointer flex-col gap-3 rounded-lg border border-border bg-surface p-4 transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)] sm:flex-row sm:items-center"
               >
                 <div className="flex size-12 shrink-0 flex-col items-center justify-center rounded-lg bg-surface-muted">
@@ -192,7 +194,7 @@ export default function AppointmentsPage() {
                   <Badge variant={statusCfg.variant} className="shrink-0">
                     {statusCfg.label}
                   </Badge>
-                  <Can I="DELETE" a="APPOINTMENT">
+                  <Can I="DELETE_OWN" a="APPOINTMENT">
                     <Button
                       variant="ghost"
                       size="icon-sm"
@@ -217,7 +219,7 @@ export default function AppointmentsPage() {
           description="Tạo lịch hẹn đầu tiên để quản lý các buổi xem nhà, gặp mặt"
           action={
             <Can I="CREATE" a="APPOINTMENT">
-              <Button onClick={() => router.push("/dashboard/appointments/new")}>
+              <Button onClick={() => router.push(portalPath("/appointments/new"))}>
                 <Plus size={16} />
                 Thêm lịch hẹn
               </Button>

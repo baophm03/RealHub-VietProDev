@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -40,6 +41,7 @@ const statusLabels: Record<string, string> = {
 
 export default function ProjectFormPage() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedProvinceId, setSelectedProvinceId] = useState<string | undefined>(undefined);
@@ -78,7 +80,7 @@ export default function ProjectFormPage() {
     try {
       await createProject({ data });
       toast.success("Tạo dự án thành công");
-      router.push("/dashboard/projects");
+      router.push(portalPath("/projects"));
     } catch (err) {
       setError((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo dự án. Vui lòng thử lại.");
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo dự án");
@@ -92,7 +94,7 @@ export default function ProjectFormPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => router.push("/dashboard/projects")}
+          onClick={() => router.push(portalPath("/projects"))}
           className="rounded-md p-2 text-foreground-muted hover:bg-surface-muted"
           aria-label="Quay lại"
         >
@@ -198,7 +200,7 @@ export default function ProjectFormPage() {
         </FormSection>
 
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => router.push("/dashboard/projects")}>
+          <Button type="button" variant="secondary" onClick={() => router.push(portalPath("/projects"))}>
             Hủy
           </Button>
           <Button type="submit" disabled={loading}>

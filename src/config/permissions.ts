@@ -1,7 +1,4 @@
-// Permission helpers using "module:action" string keys.
-// Matrix data itself comes from GET /api/permissions (BE source of truth).
-
-export type PermissionKey = string; // "MODULE:ACTION"
+export type PermissionKey = string;
 
 export const permKey = (module: string, action: string): PermissionKey =>
   `${module}:${action}`;

@@ -15,16 +15,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getPortalEntry } from "@/config/portal-entry";
+import { usePostApiLogout } from "@/lib/api/endpoints/auth";
 
 export interface HeaderAuthDropdownProps {
   initials: string;
 }
 
 export function HeaderAuthDropdown({ initials }: HeaderAuthDropdownProps) {
-  const t = useTranslations("public");
+  const router = useRouter();
   const user = useUserStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
-  const router = useRouter();
+
+  const { mutate: logoutAsync } = usePostApiLogout();
+
+  const handleLogout = async () => {
+    await logoutAsync();
+    await logout();
+    await router.push("/");
+  }
 
   return (
     <DropdownMenu>
@@ -65,10 +73,7 @@ export function HeaderAuthDropdown({ initials }: HeaderAuthDropdownProps) {
           );
         })()}
         <DropdownMenuItem
-          onClick={() => {
-            logout();
-            router.push("/login");
-          }}
+          onClick={handleLogout}
           className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-accent-red-text hover:bg-accent-red/10 cursor-pointer outline-none transition-colors"
         >
           <LogOut size={16} />

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { Building2, Filter, Plus, Trash2 } from "lucide-react";
 import { Can } from "@casl/react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ const statusLabel: Record<string, string> = {
 
 export default function ProjectsPage() {
   const router = useRouter();
+  const portalPath = usePortalPath();
   const [search, setSearch] = useState("");
   const [pendingDelete, setPendingDelete] = useState<Project | null>(null);
 
@@ -102,7 +104,7 @@ export default function ProjectsPage() {
       id: "actions",
       header: "",
       cell: ({ row }) => (
-        <Can I="DELETE" a="PROPERTY">
+        <Can I="DELETE_OWN" a="PROPERTY">
           <Button
             variant="ghost"
             size="icon"
@@ -143,7 +145,7 @@ export default function ProjectsPage() {
             </Button>
           </div>
           <Can I="CREATE" a="PROPERTY">
-            <Button onClick={() => router.push("/dashboard/projects/new")}>
+            <Button onClick={() => router.push(portalPath("/projects/new"))}>
               <Plus size={16} />
               Thêm dự án
             </Button>
@@ -154,7 +156,7 @@ export default function ProjectsPage() {
           <DataTable
             columns={columns}
             data={filtered}
-            onRowClick={(row) => router.push(`/dashboard/projects/${row.id}`)}
+            onRowClick={(row) => router.push(portalPath(`/projects/${row.id}`))}
             emptyMessage="Không tìm thấy dự án nào"
           />
         ) : (
@@ -164,7 +166,7 @@ export default function ProjectsPage() {
             description="Tạo dự án đầu tiên để nhóm bất động sản theo dự án"
             action={
               <Can I="CREATE" a="PROPERTY">
-                <Button onClick={() => router.push("/dashboard/projects/new")}>
+                <Button onClick={() => router.push(portalPath("/projects/new"))}>
                   <Plus size={16} />
                   Thêm dự án
                 </Button>

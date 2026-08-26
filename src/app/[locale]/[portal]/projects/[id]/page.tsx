@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -102,6 +103,7 @@ function firstImageUrl(property: ProjectProperty): string | null {
 export default function ProjectDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const portalPath = usePortalPath();
   const id = params.id as string;
   const [deleteOpen, setDeleteOpen] = useState(false);
 
@@ -132,7 +134,7 @@ export default function ProjectDetailPage() {
     return (
       <div className="mx-auto max-w-[1400px] px-6 py-8 md:px-8 md:py-12 lg:px-12">
         <Link
-          href="/dashboard/properties"
+          href={portalPath("/properties")}
           className="mb-6 inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
         >
           <ArrowLeft size={16} /> Quay lại danh sách
@@ -155,21 +157,21 @@ export default function ProjectDetailPage() {
     <div className="mx-auto max-w-[1400px] px-6 py-8 md:px-8 md:py-12 lg:px-12">
       <div className="mb-6 flex items-center justify-between">
         <Link
-          href="/dashboard/properties"
+          href={portalPath("/properties")}
           className="inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
         >
           <ArrowLeft size={16} /> Quay lại danh sách
         </Link>
         <div className="flex items-center gap-2 text-sm text-foreground-muted">
           <Link
-            href="/dashboard/properties"
+            href={portalPath("/properties")}
             className="transition-colors hover:text-foreground"
           >
             Bất động sản
           </Link>
           <ChevronRight size={12} />
           <Link
-            href="/dashboard/properties?tab=projects"
+            href={portalPath("/properties?tab=projects")}
             className="transition-colors hover:text-foreground"
           >
             Dự án
@@ -183,7 +185,7 @@ export default function ProjectDetailPage() {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => router.push(`/dashboard/projects/${id}/edit`)}
+          onClick={() => router.push(portalPath(`/projects/${id}/edit`))}
         >
           <Pencil size={14} />
           Chỉnh sửa
@@ -301,7 +303,7 @@ export default function ProjectDetailPage() {
           <div className="flex items-center justify-between border-b border-border pb-3">
             <h2 className="font-serif text-xl font-semibold">Bất động sản thuộc dự án</h2>
             <Button
-              onClick={() => router.push(`/dashboard/properties/new?projectId=${id}`)}
+              onClick={() => router.push(portalPath(`/properties/new?projectId=${id}`))}
               size="sm"
             >
               <Plus size={16} />
@@ -326,7 +328,7 @@ export default function ProjectDetailPage() {
                 return (
                   <Link
                     key={property.id}
-                    href={`/dashboard/properties/${property.id}`}
+                    href={portalPath(`/properties/${property.id}`)}
                     className="group flex flex-col bg-surface rounded-xl border border-border overflow-hidden hover:border-primary transition-colors shadow-sm hover:shadow-md"
                   >
                     {/* Image */}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { Loader2, Lock, Trash2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,9 +30,8 @@ export function DeleteRoleDialog({ role, open, onOpenChange }: DeleteRoleDialogP
   const queryClient = useQueryClient();
   const { mutateAsync: deleteRole, isPending } = useDeleteApiRoleId();
 
-  const isSystem = role?.isSystem;
   const hasMembers = (role?._count?.memberships ?? 0) > 0;
-  const canDelete = !isSystem && !hasMembers;
+  const canDelete = !hasMembers;
 
   const handleDelete = async () => {
     if (!role) return;
@@ -76,21 +75,12 @@ export function DeleteRoleDialog({ role, open, onOpenChange }: DeleteRoleDialogP
             </div>
           )}
 
-          {isSystem && (
-            <div className="rounded-lg bg-accent-red/10 px-4 py-3 text-sm text-accent-red flex items-center gap-2">
-              <Lock size={14} />
-              Role hệ thống không thể xóa.
-            </div>
-          )}
-
-          {!isSystem && hasMembers && (
+          {hasMembers ? (
             <div className="rounded-lg bg-accent-yellow/20 px-4 py-3 text-sm text-accent-yellow-text">
               Không thể xóa: role đang có {role?._count?.memberships} thành viên.
               Vui lòng gán lại user sang role khác trước khi xóa.
             </div>
-          )}
-
-          {canDelete && (
+          ) : (
             <div className="rounded-lg bg-accent-red/10 px-4 py-3 text-sm text-accent-red">
               Bạn có chắc chắn muốn xóa role này? Tất cả quyền sẽ bị xóa theo.
             </div>
