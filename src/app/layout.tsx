@@ -1,6 +1,30 @@
 import { Geist, Newsreader, Geist_Mono } from "next/font/google";
+import type { Metadata } from "next";
 import "./globals.css";
 import { QueryProvider } from "@/providers/query-provider";
+
+const siteUrl = "https://realhub.vn";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title: "RealHub - Nền tảng bất động sản",
+  description: "Hệ thống mua bán quản lý bất động sản cho đa người dùng",
+  openGraph: {
+    title: "RealHub - Nền tảng bất động sản",
+    description: "Hệ thống mua bán quản lý bất động sản cho đa người dùng",
+    type: "website",
+    siteName: "RealHub",
+    url: siteUrl,
+  },
+  alternates: {
+    canonical: siteUrl,
+    languages: {
+      vi: `${siteUrl}/vi`,
+      en: `${siteUrl}/en`,
+      "x-default": `${siteUrl}/vi`,
+    },
+  },
+};
 
 const geist = Geist({
   variable: "--font-geist-sans",
