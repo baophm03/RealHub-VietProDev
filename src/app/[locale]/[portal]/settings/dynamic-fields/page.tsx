@@ -10,6 +10,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { ability } from "@/config/casl/ability";
 import { GroupsTab } from "./components/groups-tab";
 import { DefinitionsTab } from "./components/definitions-tab";
 import { FormSchemasTab } from "./components/form-schemas-tab";
@@ -26,7 +27,7 @@ type PropertyType = {
 const entityTypeOptions: { value: string; label: string }[] = [
   { value: "PROPERTY", label: "Bất động sản" },
   { value: "CUSTOMER_NEED", label: "Nhu cầu khách hàng" },
-  { value: "LEAD", label: "Khách tiềm năng" },
+  { value: "LEAD", label: "Nguồn khách hàng" },
   { value: "DEAL", label: "Giao dịch" },
   { value: "OWNER_PROFILE", label: "Hồ sơ chủ nhà" },
 ];
@@ -34,6 +35,10 @@ const entityTypeOptions: { value: string; label: string }[] = [
 export default function DynamicFieldsPage() {
   const [entityType, setEntityType] = useState<string>("");
   const [propertyTypeId, setPropertyTypeId] = useState<string>("");
+
+  const canCreate = ability.can("CREATE", "DYNAMIC_FIELD");
+  const canUpdate = ability.can("UPDATE", "DYNAMIC_FIELD");
+  const canDelete = ability.can("DELETE", "DYNAMIC_FIELD");
 
   const { data: propertyTypesData } = useGetApiPropertyTypes();
   const propertyTypes = ((propertyTypesData as { data?: PropertyType[] } | undefined)?.data) || [];
@@ -110,6 +115,9 @@ export default function DynamicFieldsPage() {
           <GroupsTab
             entityType={entityType ? (entityType as GetApiFieldGroupsEntityType) : undefined}
             propertyTypeId={entityType === "PROPERTY" && propertyTypeId ? propertyTypeId : undefined}
+            canCreate={canCreate}
+            canUpdate={canUpdate}
+            canDelete={canDelete}
           />
         </TabsContent>
 
@@ -117,6 +125,9 @@ export default function DynamicFieldsPage() {
           <DefinitionsTab
             entityType={entityType ? (entityType as GetApiFieldGroupsEntityType) : undefined}
             propertyTypeId={entityType === "PROPERTY" && propertyTypeId ? propertyTypeId : undefined}
+            canCreate={canCreate}
+            canUpdate={canUpdate}
+            canDelete={canDelete}
           />
         </TabsContent>
 
@@ -124,6 +135,9 @@ export default function DynamicFieldsPage() {
           <FormSchemasTab
             entityType={entityType ? (entityType as GetApiFormSchemasEntityType) : undefined}
             propertyTypeId={entityType === "PROPERTY" && propertyTypeId ? propertyTypeId : undefined}
+            canCreate={canCreate}
+            canUpdate={canUpdate}
+            canDelete={canDelete}
           />
         </TabsContent>
       </Tabs>

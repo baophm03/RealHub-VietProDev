@@ -21,6 +21,8 @@ import { PageHeader } from "@/components/shared/page-header";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useGetApiPropertiesAdmin } from "@/lib/api/endpoints/properties";
 import { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
+import { usePagination } from "@/lib/hooks/use-pagination";
+import { PaginationBar } from "@/components/shared/pagination-bar";
 import { SubmitVerificationDialog } from "./_components/submit-verification-dialog";
 import { DeletePropertyDialog } from "./_components/delete-property-dialog";
 
@@ -71,8 +73,16 @@ export default function PropertiesPage() {
   const [pendingSubmit, setPendingSubmit] = useState<Property | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Property | null>(null);
 
-  const { data: propertiesData, refetch } = useGetApiPropertiesAdmin();
+  const pagination = usePagination(10);
+
+  const { data: propertiesData, refetch } = useGetApiPropertiesAdmin({
+    search: search.trim() || undefined,
+    limit: pagination.limit,
+    offset: pagination.offset,
+  });
   const properties = ((propertiesData as unknown as GetPropertiesResponse)?.data) || [];
+  const meta = (propertiesData as unknown as GetPropertiesResponse)?.meta;
+  const totalPages = meta?.totalPages ?? Math.max(1, Math.ceil((meta?.total ?? 0) / pagination.pageSize));
 
   const filtered = useMemo(
     () =>
@@ -222,13 +232,22 @@ export default function PropertiesPage() {
           </div>
         </div>
 
-        {filtered.length > 0 ? (
-          <DataTable
-            columns={columns}
-            data={filtered}
-            onRowClick={(row) => router.push(portalPath(`/properties/${row.id}`))}
-            emptyMessage="Không tìm thấy bất động sản nào"
-          />
+        {properties.length > 0 ? (
+          <>
+            <DataTable
+              columns={columns}
+              data={properties}
+              onRowClick={(row) => router.push(portalPath(`/properties/${row.id}`))}
+              emptyMessage="Không tìm thấy bất động sản nào"
+            />
+            <PaginationBar
+              pageSize={pagination.pageSize}
+              setPageSize={pagination.setPageSize}
+              currentPage={pagination.currentPage}
+              setCurrentPage={pagination.setCurrentPage}
+              totalPages={totalPages}
+            />
+          </>
         ) : (
           <EmptyState
             icon={<Building2 size={24} />}

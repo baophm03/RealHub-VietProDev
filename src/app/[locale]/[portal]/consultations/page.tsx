@@ -23,6 +23,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PaginationBar } from "@/components/shared/pagination-bar";
+import { usePagination } from "@/lib/hooks/use-pagination";
 import {
   Dialog,
   DialogContent,
@@ -94,14 +96,17 @@ export default function ConsultationsPage() {
     ((allContactsData as unknown as PropertyContactsResponse)?.data) || [];
 
   // Query for table (with filters)
+  const pagination = usePagination(10);
   const { data: contactsData, isLoading, refetch } = useGetApiPropertyContactsAdmin({
     status: statusFilter === "ALL" ? undefined : (statusFilter as GetApiPropertyContactsStatus),
     search: search.trim() || undefined,
-    limit: "50",
-    offset: "0",
+    limit: pagination.limit,
+    offset: pagination.offset,
   });
   const contacts =
     ((contactsData as unknown as PropertyContactsResponse)?.data) || [];
+  const meta = (contactsData as unknown as PropertyContactsResponse)?.meta;
+  const totalPages = meta?.totalPages ?? Math.max(1, Math.ceil((meta?.total ?? 0) / pagination.pageSize));
 
   const { mutateAsync: updateContact, isPending: isUpdating } = usePatchApiPropertyContactsId();
 
@@ -264,12 +269,21 @@ export default function ConsultationsPage() {
       {isLoading ? (
         <div className="h-96 animate-pulse rounded-lg bg-surface-muted" />
       ) : contacts.length > 0 ? (
-        <DataTable
-          columns={columns}
-          data={contacts}
-          onRowClick={(contact) => setDetailContact(contact)}
-          emptyMessage="Không có yêu cầu tư vấn"
-        />
+        <>
+          <DataTable
+            columns={columns}
+            data={contacts}
+            onRowClick={(contact) => setDetailContact(contact)}
+            emptyMessage="Không có yêu cầu tư vấn"
+          />
+          <PaginationBar
+            pageSize={pagination.pageSize}
+            setPageSize={pagination.setPageSize}
+            currentPage={pagination.currentPage}
+            setCurrentPage={pagination.setCurrentPage}
+            totalPages={totalPages}
+          />
+        </>
       ) : (
         <EmptyState
           icon={<Headset size={24} />}
@@ -285,7 +299,7 @@ export default function ConsultationsPage() {
       >
         <DialogPortal>
           <DialogOverlay />
-          <DialogContent className="sm:max-w-lg">
+          <DialogContent className="sm:max-w-2xl">
             <DialogHeader>
               <DialogTitle>Chi tiết yêu cầu tư vấn</DialogTitle>
               <DialogDescription>
@@ -307,8 +321,8 @@ export default function ConsultationsPage() {
                   </span>
                 </div>
 
-                {/* Two-column layout: property (left) | customer (right) */}
-                <div className="grid gap-4 sm:grid-cols-2">
+                {/* Stacked layout: property | customer */}
+                <div className="flex flex-col gap-4">
                   {/* Property info (left) */}
                   <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface-muted/40 p-4">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">

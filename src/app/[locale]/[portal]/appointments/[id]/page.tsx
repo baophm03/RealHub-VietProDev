@@ -276,7 +276,7 @@ export default function AppointmentDetailPage() {
                 <div className="flex items-start gap-2">
                   <SquareKanban size={16} className="text-foreground-muted shrink-0 mt-0.5" />
                   <div className="flex flex-col">
-                    <span className="text-xs text-foreground-muted">Khách hàng tiềm năng</span>
+                    <span className="text-xs text-foreground-muted">Nguồn khách hàng</span>
                     <button
                       onClick={() => router.push(portalPath(`/leads/${appointment.lead!.id}`))}
                       className="text-left text-primary hover:underline"

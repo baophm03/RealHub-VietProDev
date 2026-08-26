@@ -21,7 +21,7 @@ export function organizationJsonLd(locale: string) {
     url: locale === "vi" ? "https://realhub.vn" : "https://en.realhub.vn",
     description:
       locale === "vi"
-        ? "Nền tảng Bất động sản đa tenant cho Agency, Developer, Distributor"
+        ? "Nền tảng bất động sản đa tenant cho Agency, Developer, Distributor"
         : "Multi-tenant Real Estate Platform for Agency, Developer, Distributor",
     areaServed: "VN",
   };

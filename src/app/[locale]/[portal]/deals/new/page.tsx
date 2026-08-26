@@ -6,7 +6,7 @@ import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Building2, User } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -14,18 +14,10 @@ import { Input } from "@/components/ui/input";
 import { FormSection, FormField } from "@/components/shared/form-section";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { usePostApiDeal } from "@/lib/api/endpoints/deals-reservations";
-import { useGetApiCustomers } from "@/lib/api/endpoints/customers";
-import { useGetApiPropertiesAdmin } from "@/lib/api/endpoints/properties";
 import { useGetApiLeadsAdmin } from "@/lib/api/endpoints/leads";
 import { useUserStore } from "@/lib/stores/user-store";
-import type { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
+import { formatPrice } from "@/utils";
 import type { GetLeadsResponse, Lead } from "@/lib/api/types/leads";
-
-interface Customer {
-  id: string;
-  fullName: string;
-  phone?: string;
-}
 
 const txOptions = [
   { value: "SALE", label: "Bán" },
@@ -34,13 +26,9 @@ const txOptions = [
 ];
 
 const dealSchema = z.object({
-  dealCode: z.string().min(1, "Vui lòng nhập mã giao dịch"),
-  customerId: z.string().optional(),
-  propertyId: z.string().min(1, "Vui lòng chọn bất động sản"),
+  leadId: z.string().min(1, "Vui lòng chọn nguồn khách hàng"),
   transactionType: z.enum(["SALE", "RENT", "TRANSFER"]),
   expectedValue: z.string().optional(),
-  leadId: z.string().optional(),
-  salesUserId: z.string().optional(),
 });
 
 type DealFormData = z.infer<typeof dealSchema>;
@@ -50,45 +38,25 @@ export default function DealFormPage() {
   const portalPath = usePortalPath();
   const [loading, setLoading] = useState(false);
   const [selectedTx, setSelectedTx] = useState("SALE");
-  const [selectedCustomerId, setSelectedCustomerId] = useState("");
-  const [selectedPropertyId, setSelectedPropertyId] = useState("");
   const [selectedLeadId, setSelectedLeadId] = useState("");
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 
   const currentUser = useUserStore((s) => s.user);
 
   const { mutateAsync: createDeal } = usePostApiDeal();
 
-  const { data: customersData } = useGetApiCustomers({ limit: "100", offset: "0" });
-  const customers = ((customersData as unknown as { data: Customer[] })?.data) || [];
-
-  const { data: propertiesData } = useGetApiPropertiesAdmin();
-  const properties = ((propertiesData as unknown as GetPropertiesResponse)?.data) || [];
-
-  const { data: leadsData } = useGetApiLeadsAdmin({ limit: "100", offset: "0" });
+  const { data: leadsData } = useGetApiLeadsAdmin({
+    status: "CONVERTED",
+    limit: "100",
+    offset: "0",
+  });
   const leads = ((leadsData as unknown as GetLeadsResponse)?.data) || [];
-
-  const customerItems = useMemo(() => {
-    const map: Record<string, string> = { __none__: "— Không chọn —" };
-    for (const c of customers) {
-      map[c.id] = `${c.fullName}${c.phone ? ` · ${c.phone}` : ""}`;
-    }
-    return map;
-  }, [customers]);
-
-  const propertyItems = useMemo(() => {
-    const map: Record<string, string> = { __none__: "— Không chọn —" };
-    for (const p of properties) {
-      map[p.id] = `${p.title} (#${p.propertyCode})`;
-    }
-    return map;
-  }, [properties]);
 
   const leadItems = useMemo(() => {
     const map: Record<string, string> = { __none__: "— Không chọn —" };
     for (const l of leads) {
-      const name = l.customer?.fullName ?? l.leadCode;
-      const phone = l.customer?.phone ?? l.phoneNormalized ?? "";
-      map[l.id] = phone ? `${name} · ${phone}` : name;
+      const parts = [l.leadCode, l.customer?.fullName, l.property?.title].filter(Boolean);
+      map[l.id] = parts.join(" · ");
     }
     return map;
   }, [leads]);
@@ -98,19 +66,30 @@ export default function DealFormPage() {
     defaultValues: { transactionType: "SALE" },
   });
 
+  const handleSelectLead = (v: string | null) => {
+    const val = (v ?? "") === "__none__" ? "" : (v ?? "");
+    setSelectedLeadId(val);
+    setValue("leadId", val);
+    const lead = leads.find((l) => l.id === val) ?? null;
+    setSelectedLead(lead);
+  };
+
   const onSubmit = async (data: DealFormData) => {
+    if (!selectedLead) {
+      toast.error("Vui lòng chọn nguồn khách hàng");
+      return;
+    }
     setLoading(true);
     try {
       await createDeal({
         data: {
-          dealCode: data.dealCode,
-          propertyId: data.propertyId,
+          propertyId: selectedLead.propertyId ?? "",
           transactionType: data.transactionType,
-          customerId: data.customerId || undefined,
+          customerId: selectedLead.customerId || undefined,
+          leadId: selectedLead.id,
           expectedValue: data.expectedValue || undefined,
-          leadId: data.leadId || undefined,
           salesUserId: currentUser?.id,
-        },
+        } as any,
       });
       toast.success("Đã tạo giao dịch mới");
       router.push(portalPath("/deals"));
@@ -135,65 +114,17 @@ export default function DealFormPage() {
         <PageHeader eyebrow="Giao dịch" title="Tạo giao dịch" />
       </div>
 
+      {leads.length === 0 && (
+        <div className="rounded-lg border border-yellow-500/30 bg-yellow-500/5 p-4 text-sm">
+          <p className="font-medium text-yellow-700">Chưa có nguồn khách hàng nào ở trạng thái "Đã chuyển đổi"</p>
+          <p className="text-foreground-muted mt-1">
+            Vui lòng chuyển nguồn khách hàng sang trạng thái đã chuyển đổi ở trang Nguồn khách hàng trước khi tạo deal.
+          </p>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <FormSection title="Thông tin giao dịch">
-          <FormField label="Mã giao dịch" htmlFor="dealCode" required error={errors.dealCode?.message}>
-            <Input id="dealCode" placeholder="DEAL-001" {...register("dealCode")} />
-          </FormField>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Khách hàng">
-              <Select
-                value={selectedCustomerId || "__none__"}
-                items={customerItems}
-                onValueChange={(v) => {
-                  const val = (v ?? "") === "__none__" ? "" : (v ?? "");
-                  setSelectedCustomerId(val);
-                  setValue("customerId", val || undefined);
-                }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn khách hàng" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__none__" label="— Không chọn —">— Không chọn —</SelectItem>
-                  {customers.map((c) => {
-                    const label = `${c.fullName}${c.phone ? ` · ${c.phone}` : ""}`;
-                    return (
-                      <SelectItem key={c.id} value={c.id} label={label}>
-                        {label}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            </FormField>
-            <FormField label="Bất động sản" required error={errors.propertyId?.message}>
-              <Select
-                value={selectedPropertyId || "__none__"}
-                items={propertyItems}
-                onValueChange={(v) => {
-                  const val = (v ?? "") === "__none__" ? "" : (v ?? "");
-                  setSelectedPropertyId(val);
-                  setValue("propertyId", val);
-                }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn bất động sản" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__none__" label="— Không chọn —">— Không chọn —</SelectItem>
-                  {properties.map((p) => {
-                    const label = `${p.title} (#${p.propertyCode})`;
-                    return (
-                      <SelectItem key={p.id} value={p.id} label={label}>
-                        {label}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            </FormField>
-          </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField label="Loại giao dịch" required>
               <Select
@@ -222,43 +153,87 @@ export default function DealFormPage() {
               <Input id="expectedValue" placeholder="5000000000" {...register("expectedValue")} />
             </FormField>
           </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Khách hàng tiềm năng">
-              <Select
-                value={selectedLeadId || "__none__"}
-                items={leadItems}
-                onValueChange={(v) => {
-                  const val = (v ?? "") === "__none__" ? "" : (v ?? "");
-                  setSelectedLeadId(val);
-                  setValue("leadId", val || undefined);
-                }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn khách hàng tiềm năng" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__none__" label="— Không chọn —">— Không chọn —</SelectItem>
-                  {leads.map((l) => {
-                    const name = l.customer?.fullName ?? l.leadCode;
-                    const phone = l.customer?.phone ?? l.phoneNormalized ?? "";
-                    const label = phone ? `${name} · ${phone}` : name;
-                    return (
-                      <SelectItem key={l.id} value={l.id} label={label}>
-                        {label}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            </FormField>
-          </div>
+          <FormField label="Nguồn khách hàng" required error={errors.leadId?.message}>
+            <Select
+              value={selectedLeadId || "__none__"}
+              items={leadItems}
+              onValueChange={handleSelectLead}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Chọn nguồn khách hàng" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__none__" label="— Không chọn —">— Không chọn —</SelectItem>
+                {leads.map((l) => {
+                  const parts = [l.leadCode, l.customer?.fullName, l.property?.title].filter(Boolean);
+                  const label = parts.join(" · ");
+                  return (
+                    <SelectItem key={l.id} value={l.id} label={label}>
+                      {label}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </FormField>
         </FormSection>
+
+        {selectedLead && (
+          <FormSection title="Thông tin từ nguồn khách hàng">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="rounded-lg border border-border bg-surface-muted/30 p-4">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
+                  <User size={14} />
+                  Khách hàng
+                </div>
+                <div className="mt-2 flex flex-col gap-1">
+                  <p className="text-sm font-medium">
+                    {selectedLead.customer?.fullName ?? "—"}
+                  </p>
+                  {selectedLead.customer?.phone && (
+                    <p className="text-xs text-foreground-muted">{selectedLead.customer.phone}</p>
+                  )}
+                </div>
+              </div>
+              <div className="rounded-lg border border-border bg-surface-muted/30 p-4">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
+                  <Building2 size={14} />
+                  Bất động sản
+                </div>
+                <div className="mt-2 flex flex-col gap-1">
+                  <p className="text-sm font-medium">
+                    {selectedLead.property?.title ?? "—"}
+                  </p>
+                  {selectedLead.property?.propertyCode && (
+                    <p className="text-xs text-foreground-muted">#{selectedLead.property.propertyCode}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="rounded-lg border border-border bg-surface-muted/30 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Mã nguồn</p>
+                <p className="mt-1 text-sm font-medium tabular-nums">{selectedLead.leadCode}</p>
+              </div>
+              <div className="rounded-lg border border-border bg-surface-muted/30 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Nguồn</p>
+                <p className="mt-1 text-sm font-medium">{selectedLead.source}</p>
+              </div>
+              <div className="rounded-lg border border-border bg-surface-muted/30 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Sales phụ trách</p>
+                <p className="mt-1 text-sm font-medium">
+                  {selectedLead.assignedSales?.fullName ?? "—"}
+                </p>
+              </div>
+            </div>
+          </FormSection>
+        )}
 
         <div className="flex items-center justify-end gap-2">
           <Button type="button" variant="secondary" onClick={() => router.push(portalPath("/deals"))}>
             Hủy
           </Button>
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading || !selectedLead}>
             {loading ? "Đang lưu..." : "Lưu giao dịch"}
           </Button>
         </div>

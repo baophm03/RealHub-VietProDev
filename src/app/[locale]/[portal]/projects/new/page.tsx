@@ -25,7 +25,6 @@ import type { Location, GetLocationsResponse } from "@/lib/api/types/locations";
 
 const projectSchema = z.object({
   name: z.string().min(1, "Vui lòng nhập tên dự án"),
-  code: z.string().min(1, "Vui lòng nhập mã dự án"),
   developer: z.string().optional(),
   provinceId: z.string().optional(),
   districtId: z.string().optional(),
@@ -78,7 +77,7 @@ export default function ProjectFormPage() {
     setLoading(true);
     setError(null);
     try {
-      await createProject({ data });
+      await createProject({ data: data as any });
       toast.success("Tạo dự án thành công");
       router.push(portalPath("/projects"));
     } catch (err) {
@@ -118,9 +117,6 @@ export default function ProjectFormPage() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField label="Tên dự án" htmlFor="name" required error={errors.name?.message}>
               <Input id="name" placeholder="Vinhomes Central Park" {...register("name")} />
-            </FormField>
-            <FormField label="Mã dự án" htmlFor="code" required error={errors.code?.message}>
-              <Input id="code" placeholder="VCP" {...register("code")} />
             </FormField>
           </div>
 

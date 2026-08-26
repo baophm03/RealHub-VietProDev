@@ -30,8 +30,10 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  CreateAssignmentPolicyDto,
   ExtendAssignmentDto,
-  GetApiAssignmentsParams
+  GetApiAssignmentsParams,
+  UpdateAssignmentPolicyDto
 } from '../models';
 
 import { customInstance } from '../mutator/custom-instance';
@@ -237,13 +239,15 @@ export const prefetchGetApiAssignmentPoliciesQuery = async <TData = Awaited<Retu
  * @summary Create an assignment policy
  */
 export const postApiAssignmentPolicy = (
-    
+    createAssignmentPolicyDto: CreateAssignmentPolicyDto,
  signal?: AbortSignal
 ) => {
       
       
       return customInstance<unknown>(
-      {url: `/api/assignments/policies`, method: 'POST', signal
+      {url: `/api/assignments/policies`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createAssignmentPolicyDto, signal
     },
       );
     }
@@ -251,8 +255,8 @@ export const postApiAssignmentPolicy = (
 
 
 export const getPostApiAssignmentPolicyMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAssignmentPolicy>>, TError,void, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof postApiAssignmentPolicy>>, TError,void, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAssignmentPolicy>>, TError,{data: CreateAssignmentPolicyDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiAssignmentPolicy>>, TError,{data: CreateAssignmentPolicyDto}, TContext> => {
 
 const mutationKey = ['postApiAssignmentPolicy'];
 const {mutation: mutationOptions} = options ?
@@ -264,10 +268,10 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAssignmentPolicy>>, void> = () => {
-          
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAssignmentPolicy>>, {data: CreateAssignmentPolicyDto}> = (props) => {
+          const {data} = props ?? {};
 
-          return  postApiAssignmentPolicy()
+          return  postApiAssignmentPolicy(data,)
         }
 
         
@@ -276,18 +280,18 @@ const {mutation: mutationOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiAssignmentPolicyMutationResult = NonNullable<Awaited<ReturnType<typeof postApiAssignmentPolicy>>>
-    
+    export type PostApiAssignmentPolicyMutationBody = CreateAssignmentPolicyDto
     export type PostApiAssignmentPolicyMutationError = unknown
 
     /**
  * @summary Create an assignment policy
  */
 export const usePostApiAssignmentPolicy = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAssignmentPolicy>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAssignmentPolicy>>, TError,{data: CreateAssignmentPolicyDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiAssignmentPolicy>>,
         TError,
-        void,
+        {data: CreateAssignmentPolicyDto},
         TContext
       > => {
 
@@ -493,11 +497,14 @@ export const prefetchGetApiAssignmentPolicyIdQuery = async <TData = Awaited<Retu
  */
 export const patchApiAssignmentPolicy = (
     id: string,
+    updateAssignmentPolicyDto: UpdateAssignmentPolicyDto,
  ) => {
       
       
       return customInstance<unknown>(
-      {url: `/api/assignments/policies/${id}`, method: 'PATCH'
+      {url: `/api/assignments/policies/${id}`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: updateAssignmentPolicyDto
     },
       );
     }
@@ -505,8 +512,8 @@ export const patchApiAssignmentPolicy = (
 
 
 export const getPatchApiAssignmentPolicyMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiAssignmentPolicy>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiAssignmentPolicy>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiAssignmentPolicy>>, TError,{id: string;data: UpdateAssignmentPolicyDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiAssignmentPolicy>>, TError,{id: string;data: UpdateAssignmentPolicyDto}, TContext> => {
 
 const mutationKey = ['patchApiAssignmentPolicy'];
 const {mutation: mutationOptions} = options ?
@@ -518,10 +525,10 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiAssignmentPolicy>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiAssignmentPolicy>>, {id: string;data: UpdateAssignmentPolicyDto}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiAssignmentPolicy(id,)
+          return  patchApiAssignmentPolicy(id,data,)
         }
 
         
@@ -530,18 +537,18 @@ const {mutation: mutationOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiAssignmentPolicyMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiAssignmentPolicy>>>
-    
+    export type PatchApiAssignmentPolicyMutationBody = UpdateAssignmentPolicyDto
     export type PatchApiAssignmentPolicyMutationError = unknown
 
     /**
  * @summary Update an assignment policy
  */
 export const usePatchApiAssignmentPolicy = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiAssignmentPolicy>>, TError,{id: string}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiAssignmentPolicy>>, TError,{id: string;data: UpdateAssignmentPolicyDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiAssignmentPolicy>>,
         TError,
-        {id: string},
+        {id: string;data: UpdateAssignmentPolicyDto},
         TContext
       > => {
 

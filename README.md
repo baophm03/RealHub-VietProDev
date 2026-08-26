@@ -1,6 +1,6 @@
 # RealHub Frontend
 
-Nền tảng Bất động sản đa tenant — Frontend Next.js 16 + React 19 + Tailwind CSS 4.
+Nền tảng bất động sản đa tenant — Frontend Next.js 16 + React 19 + Tailwind CSS 4.
 
 ## Tech Stack
 

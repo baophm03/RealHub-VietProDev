@@ -186,8 +186,8 @@ export default function LeadsPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         eyebrow="CRM"
-        title="Khách hàng tiềm năng"
-        description="Quản lý khách hàng tiềm năng theo trạng thái"
+        title="Nguồn khách hàng"
+        description="Quản lý nguồn khách hàng theo trạng thái"
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1 rounded-md border border-border p-1">
@@ -265,8 +265,8 @@ export default function LeadsPage() {
       ) : leads.length === 0 ? (
         <EmptyState
           icon={<Users size={24} />}
-          title="Chưa có khách hàng tiềm năng"
-          description="Thêm khách hàng tiềm năng đầu tiên để bắt đầu quản lý CRM"
+          title="Chưa có nguồn khách hàng"
+          description="Thêm nguồn khách hàng đầu tiên để bắt đầu quản lý CRM"
           action={
             <Can I="CREATE" a="LEAD">
               <Button onClick={() => router.push(portalPath("/leads/new"))}>
@@ -278,7 +278,7 @@ export default function LeadsPage() {
         />
       ) : (
         <>
-          <div className="text-xs text-foreground-muted">{totalCount} khách hàng tiềm năng</div>
+          <div className="text-xs text-foreground-muted">{totalCount} nguồn khách hàng</div>
           {view === "kanban" ? (
             <KanbanBoard
               columns={columns}

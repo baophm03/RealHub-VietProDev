@@ -8,7 +8,8 @@
 import type { CreateDealDtoTransactionType } from './createDealDtoTransactionType';
 
 export interface CreateDealDto {
-  dealCode: string;
+  /** Auto-generated as GD-DDMMyy-NNN if omitted */
+  dealCode?: string;
   leadId?: string;
   customerId?: string;
   propertyId: string;

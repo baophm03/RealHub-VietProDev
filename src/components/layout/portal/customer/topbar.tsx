@@ -23,12 +23,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/lib/hooks/use-theme";
 import { usePostApiLogout } from "@/lib/api/endpoints/auth";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 
 export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const user = useUserStore((s) => s.user);
   const tenantCode = useAuthStore((s) => s.tenantCode);
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
+  const portalPath = usePortalPath();
 
   const initials = user?.fullName
     ?.split(" ")
@@ -116,7 +118,7 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
             </div>
             <DropdownMenuSeparator className="my-1 border-border" />
             <DropdownMenuItem
-              onClick={() => router.push("/dashboard/profile")}
+              onClick={() => router.push(portalPath("/profile"))}
               className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-foreground-muted hover:bg-surface-muted cursor-pointer outline-none transition-colors"
             >
               <User size={16} />

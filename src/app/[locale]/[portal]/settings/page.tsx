@@ -10,6 +10,9 @@ import { Switch } from "@/components/ui/switch";
 import { Link } from "@/i18n/navigation";
 import {
   Columns2,
+  TrendingUp,
+  MapPin,
+  Handshake,
 } from "lucide-react";
 
 const settingModules = [
@@ -17,25 +20,30 @@ const settingModules = [
     href: "/settings/dynamic-fields",
     icon: Columns2,
     title: "Trường động",
-    description: "Nhóm trường, định nghĩa và form schema — render động theo đối tượng",
+    description: "Cấu hình dữ liệu động cho các đối tượng",
   },
-];
-
-const features = [
-  { key: "CRM", label: "CRM module", enabled: true },
-  { key: "COMMISSION", label: "Hoa hồng", enabled: true },
-  { key: "DYNAMIC_FIELDS", label: "Trường động", enabled: true },
+  {
+    href: "/settings/commissions",
+    icon: TrendingUp,
+    title: "Hoa hồng",
+    description: "Cấu hình hoa hồng cho các đối tượng",
+  },
+  {
+    href: "/settings/locations",
+    icon: MapPin,
+    title: "Vị trí",
+    description: "Cấu hình vị trí, địa chỉ",
+  },
+  {
+    href: "/settings/assignment-policies",
+    icon: Handshake,
+    title: "Phụ trách sản phẩm",
+    description: "Chính sách nhận phụ trách: số sales, thời hạn, khu vực",
+  },
 ];
 
 export default function SettingsPage() {
   const portalPath = usePortalPath();
-  const [featureStates, setFeatureStates] = useState(features);
-
-  const toggleFeature = (key: string) => {
-    setFeatureStates((prev) =>
-      prev.map((f) => (f.key === key ? { ...f, enabled: !f.enabled } : f))
-    );
-  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -61,41 +69,6 @@ export default function SettingsPage() {
           );
         })}
       </div>
-
-      {/* <FormSection title="Thông tin tenant">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <FormField label="Tên tenant">
-            <Input defaultValue="ABC Real Estate" />
-          </FormField>
-          <FormField label="Mã tenant">
-            <Input defaultValue="ABC" disabled />
-          </FormField>
-          <FormField label="Logo URL">
-            <Input defaultValue="https://cdn.realhub.vn/logo.png" />
-          </FormField>
-          <FormField label="Màu chính">
-            <Input defaultValue="#1a73e8" />
-          </FormField>
-        </div>
-      </FormSection>
-
-      <FormSection title="Feature flags" description="Bật/tắt tính năng theo tenant">
-        <div className="flex flex-col gap-3">
-          {featureStates.map((feature) => (
-            <div key={feature.key} className="flex items-center justify-between gap-4 border-b border-border py-3 last:border-0">
-              <span className="text-sm font-medium">{feature.label}</span>
-              <Switch
-                checked={feature.enabled}
-                onCheckedChange={() => toggleFeature(feature.key)}
-              />
-            </div>
-          ))}
-        </div>
-      </FormSection>
-
-      <div className="flex justify-end">
-        <Button>Lưu cài đặt</Button>
-      </div> */}
     </div>
   );
 }

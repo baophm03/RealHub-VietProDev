@@ -8,7 +8,7 @@
 
 ## 1. Tổng quan dự án
 
-**RealHub** là nền tảng Bất động sản **đa tenant (multi-tenant)** phục vụ các loại hình: Agency, Developer, Distributor. Hệ thống quản lý toàn bộ vòng đời: **sản phẩm (property) → khách hàng (customer/lead) → lịch hẹn (appointment) → giao dịch (deal) → hoa hồng (commission)**.
+**RealHub** là nền tảng bất động sản **đa tenant (multi-tenant)** phục vụ các loại hình: Agency, Developer, Distributor. Hệ thống quản lý toàn bộ vòng đời: **sản phẩm (property) → khách hàng (customer/lead) → lịch hẹn (appointment) → giao dịch (deal) → hoa hồng (commission)**.
 
 ### 1.1 Vai trò người dùng (Roles)
 

@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PaginationBar } from "@/components/shared/pagination-bar";
+import { usePagination } from "@/lib/hooks/use-pagination";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   useGetApiNews,
@@ -43,8 +45,14 @@ export function NewsList() {
   const [search, setSearch] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const { data: newsData, isLoading, refetch: refetchNews } = useGetApiNews({ limit: "100" });
+  const pagination = usePagination(10);
+  const { data: newsData, isLoading, refetch: refetchNews } = useGetApiNews({
+    limit: pagination.limit,
+    offset: pagination.offset,
+  });
   const news: News[] = (newsData as unknown as GetNewsResponse)?.data ?? [];
+  const meta = (newsData as unknown as GetNewsResponse)?.meta;
+  const totalPages = meta?.totalPages ?? Math.max(1, Math.ceil((meta?.total ?? 0) / pagination.pageSize));
 
   const { mutateAsync: deleteNews } = useDeleteApiNews();
 
@@ -156,12 +164,21 @@ export function NewsList() {
           <Loader2 size={24} className="animate-spin text-primary" />
         </div>
       ) : filtered.length > 0 ? (
-        <DataTable
-          columns={columns}
-          data={filtered}
-          onRowClick={(row) => router.push(portalPath(`/news/${row.id}`))}
-          emptyMessage="Không tìm thấy bài viết nào"
-        />
+        <>
+          <DataTable
+            columns={columns}
+            data={filtered}
+            onRowClick={(row) => router.push(portalPath(`/news/${row.id}`))}
+            emptyMessage="Không tìm thấy bài viết nào"
+          />
+          <PaginationBar
+            pageSize={pagination.pageSize}
+            setPageSize={pagination.setPageSize}
+            currentPage={pagination.currentPage}
+            setCurrentPage={pagination.setCurrentPage}
+            totalPages={totalPages}
+          />
+        </>
       ) : (
         <EmptyState
           icon={<Newspaper size={24} />}

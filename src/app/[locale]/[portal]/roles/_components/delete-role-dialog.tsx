@@ -30,7 +30,7 @@ export function DeleteRoleDialog({ role, open, onOpenChange }: DeleteRoleDialogP
   const queryClient = useQueryClient();
   const { mutateAsync: deleteRole, isPending } = useDeleteApiRoleId();
 
-  const hasMembers = (role?._count?.memberships ?? 0) > 0;
+  const hasMembers = (role?._count?.membershipRoles ?? 0) > 0;
   const canDelete = !hasMembers;
 
   const handleDelete = async () => {
@@ -70,14 +70,14 @@ export function DeleteRoleDialog({ role, open, onOpenChange }: DeleteRoleDialogP
                 <p className="mt-1 text-foreground-muted">{role.description}</p>
               )}
               <p className="mt-2 text-xs text-foreground-muted">
-                {role._count?.permissions ?? 0} quyền • {role._count?.memberships ?? 0} thành viên
+                {role._count?.permissions ?? 0} quyền • {role._count?.membershipRoles ?? 0} thành viên
               </p>
             </div>
           )}
 
           {hasMembers ? (
             <div className="rounded-lg bg-accent-yellow/20 px-4 py-3 text-sm text-accent-yellow-text">
-              Không thể xóa: role đang có {role?._count?.memberships} thành viên.
+              Không thể xóa: role đang có {role?._count?.membershipRoles} thành viên.
               Vui lòng gán lại user sang role khác trước khi xóa.
             </div>
           ) : (

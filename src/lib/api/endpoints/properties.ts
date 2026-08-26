@@ -34,6 +34,7 @@ import type {
   CreatePropertyMediaDto,
   CreatePropertyTypeDto,
   GetApiPropertiesAdminParams,
+  GetApiPropertiesAvailableForAssignmentParams,
   GetApiPropertiesParams,
   ReorderPropertyMediaDto,
   UpdatePropertyDto,
@@ -305,6 +306,200 @@ export const usePostApiProperty = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary List properties available for sales to claim assignment
+ */
+export const getApiPropertiesAvailableForAssignment = (
+    params?: GetApiPropertiesAvailableForAssignmentParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/properties/available-for-assignment`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiPropertiesAvailableForAssignmentInfiniteQueryKey = (params?: GetApiPropertiesAvailableForAssignmentParams,) => {
+    return [
+    'infinite', `/api/properties/available-for-assignment`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiPropertiesAvailableForAssignmentQueryKey = (params?: GetApiPropertiesAvailableForAssignmentParams,) => {
+    return [
+    `/api/properties/available-for-assignment`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiPropertiesAvailableForAssignmentInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>>, TError = unknown>(params?: GetApiPropertiesAvailableForAssignmentParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPropertiesAvailableForAssignmentInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>> = ({ signal }) => getApiPropertiesAvailableForAssignment(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPropertiesAvailableForAssignmentInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>>
+export type GetApiPropertiesAvailableForAssignmentInfiniteQueryError = unknown
+
+
+export function useGetApiPropertiesAvailableForAssignmentInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>>, TError = unknown>(
+ params: undefined |  GetApiPropertiesAvailableForAssignmentParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertiesAvailableForAssignmentInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>>, TError = unknown>(
+ params?: GetApiPropertiesAvailableForAssignmentParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertiesAvailableForAssignmentInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>>, TError = unknown>(
+ params?: GetApiPropertiesAvailableForAssignmentParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List properties available for sales to claim assignment
+ */
+
+export function useGetApiPropertiesAvailableForAssignmentInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>>, TError = unknown>(
+ params?: GetApiPropertiesAvailableForAssignmentParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPropertiesAvailableForAssignmentInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List properties available for sales to claim assignment
+ */
+export const prefetchGetApiPropertiesAvailableForAssignmentInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiPropertiesAvailableForAssignmentParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiPropertiesAvailableForAssignmentInfiniteQueryOptions(params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiPropertiesAvailableForAssignmentQueryOptions = <TData = Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError = unknown>(params?: GetApiPropertiesAvailableForAssignmentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPropertiesAvailableForAssignmentQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>> = ({ signal }) => getApiPropertiesAvailableForAssignment(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPropertiesAvailableForAssignmentQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>>
+export type GetApiPropertiesAvailableForAssignmentQueryError = unknown
+
+
+export function useGetApiPropertiesAvailableForAssignment<TData = Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError = unknown>(
+ params: undefined |  GetApiPropertiesAvailableForAssignmentParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertiesAvailableForAssignment<TData = Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError = unknown>(
+ params?: GetApiPropertiesAvailableForAssignmentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertiesAvailableForAssignment<TData = Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError = unknown>(
+ params?: GetApiPropertiesAvailableForAssignmentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List properties available for sales to claim assignment
+ */
+
+export function useGetApiPropertiesAvailableForAssignment<TData = Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError = unknown>(
+ params?: GetApiPropertiesAvailableForAssignmentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPropertiesAvailableForAssignmentQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List properties available for sales to claim assignment
+ */
+export const prefetchGetApiPropertiesAvailableForAssignmentQuery = async <TData = Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiPropertiesAvailableForAssignmentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertiesAvailableForAssignment>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiPropertiesAvailableForAssignmentQueryOptions(params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * @summary List all properties for admin management
  */
 export const getApiPropertiesAdmin = (

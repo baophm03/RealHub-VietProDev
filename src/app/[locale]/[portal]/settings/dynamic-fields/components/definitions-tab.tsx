@@ -50,7 +50,7 @@ import type { CreateFieldDefinitionDtoFieldType } from "@/lib/api/models/createF
 const entityTypeLabels: Record<string, string> = {
   PROPERTY: "Bất động sản",
   CUSTOMER_NEED: "Nhu cầu khách hàng",
-  LEAD: "Khách tiềm năng",
+  LEAD: "Nguồn khách hàng",
   DEAL: "Giao dịch",
   OWNER_PROFILE: "Hồ sơ chủ nhà",
 };
@@ -111,9 +111,12 @@ interface FieldGroup {
 interface DefinitionsTabProps {
   entityType?: GetApiFieldDefinitionsEntityType;
   propertyTypeId?: string;
+  canCreate?: boolean;
+  canUpdate?: boolean;
+  canDelete?: boolean;
 }
 
-export function DefinitionsTab({ entityType, propertyTypeId }: DefinitionsTabProps) {
+export function DefinitionsTab({ entityType, propertyTypeId, canCreate = true, canUpdate = true, canDelete = true }: DefinitionsTabProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({
@@ -320,10 +323,12 @@ export function DefinitionsTab({ entityType, propertyTypeId }: DefinitionsTabPro
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-end">
-        <Button size="sm" onClick={openCreateDialog}>
-          <Plus size={16} />
-          Thêm trường
-        </Button>
+        {canCreate && (
+          <Button size="sm" onClick={openCreateDialog}>
+            <Plus size={16} />
+            Thêm trường
+          </Button>
+        )}
       </div>
 
       {isLoading ? (
@@ -335,10 +340,12 @@ export function DefinitionsTab({ entityType, propertyTypeId }: DefinitionsTabPro
       ) : definitions.length === 0 ? (
         <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
           <p className="text-sm text-foreground-muted">Chưa có định nghĩa trường nào</p>
-          <Button variant="outline" size="sm" onClick={openCreateDialog}>
-            <Plus size={16} />
-            Tạo trường đầu tiên
-          </Button>
+          {canCreate && (
+            <Button variant="outline" size="sm" onClick={openCreateDialog}>
+              <Plus size={16} />
+              Tạo trường đầu tiên
+            </Button>
+          )}
         </div>
       ) : (
         <div className="rounded-lg border border-border">
@@ -384,16 +391,20 @@ export function DefinitionsTab({ entityType, propertyTypeId }: DefinitionsTabPro
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
-                      <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(def)}>
-                        <Pencil size={14} />
-                      </Button>
-                      <Button variant="ghost" size="icon-sm" onClick={() => {
-                        if (confirm(`Xóa trường "${def.fieldLabel}"?`)) {
-                          deleteDefinition({ id: def.id });
-                        }
-                      }}>
-                        <Trash2 size={14} />
-                      </Button>
+                      {canUpdate && (
+                        <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(def)}>
+                          <Pencil size={14} />
+                        </Button>
+                      )}
+                      {canDelete && (
+                        <Button variant="ghost" size="icon-sm" onClick={() => {
+                          if (confirm(`Xóa trường "${def.fieldLabel}"?`)) {
+                            deleteDefinition({ id: def.id });
+                          }
+                        }}>
+                          <Trash2 size={14} />
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

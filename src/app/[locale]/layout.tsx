@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Omit<Props, "children">): Pro
   return {
     metadataBase: new URL(siteUrl),
     title: {
-      default: "RealHub — Nền tảng Bất động sản",
+      default: "RealHub — Nền tảng bất động sản",
       template: "%s — RealHub",
     },
     description:

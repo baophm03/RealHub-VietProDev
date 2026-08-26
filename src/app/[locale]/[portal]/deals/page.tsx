@@ -68,7 +68,7 @@ const statusConfig: {
   title: string;
   variant: "blue" | "yellow" | "purple" | "default" | "green" | "red";
 }[] = [
-    { id: "SOFT_RESERVED", title: "Đặt cọc mềm", variant: "blue" },
+    { id: "SOFT_RESERVED", title: "Đặt cọc", variant: "blue" },
     { id: "NEGOTIATING", title: "Đàm phán", variant: "yellow" },
     { id: "SUCCESS", title: "Thành công", variant: "green" },
     { id: "FAILED", title: "Thất bại", variant: "red" },
@@ -77,7 +77,7 @@ const statusConfig: {
   ];
 
 const statusLabel: Record<string, string> = {
-  SOFT_RESERVED: "Đặt cọc mềm",
+  SOFT_RESERVED: "Đặt cọc",
   NEGOTIATING: "Đàm phán",
   SUCCESS: "Thành công",
   FAILED: "Thất bại",
@@ -93,7 +93,7 @@ const txLabel: Record<string, string> = {
 
 const statusFilters: { value: GetApiDealsStatus | "ALL"; label: string }[] = [
   { value: "ALL", label: "Tất cả trạng thái" },
-  { value: "SOFT_RESERVED", label: "Đặt cọc mềm" },
+  { value: "SOFT_RESERVED", label: "Đặt cọc" },
   { value: "NEGOTIATING", label: "Đàm phán" },
   { value: "SUCCESS", label: "Thành công" },
   { value: "FAILED", label: "Thất bại" },

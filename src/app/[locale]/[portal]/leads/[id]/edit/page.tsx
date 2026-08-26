@@ -78,10 +78,10 @@ export default function LeadEditPage() {
           phoneNormalized: data.phoneNormalized || undefined,
         },
       });
-      toast.success("Đã cập nhật khách hàng tiềm năng");
+      toast.success("Đã cập nhật nguồn khách hàng");
       router.push(portalPath(`/leads/${id}`));
     } catch (err) {
-      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật khách hàng tiềm năng, vui lòng thử lại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật nguồn khách hàng, vui lòng thử lại");
       console.error(err);
     } finally {
       setLoading(false);
@@ -110,12 +110,12 @@ export default function LeadEditPage() {
         >
           <ArrowLeft size={20} />
         </button>
-        <PageHeader eyebrow="CRM" title={`Chỉnh sửa khách hàng tiềm năng ${lead?.leadCode ?? ""}`} />
+        <PageHeader eyebrow="CRM" title={`Chỉnh sửa nguồn khách hàng ${lead?.leadCode ?? ""}`} />
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <FormSection
-          title="Thông tin khách hàng tiềm năng"
+          title="Thông tin nguồn khách hàng"
           description="Chỉ có thể cập nhật trạng thái và số điện thoại."
         >
           <FormField label="Trạng thái" required>
@@ -155,7 +155,7 @@ export default function LeadEditPage() {
             Hủy
           </Button>
           <Button type="submit" disabled={loading}>
-            {loading ? "Đang lưu..." : "Cập nhật khách hàng tiềm năng"}
+            {loading ? "Đang lưu..." : "Cập nhật nguồn khách hàng"}
           </Button>
         </div>
       </form>

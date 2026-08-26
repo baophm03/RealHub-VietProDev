@@ -110,7 +110,7 @@ const statusVariant: Record<string, "blue" | "yellow" | "purple" | "default" | "
 };
 
 const statusLabel: Record<string, string> = {
-  SOFT_RESERVED: "Đặt cọc mềm",
+  SOFT_RESERVED: "Đặt cọc",
   NEGOTIATING: "Đàm phán",
   SUCCESS: "Thành công",
   FAILED: "Thất bại",
@@ -119,7 +119,7 @@ const statusLabel: Record<string, string> = {
 };
 
 const statusOptions = [
-  { value: "SOFT_RESERVED", label: "Đặt cọc mềm" },
+  { value: "SOFT_RESERVED", label: "Đặt cọc" },
   { value: "NEGOTIATING", label: "Đàm phán" },
   { value: "SUCCESS", label: "Thành công" },
   { value: "FAILED", label: "Thất bại" },
@@ -404,7 +404,7 @@ export default function DealDetailPage() {
                 <div className="flex items-start gap-2">
                   <SquareKanban size={16} className="text-foreground-muted shrink-0 mt-0.5" />
                   <div className="flex flex-col">
-                    <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Khách hàng tiềm năng</span>
+                    <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Nguồn khách hàng</span>
                     <button
                       onClick={() => router.push(portalPath(`/leads/${deal.lead!.id}`))}
                       className="text-left text-sm text-primary hover:underline"

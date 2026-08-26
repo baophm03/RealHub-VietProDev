@@ -46,7 +46,7 @@ import type { GetApiFieldGroupsEntityType } from "@/lib/api/models/getApiFieldGr
 const entityTypeLabels: Record<string, string> = {
   PROPERTY: "Bất động sản",
   CUSTOMER_NEED: "Nhu cầu khách hàng",
-  LEAD: "Khách tiềm năng",
+  LEAD: "Nguồn khách hàng",
   DEAL: "Giao dịch",
   OWNER_PROFILE: "Hồ sơ chủ nhà",
 };
@@ -83,9 +83,12 @@ interface FieldDefinition {
 interface GroupsTabProps {
   entityType?: GetApiFieldGroupsEntityType;
   propertyTypeId?: string;
+  canCreate?: boolean;
+  canUpdate?: boolean;
+  canDelete?: boolean;
 }
 
-export function GroupsTab({ entityType, propertyTypeId }: GroupsTabProps) {
+export function GroupsTab({ entityType, propertyTypeId, canCreate = true, canUpdate = true, canDelete = true }: GroupsTabProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
@@ -269,10 +272,12 @@ export function GroupsTab({ entityType, propertyTypeId }: GroupsTabProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-end">
-        <Button size="sm" onClick={openCreateDialog}>
-          <Plus size={16} />
-          Thêm nhóm
-        </Button>
+        {canCreate && (
+          <Button size="sm" onClick={openCreateDialog}>
+            <Plus size={16} />
+            Thêm nhóm
+          </Button>
+        )}
       </div>
 
       {isLoading ? (
@@ -284,10 +289,12 @@ export function GroupsTab({ entityType, propertyTypeId }: GroupsTabProps) {
       ) : groups.length === 0 ? (
         <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
           <p className="text-sm text-foreground-muted">Chưa có nhóm trường nào</p>
-          <Button variant="outline" size="sm" onClick={openCreateDialog}>
-            <Plus size={16} />
-            Tạo nhóm đầu tiên
-          </Button>
+          {canCreate && (
+            <Button variant="outline" size="sm" onClick={openCreateDialog}>
+              <Plus size={16} />
+              Tạo nhóm đầu tiên
+            </Button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -297,15 +304,21 @@ export function GroupsTab({ entityType, propertyTypeId }: GroupsTabProps) {
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base truncate">{group.name}</CardTitle>
                   <div className="flex gap-1 shrink-0">
-                    <Button variant="ghost" size="icon-sm" onClick={() => openAssignDialog(group)} title="Gán trường vào nhóm">
-                      <MoveHorizontal size={14} />
-                    </Button>
-                    <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(group)}>
-                      <Pencil size={14} />
-                    </Button>
-                    <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(group)}>
-                      <Trash2 size={14} />
-                    </Button>
+                    {canUpdate && (
+                      <Button variant="ghost" size="icon-sm" onClick={() => openAssignDialog(group)} title="Gán trường vào nhóm">
+                        <MoveHorizontal size={14} />
+                      </Button>
+                    )}
+                    {canUpdate && (
+                      <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(group)}>
+                        <Pencil size={14} />
+                      </Button>
+                    )}
+                    {canDelete && (
+                      <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(group)}>
+                        <Trash2 size={14} />
+                      </Button>
+                    )}
                   </div>
                 </div>
                 <div className="mt-1 flex flex-wrap gap-1">

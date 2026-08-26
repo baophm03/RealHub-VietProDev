@@ -39,7 +39,7 @@ import type { GetApiFormSchemasEntityType } from "@/lib/api/models/getApiFormSch
 const entityTypeLabels: Record<string, string> = {
   PROPERTY: "Bất động sản",
   CUSTOMER_NEED: "Nhu cầu khách hàng",
-  LEAD: "Khách tiềm năng",
+  LEAD: "Nguồn khách hàng",
   DEAL: "Giao dịch",
 };
 
@@ -81,9 +81,12 @@ type PropertyType = {
 interface FormSchemasTabProps {
   entityType?: GetApiFormSchemasEntityType;
   propertyTypeId?: string;
+  canCreate?: boolean;
+  canUpdate?: boolean;
+  canDelete?: boolean;
 }
 
-export function FormSchemasTab({ entityType, propertyTypeId }: FormSchemasTabProps) {
+export function FormSchemasTab({ entityType, propertyTypeId, canCreate = true, canUpdate = true, canDelete = true }: FormSchemasTabProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({
@@ -241,10 +244,12 @@ export function FormSchemasTab({ entityType, propertyTypeId }: FormSchemasTabPro
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-end">
-        <Button size="sm" onClick={openCreateDialog}>
-          <Plus size={16} />
-          Thêm nhóm đối tượng
-        </Button>
+        {canCreate && (
+          <Button size="sm" onClick={openCreateDialog}>
+            <Plus size={16} />
+            Thêm nhóm đối tượng
+          </Button>
+        )}
       </div>
 
       {isLoading ? (
@@ -256,10 +261,12 @@ export function FormSchemasTab({ entityType, propertyTypeId }: FormSchemasTabPro
       ) : schemas.length === 0 ? (
         <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
           <p className="text-sm text-foreground-muted">Chưa có nhóm đối tượng nào</p>
-          <Button variant="outline" size="sm" onClick={openCreateDialog}>
-            <Plus size={16} />
-            Tạo nhóm đối tượng đầu tiên
-          </Button>
+          {canCreate && (
+            <Button variant="outline" size="sm" onClick={openCreateDialog}>
+              <Plus size={16} />
+              Tạo nhóm đối tượng đầu tiên
+            </Button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -269,12 +276,16 @@ export function FormSchemasTab({ entityType, propertyTypeId }: FormSchemasTabPro
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base truncate">{schema.name}</CardTitle>
                   <div className="flex gap-1 shrink-0">
-                    <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(schema)}>
-                      <Pencil size={14} />
-                    </Button>
-                    <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(schema)}>
-                      <Trash2 size={14} />
-                    </Button>
+                    {canUpdate && (
+                      <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(schema)}>
+                        <Pencil size={14} />
+                      </Button>
+                    )}
+                    {canDelete && (
+                      <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(schema)}>
+                        <Trash2 size={14} />
+                      </Button>
+                    )}
                   </div>
                 </div>
                 <div className="mt-1 flex flex-wrap gap-1">

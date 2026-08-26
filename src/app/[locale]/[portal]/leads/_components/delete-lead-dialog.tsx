@@ -54,7 +54,7 @@ export function DeleteLeadDialog({
       onRefetch?.();
     } catch (err) {
       console.error(err);
-      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi xóa khách hàng tiềm năng");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi xóa nguồn khách hàng");
     } finally {
       setDeleting(false);
     }
@@ -64,7 +64,7 @@ export function DeleteLeadDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Xóa khách hàng tiềm năng</DialogTitle>
+          <DialogTitle>Xóa nguồn khách hàng</DialogTitle>
           <DialogDescription>
             {lead && (
               <span className="flex flex-col gap-1">
@@ -82,7 +82,7 @@ export function DeleteLeadDialog({
                   ?
                 </span>
                 <span className="mt-2 text-xs text-foreground-muted">
-                  Hành động này không thể hoàn tác. Khách hàng tiềm năng sẽ bị ẩn
+                  Hành động này không thể hoàn tác. Nguồn khách hàng sẽ bị ẩn
                   (soft delete) và không hiển thị trên hệ thống.
                 </span>
               </span>

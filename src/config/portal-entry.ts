@@ -46,26 +46,30 @@ export function isValidPortalSlug(slug: string): slug is PortalSlug {
   return slug in portalEntries;
 }
 
-export function getPortalEntry(roleCode?: string | null): PortalEntry | null {
-  if (!roleCode) return null;
-  if (dashboardRoles.includes(roleCode as UserRole)) {
+export function getPortalEntry(roleCodes?: string[] | string | null): PortalEntry | null {
+  if (!roleCodes) return null;
+  const codes = Array.isArray(roleCodes) ? roleCodes : [roleCodes];
+  if (codes.length === 0) return null;
+  if (codes.some((c) => dashboardRoles.includes(c as UserRole))) {
     return portalEntries["dashboard"];
   }
-  if (salesRoles.includes(roleCode as UserRole)) {
+  if (codes.some((c) => salesRoles.includes(c as UserRole))) {
     return portalEntries["sales-portal"];
   }
-  if (customerRoles.includes(roleCode as UserRole)) {
+  if (codes.some((c) => customerRoles.includes(c as UserRole))) {
     return portalEntries["customer-portal"];
   }
-  if (ownerRoles.includes(roleCode as UserRole)) {
+  if (codes.some((c) => ownerRoles.includes(c as UserRole))) {
     return portalEntries["owner-portal"];
   }
   return null;
 }
 
-export function canAccessPortal(portal: string, roleCode?: string | null): boolean {
-  if (!roleCode) return false;
+export function canAccessPortal(portal: string, roleCodes?: string[] | string | null): boolean {
+  if (!roleCodes) return false;
+  const codes = Array.isArray(roleCodes) ? roleCodes : [roleCodes];
+  if (codes.length === 0) return false;
   const slug = portal.startsWith("/") ? (portal.slice(1) as PortalSlug) : (portal as PortalSlug);
   if (!isValidPortalSlug(slug)) return false;
-  return portalEntries[slug].roles.includes(roleCode as UserRole);
+  return codes.some((c) => portalEntries[slug].roles.includes(c as UserRole));
 }

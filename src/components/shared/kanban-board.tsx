@@ -36,7 +36,7 @@ export function KanbanBoard<T extends { id: string }>({
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
   return (
-    <div className="relative flex gap-3 overflow-x-auto pb-4 scrollbar-none">
+    <div className="relative flex gap-3 overflow-x-auto pb-4">
       {columns.map((column) => (
         <div
           key={column.id}

@@ -17,7 +17,7 @@ export interface AuthMeResponse {
   phone: string | null;
   avatarUrl: string | null;
   status: string;
-  role: AuthMeRole | null;
+  roles: AuthMeRole[];
   lastLoginAt: string | null;
   createdAt: string;
 }

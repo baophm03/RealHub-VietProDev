@@ -136,7 +136,13 @@ export default function ProfilePage() {
               <p className="text-sm font-medium">{user.fullName ?? "User"}</p>
               <p className="text-xs text-foreground-muted">{user.email}</p>
             </div>
-            {user.role && <Badge variant="blue">{user.role.name}</Badge>}
+            {user.roles?.length > 0 && (
+              <div className="flex flex-wrap justify-center gap-1.5">
+                {user.roles.map((r) => (
+                  <Badge key={r.code} variant="blue">{r.name}</Badge>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 

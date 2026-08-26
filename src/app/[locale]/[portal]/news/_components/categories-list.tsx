@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PaginationBar } from "@/components/shared/pagination-bar";
+import { usePagination } from "@/lib/hooks/use-pagination";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   useGetApiNewsCategories,
@@ -43,9 +45,15 @@ export function CategoriesList() {
   const [search, setSearch] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const { data: categoriesData, isLoading, refetch: refetchCategories } = useGetApiNewsCategories({ limit: "100" });
+  const pagination = usePagination(10);
+  const { data: categoriesData, isLoading, refetch: refetchCategories } = useGetApiNewsCategories({
+    limit: pagination.limit,
+    offset: pagination.offset,
+  });
   const categories: NewsCategory[] =
     (categoriesData as unknown as GetNewsCategoriesResponse)?.data ?? [];
+  const meta = (categoriesData as unknown as GetNewsCategoriesResponse)?.meta;
+  const totalPages = meta?.totalPages ?? Math.max(1, Math.ceil((meta?.total ?? 0) / pagination.pageSize));
 
   const { mutateAsync: deleteCategory } = useDeleteApiNewsCategory();
 
@@ -161,12 +169,21 @@ export function CategoriesList() {
           <Loader2 size={24} className="animate-spin text-primary" />
         </div>
       ) : filtered.length > 0 ? (
-        <DataTable
-          columns={columns}
-          data={filtered}
-          onRowClick={(row) => router.push(portalPath(`/news/categories/${row.id}`))}
-          emptyMessage="Không tìm thấy chuyên mục nào"
-        />
+        <>
+          <DataTable
+            columns={columns}
+            data={filtered}
+            onRowClick={(row) => router.push(portalPath(`/news/categories/${row.id}`))}
+            emptyMessage="Không tìm thấy chuyên mục nào"
+          />
+          <PaginationBar
+            pageSize={pagination.pageSize}
+            setPageSize={pagination.setPageSize}
+            currentPage={pagination.currentPage}
+            setCurrentPage={pagination.setCurrentPage}
+            totalPages={totalPages}
+          />
+        </>
       ) : (
         <EmptyState
           icon={<Tag size={24} />}

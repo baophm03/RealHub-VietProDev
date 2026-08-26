@@ -35,7 +35,6 @@ type PropertyType = {
 };
 
 const propertySchema = z.object({
-  propertyCode: z.string().min(1, "Vui lòng nhập mã BĐS"),
   title: z.string().min(5, "Tiêu đề phải có ít nhất 5 ký tự"),
   description: z.string().min(1, "Vui lòng nhập mô tả"),
   slug: z.string().min(1, "Vui lòng nhập slug"),
@@ -168,7 +167,7 @@ function PropertyFormContent() {
     setLoading(true);
     setError(null);
     try {
-      const result = await createProperty({ data: { ...data, dynamicValuesJson: Object.keys(dynamicValues).length > 0 ? dynamicValues : undefined } });
+      const result = await createProperty({ data: { ...data, dynamicValuesJson: Object.keys(dynamicValues).length > 0 ? dynamicValues : undefined } as any });
       const newId = (result as any)?.id || (result as any)?.data?.id;
       toast.success("Tạo bất động sản thành công");
       if (newId) {
@@ -211,11 +210,11 @@ function PropertyFormContent() {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <FormSection title="Thông tin cơ bản" description="Nhập thông tin chính của bất động sản">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Mã BĐS" htmlFor="propertyCode" required error={errors.propertyCode?.message}>
-              <Input id="propertyCode" placeholder="PROP-001" {...register("propertyCode")} />
-            </FormField>
             <FormField label="Tiêu đề" htmlFor="title" required error={errors.title?.message}>
               <Input id="title" placeholder="Vinhomes Central Park - 2PN" {...register("title")} />
+            </FormField>
+            <FormField label="Slug" htmlFor="slug" required error={errors.slug?.message}>
+              <Input id="slug" placeholder="vinhomes-central-park-2pn" {...register("slug")} />
             </FormField>
           </div>
 
@@ -227,12 +226,6 @@ function PropertyFormContent() {
               height={300}
             />
           </FormField>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Slug" htmlFor="slug" required error={errors.slug?.message}>
-              <Input id="slug" placeholder="vinhomes-central-park-2pn" {...register("slug")} />
-            </FormField>
-          </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <FormField label="Loại giao dịch" required>
@@ -272,7 +265,7 @@ function PropertyFormContent() {
             </FormField>
             <FormField label="Hình thức bán" required>
               <Select
-                defaultValue="SELF_SELL"
+                value={watch("sellingMode")}
                 items={sellingModeLabels}
                 onValueChange={(v) => setValue("sellingMode", v as PropertyFormData["sellingMode"])}
               >
@@ -281,7 +274,7 @@ function PropertyFormContent() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="SELF_SELL" label="Tự bán">Tự bán</SelectItem>
-                  <SelectItem value="SALES_DISTRIBUTION" label="Phân phối">Phân phối</SelectItem>
+                  <SelectItem value="SALES_DISTRIBUTION" label="Sales bán hộ">Sales bán hộ</SelectItem>
                   <SelectItem value="HYBRID" label="Kết hợp">Kết hợp</SelectItem>
                   <SelectItem value="INTERNAL_ONLY" label="Chỉ nội bộ">Chỉ nội bộ</SelectItem>
                   <SelectItem value="AGENCY_DISTRIBUTION" label="Sàn công khai">Sàn công khai</SelectItem>

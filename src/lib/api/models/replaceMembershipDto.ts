@@ -8,10 +8,7 @@
 import type { ReplaceMembershipDtoStatus } from './replaceMembershipDtoStatus';
 
 export interface ReplaceMembershipDto {
-  /**
-   * TenantRole ID to assign. Send null to detach role.
-   * @nullable
-   */
-  roleId?: string | null;
   status: ReplaceMembershipDtoStatus;
+  /** Role IDs to replace for this membership (full replace, removes existing roles) */
+  roleIds?: string[];
 }

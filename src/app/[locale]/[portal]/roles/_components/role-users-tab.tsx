@@ -50,7 +50,7 @@ export function RoleUsersTab({ roleId }: RoleUsersTabProps) {
 
   const availableUsers = useMemo(() => {
     const inRoleIds = new Set(roleUsers.map((u) => u.userId));
-    let list = tenantUsers.filter((u) => !inRoleIds.has(u.userId));
+    let list = tenantUsers.filter((u) => !inRoleIds.has(u.id));
     if (userSearch.trim()) {
       const q = userSearch.toLowerCase();
       list = list.filter(
@@ -148,25 +148,29 @@ export function RoleUsersTab({ roleId }: RoleUsersTabProps) {
           ) : (
             <div className="flex flex-col gap-1">
               {availableUsers.map((u) => {
-                const selected = selectedUserIds.has(u.userId);
+                const selected = selectedUserIds.has(u.id);
                 return (
                   <label
-                    key={u.userId}
+                    key={u.id}
                     className="flex cursor-pointer items-center gap-3 rounded-md border border-border bg-surface/50 px-3 py-2 text-sm hover:bg-surface-muted"
                   >
                     <Checkbox
                       checked={selected}
-                      onCheckedChange={() => toggleSelect(u.userId)}
+                      onCheckedChange={() => toggleSelect(u.id)}
                     />
                     <div className="flex flex-1 items-center gap-2">
                       <div className="flex flex-col">
                         <span className="font-medium">{u.fullName}</span>
                         <span className="text-xs text-foreground-muted">{u.email}</span>
                       </div>
-                      {u.roleName && (
-                        <Badge variant="outline" className="ml-auto text-[10px]">
-                          {u.roleName}
-                        </Badge>
+                      {u.roles && u.roles.length > 0 && (
+                        <div className="ml-auto flex flex-wrap gap-1">
+                          {u.roles.map((r) => (
+                            <Badge key={r.id} variant="outline" className="text-[10px]">
+                              {r.name}
+                            </Badge>
+                          ))}
+                        </div>
                       )}
                     </div>
                   </label>
@@ -228,7 +232,7 @@ export function RoleUsersTab({ roleId }: RoleUsersTabProps) {
           <div className="flex flex-col gap-1">
             {roleUsers.map((u) => (
               <div
-                key={u.membershipId}
+                key={u.membershipRoleId}
                 className="flex items-center gap-3 rounded-md border border-border bg-surface/50 px-3 py-2 text-sm"
               >
                 <div className="flex flex-1 flex-col">
@@ -243,7 +247,7 @@ export function RoleUsersTab({ roleId }: RoleUsersTabProps) {
                   <span className="text-xs text-foreground-muted">{u.email}</span>
                 </div>
                 <span className="text-xs text-foreground-muted tabular-nums">
-                  {new Date(u.joinedAt).toLocaleDateString("vi-VN")}
+                  {new Date(u.assignedAt).toLocaleDateString("vi-VN")}
                 </span>
                 <Can I="UPDATE" a="ROLE">
                   <Button
