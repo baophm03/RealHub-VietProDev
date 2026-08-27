@@ -47,13 +47,11 @@ interface FormSchema {
   id: string;
   name: string;
   entityType: string;
-  propertyTypeId?: string | null;
+  propertyType?: { id: string; name: string; code: string } | null;
   status?: string;
   version?: number;
   fields?: {
     id: string;
-    fieldId?: string;
-    groupId?: string;
     isRequired?: boolean;
     isVisible?: boolean;
     isReadonly?: boolean;
@@ -192,11 +190,11 @@ export function FormSchemasTab({ entityType, propertyTypeId, canCreate = true, c
 
   const openEditDialog = (schema: FormSchema) => {
     setEditingId(schema.id);
-    setForm({ name: schema.name, entityType: schema.entityType as GetApiFormSchemasEntityType, propertyTypeId: schema.propertyTypeId || "" });
+    setForm({ name: schema.name, entityType: schema.entityType as GetApiFormSchemasEntityType, propertyTypeId: schema.propertyType?.id || "" });
     setSelectedFields(
       (schema.fields || []).map((f) => ({
-        fieldId: f.fieldId,
-        groupId: f.groupId,
+        fieldId: f.field?.id,
+        groupId: f.group?.id,
         isRequired: f.isRequired,
         isVisible: f.isVisible,
         isReadonly: f.isReadonly,
@@ -292,7 +290,7 @@ export function FormSchemasTab({ entityType, propertyTypeId, canCreate = true, c
                   <Badge variant="blue">{entityTypeLabels[schema.entityType] || schema.entityType}</Badge>
                   {schema.entityType === "PROPERTY" && (
                     <Badge variant="default">
-                      {propertyTypes.find((p) => p.id === schema.propertyTypeId)?.name || "Tất cả loại BĐS"}
+                      {propertyTypes.find((p) => p.id === schema.propertyType?.id)?.name || "Tất cả loại BĐS"}
                     </Badge>
                   )}
                 </div>
@@ -303,7 +301,7 @@ export function FormSchemasTab({ entityType, propertyTypeId, canCreate = true, c
                     <>
                       {schema.fields.slice(0, 5).map((f) => (
                         <Badge key={f.id} variant="default">
-                          {f.field?.fieldLabel || f.fieldId}
+                          {f.field?.fieldLabel || f.field?.id}
                         </Badge>
                       ))}
                       {schema.fields.length > 5 && (

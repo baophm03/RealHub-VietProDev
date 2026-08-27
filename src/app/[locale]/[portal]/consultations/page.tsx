@@ -4,19 +4,10 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
-  Calendar,
-  Check,
-  CheckCheck,
-  CircleUser,
-  ExternalLink,
   Eye,
   Filter,
   Headset,
-  House,
-  MessageCircle,
-  Phone,
 } from "lucide-react";
-import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,38 +16,13 @@ import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PaginationBar } from "@/components/shared/pagination-bar";
 import { usePagination } from "@/lib/hooks/use-pagination";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogPortal,
-  DialogOverlay,
-} from "@/components/ui/dialog";
-import { Can } from "@casl/react";
-import {
-  useGetApiPropertyContactsAdmin,
-  usePatchApiPropertyContactsId,
-} from "@/lib/api/endpoints/property-contacts";
+import { useGetApiPropertyContacts } from "@/lib/api/endpoints/property-contacts";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { GetApiPropertyContactsStatus } from "@/lib/api/models/getApiPropertyContactsStatus";
-
-interface PropertyContact {
-  id: string;
-  propertyId: string;
-  userName: string;
-  userPhone: string;
-  userContent?: string;
-  status: "UNREAD" | "READ" | "REPLIED";
-  createdAt: string;
-  updatedAt: string;
-  property?: {
-    id: string;
-    title: string;
-    propertyCode: string;
-  };
-}
+import {
+  ConsultationDetailDialog,
+  type PropertyContact,
+} from "./_components/consultation-detail-dialog";
 
 interface PropertyContactsResponse {
   success: boolean;
@@ -73,22 +39,23 @@ interface PropertyContactsResponse {
 
 const statusConfig: Record<
   PropertyContact["status"],
-  { label: string; variant: "red" | "blue" | "green" }
+  { label: string; variant: "red" | "blue" | "green" | "default" }
 > = {
   UNREAD: { label: "Chưa đọc", variant: "red" },
   READ: { label: "Đã đọc", variant: "blue" },
   REPLIED: { label: "Đã phản hồi", variant: "green" },
+  ARCHIVED: { label: "Đã lưu trữ", variant: "default" },
 };
 
 export default function ConsultationsPage() {
   const router = useRouter();
   const portalPath = usePortalPath();
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<PropertyContact["status"] | "ALL">("ALL");
+  const [statusFilter, setStatusFilter] = useState<PropertyContact["status"] | "ALL">("UNREAD");
   const [detailContact, setDetailContact] = useState<PropertyContact | null>(null);
 
   // Query for counts (no status filter)
-  const { data: allContactsData } = useGetApiPropertyContactsAdmin({
+  const { data: allContactsData } = useGetApiPropertyContacts({
     limit: "50",
     offset: "0",
   });
@@ -97,7 +64,7 @@ export default function ConsultationsPage() {
 
   // Query for table (with filters)
   const pagination = usePagination(10);
-  const { data: contactsData, isLoading, refetch } = useGetApiPropertyContactsAdmin({
+  const { data: contactsData, isLoading, refetch } = useGetApiPropertyContacts({
     status: statusFilter === "ALL" ? undefined : (statusFilter as GetApiPropertyContactsStatus),
     search: search.trim() || undefined,
     limit: pagination.limit,
@@ -107,23 +74,6 @@ export default function ConsultationsPage() {
     ((contactsData as unknown as PropertyContactsResponse)?.data) || [];
   const meta = (contactsData as unknown as PropertyContactsResponse)?.meta;
   const totalPages = meta?.totalPages ?? Math.max(1, Math.ceil((meta?.total ?? 0) / pagination.pageSize));
-
-  const { mutateAsync: updateContact, isPending: isUpdating } = usePatchApiPropertyContactsId();
-
-  const handleStatusChange = async (
-    id: string,
-    status: PropertyContact["status"],
-  ) => {
-    try {
-      await updateContact({ id, data: { status } });
-      toast.success(`Đã cập nhật: ${statusConfig[status].label}`);
-      setDetailContact((prev) => (prev && prev.id === id ? { ...prev, status } : prev));
-      refetch();
-    } catch (err) {
-      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Cập nhật trạng thái thất bại");
-      console.error(err);
-    }
-  };
 
   const columns = useMemo<ColumnDef<PropertyContact>[]>(
     () => [
@@ -197,7 +147,7 @@ export default function ConsultationsPage() {
         ),
       },
     ],
-    [router],
+    [router, portalPath],
   );
 
   const totalCount = (allContactsData as unknown as PropertyContactsResponse)?.meta?.total ?? allContacts.length;
@@ -211,6 +161,7 @@ export default function ConsultationsPage() {
     { value: "UNREAD", label: "Chưa đọc" },
     { value: "READ", label: "Đã đọc" },
     { value: "REPLIED", label: "Đã phản hồi" },
+    { value: "ARCHIVED", label: "Đã lưu trữ" },
   ];
 
   return (
@@ -292,149 +243,17 @@ export default function ConsultationsPage() {
         />
       )}
 
-      {/* Detail Dialog */}
-      <Dialog
-        open={!!detailContact}
+      <ConsultationDetailDialog
+        contact={detailContact}
         onOpenChange={(open) => !open && setDetailContact(null)}
-      >
-        <DialogPortal>
-          <DialogOverlay />
-          <DialogContent className="sm:max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Chi tiết yêu cầu tư vấn</DialogTitle>
-              <DialogDescription>
-                Thông tin khách hàng và bất động sản liên quan
-              </DialogDescription>
-            </DialogHeader>
-
-            {detailContact && (
-              <div className="flex flex-col gap-5">
-                {/* Status + date */}
-                <div className="flex items-center justify-between">
-                  <Badge variant={statusConfig[detailContact.status]?.variant ?? "default"}>
-                    {statusConfig[detailContact.status]?.label ?? detailContact.status}
-                  </Badge>
-                  <span className="text-xs tabular-nums text-foreground-muted">
-                    {detailContact.createdAt
-                      ? new Date(detailContact.createdAt).toLocaleString("vi-VN")
-                      : ""}
-                  </span>
-                </div>
-
-                {/* Stacked layout: property | customer */}
-                <div className="flex flex-col gap-4">
-                  {/* Property info (left) */}
-                  <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface-muted/40 p-4">
-                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-                      <House size={14} />
-                      Bất động sản
-                    </div>
-                    {detailContact.property ? (
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-start justify-between gap-2">
-                          <span className="text-sm font-medium leading-snug">
-                            {detailContact.property.title}
-                          </span>
-                          <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            aria-label="Xem bất động sản"
-                            onClick={() => {
-                              router.push(portalPath(`/properties/${detailContact.property!.id}`));
-                              setDetailContact(null);
-                            }}
-                          >
-                            <ExternalLink size={14} />
-                          </Button>
-                        </div>
-                        <span className="text-xs tabular-nums text-foreground-muted">
-                          #{detailContact.property.propertyCode}
-                        </span>
-                      </div>
-                    ) : (
-                      <span className="text-sm text-foreground-muted">—</span>
-                    )}
-                  </div>
-
-                  {/* Customer info (right) */}
-                  <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface-muted/40 p-4">
-                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-                      <CircleUser size={14} />
-                      Khách liên hệ
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <span className="text-sm font-medium">{detailContact.userName}</span>
-                      <div className="flex items-center gap-2 text-sm text-foreground-muted">
-                        <Phone size={14} />
-                        <span className="tabular-nums">{detailContact.userPhone}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Content (full width) */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-                    <MessageCircle size={14} />
-                    Nội dung yêu cầu
-                  </div>
-                  <p className="text-sm leading-relaxed text-foreground whitespace-pre-wrap rounded-lg border border-border bg-surface-muted/40 p-4">
-                    {detailContact.userContent || "—"}
-                  </p>
-                </div>
-
-                {/* Meta */}
-                <div className="flex items-center gap-2 text-xs text-foreground-muted">
-                  <Calendar size={14} />
-                  <span>
-                    Cập nhật lúc:{" "}
-                    <span className="tabular-nums">
-                      {detailContact.updatedAt
-                        ? new Date(detailContact.updatedAt).toLocaleString("vi-VN")
-                        : "—"}
-                    </span>
-                  </span>
-                </div>
-
-                {/* Status actions */}
-                <Can I="UPDATE_OWN" a="PROPERTY">
-                  <div className="flex flex-wrap items-center gap-2 border-t border-border pt-4">
-                    <span className="text-xs font-medium text-foreground-muted mr-auto">
-                      Cập nhật trạng thái:
-                    </span>
-                    <Button
-                      variant={detailContact.status === "UNREAD" ? "default" : "outline"}
-                      size="sm"
-                      disabled={isUpdating || detailContact.status === "UNREAD"}
-                      onClick={() => handleStatusChange(detailContact.id, "UNREAD")}
-                    >
-                      Chưa đọc
-                    </Button>
-                    <Button
-                      variant={detailContact.status === "READ" ? "default" : "outline"}
-                      size="sm"
-                      disabled={isUpdating || detailContact.status === "READ"}
-                      onClick={() => handleStatusChange(detailContact.id, "READ")}
-                      leftIcon={<Check size={14} />}
-                    >
-                      Đã đọc
-                    </Button>
-                    <Button
-                      variant={detailContact.status === "REPLIED" ? "default" : "outline"}
-                      size="sm"
-                      disabled={isUpdating || detailContact.status === "REPLIED"}
-                      onClick={() => handleStatusChange(detailContact.id, "REPLIED")}
-                      leftIcon={<CheckCheck size={14} />}
-                    >
-                      Đã phản hồi
-                    </Button>
-                  </div>
-                </Can>
-              </div>
-            )}
-          </DialogContent>
-        </DialogPortal>
-      </Dialog>
+        onUpdated={(updated) => {
+          setDetailContact(updated);
+          refetch();
+        }}
+        onDeleted={() => {
+          refetch();
+        }}
+      />
     </div>
   );
 }

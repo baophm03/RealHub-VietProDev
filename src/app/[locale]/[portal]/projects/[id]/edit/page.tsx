@@ -89,8 +89,8 @@ export default function ProjectEditPage() {
 
   useEffect(() => {
     if (project) {
-      const provinceId = (project as any).provinceId || project.province?.id || "";
-      const districtId = (project as any).districtId || project.district?.id || "";
+      const provinceId = project.province?.id || "";
+      const districtId = project.district?.id || "";
       setSelectedProvinceId(provinceId || undefined);
       reset({
         name: project.name || "",

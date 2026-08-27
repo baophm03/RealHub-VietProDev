@@ -33,7 +33,6 @@ import { customInstance } from "@/lib/api/mutator/custom-instance";
 
 interface MyAssignment {
   id: string;
-  propertyId: string;
   assignmentType: string;
   source: string;
   startsAt: string;
@@ -41,6 +40,7 @@ interface MyAssignment {
   status: string;
   publicLinkCode: string | null;
   createdAt: string;
+  property?: { id: string; title: string; propertyCode: string } | null;
 }
 
 const txLabel: Record<string, string> = {
@@ -98,7 +98,7 @@ export default function MyPropertyDetailPage() {
     })();
   }, [assignmentId]);
 
-  const propertyId = assignment?.propertyId ?? "";
+  const propertyId = assignment?.property?.id ?? "";
 
   const { data: propertyData, isLoading: loadingProperty } = useGetApiPropertyId(propertyId);
   const property = (propertyData as unknown as { data: Property })?.data;
@@ -141,7 +141,7 @@ export default function MyPropertyDetailPage() {
   const allSchemas = ((schemaData as any)?.data as any[]) || [];
   const schemas = useMemo(
     () => allSchemas.filter(
-      (s) => s.propertyTypeId === null || s.propertyTypeId === undefined || s.propertyTypeId === propertyTypeId,
+      (s) => !s.propertyType || s.propertyType?.id === undefined || s.propertyType?.id === propertyTypeId,
     ),
     [allSchemas, propertyTypeId],
   );

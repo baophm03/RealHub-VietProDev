@@ -157,8 +157,8 @@ export default function PropertyEditPage() {
 
   useEffect(() => {
     if (property) {
-      const provinceId = (property as any).provinceId || "";
-      const districtId = (property as any).districtId || "";
+      const provinceId = property.province?.id || "";
+      const districtId = property.district?.id || "";
       setSelectedProvinceId(provinceId || undefined);
       reset({
         title: property.title || "",
@@ -173,7 +173,7 @@ export default function PropertyEditPage() {
         priceUnit: property.priceUnit || "VND",
         area: property.area || 0,
         areaUnit: property.areaUnit || "SQM",
-        projectId: (property as any).projectId || "",
+        projectId: property.project?.id || "",
         publicationStatus: (property.publicationStatus as PropertyFormData["publicationStatus"]) || "PRIVATE",
         businessStatus: (property.businessStatus as PropertyFormData["businessStatus"]) || "AVAILABLE",
       });

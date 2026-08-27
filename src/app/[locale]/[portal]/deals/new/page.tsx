@@ -83,9 +83,9 @@ export default function DealFormPage() {
     try {
       await createDeal({
         data: {
-          propertyId: selectedLead.propertyId ?? "",
+          propertyId: selectedLead.property?.id ?? "",
           transactionType: data.transactionType,
-          customerId: selectedLead.customerId || undefined,
+          customerId: selectedLead.customer?.id || undefined,
           leadId: selectedLead.id,
           expectedValue: data.expectedValue || undefined,
           salesUserId: currentUser?.id,

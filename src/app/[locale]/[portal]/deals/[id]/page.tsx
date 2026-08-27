@@ -78,14 +78,11 @@ interface Reservation {
 interface Deal {
   id: string;
   dealCode: string;
-  customerId: string | null;
-  propertyId: string;
   transactionType: string;
   expectedValue?: string;
   finalValue?: string;
   status: string;
   currentWorkflowState?: string | null;
-  salesUserId?: string | null;
   createdAt?: string;
   property?: DealProperty | null;
   customer?: DealCustomer | null;
@@ -241,8 +238,8 @@ export default function DealDetailPage() {
       await createReservation({
         data: {
           dealId: deal.id,
-          propertyId: deal.propertyId,
-          customerId: deal.customerId || undefined,
+          propertyId: deal.property?.id ?? "",
+          customerId: deal.customer?.id || undefined,
           reservationType: resvType as any,
           startsAt: resvStartsAt,
           expiresAt: resvExpiresAt,

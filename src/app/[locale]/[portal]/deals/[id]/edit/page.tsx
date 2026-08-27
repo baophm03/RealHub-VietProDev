@@ -23,13 +23,11 @@ interface Deal {
   id: string;
   dealCode: string;
   status: string;
-  propertyId: string;
   expectedValue?: string;
   finalValue?: string;
-  salesUserId?: string | null;
-  ownerUserId?: string | null;
   currentWorkflowState?: string | null;
   property?: { id: string; title: string; propertyCode: string } | null;
+  salesUser?: { id: string; fullName: string } | null;
 }
 
 const statusOptions = [
@@ -85,7 +83,7 @@ export default function DealEditPage() {
 
   useEffect(() => {
     if (deal) {
-      const salesUserId = deal.salesUserId || currentUser?.id || "";
+      const salesUserId = deal.salesUser?.id || currentUser?.id || "";
       reset({
         status: (deal.status as DealFormData["status"]) || "SOFT_RESERVED",
         salesUserId,
@@ -174,7 +172,7 @@ export default function DealEditPage() {
             </FormField>
             <FormField label="Bất động sản">
               <Select
-                value={deal?.propertyId || "__none__"}
+                value={deal?.property?.id || "__none__"}
                 items={propertyItems}
                 disabled
               >

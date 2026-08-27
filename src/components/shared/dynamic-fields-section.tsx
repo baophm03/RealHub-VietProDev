@@ -41,7 +41,7 @@ interface FormSchema {
   id: string;
   name: string;
   entityType: string;
-  propertyTypeId?: string | null;
+  propertyType?: { id: string; name: string; code: string } | null;
   fields?: FormSchemaField[];
 }
 
@@ -50,7 +50,7 @@ interface FieldGroup {
   name: string;
   code: string;
   entityType: string;
-  propertyTypeId?: string | null;
+  propertyType?: { id: string; name: string; code: string } | null;
 }
 
 interface DynamicFieldsSectionProps {
@@ -205,7 +205,7 @@ export function DynamicFieldsSection({
   const filteredSchemas = useMemo(() => {
     const all = ((schemasData as any)?.data as FormSchema[]) || [];
     return all.filter(
-      (s) => s.propertyTypeId === null || s.propertyTypeId === undefined || s.propertyTypeId === propertyTypeId,
+      (s) => !s.propertyType || s.propertyType?.id === undefined || s.propertyType?.id === propertyTypeId,
     );
   }, [schemasData, propertyTypeId]);
 

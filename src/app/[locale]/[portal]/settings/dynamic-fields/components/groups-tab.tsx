@@ -56,7 +56,7 @@ interface FieldGroup {
   name: string;
   code: string;
   entityType: GetApiFieldGroupsEntityType;
-  propertyTypeId?: string | null;
+  propertyType?: { id: string; name: string; code: string } | null;
   sortOrder?: number;
   status?: string;
   definitions?: FieldDefinition[];
@@ -74,8 +74,8 @@ interface FieldDefinition {
   fieldLabel: string;
   fieldType: string;
   entityType: string;
-  groupId?: string | null;
-  propertyTypeId?: string | null;
+  group?: { id: string; name: string } | null;
+  propertyType?: { id: string; name: string; code: string } | null;
   isRequired?: boolean;
   status?: string;
 }
@@ -114,7 +114,7 @@ export function GroupsTab({ entityType, propertyTypeId, canCreate = true, canUpd
     entityType ? { entityType, ...(propertyTypeId ? { propertyTypeId } : {}) } : undefined,
   );
   const allDefinitions = ((defsData as any)?.data as FieldDefinition[]) || [];
-  const unassignedDefinitions = allDefinitions.filter((d) => !d.groupId);
+  const unassignedDefinitions = allDefinitions.filter((d) => !d.group?.id);
 
   const { mutateAsync: assignDefinition, isPending: isAssigning } = useMutation({
     mutationFn: (vars: { id: string; groupId: string }) =>
@@ -194,7 +194,7 @@ export function GroupsTab({ entityType, propertyTypeId, canCreate = true, canUpd
       name: group.name,
       code: group.code,
       entityType: group.entityType,
-      propertyTypeId: group.propertyTypeId || "",
+      propertyTypeId: group.propertyType?.id || "",
       sortOrder: group.sortOrder || 0,
     });
     setDialogOpen(true);
@@ -328,7 +328,7 @@ export function GroupsTab({ entityType, propertyTypeId, canCreate = true, canUpd
                   <Badge variant="blue">{entityTypeLabels[group.entityType] || group.entityType}</Badge>
                   {group.entityType === "PROPERTY" && (
                     <Badge variant="default">
-                      {propertyTypes.find((p) => p.id === group.propertyTypeId)?.name || "Tất cả loại BĐS"}
+                      {propertyTypes.find((p) => p.id === group.propertyType?.id)?.name || "Tất cả loại BĐS"}
                     </Badge>
                   )}
                 </div>
@@ -481,9 +481,9 @@ export function GroupsTab({ entityType, propertyTypeId, canCreate = true, canUpd
           </DialogHeader>
           <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto">
             {(() => {
-              const targetPropTypeId = assignTargetGroup?.propertyTypeId;
+              const targetPropTypeId = assignTargetGroup?.propertyType?.id;
               const eligibleDefs = targetPropTypeId
-                ? unassignedDefinitions.filter((d) => !d.propertyTypeId || d.propertyTypeId === targetPropTypeId)
+                ? unassignedDefinitions.filter((d) => !d.propertyType?.id || d.propertyType?.id === targetPropTypeId)
                 : unassignedDefinitions;
               if (eligibleDefs.length === 0) {
                 return (

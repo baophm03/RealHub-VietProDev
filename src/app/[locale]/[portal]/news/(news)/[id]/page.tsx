@@ -93,9 +93,9 @@ export default function NewsFormPage() {
         slug: article.slug ?? "",
         description: article.description ?? "",
         content: article.content ?? "",
-        categoryNewsId: article.categoryNewsId ?? undefined,
+        categoryNewsId: article.category?.id ?? undefined,
       });
-      setThumbnailId(article.thumbnailId ?? null);
+      setThumbnailId(article.thumbnail?.id ?? null);
       setInitialized(true);
     }
   }, [article, initialized, reset]);

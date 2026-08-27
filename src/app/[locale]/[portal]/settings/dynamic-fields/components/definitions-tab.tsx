@@ -81,8 +81,8 @@ interface FieldDefinition {
   fieldLabel: string;
   fieldType: string;
   entityType: string;
-  groupId?: string | null;
-  propertyTypeId?: string | null;
+  group?: { id: string; name: string } | null;
+  propertyType?: { id: string; name: string; code: string } | null;
   isRequired?: boolean;
   isSearchable?: boolean;
   isFilterable?: boolean;
@@ -92,7 +92,6 @@ interface FieldDefinition {
   sortOrder?: number;
   status?: string;
   options?: { id: string; label: string; value: string; sortOrder?: number }[];
-  group?: { id: string; name: string } | null;
 }
 
 type PropertyType = {
@@ -219,8 +218,8 @@ export function DefinitionsTab({ entityType, propertyTypeId, canCreate = true, c
       fieldLabel: def.fieldLabel,
       fieldType: def.fieldType,
       entityType: def.entityType as GetApiFieldDefinitionsEntityType,
-      propertyTypeId: def.propertyTypeId || "",
-      groupId: def.groupId || "",
+      propertyTypeId: def.propertyType?.id || "",
+      groupId: def.group?.id || "",
       isRequired: def.isRequired || false,
       isSearchable: def.isSearchable || false,
       isFilterable: def.isFilterable || false,
@@ -375,7 +374,7 @@ export function DefinitionsTab({ entityType, propertyTypeId, canCreate = true, c
                   </TableCell>
                   <TableCell className="text-sm text-foreground-muted">
                     {def.entityType === "PROPERTY"
-                      ? (propertyTypes.find((p) => p.id === def.propertyTypeId)?.name || "Tất cả loại BĐS")
+                      ? (propertyTypes.find((p) => p.id === def.propertyType?.id)?.name || "Tất cả loại BĐS")
                       : "-"}
                   </TableCell>
                   <TableCell className="text-sm text-foreground-muted">

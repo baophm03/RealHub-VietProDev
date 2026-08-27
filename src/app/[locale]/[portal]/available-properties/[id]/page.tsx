@@ -92,7 +92,7 @@ export default function AvailablePropertyDetailPage() {
   const allSchemas = ((schemaData as any)?.data as any[]) || [];
   const schemas = useMemo(
     () => allSchemas.filter(
-      (s) => s.propertyTypeId === null || s.propertyTypeId === undefined || s.propertyTypeId === propertyTypeId,
+      (s) => !s.propertyType || s.propertyType?.id === undefined || s.propertyType?.id === propertyTypeId,
     ),
     [allSchemas, propertyTypeId],
   );

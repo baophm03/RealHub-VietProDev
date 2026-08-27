@@ -1,30 +1,30 @@
-export interface GetLeadsMeta {
-  total: number;
-  limit: number;
-  offset: number;
-  page: number;
-  totalPages: number;
-}
-
 export interface GetLeadsResponse {
   success: boolean;
   data: Lead[];
-  meta: GetLeadsMeta;
+  meta: {
+    total: number;
+    limit: number;
+    offset: number;
+    page: number;
+    totalPages: number;
+  };
   timestamp: string;
+}
+
+export interface LeadActivity {
+  id: string;
+  activityType: string;
+  content: string | null;
+  metadataJson: Record<string, unknown> | null;
+  createdAt: string;
+  user: { id: string; fullName: string } | null;
 }
 
 export interface Lead {
   id: string;
   leadCode: string;
-  tenantId: string;
-  customerId: string | null;
-  customerNeedId: string | null;
-  propertyId: string | null;
   assignmentId: string | null;
   source: string;
-  sourceUserId: string | null;
-  ownerUserId: string | null;
-  assignedSalesId: string | null;
   assignedTeamId: string | null;
   phoneNormalized: string | null;
   protectionUntil: string | null;
@@ -35,8 +35,27 @@ export interface Lead {
   updatedBy: string | null;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string | null;
   customer: { id: string; fullName: string; phone: string } | null;
   property: { id: string; title: string; propertyCode: string } | null;
   assignedSales: { id: string; fullName: string } | null;
+  sourceUser?: { id: string; fullName: string } | null;
+  ownerUser?: { id: string; fullName: string } | null;
+  customerNeed?: {
+    id: string;
+    purpose: string | null;
+    zoneId: string | null;
+    budgetMin: string | null;
+    budgetMax: string | null;
+    areaMin: number | null;
+    areaMax: number | null;
+    bedrooms: number | null;
+    expectedTime: string | null;
+    note: string | null;
+    dynamicValuesJson: Record<string, unknown> | null;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+    propertyType: { id: string; name: string; code: string; group: string } | null;
+  } | null;
+  activities?: LeadActivity[];
 }

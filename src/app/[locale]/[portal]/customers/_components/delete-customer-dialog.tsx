@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Trash2 } from "lucide-react";
+import { UserX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,7 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  useDeleteApiCustomer,
+  usePatchApiCustomer,
   getGetApiCustomersAdminQueryKey,
 } from "@/lib/api/endpoints/customers";
 
@@ -38,25 +38,25 @@ export function DeleteCustomerDialog({
   onRefetch,
 }: DeleteCustomerDialogProps) {
   const queryClient = useQueryClient();
-  const { mutateAsync: deleteCustomer, isPending } = useDeleteApiCustomer();
-  const [deleting, setDeleting] = useState(false);
+  const { mutateAsync: patchCustomer, isPending } = usePatchApiCustomer();
+  const [deactivating, setDeactivating] = useState(false);
 
   const handleConfirm = async () => {
     if (!customer) return;
-    setDeleting(true);
+    setDeactivating(true);
     try {
-      await deleteCustomer({ id: customer.id });
+      await patchCustomer({ id: customer.id, data: { status: "INACTIVE" } as any });
       await queryClient.invalidateQueries({
         queryKey: getGetApiCustomersAdminQueryKey(),
       });
-      toast.success(`Đã xóa "${customer.fullName}"`);
+      toast.success(`Đã đánh dấu "${customer.fullName}" không hoạt động`);
       onOpenChange(false);
       onRefetch?.();
     } catch (err) {
       console.error(err);
-      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi xóa khách hàng");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật trạng thái");
     } finally {
-      setDeleting(false);
+      setDeactivating(false);
     }
   };
 
@@ -64,20 +64,20 @@ export function DeleteCustomerDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Xóa khách hàng</DialogTitle>
+          <DialogTitle>Đánh dấu không hoạt động</DialogTitle>
           <DialogDescription>
             {customer && (
               <span className="flex flex-col gap-1">
                 <span>
-                  Bạn có chắc muốn xóa{" "}
+                  Bạn có chắc muốn đánh dấu{" "}
                   <strong className="text-foreground">
                     {customer.fullName}
                   </strong>
-                  ?
+                  {" "}không hoạt động?
                 </span>
                 <span className="mt-2 text-xs text-foreground-muted">
-                  Hành động này không thể hoàn tác. Khách hàng sẽ bị ẩn (soft delete) và
-                  không hiển thị trên hệ thống.
+                  Khách hàng sẽ bị ẩn khỏi danh sách hoạt động. Bạn có thể khôi
+                  phục lại bất cứ lúc nào bằng cách cập nhật trạng thái.
                 </span>
               </span>
             )}
@@ -87,17 +87,17 @@ export function DeleteCustomerDialog({
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            disabled={isPending || deleting}
+            disabled={isPending || deactivating}
           >
             Hủy
           </Button>
           <Button
             variant="destructive"
             onClick={handleConfirm}
-            loading={isPending || deleting}
+            loading={isPending || deactivating}
           >
-            <Trash2 size={14} />
-            Xóa
+            <UserX size={14} />
+            Đánh dấu không hoạt động
           </Button>
         </DialogFooter>
       </DialogContent>
