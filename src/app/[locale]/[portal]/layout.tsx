@@ -25,7 +25,8 @@ export default function PortalLayout({ children, params }: {
   const hasHydrated = useAuthStore((s) => s._hasHydrated);
 
   const isValidPortal = isValidPortalSlug(portal);
-  const hasPermission = isValidPortal && canAccessPortal(portal, user?.role?.code);
+  const userRoleCodes = user?.roles?.map((r) => r.code) ?? [];
+  const hasPermission = isValidPortal && canAccessPortal(portal, userRoleCodes);
 
   useEffect(() => {
     if (!hasHydrated) return;

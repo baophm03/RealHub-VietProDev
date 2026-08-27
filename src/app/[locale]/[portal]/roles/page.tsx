@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PaginationBar } from "@/components/shared/pagination-bar";
+import { usePagination } from "@/lib/hooks/use-pagination";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useGetApiRoles } from "@/lib/api/endpoints/roles";
 import type { GetApiRolesStatus } from "@/lib/api/models/getApiRolesStatus";
@@ -27,11 +29,18 @@ export default function RolesPage() {
   const [editTarget, setEditTarget] = useState<Role | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Role | null>(null);
 
+  const pagination = usePagination(10);
   const { data: rolesData, isLoading } = useGetApiRoles({
     search: search.trim() || undefined,
     status: statusFilter === "ALL" ? undefined : (statusFilter as GetApiRolesStatus),
   });
-  const roles: Role[] = (rolesData as unknown as RolesResponse)?.data ?? [];
+  const allRoles: Role[] = (rolesData as unknown as RolesResponse)?.data ?? [];
+  // Roles API doesn't support limit/offset yet — slice client-side
+  const roles = allRoles.slice(
+    (pagination.currentPage - 1) * pagination.pageSize,
+    pagination.currentPage * pagination.pageSize,
+  );
+  const totalPages = Math.max(1, Math.ceil(allRoles.length / pagination.pageSize));
 
   const handleOpenPermissions = (roleId: string) => {
     setSelectedRoleId(roleId);
@@ -87,7 +96,7 @@ export default function RolesPage() {
         size: 120,
         cell: ({ row }) => (
           <span className="tabular-nums text-sm text-foreground-muted">
-            {row.original._count?.memberships ?? 0}
+            {row.original._count?.membershipRoles ?? 0}
           </span>
         ),
       },
@@ -200,11 +209,20 @@ export default function RolesPage() {
           Đang tải...
         </div>
       ) : roles.length > 0 ? (
-        <DataTable
-          columns={columns}
-          data={roles}
-          emptyMessage="Không tìm thấy role"
-        />
+        <>
+          <DataTable
+            columns={columns}
+            data={roles}
+            emptyMessage="Không tìm thấy role"
+          />
+          <PaginationBar
+            pageSize={pagination.pageSize}
+            setPageSize={pagination.setPageSize}
+            currentPage={pagination.currentPage}
+            setCurrentPage={pagination.setCurrentPage}
+            totalPages={totalPages}
+          />
+        </>
       ) : (
         <EmptyState
           icon={<Users size={24} />}

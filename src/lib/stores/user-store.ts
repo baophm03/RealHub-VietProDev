@@ -13,10 +13,12 @@ interface UserState {
 
 const updateCaslAbility = (user: User | null) => {
   const rules =
-    user?.role?.permissions.map((p) => ({
-      action: p.action as Actions,
-      subject: p.module,
-    })) ?? [];
+    (user?.roles ?? []).flatMap((r) =>
+      (r.permissions ?? []).map((p) => ({
+        action: p.action as Actions,
+        subject: p.module,
+      })),
+    ) ?? [];
 
   ability.update(rules);
 };

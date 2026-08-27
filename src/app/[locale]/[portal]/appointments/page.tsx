@@ -106,14 +106,14 @@ export default function AppointmentsPage() {
         description="Quản lý lịch hẹn xem nhà, gặp mặt, ký hợp đồng"
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1 rounded-md border border-border p-1">
+            {/* <div className="flex items-center gap-1 rounded-md border border-border p-1">
               <button onClick={() => setView("list")} className={`rounded-sm p-1.5 ${view === "list" ? "bg-surface-muted" : "text-foreground-muted"}`} aria-label="Danh sách">
                 <ListIcon size={16} />
               </button>
               <button onClick={() => setView("calendar")} className={`rounded-sm p-1.5 ${view === "calendar" ? "bg-surface-muted" : "text-foreground-muted"}`} aria-label="Lịch">
                 <CalendarIcon size={16} />
               </button>
-            </div>
+            </div> */}
             <Can I="CREATE" a="APPOINTMENT">
               <Button onClick={() => router.push(portalPath("/appointments/new"))}>
                 <Plus size={16} />

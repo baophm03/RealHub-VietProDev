@@ -15,7 +15,7 @@ export interface Role {
   description: string | null;
   status: string;
   permissions: RolePermission[];
-  _count?: { memberships: number; permissions: number };
+  _count?: { membershipRoles: number; permissions: number };
   createdAt: string;
   updatedAt: string;
 }
@@ -52,6 +52,7 @@ export interface PermissionsResponse {
 }
 
 export interface RoleUser {
+  membershipRoleId: string;
   membershipId: string;
   userId: string;
   fullName: string;
@@ -60,7 +61,7 @@ export interface RoleUser {
   avatarUrl: string | null;
   userStatus: string;
   roleCode: string;
-  joinedAt: string;
+  assignedAt: string;
 }
 
 export interface RoleUsersResponse {
@@ -70,17 +71,16 @@ export interface RoleUsersResponse {
 }
 
 export interface TenantUser {
-  membershipId: string;
-  userId: string;
+  id: string;
   fullName: string;
   email: string;
   phone: string | null;
+  phoneNormalized: string | null;
   avatarUrl: string | null;
-  userStatus: string;
-  roleCode: string;
-  roleId: string | null;
-  roleName: string | null;
-  joinedAt: string;
+  status: string;
+  lastLoginAt: string | null;
+  createdAt: string;
+  roles: { id: string; code: string; name: string }[];
 }
 
 export interface TenantUsersResponse {

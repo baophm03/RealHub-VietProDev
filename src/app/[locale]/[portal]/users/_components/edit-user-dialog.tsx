@@ -23,12 +23,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
-  usePatchApiMembershipsId,
+  usePutApiMembershipsId,
   getGetApiMembershipsQueryKey,
 } from "@/lib/api/endpoints/memberships";
 import { useGetApiRoles } from "@/lib/api/endpoints/roles";
-import type { UpdateMembershipDto } from "@/lib/api/models/updateMembershipDto";
+import type { ReplaceMembershipDto } from "@/lib/api/models/replaceMembershipDto";
 
 export interface MembershipUser {
   id: string;
@@ -49,15 +50,14 @@ export interface MembershipRole {
 
 export interface MembershipRow {
   id: string;
-  userId: string;
-  roleId: string | null;
+  tenantId?: string;
   status: string;
   joinedAt: string;
   invitedBy?: string | null;
   createdAt: string;
   updatedAt: string;
   user: MembershipUser | null;
-  role: MembershipRole | null;
+  roles: MembershipRole[];
 }
 
 interface RolesResponse {
@@ -74,35 +74,44 @@ interface EditUserDialogProps {
 
 export function EditUserDialog({ membership, open, onOpenChange }: EditUserDialogProps) {
   const queryClient = useQueryClient();
-  const { mutateAsync: patchMembership, isPending } = usePatchApiMembershipsId();
+  const { mutateAsync: putMembership, isPending } = usePutApiMembershipsId();
 
   const { data: rolesData } = useGetApiRoles();
   const roles: MembershipRole[] =
     (rolesData as unknown as RolesResponse)?.data ?? [];
 
-  const [roleId, setRoleId] = useState<string>("");
+  const [selectedRoleIds, setSelectedRoleIds] = useState<Set<string>>(new Set());
   const [status, setStatus] = useState<"ACTIVE" | "INACTIVE">("ACTIVE");
 
   useEffect(() => {
     if (membership) {
-      setRoleId(membership.roleId ?? "__NONE__");
+      setSelectedRoleIds(new Set((membership.roles ?? []).map((r) => r.id)));
       setStatus((membership.status as "ACTIVE" | "INACTIVE") ?? "ACTIVE");
     }
   }, [membership]);
 
+  const toggleRole = (roleId: string) => {
+    setSelectedRoleIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(roleId)) next.delete(roleId);
+      else next.add(roleId);
+      return next;
+    });
+  };
+
   const handleSubmit = async () => {
     if (!membership) return;
     try {
-      const dto: UpdateMembershipDto = {
-        roleId: (roleId === "__NONE__" ? null : roleId) as unknown as UpdateMembershipDto["roleId"],
+      const dto: ReplaceMembershipDto = {
         status,
+        roleIds: Array.from(selectedRoleIds),
       };
-      await patchMembership({ id: membership.id, data: dto });
+      await putMembership({ id: membership.id, data: dto });
       await queryClient.invalidateQueries({
         queryKey: getGetApiMembershipsQueryKey(),
       });
       toast.success(
-        `Đã cập nhật vai trò cho "${membership.user?.fullName ?? membership.userId}"`,
+        `Đã cập nhật vai trò cho "${membership.user?.fullName ?? membership.id}"`,
       );
       onOpenChange(false);
     } catch (err: any) {
@@ -135,36 +144,33 @@ export function EditUserDialog({ membership, open, onOpenChange }: EditUserDialo
 
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="edit-role">Vai trò</Label>
-              <Select
-                value={roleId}
-                onValueChange={(value) => setRoleId(value ?? "__NONE__")}
-                items={roles.map((r) => ({ value: r.id, label: r.name }))}
-              >
-                <SelectTrigger id="edit-role" className="w-full">
-                  <SelectValue placeholder="Chọn vai trò" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__NONE__" label="— Không có vai trò —">
-                    — Không có vai trò —
-                  </SelectItem>
-                  {roles.map((r) => (
-                    <SelectItem key={r.id} value={r.id} label={`${r.name} (${r.code})`}>
-                      <span className="font-medium">{r.name}</span>
-                      <span className="ml-2 font-mono text-xs text-foreground-muted">
-                        {r.code}
-                      </span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-foreground-muted">
-                Vai trò quyết định quyền truy cập của người dùng trong tenant.
-              </p>
+              <Label>Vai trò</Label>
+              <div className="flex flex-col gap-1 max-h-[200px] overflow-y-auto -mx-1 px-1">
+                {roles.map((r) => {
+                  const checked = selectedRoleIds.has(r.id);
+                  return (
+                    <label
+                      key={r.id}
+                      className="flex cursor-pointer items-center gap-3 rounded-md border border-border bg-surface/50 px-3 py-2 text-sm hover:bg-surface-muted"
+                    >
+                      <Checkbox
+                        checked={checked}
+                        onCheckedChange={() => toggleRole(r.id)}
+                      />
+                      <div className="flex flex-1 items-center gap-2">
+                        <span className="font-medium">{r.name}</span>
+                        <span className="font-mono text-xs text-foreground-muted">
+                          ({r.code})
+                        </span>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="edit-status">Trạng thái thành viên</Label>
+              <Label htmlFor="edit-status">Trạng thái hoạt động</Label>
               <Select
                 value={status}
                 onValueChange={(value) => setStatus((value as "ACTIVE" | "INACTIVE") ?? "ACTIVE")}
@@ -181,9 +187,6 @@ export function EditUserDialog({ membership, open, onOpenChange }: EditUserDialo
                   <SelectItem value="INACTIVE" label="Tắt">Tắt</SelectItem>
                 </SelectContent>
               </Select>
-              <p className="text-xs text-foreground-muted">
-                Đặt "Tắt" để vô hiệu hóa thành viên trong tenant.
-              </p>
             </div>
           </div>
 

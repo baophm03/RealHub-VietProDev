@@ -33,7 +33,7 @@ interface Deal {
 }
 
 const statusOptions = [
-  { value: "SOFT_RESERVED", label: "Đặt cọc mềm" },
+  { value: "SOFT_RESERVED", label: "Đặt cọc" },
   { value: "NEGOTIATING", label: "Đàm phán" },
   { value: "SUCCESS", label: "Thành công" },
   { value: "FAILED", label: "Thất bại" },

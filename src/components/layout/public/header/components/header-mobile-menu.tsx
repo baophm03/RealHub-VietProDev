@@ -38,7 +38,8 @@ export function HeaderMobileMenu({
   const logout = useAuthStore((s) => s.logout);
   const router = useRouter();
 
-  const portalEntry = getPortalEntry(user?.role?.code);
+  const codes = user?.roles?.map((r) => r.code) ?? [];
+  const portalEntry = getPortalEntry(codes);
 
   return (
     <div

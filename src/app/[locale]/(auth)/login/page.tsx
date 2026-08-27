@@ -57,6 +57,15 @@ export default function LoginPage() {
         const profileData = (profile.data as unknown as GetAuthMeResponse)?.data;
 
         if (profileData) {
+          const mapRole = (r: any) => ({
+            code: r.code,
+            name: r.name,
+            description: r.description,
+            permissions: (r.permissions ?? []).map((p: any) => ({
+              module: p.module,
+              action: p.action,
+            })),
+          });
           setUser({
             id: profileData.id,
             email: profileData.email,
@@ -64,17 +73,7 @@ export default function LoginPage() {
             phone: profileData.phone,
             avatarUrl: profileData.avatarUrl,
             status: profileData.status,
-            role: profileData.role
-              ? {
-                code: profileData.role.code,
-                name: profileData.role.name,
-                description: profileData.role.description,
-                permissions: profileData.role.permissions.map((p) => ({
-                  module: p.module,
-                  action: p.action,
-                })),
-              }
-              : null,
+            roles: (profileData.roles ?? []).map(mapRole),
             lastLoginAt: profileData.lastLoginAt,
             createdAt: profileData.createdAt,
           });

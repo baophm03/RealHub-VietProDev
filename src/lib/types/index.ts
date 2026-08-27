@@ -93,7 +93,7 @@ export interface User {
   phone?: string | null;
   avatarUrl?: string | null;
   status: string;
-  role: Role | null;
+  roles: Role[];
   lastLoginAt?: string | null;
   createdAt?: string;
 }

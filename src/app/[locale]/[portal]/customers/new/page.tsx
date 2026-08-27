@@ -84,6 +84,13 @@ export default function CustomerFormPage() {
             <FormField label="Loại khách hàng">
               <Select
                 value={selectedType}
+                items={{
+                  BUYER: "Người mua",
+                  SELLER: "Người bán",
+                  TENANT: "Người thuê",
+                  LANDLORD: "Cho thuê",
+                  INVESTOR: "Nhà đầu tư",
+                }}
                 onValueChange={(v) => {
                   if (v) {
                     setSelectedType(v);

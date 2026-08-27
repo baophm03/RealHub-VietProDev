@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePortalPath } from "@/lib/hooks/use-portal";
+import { usePagination } from "@/lib/hooks/use-pagination";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatPrice } from "@/utils";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PaginationBar } from "@/components/shared/pagination-bar";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -108,18 +110,22 @@ export function VerificationList() {
     ((allData as unknown as GetPropertiesResponse)?.data) || [];
 
   // Query for table (with server-side filter)
-  const params = {
+  const pagination = usePagination(10);
+  const { data: filteredData, isLoading } = useGetApiProperties({
     verificationStatus:
       statusFilter !== "ALL" ? (statusFilter as VerificationStatus) : undefined,
     search: search || undefined,
-  };
-  const { data: filteredData, isLoading } = useGetApiProperties(params);
+    limit: pagination.limit,
+    offset: pagination.offset,
+  });
   const { mutateAsync: patchProperty, isPending } = usePatchApiProperty();
 
   const filtered =
     (((filteredData as unknown as GetPropertiesResponse)?.data) || []).filter(
       (p) => (p.verificationStatus ?? "DRAFT") !== "DRAFT",
     );
+  const meta = (filteredData as unknown as GetPropertiesResponse)?.meta;
+  const totalPages = meta?.totalPages ?? Math.max(1, Math.ceil((meta?.total ?? 0) / pagination.pageSize));
 
   // pending dialog state
   const [pendingAction, setPendingAction] = useState<{
@@ -347,12 +353,21 @@ export function VerificationList() {
           <span className="text-sm text-foreground-muted">Đang tải...</span>
         </div>
       ) : filtered.length > 0 ? (
-        <DataTable
-          columns={columns}
-          data={filtered}
-          onRowClick={(row) => router.push(portalPath(`/properties/${row.id}`))}
-          emptyMessage="Không tìm thấy bất động sản nào"
-        />
+        <>
+          <DataTable
+            columns={columns}
+            data={filtered}
+            onRowClick={(row) => router.push(portalPath(`/properties/${row.id}`))}
+            emptyMessage="Không tìm thấy bất động sản nào"
+          />
+          <PaginationBar
+            pageSize={pagination.pageSize}
+            setPageSize={pagination.setPageSize}
+            currentPage={pagination.currentPage}
+            setCurrentPage={pagination.setCurrentPage}
+            totalPages={totalPages}
+          />
+        </>
       ) : (
         <EmptyState
           icon={<ShieldCheck size={24} />}

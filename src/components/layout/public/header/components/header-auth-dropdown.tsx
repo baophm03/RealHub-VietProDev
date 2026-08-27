@@ -59,7 +59,8 @@ export function HeaderAuthDropdown({ initials }: HeaderAuthDropdownProps) {
         </div>
         <DropdownMenuSeparator className="my-1 border-border" />
         {(() => {
-          const entry = getPortalEntry(user?.role?.code);
+          const codes = user?.roles?.map((r) => r.code) ?? [];
+          const entry = getPortalEntry(codes);
           if (!entry) return null;
           const Icon = entry.icon;
           return (

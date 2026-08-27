@@ -188,9 +188,9 @@ export function PermissionDialog({ roleId, open, onOpenChange }: PermissionDialo
               <TabsTrigger value="users">
                 <Users size={14} />
                 Thành viên
-                {role && (role._count?.memberships ?? 0) > 0 && (
+                {role && (role._count?.membershipRoles ?? 0) > 0 && (
                   <Badge variant="default" className="ml-1 text-[10px] tabular-nums">
-                    {role._count?.memberships}
+                    {role._count?.membershipRoles}
                   </Badge>
                 )}
               </TabsTrigger>

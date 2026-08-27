@@ -180,13 +180,15 @@ export default async function ListingDetailPage({ params }: Props) {
 
   const basicInfoFields = getFieldsByGroupCode(relevantSchemas, dynamicValues, "basic_info");
   const specialFields = getFieldsByGroupCode(relevantSchemas, dynamicValues, "special");
-  const contactInfoFields = getFieldsByGroupCode(relevantSchemas, dynamicValues, "contact_info");
 
-  const contactInfo = contactInfoFields.length > 0
+  // Show creator info as contact when no active sales assignment
+  const hasActiveAssignment = (property as any)?.assignments?.some((a: any) => a.status === "ACTIVE") ?? false;
+  const creator = (property as any)?.creator;
+  const contactInfo = !hasActiveAssignment && creator
     ? [{
-      name: contactInfoFields.find((f) => f.key === "contact_name")?.value ?? null,
-      phone: contactInfoFields.find((f) => f.key === "phone_number_contact")?.value ?? null,
-      position: contactInfoFields.find((f) => f.key === "position")?.value ?? null,
+      name: creator.fullName ?? null,
+      phone: creator.phone ?? null,
+      position: "Người đăng tải",
     }]
     : [];
 

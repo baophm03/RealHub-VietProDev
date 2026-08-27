@@ -32,6 +32,7 @@ import type {
 import type {
   GetApiMembershipsParams,
   ReplaceMembershipDto,
+  ReplaceUserRolesDto,
   UpdateMembershipDto
 } from '../models';
 
@@ -236,6 +237,263 @@ export const prefetchGetApiMembershipsQuery = async <TData = Awaited<ReturnType<
 
 
 /**
+ * @summary Get all roles assigned to a user in current tenant
+ */
+export const getApiMembershipsUserRoles = (
+    userId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/memberships/user/${userId}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiMembershipsUserRolesInfiniteQueryKey = (userId?: string,) => {
+    return [
+    'infinite', `/api/memberships/user/${userId}`
+    ] as const;
+    }
+
+export const getGetApiMembershipsUserRolesQueryKey = (userId?: string,) => {
+    return [
+    `/api/memberships/user/${userId}`
+    ] as const;
+    }
+
+    
+export const getGetApiMembershipsUserRolesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>>, TError = unknown>(userId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiMembershipsUserRolesInfiniteQueryKey(userId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>> = ({ signal }) => getApiMembershipsUserRoles(userId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(userId),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiMembershipsUserRolesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>>
+export type GetApiMembershipsUserRolesInfiniteQueryError = unknown
+
+
+export function useGetApiMembershipsUserRolesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>>, TError = unknown>(
+ userId: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiMembershipsUserRoles>>,
+          TError,
+          Awaited<ReturnType<typeof getApiMembershipsUserRoles>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiMembershipsUserRolesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>>, TError = unknown>(
+ userId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiMembershipsUserRoles>>,
+          TError,
+          Awaited<ReturnType<typeof getApiMembershipsUserRoles>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiMembershipsUserRolesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>>, TError = unknown>(
+ userId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get all roles assigned to a user in current tenant
+ */
+
+export function useGetApiMembershipsUserRolesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>>, TError = unknown>(
+ userId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiMembershipsUserRolesInfiniteQueryOptions(userId,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get all roles assigned to a user in current tenant
+ */
+export const prefetchGetApiMembershipsUserRolesInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError = unknown>(
+ queryClient: QueryClient, userId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiMembershipsUserRolesInfiniteQueryOptions(userId,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiMembershipsUserRolesQueryOptions = <TData = Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError = unknown>(userId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiMembershipsUserRolesQueryKey(userId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>> = ({ signal }) => getApiMembershipsUserRoles(userId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(userId),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiMembershipsUserRolesQueryResult = NonNullable<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>>
+export type GetApiMembershipsUserRolesQueryError = unknown
+
+
+export function useGetApiMembershipsUserRoles<TData = Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError = unknown>(
+ userId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiMembershipsUserRoles>>,
+          TError,
+          Awaited<ReturnType<typeof getApiMembershipsUserRoles>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiMembershipsUserRoles<TData = Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError = unknown>(
+ userId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiMembershipsUserRoles>>,
+          TError,
+          Awaited<ReturnType<typeof getApiMembershipsUserRoles>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiMembershipsUserRoles<TData = Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError = unknown>(
+ userId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get all roles assigned to a user in current tenant
+ */
+
+export function useGetApiMembershipsUserRoles<TData = Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError = unknown>(
+ userId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiMembershipsUserRolesQueryOptions(userId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get all roles assigned to a user in current tenant
+ */
+export const prefetchGetApiMembershipsUserRolesQuery = async <TData = Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError = unknown>(
+ queryClient: QueryClient, userId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiMembershipsUserRoles>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiMembershipsUserRolesQueryOptions(userId,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Replace all roles for a user in current tenant
+ */
+export const putApiMembershipsUserRoles = (
+    userId: string,
+    replaceUserRolesDto: ReplaceUserRolesDto,
+ ) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/memberships/user/${userId}`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: replaceUserRolesDto
+    },
+      );
+    }
+  
+
+
+export const getPutApiMembershipsUserRolesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiMembershipsUserRoles>>, TError,{userId: string;data: ReplaceUserRolesDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putApiMembershipsUserRoles>>, TError,{userId: string;data: ReplaceUserRolesDto}, TContext> => {
+
+const mutationKey = ['putApiMembershipsUserRoles'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiMembershipsUserRoles>>, {userId: string;data: ReplaceUserRolesDto}> = (props) => {
+          const {userId,data} = props ?? {};
+
+          return  putApiMembershipsUserRoles(userId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiMembershipsUserRolesMutationResult = NonNullable<Awaited<ReturnType<typeof putApiMembershipsUserRoles>>>
+    export type PutApiMembershipsUserRolesMutationBody = ReplaceUserRolesDto
+    export type PutApiMembershipsUserRolesMutationError = unknown
+
+    /**
+ * @summary Replace all roles for a user in current tenant
+ */
+export const usePutApiMembershipsUserRoles = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiMembershipsUserRoles>>, TError,{userId: string;data: ReplaceUserRolesDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiMembershipsUserRoles>>,
+        TError,
+        {userId: string;data: ReplaceUserRolesDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPutApiMembershipsUserRolesMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
  * @summary Get membership by ID
  */
 export const getApiMembershipsId = (
@@ -244,7 +502,7 @@ export const getApiMembershipsId = (
 ) => {
       
       
-      return customInstance<void>(
+      return customInstance<unknown>(
       {url: `/api/memberships/${id}`, method: 'GET', signal
     },
       );
@@ -429,7 +687,7 @@ export const prefetchGetApiMembershipsIdQuery = async <TData = Awaited<ReturnTyp
 
 
 /**
- * @summary Partially update a membership (e.g. change role)
+ * @summary Update membership status and/or add role(s) (additive)
  */
 export const patchApiMembershipsId = (
     id: string,
@@ -437,7 +695,7 @@ export const patchApiMembershipsId = (
  ) => {
       
       
-      return customInstance<void>(
+      return customInstance<unknown>(
       {url: `/api/memberships/${id}`, method: 'PATCH',
       headers: {'Content-Type': 'application/json', },
       data: updateMembershipDto
@@ -477,7 +735,7 @@ const {mutation: mutationOptions} = options ?
     export type PatchApiMembershipsIdMutationError = unknown
 
     /**
- * @summary Partially update a membership (e.g. change role)
+ * @summary Update membership status and/or add role(s) (additive)
  */
 export const usePatchApiMembershipsId = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiMembershipsId>>, TError,{id: string;data: UpdateMembershipDto}, TContext>, }
@@ -493,7 +751,7 @@ export const usePatchApiMembershipsId = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
- * @summary Fully replace a membership
+ * @summary Replace membership status and/or roles (full replace)
  */
 export const putApiMembershipsId = (
     id: string,
@@ -501,7 +759,7 @@ export const putApiMembershipsId = (
  ) => {
       
       
-      return customInstance<void>(
+      return customInstance<unknown>(
       {url: `/api/memberships/${id}`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: replaceMembershipDto
@@ -541,7 +799,7 @@ const {mutation: mutationOptions} = options ?
     export type PutApiMembershipsIdMutationError = unknown
 
     /**
- * @summary Fully replace a membership
+ * @summary Replace membership status and/or roles (full replace)
  */
 export const usePutApiMembershipsId = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiMembershipsId>>, TError,{id: string;data: ReplaceMembershipDto}, TContext>, }
@@ -553,6 +811,67 @@ export const usePutApiMembershipsId = <TError = unknown,
       > => {
 
       const mutationOptions = getPutApiMembershipsIdMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Delete a membership (remove user from tenant)
+ */
+export const deleteApiMembershipsId = (
+    id: string,
+ ) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/memberships/${id}`, method: 'DELETE'
+    },
+      );
+    }
+  
+
+
+export const getDeleteApiMembershipsIdMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiMembershipsId>>, TError,{id: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteApiMembershipsId>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteApiMembershipsId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiMembershipsId>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteApiMembershipsId(id,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteApiMembershipsIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiMembershipsId>>>
+    
+    export type DeleteApiMembershipsIdMutationError = unknown
+
+    /**
+ * @summary Delete a membership (remove user from tenant)
+ */
+export const useDeleteApiMembershipsId = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiMembershipsId>>, TError,{id: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteApiMembershipsId>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteApiMembershipsIdMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

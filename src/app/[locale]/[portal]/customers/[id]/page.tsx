@@ -280,7 +280,7 @@ export default function CustomerDetailPage() {
       <div className="rounded-lg border border-border bg-surface p-6">
         <div className="flex items-center gap-2 mb-4">
           <SquareKanban size={16} className="text-foreground-muted" />
-          <h3 className="text-sm font-semibold">Khách hàng tiềm năng</h3>
+          <h3 className="text-sm font-semibold">Nguồn khách hàng</h3>
           <Badge variant="secondary">{customer.leads?.length ?? 0}</Badge>
         </div>
         {customer.leads && customer.leads.length > 0 ? (
@@ -340,7 +340,7 @@ export default function CustomerDetailPage() {
             })}
           </div>
         ) : (
-          <p className="text-sm text-foreground-muted">Chưa có khách hàng tiềm năng nào</p>
+          <p className="text-sm text-foreground-muted">Chưa có nguồn khách hàng nào</p>
         )}
       </div>
 

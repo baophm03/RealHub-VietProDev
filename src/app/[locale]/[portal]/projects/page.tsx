@@ -11,9 +11,11 @@ import { Input } from "@/components/ui/input";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
+import { PaginationBar } from "@/components/shared/pagination-bar";
 import type { ColumnDef } from "@tanstack/react-table";
-import { useGetApiProjectsAdmin } from "@/lib/api/endpoints/projects";
+import { useGetApiProjects } from "@/lib/api/endpoints/projects";
 import { Project } from "@/lib/api/types/projects";
+import { usePagination } from "@/lib/hooks/use-pagination";
 import { DeleteProjectDialog } from "./_components/delete-project-dialog";
 
 const statusVariant: Record<string, "green" | "default"> = {
@@ -32,11 +34,19 @@ export default function ProjectsPage() {
   const [search, setSearch] = useState("");
   const [pendingDelete, setPendingDelete] = useState<Project | null>(null);
 
-  const { data: projectsData, refetch } = useGetApiProjectsAdmin();
+  const pagination = usePagination(10);
+
+  const { data: projectsData, refetch } = useGetApiProjects({
+    search: search.trim() || undefined,
+    limit: pagination.limit,
+    offset: pagination.offset,
+  });
   const projects = useMemo(() => {
     const raw = projectsData as any;
     return (raw?.data ?? []) as Project[];
   }, [projectsData]);
+  const meta = (projectsData as any)?.meta;
+  const totalPages = meta?.totalPages ?? Math.max(1, Math.ceil((meta?.total ?? 0) / pagination.pageSize));
 
   const filtered = projects.filter(
     (p) =>
@@ -153,12 +163,21 @@ export default function ProjectsPage() {
         </div>
 
         {filtered.length > 0 ? (
-          <DataTable
-            columns={columns}
-            data={filtered}
-            onRowClick={(row) => router.push(portalPath(`/projects/${row.id}`))}
-            emptyMessage="Không tìm thấy dự án nào"
-          />
+          <>
+            <DataTable
+              columns={columns}
+              data={filtered}
+              onRowClick={(row) => router.push(portalPath(`/projects/${row.id}`))}
+              emptyMessage="Không tìm thấy dự án nào"
+            />
+            <PaginationBar
+              pageSize={pagination.pageSize}
+              setPageSize={pagination.setPageSize}
+              currentPage={pagination.currentPage}
+              setCurrentPage={pagination.setCurrentPage}
+              totalPages={totalPages}
+            />
+          </>
         ) : (
           <EmptyState
             icon={<Building2 size={24} />}

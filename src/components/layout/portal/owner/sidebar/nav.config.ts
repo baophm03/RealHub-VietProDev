@@ -64,18 +64,6 @@ export const navGroups: NavGroup[] = [
         permission: { action: "READ_OWN", subject: "PROPERTY" },
       },
       {
-        label: "Khách hàng",
-        href: `/${entryPortal?.slug}/customers`,
-        icon: Users,
-        permission: { action: "READ_OWN", subject: "CUSTOMER" },
-      },
-      {
-        label: "KH tiềm năng",
-        href: `/${entryPortal?.slug}/leads`,
-        icon: CircleUser,
-        permission: { action: "READ_OWN", subject: "LEAD" },
-      },
-      {
         label: "Tư vấn",
         href: `/${entryPortal?.slug}/consultations`,
         icon: Headset,
@@ -86,6 +74,18 @@ export const navGroups: NavGroup[] = [
         href: `/${entryPortal?.slug}/appointments`,
         icon: Calendar,
         permission: { action: "READ_OWN", subject: "APPOINTMENT" },
+      },
+      {
+        label: "Khách hàng",
+        href: `/${entryPortal?.slug}/customers`,
+        icon: Users,
+        permission: { action: "READ_OWN", subject: "CUSTOMER" },
+      },
+      {
+        label: "Nguồn KH",
+        href: `/${entryPortal?.slug}/leads`,
+        icon: CircleUser,
+        permission: { action: "READ_OWN", subject: "LEAD" },
       },
       {
         label: "Giao dịch",

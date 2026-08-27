@@ -6,11 +6,11 @@
  * OpenAPI spec version: v1
  */
 
-export type GetApiProjectsAdminStatus = typeof GetApiProjectsAdminStatus[keyof typeof GetApiProjectsAdminStatus];
+export type UpdateAssignmentPolicyDtoStatus = typeof UpdateAssignmentPolicyDtoStatus[keyof typeof UpdateAssignmentPolicyDtoStatus];
 
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetApiProjectsAdminStatus = {
+export const UpdateAssignmentPolicyDtoStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
 } as const;

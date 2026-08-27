@@ -8,10 +8,7 @@
 import type { UpdateMembershipDtoStatus } from './updateMembershipDtoStatus';
 
 export interface UpdateMembershipDto {
-  /**
-   * TenantRole ID to assign. Send null to detach role.
-   * @nullable
-   */
-  roleId?: string | null;
   status?: UpdateMembershipDtoStatus;
+  /** Role IDs to add to the membership (additive, does not remove existing roles) */
+  roleIds?: string[];
 }

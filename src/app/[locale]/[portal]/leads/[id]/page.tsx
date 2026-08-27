@@ -166,7 +166,7 @@ export default function LeadDetailPage() {
   const handleDelete = async () => {
     try {
       await deleteLead({ id });
-      toast.success(`Đã xóa khách hàng tiềm năng "${lead?.leadCode}"`);
+      toast.success(`Đã xóa nguồn khách hàng "${lead?.leadCode}"`);
       router.push(portalPath("/leads"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa lead thất bại");
@@ -445,9 +445,9 @@ export default function LeadDetailPage() {
           <DialogOverlay />
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Xóa khách hàng tiềm năng</DialogTitle>
+              <DialogTitle>Xóa nguồn khách hàng</DialogTitle>
               <DialogDescription>
-                Hành động này sẽ ẩn khách hàng tiềm năng (soft delete). Bạn có chắc chắn?
+                Hành động này sẽ ẩn nguồn khách hàng (soft delete). Bạn có chắc chắn?
               </DialogDescription>
             </DialogHeader>
             <div className="rounded-lg border border-border bg-surface-muted/40 p-4 text-sm">

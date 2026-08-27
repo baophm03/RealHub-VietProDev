@@ -9,7 +9,8 @@ import type { CreateProjectDtoStatus } from './createProjectDtoStatus';
 
 export interface CreateProjectDto {
   name: string;
-  code: string;
+  /** Auto-generated as DA-DDMMyy-NNN if omitted */
+  code?: string;
   developer?: string;
   provinceId?: string;
   districtId?: string;

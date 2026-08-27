@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/select";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PaginationBar } from "@/components/shared/pagination-bar";
+import { usePagination } from "@/lib/hooks/use-pagination";
 import {
   useGetApiCustomersAdmin,
 } from "@/lib/api/endpoints/customers";
@@ -93,14 +95,17 @@ export default function CustomersPage() {
   const [statusFilter, setStatusFilter] = useState<GetApiCustomersStatus | "ALL">("ALL");
   const [deleteTarget, setDeleteTarget] = useState<CustomerRow | null>(null);
 
+  const pagination = usePagination(10);
   const { data: customersData, isLoading, refetch } = useGetApiCustomersAdmin({
     search: search.trim() || undefined,
     type: typeFilter === "ALL" ? undefined : (typeFilter as GetApiCustomersType),
     status: statusFilter === "ALL" ? undefined : (statusFilter as GetApiCustomersStatus),
-    limit: "50",
-    offset: "0",
+    limit: pagination.limit,
+    offset: pagination.offset,
   });
   const customers = ((customersData as unknown as CustomersResponse)?.data) || [];
+  const meta = (customersData as unknown as CustomersResponse)?.meta;
+  const totalPages = meta?.totalPages ?? Math.max(1, Math.ceil((meta?.total ?? 0) / pagination.pageSize));
 
   const columns = useMemo<ColumnDef<CustomerRow>[]>(
     () => [
@@ -274,6 +279,13 @@ export default function CustomersPage() {
             data={customers}
             onRowClick={(row) => router.push(portalPath(`/customers/${row.id}`))}
             emptyMessage="Không có khách hàng"
+          />
+          <PaginationBar
+            pageSize={pagination.pageSize}
+            setPageSize={pagination.setPageSize}
+            currentPage={pagination.currentPage}
+            setCurrentPage={pagination.setCurrentPage}
+            totalPages={totalPages}
           />
         </>
       ) : (

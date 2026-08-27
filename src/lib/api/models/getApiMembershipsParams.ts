@@ -11,6 +11,7 @@ export type GetApiMembershipsParams = {
 search?: string;
 status?: GetApiMembershipsStatus;
 roleId?: string;
+userId?: string;
 limit?: string;
 offset?: string;
 };

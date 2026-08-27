@@ -14,7 +14,8 @@ import type { CreatePropertyDtoDynamicValuesJson } from './createPropertyDtoDyna
 import type { CreatePropertyDtoMetadata } from './createPropertyDtoMetadata';
 
 export interface CreatePropertyDto {
-  propertyCode: string;
+  /** Auto-generated as BDS-DDMMyy-NNN if omitted */
+  propertyCode?: string;
   title: string;
   description: string;
   slug: string;

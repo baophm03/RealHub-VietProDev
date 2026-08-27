@@ -72,7 +72,6 @@ const priceUnitLabels: Record<string, string> = {
 };
 
 const propertySchema = z.object({
-  propertyCode: z.string().min(1, "Vui lòng nhập mã BĐS"),
   title: z.string().min(5, "Tiêu đề phải có ít nhất 5 ký tự"),
   description: z.string().optional(),
   slug: z.string().optional(),
@@ -162,7 +161,6 @@ export default function PropertyEditPage() {
       const districtId = (property as any).districtId || "";
       setSelectedProvinceId(provinceId || undefined);
       reset({
-        propertyCode: property.propertyCode || "",
         title: property.title || "",
         description: property.description || "",
         slug: property.slug || "",
@@ -187,7 +185,7 @@ export default function PropertyEditPage() {
     setLoading(true);
     setError(null);
     try {
-      await updateProperty({ id, data: { ...data, dynamicValuesJson: Object.keys(dynamicValues).length > 0 ? dynamicValues : undefined } });
+      await updateProperty({ id, data: { ...data, dynamicValuesJson: Object.keys(dynamicValues).length > 0 ? dynamicValues : undefined } as any });
       await queryClient.invalidateQueries({ queryKey: getGetApiPropertyIdQueryKey(id) });
       toast.success("Cập nhật bất động sản thành công");
       router.push(portalPath(`/properties/${id}`));
@@ -238,11 +236,11 @@ export default function PropertyEditPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <FormSection title="Thông tin cơ bản" description="Nhập thông tin chính của bất động sản">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Mã BĐS" htmlFor="propertyCode" required error={errors.propertyCode?.message}>
-              <Input id="propertyCode" placeholder="PROP-001" {...register("propertyCode")} />
-            </FormField>
             <FormField label="Tiêu đề" htmlFor="title" required error={errors.title?.message}>
               <Input id="title" placeholder="Vinhomes Central Park - 2PN" {...register("title")} />
+            </FormField>
+            <FormField label="Slug" htmlFor="slug" error={errors.slug?.message}>
+              <Input id="slug" placeholder="vinhomes-central-park-2pn" {...register("slug")} />
             </FormField>
           </div>
 
@@ -302,7 +300,7 @@ export default function PropertyEditPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="SELF_SELL" label="Tự bán">Tự bán</SelectItem>
-                  <SelectItem value="SALES_DISTRIBUTION" label="Phân phối">Phân phối</SelectItem>
+                  <SelectItem value="SALES_DISTRIBUTION" label="Sales bán hộ">Sales bán hộ</SelectItem>
                   <SelectItem value="HYBRID" label="Kết hợp">Kết hợp</SelectItem>
                   <SelectItem value="INTERNAL_ONLY" label="Chỉ nội bộ">Chỉ nội bộ</SelectItem>
                   <SelectItem value="AGENCY_DISTRIBUTION" label="Sàn công khai">Sàn công khai</SelectItem>

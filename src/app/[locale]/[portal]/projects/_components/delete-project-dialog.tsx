@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import {
   useDeleteApiProject,
-  getGetApiProjectsAdminQueryKey,
+  getGetApiProjectsQueryKey,
 } from "@/lib/api/endpoints/projects";
 import type { Project } from "@/lib/api/types/projects";
 
@@ -42,7 +42,7 @@ export function DeleteProjectDialog({
     try {
       await deleteProject({ id: project.id });
       await queryClient.invalidateQueries({
-        queryKey: getGetApiProjectsAdminQueryKey(),
+        queryKey: getGetApiProjectsQueryKey(),
       });
       toast.success(`Đã xóa "${project.name}"`);
       onOpenChange(false);

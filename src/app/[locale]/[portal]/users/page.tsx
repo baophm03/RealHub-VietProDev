@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/select";
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PaginationBar } from "@/components/shared/pagination-bar";
+import { usePagination } from "@/lib/hooks/use-pagination";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useGetApiMemberships } from "@/lib/api/endpoints/memberships";
 import type { GetApiMembershipsStatus } from "@/lib/api/models/getApiMembershipsStatus";
@@ -30,6 +32,7 @@ interface MembershipsListResponse {
   total: number;
   limit: number;
   offset: number;
+  meta?: { total: number; totalPages: number };
 }
 
 const statusLabel: Record<string, { label: string; variant: "green" | "default" }> = {
@@ -49,16 +52,19 @@ export default function UsersPage() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<MembershipRow | null>(null);
 
+  const pagination = usePagination(10);
   const { data: membershipsData, isLoading } = useGetApiMemberships({
     search: search.trim() || undefined,
     status: statusFilter === "ALL" ? undefined : (statusFilter as GetApiMembershipsStatus),
-    limit: "50",
-    offset: "0",
+    limit: pagination.limit,
+    offset: pagination.offset,
   });
   const memberships: MembershipRow[] =
     (membershipsData as unknown as MembershipsListResponse)?.data ?? [];
   const total =
     (membershipsData as unknown as MembershipsListResponse)?.total ?? memberships.length;
+  const meta = (membershipsData as unknown as MembershipsListResponse)?.meta;
+  const totalPages = meta?.totalPages ?? Math.max(1, Math.ceil((meta?.total ?? total) / pagination.pageSize));
 
   const columns = useMemo<ColumnDef<MembershipRow>[]>(
     () => [
@@ -90,15 +96,21 @@ export default function UsersPage() {
         ),
       },
       {
-        id: "role",
+        id: "roles",
         header: "Vai trò",
         cell: ({ row }) => {
-          const r = row.original.role;
-          if (!r) return <span className="text-foreground-muted">—</span>;
+          const roles = row.original.roles;
+          if (!roles || roles.length === 0) {
+            return <span className="text-foreground-muted">—</span>;
+          }
           return (
-            <Badge variant="blue" className="font-mono">
-              {r.code}
-            </Badge>
+            <div className="flex flex-wrap gap-1">
+              {roles.map((r) => (
+                <Badge key={r.id} variant="blue" className="font-mono">
+                  {r.code}
+                </Badge>
+              ))}
+            </div>
           );
         },
       },
@@ -214,6 +226,13 @@ export default function UsersPage() {
             columns={columns}
             data={memberships}
             emptyMessage="Không tìm thấy người dùng"
+          />
+          <PaginationBar
+            pageSize={pagination.pageSize}
+            setPageSize={pagination.setPageSize}
+            currentPage={pagination.currentPage}
+            setCurrentPage={pagination.setCurrentPage}
+            totalPages={totalPages}
           />
         </>
       ) : (

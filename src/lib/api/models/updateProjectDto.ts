@@ -9,6 +9,7 @@ import type { UpdateProjectDtoStatus } from './updateProjectDtoStatus';
 
 export interface UpdateProjectDto {
   name?: string;
+  /** Auto-generated as DA-DDMMyy-NNN if omitted */
   code?: string;
   developer?: string;
   provinceId?: string;

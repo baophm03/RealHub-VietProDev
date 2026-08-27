@@ -14,6 +14,7 @@ import type { UpdatePropertyDtoDynamicValuesJson } from './updatePropertyDtoDyna
 import type { UpdatePropertyDtoMetadata } from './updatePropertyDtoMetadata';
 
 export interface UpdatePropertyDto {
+  /** Auto-generated as BDS-DDMMyy-NNN if omitted */
   propertyCode?: string;
   title?: string;
   description?: string;

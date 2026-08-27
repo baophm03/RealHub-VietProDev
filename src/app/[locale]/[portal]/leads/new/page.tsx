@@ -110,10 +110,10 @@ export default function LeadFormPage() {
           phoneNormalized: data.phoneNormalized || undefined,
         },
       });
-      toast.success("Đã tạo khách hàng tiềm năng mới");
+      toast.success("Đã tạo nguồn khách hàng mới");
       router.push(portalPath("/leads"));
     } catch (err) {
-      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo khách hàng tiềm năng, vui lòng thử lại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo nguồn khách hàng, vui lòng thử lại");
       console.error(err);
     } finally {
       setLoading(false);
@@ -130,11 +130,11 @@ export default function LeadFormPage() {
         >
           <ArrowLeft size={20} />
         </button>
-        <PageHeader eyebrow="CRM" title="Thêm khách hàng tiềm năng" />
+        <PageHeader eyebrow="CRM" title="Thêm nguồn khách hàng" />
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <FormSection title="Thông tin khách hàng tiềm năng">
+        <FormSection title="Thông tin nguồn khách hàng">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField label="Khách hàng">
               <Select
@@ -191,7 +191,7 @@ export default function LeadFormPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Nguồn khách hàng tiềm năng" required>
+            <FormField label="Nguồn" required>
               <Select
                 value={selectedSource}
                 items={Object.fromEntries(sourceOptions.map((o) => [o.value, o.label]))}
@@ -203,7 +203,7 @@ export default function LeadFormPage() {
                 }}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn nguồn khách hàng tiềm năng" />
+                  <SelectValue placeholder="Chọn nguồn" />
                 </SelectTrigger>
                 <SelectContent>
                   {sourceOptions.map((o) => (
@@ -253,7 +253,7 @@ export default function LeadFormPage() {
             Hủy
           </Button>
           <Button type="submit" disabled={loading}>
-            {loading ? "Đang lưu..." : "Lưu khách hàng tiềm năng"}
+            {loading ? "Đang lưu..." : "Lưu nguồn khách hàng"}
           </Button>
         </div>
       </form>
