@@ -18,6 +18,7 @@ import {
 import { Bed, Bath, MapPin, ChevronRight, Ruler, ShieldCheck, Star } from "lucide-react";
 import { ListingGallery } from "./_components/listing-gallery";
 import { ListingContactSidebar } from "./_components/listing-contact-sidebar";
+import { FeaturedPropertiesCarousel } from "@/components/sections/featured-properties-carousel";
 
 type Props = {
   params: Promise<{ locale: string; propertyCode: string }>;
@@ -147,7 +148,7 @@ export default async function ListingDetailPage({ params }: Props) {
     );
     similarProperties = (((similarRes as unknown as GetPropertiesResponse)?.data) || [])
       .filter((p: Property) => p.propertyCode !== propertyCode)
-      .slice(0, 3);
+      .slice(0, 10);
 
     for (const p of similarProperties) {
       similarImageMap.set(p.id, extractFirstImageUrlFromMedia(p.media));
@@ -169,7 +170,7 @@ export default async function ListingDetailPage({ params }: Props) {
   }
 
   const relevantSchemas = schemas.filter(
-    (s) => s.propertyTypeId === null || s.propertyTypeId === undefined || s.propertyTypeId === propertyTypeId,
+    (s) => !s.propertyType || s.propertyType?.id === undefined || s.propertyType?.id === propertyTypeId,
   );
   const dynamicValues = (property as any)?.dynamicValuesJson as Record<string, unknown> | undefined;
 
@@ -181,14 +182,13 @@ export default async function ListingDetailPage({ params }: Props) {
   const basicInfoFields = getFieldsByGroupCode(relevantSchemas, dynamicValues, "basic_info");
   const specialFields = getFieldsByGroupCode(relevantSchemas, dynamicValues, "special");
 
-  // Show creator info as contact when no active sales assignment
-  const hasActiveAssignment = (property as any)?.assignments?.some((a: any) => a.status === "ACTIVE") ?? false;
-  const creator = (property as any)?.creator;
-  const contactInfo = !hasActiveAssignment && creator
+  const owner = (property as any)?.owner;
+  const contactInfo = owner
     ? [{
-      name: creator.fullName ?? null,
-      phone: creator.phone ?? null,
-      position: "Người đăng tải",
+      id: owner.id ?? null,
+      name: owner.fullName ?? null,
+      phone: owner.phone ?? null,
+      position: "Chủ bất động sản",
     }]
     : [];
 
@@ -358,65 +358,13 @@ export default async function ListingDetailPage({ params }: Props) {
       {/* Similar Properties */}
       {similarProperties.length > 0 && (
         <section className="pt-8 border-t border-border mt-8">
-          <h2 className="font-serif text-2xl font-semibold tracking-tight text-primary mb-6">Bất động sản tương tự</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {similarProperties.map((p) => {
-              const itemDynValues = (p as any).dynamicValuesJson as Record<string, unknown> | undefined;
-              const itemBedrooms = findFieldValue(relevantSchemas, itemDynValues, ["bedroom", "beds", "phong_ngu", "phòng ngủ"]);
-              const itemBathrooms = findFieldValue(relevantSchemas, itemDynValues, ["bathroom", "baths", "phong_tam", "phòng tắm"]);
-              const location = [p.district?.name, p.province?.name].filter(Boolean).join(", ");
-              const imageUrl = similarImageMap.get(p.id) ?? null;
-
-              return (
-                <Link
-                  key={p.id}
-                  href={`/listings/${p.propertyCode}`}
-                  className="group bg-surface rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow flex flex-col"
-                >
-                  <div className="relative h-48 overflow-hidden">
-                    {imageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={imageUrl}
-                        alt={p.title}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-surface-muted">
-                        <span className="text-xs text-foreground-muted">Không có hình ảnh</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-4 space-y-3 flex-1 flex flex-col">
-                    <h3 className="font-serif text-lg font-medium text-primary line-clamp-1 group-hover:text-primary/80 transition-colors">
-                      {p.title}
-                    </h3>
-                    <p className="text-sm text-foreground-muted flex items-center gap-1">
-                      <MapPin size={14} /> {location || "Đang cập nhật"}
-                    </p>
-                    <div className="font-serif text-xl font-bold text-primary">
-                      {formatPrice(p.price, p.transactionType)}
-                    </div>
-                    <div className="flex items-center gap-4 border-t border-border pt-3 mt-auto">
-                      <div className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-                        <Ruler size={12} /> {p.area ? `${p.area}m²` : "—"}
-                      </div>
-                      {itemBedrooms && (
-                        <div className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-                          <Bed size={12} /> {itemBedrooms}
-                        </div>
-                      )}
-                      {itemBathrooms && (
-                        <div className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-                          <Bath size={12} /> {itemBathrooms}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
+          <div className="mb-6 flex flex-col gap-2">
+            <h2 className="font-serif text-2xl font-semibold tracking-tight text-primary">Bất động sản tương tự</h2>
+            <p className="text-sm text-foreground-muted">
+              Những bất động sản cùng loại có thể phù hợp với bạn.
+            </p>
           </div>
+          <FeaturedPropertiesCarousel properties={similarProperties} imageMap={similarImageMap} />
         </section>
       )}
     </div>

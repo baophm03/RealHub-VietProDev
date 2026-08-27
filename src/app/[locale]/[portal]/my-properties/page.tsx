@@ -244,11 +244,16 @@ export default function MyPropertiesPage() {
                       size="sm"
                       variant="ghost"
                       className="flex-1"
-                      title="Sao chép link trang chủ"
+                      title="Sao chép link chia sẻ (có ref code)"
+                      disabled={!a.publicLinkCode}
                       onClick={() => {
-                        const url = `${window.location.origin}/vi/listings/${p.propertyCode}`;
+                        if (!a.publicLinkCode) {
+                          toast.error("Chưa có mã link riêng");
+                          return;
+                        }
+                        const url = `${window.location.origin}/vi/listings/${p.propertyCode}?ref=${a.publicLinkCode}`;
                         navigator.clipboard.writeText(url);
-                        toast.success("Đã sao chép link");
+                        toast.success("Đã sao chép link chia sẻ");
                       }}
                     >
                       <Link2 size={14} />

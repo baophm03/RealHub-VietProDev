@@ -32,6 +32,7 @@ import type {
 import type {
   CreateAssignmentPolicyDto,
   ExtendAssignmentDto,
+  GetApiAssignmentsMineParams,
   GetApiAssignmentsParams,
   UpdateAssignmentPolicyDto
 } from '../models';
@@ -618,6 +619,200 @@ export const useDeleteApiAssignmentPolicy = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary List my assignments (properties I am assigned to)
+ */
+export const getApiAssignmentsMine = (
+    params?: GetApiAssignmentsMineParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/assignments/mine`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiAssignmentsMineInfiniteQueryKey = (params?: GetApiAssignmentsMineParams,) => {
+    return [
+    'infinite', `/api/assignments/mine`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiAssignmentsMineQueryKey = (params?: GetApiAssignmentsMineParams,) => {
+    return [
+    `/api/assignments/mine`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiAssignmentsMineInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAssignmentsMine>>>, TError = unknown>(params?: GetApiAssignmentsMineParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiAssignmentsMineInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAssignmentsMine>>> = ({ signal }) => getApiAssignmentsMine(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiAssignmentsMineInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiAssignmentsMine>>>
+export type GetApiAssignmentsMineInfiniteQueryError = unknown
+
+
+export function useGetApiAssignmentsMineInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAssignmentsMine>>>, TError = unknown>(
+ params: undefined |  GetApiAssignmentsMineParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiAssignmentsMine>>,
+          TError,
+          Awaited<ReturnType<typeof getApiAssignmentsMine>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiAssignmentsMineInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAssignmentsMine>>>, TError = unknown>(
+ params?: GetApiAssignmentsMineParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiAssignmentsMine>>,
+          TError,
+          Awaited<ReturnType<typeof getApiAssignmentsMine>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiAssignmentsMineInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAssignmentsMine>>>, TError = unknown>(
+ params?: GetApiAssignmentsMineParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List my assignments (properties I am assigned to)
+ */
+
+export function useGetApiAssignmentsMineInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAssignmentsMine>>>, TError = unknown>(
+ params?: GetApiAssignmentsMineParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiAssignmentsMineInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List my assignments (properties I am assigned to)
+ */
+export const prefetchGetApiAssignmentsMineInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiAssignmentsMineParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiAssignmentsMineInfiniteQueryOptions(params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiAssignmentsMineQueryOptions = <TData = Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError = unknown>(params?: GetApiAssignmentsMineParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiAssignmentsMineQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAssignmentsMine>>> = ({ signal }) => getApiAssignmentsMine(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiAssignmentsMineQueryResult = NonNullable<Awaited<ReturnType<typeof getApiAssignmentsMine>>>
+export type GetApiAssignmentsMineQueryError = unknown
+
+
+export function useGetApiAssignmentsMine<TData = Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError = unknown>(
+ params: undefined |  GetApiAssignmentsMineParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiAssignmentsMine>>,
+          TError,
+          Awaited<ReturnType<typeof getApiAssignmentsMine>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiAssignmentsMine<TData = Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError = unknown>(
+ params?: GetApiAssignmentsMineParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiAssignmentsMine>>,
+          TError,
+          Awaited<ReturnType<typeof getApiAssignmentsMine>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiAssignmentsMine<TData = Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError = unknown>(
+ params?: GetApiAssignmentsMineParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List my assignments (properties I am assigned to)
+ */
+
+export function useGetApiAssignmentsMine<TData = Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError = unknown>(
+ params?: GetApiAssignmentsMineParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiAssignmentsMineQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List my assignments (properties I am assigned to)
+ */
+export const prefetchGetApiAssignmentsMineQuery = async <TData = Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiAssignmentsMineParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAssignmentsMine>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiAssignmentsMineQueryOptions(params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * @summary List property assignments
  */
 export const getApiAssignments = (

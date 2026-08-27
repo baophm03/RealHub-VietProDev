@@ -14,4 +14,5 @@ export const UpdatePropertyContactDtoStatus = {
   UNREAD: 'UNREAD',
   READ: 'READ',
   REPLIED: 'REPLIED',
+  ARCHIVED: 'ARCHIVED',
 } as const;

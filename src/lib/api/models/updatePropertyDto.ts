@@ -23,7 +23,6 @@ export interface UpdatePropertyDto {
   transactionType?: UpdatePropertyDtoTransactionType;
   sellingMode?: UpdatePropertyDtoSellingMode;
   sourceId?: string;
-  ownerUserId?: string;
   provinceId?: string;
   districtId?: string;
   wardId?: string;

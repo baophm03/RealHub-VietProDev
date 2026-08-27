@@ -23,11 +23,9 @@ export interface NewsThumbnail {
 export interface News {
   id: string;
   slug: string;
-  thumbnailId?: string | null;
   title: string;
   description?: string | null;
   content?: string | null;
-  categoryNewsId?: string | null;
   createdBy?: string | null;
   updatedBy?: string | null;
   createdAt: string;

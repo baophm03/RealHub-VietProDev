@@ -22,12 +22,12 @@ interface Appointment {
   id: string;
   title: string;
   type: string;
-  customerId?: string;
-  propertyId?: string;
   scheduledAt: string;
   endTime?: string;
   locationText?: string;
   description?: string;
+  customer?: { id: string; fullName: string; phone?: string; email?: string } | null;
+  property?: { id: string; title: string; propertyCode: string; price?: string } | null;
 }
 
 interface Customer {
@@ -126,16 +126,16 @@ export default function AppointmentEditPage() {
       reset({
         title: appointment.title || "",
         type: (appointment.type as AppointmentFormData["type"]) || "SITE_VISIT",
-        customerId: appointment.customerId || "",
-        propertyId: appointment.propertyId || "",
+        customerId: appointment.customer?.id || "",
+        propertyId: appointment.property?.id || "",
         scheduledAt: toLocalDatetimeInput(appointment.scheduledAt),
         endTime: toLocalDatetimeInput(appointment.endTime),
         locationText: appointment.locationText || "",
         description: appointment.description || "",
       });
       setSelectedType(appointment.type || "SITE_VISIT");
-      setSelectedCustomerId(appointment.customerId || "");
-      setSelectedPropertyId(appointment.propertyId || "");
+      setSelectedCustomerId(appointment.customer?.id || "");
+      setSelectedPropertyId(appointment.property?.id || "");
     }
   }, [appointment, reset]);
 

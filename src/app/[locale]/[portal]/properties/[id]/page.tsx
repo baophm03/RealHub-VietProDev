@@ -74,7 +74,7 @@ export default function PropertyDetailPage() {
   const allSchemas = ((schemaData as any)?.data as any[]) || [];
   const schemas = useMemo(
     () => allSchemas.filter(
-      (s) => s.propertyTypeId === null || s.propertyTypeId === undefined || s.propertyTypeId === propertyTypeId,
+      (s) => !s.propertyType || s.propertyType?.id === undefined || s.propertyType?.id === propertyTypeId,
     ),
     [allSchemas, propertyTypeId],
   );
@@ -132,7 +132,6 @@ export default function PropertyDetailPage() {
 
   const basicInfoFields = getFieldsByGroupCode("basic_info");
   const specialFields = getFieldsByGroupCode("special");
-  const contactInfoFields = getFieldsByGroupCode("contact_info");
 
   const staticSpecs = [
     { icon: Ruler, label: "Diện tích", value: property ? `${areaNum} m2` : "227 m2", accent: false },
@@ -160,11 +159,14 @@ export default function PropertyDetailPage() {
     desc: f.value,
   }));
 
-  const contactInfo = contactInfoFields.length > 0
+  // Show owner info as contact when no active sales assignment
+  const hasActiveAssignment = (property as any)?.assignments?.some((a: any) => a.status === "ACTIVE") ?? false;
+  const owner = (property as any)?.owner;
+  const contactInfo = !hasActiveAssignment && owner
     ? [{
-      name: contactInfoFields.find((f) => f.key === "contact_name")?.value ?? null,
-      phone: contactInfoFields.find((f) => f.key === "phone_number_contact")?.value ?? null,
-      position: contactInfoFields.find((f) => f.key === "position")?.value ?? null,
+      name: owner.fullName ?? null,
+      phone: owner.phone ?? null,
+      position: "Chủ bất động sản",
     }]
     : [];
 

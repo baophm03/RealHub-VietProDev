@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { notFound } from "next/navigation";
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
-  const checkPermission = ability.can('READ_OWN', 'PROPERTY');
+  const checkPermission = ability.can('READ_OWN', 'PROPERTY_CONTACT');
 
   useEffect(() => {
     if (!checkPermission) {

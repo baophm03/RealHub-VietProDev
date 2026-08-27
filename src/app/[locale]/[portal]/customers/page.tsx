@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { usePortalPath } from "@/lib/hooks/use-portal";
-import { Filter, Plus, Trash2, Users } from "lucide-react";
+import { Filter, Plus, UserX, Users } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -188,10 +188,10 @@ export default function CustomersPage() {
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Xóa"
+                aria-label="Đánh dấu không hoạt động"
                 onClick={() => setDeleteTarget(row.original)}
               >
-                <Trash2 size={14} />
+                <UserX size={14} />
               </Button>
             </Can>
           </div>

@@ -79,7 +79,7 @@ export const navGroups: NavGroup[] = [
         label: "Tư vấn",
         href: `/${entryPortal?.slug}/consultations`,
         icon: Headset,
-        permission: { action: "READ_OWN", subject: "PROPERTY" },
+        permission: { action: "READ_OWN", subject: "PROPERTY_CONTACT" },
       },
       {
         label: "Lịch hẹn",

@@ -52,6 +52,18 @@ export const navGroups: NavGroup[] = [
         permission: { action: "READ_OWN", subject: "PROPERTY" },
       },
       {
+        label: "Nhận phụ trách",
+        href: `/${entryPortal?.slug}/available-properties`,
+        icon: Handshake,
+        permission: { action: "READ", subject: "ASSIGNMENT" },
+      },
+      {
+        label: "Sản phẩm phụ trách",
+        href: `/${entryPortal?.slug}/my-properties`,
+        icon: Building2,
+        permission: { action: "READ", subject: "ASSIGNMENT" },
+      },
+      {
         label: "Duyệt BĐS",
         href: `/${entryPortal?.slug}/verification`,
         icon: ShieldCheck,
@@ -67,7 +79,7 @@ export const navGroups: NavGroup[] = [
         label: "Tư vấn",
         href: `/${entryPortal?.slug}/consultations`,
         icon: Headset,
-        permission: { action: "READ_OWN", subject: "PROPERTY" },
+        permission: { action: "READ_OWN", subject: "PROPERTY_CONTACT" },
       },
       {
         label: "Lịch hẹn",

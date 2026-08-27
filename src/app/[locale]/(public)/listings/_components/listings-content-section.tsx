@@ -143,7 +143,7 @@ export async function ListingsContentSection({
     propertyImageMap.set(p.id, extractFirstImageUrlFromMedia(p.media));
     const propertyTypeId = p.propertyType?.id;
     const relevantSchemas = schemas.filter(
-      (s) => s.propertyTypeId === null || s.propertyTypeId === undefined || s.propertyTypeId === propertyTypeId,
+      (s) => !s.propertyType || s.propertyType?.id === undefined || s.propertyType?.id === propertyTypeId,
     );
     const dynamicValues = (p as any)?.dynamicValuesJson as Record<string, unknown> | undefined;
     bedroomsMap.set(

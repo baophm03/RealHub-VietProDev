@@ -9,6 +9,8 @@
 export interface CreatePropertyContactDto {
   /** UUID of the Property record */
   propertyId: string;
+  /** UUID of the user who will receive this contact request (the property owner/sales) */
+  recipientUserId: string;
   userName: string;
   userPhone: string;
   userContent?: string;

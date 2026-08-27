@@ -14,4 +14,5 @@ export const GetApiPropertyContactsStatus = {
   UNREAD: 'UNREAD',
   READ: 'READ',
   REPLIED: 'REPLIED',
+  ARCHIVED: 'ARCHIVED',
 } as const;

@@ -23,7 +23,6 @@ export interface CreatePropertyDto {
   transactionType: CreatePropertyDtoTransactionType;
   sellingMode: CreatePropertyDtoSellingMode;
   sourceId?: string;
-  ownerUserId?: string;
   provinceId?: string;
   districtId?: string;
   wardId?: string;
