@@ -35,14 +35,10 @@ export interface FilePickerModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSelect: (files: FileItem[]) => void;
-  /** Allow selecting multiple files (default: false) */
   multiple?: boolean;
-  /** Filter shown files by mime type group (default: "image") */
   filter?: "image" | "all";
-  /** ownerType/ownerId to tag newly uploaded files */
   ownerType?: string;
   ownerId?: string;
-  /** File ids to exclude from the list (e.g. already attached) */
   excludeIds?: string[];
   title?: string;
 }
@@ -133,13 +129,11 @@ export function FilePickerModal({
         }
         invalidateFiles();
         toast.success(`Đã upload ${acceptedFiles.length} file`);
-        // Auto-select newly uploaded files
         setSelected((prev) => {
           const next = new Set(prev);
           for (const id of uploadedIds) next.add(id);
           return next;
         });
-        // Switch back to library tab so user sees the result
         setTab("library");
       } catch (err) {
         console.error(err);
@@ -189,10 +183,8 @@ export function FilePickerModal({
 
   const handleConfirm = () => {
     const selectedFiles = files.filter((f) => selected.has(f.id));
-    // Also include newly uploaded files that may not be in `files` yet (filtered out by search/etc)
     const selectedFromAll = allFiles.filter((f) => selected.has(f.id));
     const merged = [...selectedFiles, ...selectedFromAll];
-    // Dedupe by id
     const seen = new Set<string>();
     const result = merged.filter((f) => {
       if (seen.has(f.id)) return false;

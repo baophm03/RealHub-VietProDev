@@ -2,6 +2,7 @@ import { createMongoAbility, MongoAbility } from '@casl/ability';
 
 export type Actions =
     | 'CREATE'
+    | 'VIEW'
     | 'READ'
     | 'READ_OWN'
     | 'READ_ALL'
@@ -13,7 +14,8 @@ export type Actions =
     | 'DELETE_ALL'
     | 'EXPORT'
     | 'ASSIGN'
-    | 'APPROVE';
+    | 'APPROVE'
+    | 'APPROVE_VIEW';
 
 export type Features = string;
 
