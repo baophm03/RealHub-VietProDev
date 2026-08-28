@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import config from "@/config";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -26,6 +27,6 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: ["https://realhub.vn/sitemap.xml"],
+    sitemap: [`${config.siteUrl}/sitemap.xml`],
   };
 }

@@ -1,23 +1,25 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
-
+import config from '@/config'
 const BASE_URLS: Record<string, string> = {
-  vi: "https://realhub.vn",
-  en: "https://en.realhub.vn",
+  vi: config.siteUrl,
+  en: `${config.siteUrl}/en`,
 };
 
 const STATIC_ROUTES = [
   "",
-  "/properties",
+  "/listings",
   "/about",
   "/contact",
+  "/projects",
+  "/news",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [];
 
   for (const locale of routing.locales) {
-    const base = BASE_URLS[locale] ?? `https://realhub.vn/${locale}`;
+    const base = BASE_URLS[locale] ?? `${config.siteUrl}/${locale}`;
 
     for (const route of STATIC_ROUTES) {
       const alternates: Record<string, string> = {};
