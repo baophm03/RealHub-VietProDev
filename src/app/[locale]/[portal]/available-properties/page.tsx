@@ -118,7 +118,7 @@ export default function AvailablePropertiesPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         eyebrow="Phụ trách"
-        title="Sản phẩm có thể nhận phụ trách"
+        title="Bất động sản có thể nhận"
         description="Danh sách bất động sản đang mở nhận phụ trách. Nhận để tạo link/QR riêng và bắt đầu khai thác."
       />
 
