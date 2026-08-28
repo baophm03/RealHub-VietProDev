@@ -5,11 +5,11 @@ import { QueryProvider } from "@/providers/query-provider";
 import config from "@/config";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(config.apiEndpoint),
+  metadataBase: new URL(config.siteUrl),
   title: "RealHub - Nền tảng bất động sản",
   description: "Hệ thống mua bán quản lý bất động sản cho đa người dùng",
   openGraph: {
-    url: config.apiEndpoint,
+    url: config.siteUrl,
     siteName: "RealHub",
     title: "RealHub - Nền tảng bất động sản",
     description: "Hệ thống mua bán quản lý bất động sản cho đa người dùng",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     locale: 'vi_VN',
     images: [
       {
-        url: `${config.apiEndpoint}/thumbnail-seo.webp`,
+        url: `${config.siteUrl}/thumbnail-seo.webp`,
         width: 1200,
         height: 630,
         alt: 'RealHub - Nền tảng bất động sản',
@@ -25,13 +25,21 @@ export const metadata: Metadata = {
     ],
   },
   alternates: {
-    canonical: config.apiEndpoint,
+    canonical: config.siteUrl,
     languages: {
-      vi: `${config.apiEndpoint}/vi`,
-      en: `${config.apiEndpoint}/en`,
-      "x-default": `${config.apiEndpoint}/vi`,
+      vi: `${config.siteUrl}/vi`,
+      en: `${config.siteUrl}/en`,
+      "x-default": `${config.siteUrl}/vi`,
     },
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true
+    }
+  }
 };
 
 const geist = Geist({
