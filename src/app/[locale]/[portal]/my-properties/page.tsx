@@ -128,7 +128,7 @@ export default function MyPropertiesPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         eyebrow="Phụ trách"
-        title="Sản phẩm tôi phụ trách"
+        title="Bất động sản đang phụ trách"
         description="Danh sách bất động sản bạn đang phụ trách. Quản lý link/QR riêng và huỷ phụ trách khi cần."
       />
 

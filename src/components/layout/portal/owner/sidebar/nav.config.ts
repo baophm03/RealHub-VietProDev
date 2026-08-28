@@ -52,13 +52,13 @@ export const navGroups: NavGroup[] = [
         permission: { action: "VIEW", subject: "PROPERTY" },
       },
       {
-        label: "Nhận phụ trách",
+        label: "BĐS phụ trách",
         href: `/${entryPortal?.slug}/available-properties`,
         icon: Handshake,
         permission: { action: "VIEW", subject: "ASSIGNMENT" },
       },
       {
-        label: "Sản phẩm phụ trách",
+        label: "BĐS đang phụ trách",
         href: `/${entryPortal?.slug}/my-properties`,
         icon: Building2,
         permission: { action: "VIEW", subject: "ASSIGNMENT" },
