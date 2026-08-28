@@ -2,26 +2,34 @@ import { Geist, Newsreader, Geist_Mono } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
 import { QueryProvider } from "@/providers/query-provider";
-
-const siteUrl = "https://realhub.vn";
+import config from "@/config";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(config.apiEndpoint),
   title: "RealHub - Nền tảng bất động sản",
   description: "Hệ thống mua bán quản lý bất động sản cho đa người dùng",
   openGraph: {
+    url: config.apiEndpoint,
+    siteName: "RealHub",
     title: "RealHub - Nền tảng bất động sản",
     description: "Hệ thống mua bán quản lý bất động sản cho đa người dùng",
     type: "website",
-    siteName: "RealHub",
-    url: siteUrl,
+    locale: 'vi_VN',
+    images: [
+      {
+        url: `${config.apiEndpoint}/thumbnail-seo.webp`,
+        width: 1200,
+        height: 630,
+        alt: 'RealHub - Nền tảng bất động sản',
+      }
+    ],
   },
   alternates: {
-    canonical: siteUrl,
+    canonical: config.apiEndpoint,
     languages: {
-      vi: `${siteUrl}/vi`,
-      en: `${siteUrl}/en`,
-      "x-default": `${siteUrl}/vi`,
+      vi: `${config.apiEndpoint}/vi`,
+      en: `${config.apiEndpoint}/en`,
+      "x-default": `${config.apiEndpoint}/vi`,
     },
   },
 };
