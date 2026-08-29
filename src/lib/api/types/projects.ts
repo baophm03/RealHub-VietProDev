@@ -47,16 +47,14 @@ export interface Project {
   developer: string | null;
   handoverDate: string | null;
   status: string;
-  createdBy: string | null;
-  updatedBy: string | null;
   createdAt: string;
   updatedAt: string;
   priceFrom: number | null;
   priceTo: number | null;
   province: { id: string; name: string; code: string } | null;
   district: { id: string; name: string; code: string } | null;
-  creator: { id: string; fullName: string } | null;
-  updater: { id: string; fullName: string } | null;
+  creator?: { id: string; fullName: string; avatarUrl: string | null } | null;
+  updater?: { id: string; fullName: string; avatarUrl: string | null } | null;
   properties: ProjectProperty[];
   media: ProjectMedia[];
   _count: {

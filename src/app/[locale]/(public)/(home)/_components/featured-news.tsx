@@ -3,12 +3,13 @@ import type { GetNewsResponse, News } from "@/lib/api/types/news";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "lucide-react";
 import { NewsCard } from "@/components/shared/news-card";
+import { NewsCarousel } from "@/components/shared/news-carousel";
 
 export async function FeaturedNews() {
   let newsList: News[] = [];
 
   try {
-    const res = await getApiNews({ limit: "6" } as any);
+    const res = await getApiNews({ limit: "12" } as any);
     newsList = ((res as unknown as GetNewsResponse)?.data) || [];
   } catch {
     // Keep empty
@@ -40,10 +41,13 @@ export async function FeaturedNews() {
         </div>
 
         {newsList.length > 0 ? (
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {newsList.slice(0, 6).map((news) => (
-              <NewsCard key={news.id} article={news} />
-            ))}
+          <div className="flex flex-col gap-12">
+            <NewsCarousel newsList={newsList.slice(0, 6)} />
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {newsList.slice(6, 12).map((news) => (
+                <NewsCard key={news.id} article={news} />
+              ))}
+            </div>
           </div>
         ) : (
           <div className="flex items-center justify-center py-20 text-center">

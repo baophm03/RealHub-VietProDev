@@ -3,12 +3,10 @@ export interface NewsCategory {
   code: string;
   name: string;
   description?: string | null;
-  createdBy?: string | null;
-  updatedBy?: string | null;
   createdAt: string;
   updatedAt: string;
-  creator?: { id: string; fullName: string } | null;
-  updater?: { id: string; fullName: string } | null;
+  creator?: { id: string; fullName: string; avatarUrl: string | null } | null;
+  updater?: { id: string; fullName: string; avatarUrl: string | null } | null;
   _count?: { news: number };
 }
 
@@ -20,20 +18,25 @@ export interface NewsThumbnail {
   url?: string;
 }
 
+export interface NewsCreator {
+  id: string;
+  fullName: string;
+  avatarUrl: string | null;
+  role?: { id: string; code: string; name: string } | null;
+}
+
 export interface News {
   id: string;
   slug: string;
   title: string;
   description?: string | null;
   content?: string | null;
-  createdBy?: string | null;
-  updatedBy?: string | null;
   createdAt: string;
   updatedAt: string;
   thumbnail?: NewsThumbnail | null;
   category?: { id: string; code: string; name: string; description?: string | null } | null;
-  creator?: { id: string; fullName: string } | null;
-  updater?: { id: string; fullName: string } | null;
+  creator?: NewsCreator | null;
+  updater?: { id: string; fullName: string; avatarUrl: string | null } | null;
 }
 
 export interface GetNewsResponse {

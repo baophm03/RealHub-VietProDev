@@ -9,6 +9,7 @@ import type {
 } from "@/lib/api/types/news";
 import { NewsFilter } from "../_components/news-filter";
 import { NewsGrid } from "../_components/news-grid";
+import { NewsCarousel } from "@/components/shared/news-carousel";
 import { RevealSection } from "@/components/shared/reveal-section";
 import { PageBanner } from "@/components/shared/page-banner";
 
@@ -63,8 +64,14 @@ export default async function NewsListPage({ params }: Props) {
           <NewsFilter categories={categories} activeCategory={isAll ? undefined : categoryCode} />
         </RevealSection>
 
+        {news.length > 0 && (
+          <RevealSection className="pb-6">
+            <NewsCarousel newsList={news.slice(0, 3)} />
+          </RevealSection>
+        )}
+
         <RevealSection>
-          <NewsGrid news={news} />
+          <NewsGrid news={news.slice(3)} />
         </RevealSection>
       </div>
     </>
