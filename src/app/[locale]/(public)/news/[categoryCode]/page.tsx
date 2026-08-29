@@ -10,6 +10,7 @@ import type {
 import { NewsFilter } from "../_components/news-filter";
 import { NewsGrid } from "../_components/news-grid";
 import { RevealSection } from "@/components/shared/reveal-section";
+import { PageBanner } from "@/components/shared/page-banner";
 
 export const ALL_SLUG = "all";
 
@@ -49,28 +50,23 @@ export default async function NewsListPage({ params }: Props) {
   const active = isAll ? undefined : categories.find((c) => c.code === categoryCode);
 
   return (
-    <div className="mx-auto max-w-[1400px] px-6 py-12 md:px-8 md:py-16 lg:px-12">
-      <RevealSection>
-        <div className="mb-10 flex flex-col gap-4">
-          <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-primary">
-            Tin tức
-          </span>
-          <h1 className="font-serif text-4xl font-semibold tracking-tight md:text-5xl">
-            {active ? active.name : "Tin tức bất động sản"}
-          </h1>
-          <p className="max-w-[56ch] text-base leading-relaxed text-foreground-muted">
-            Cập nhật xu hướng, phân tích thị trường và hướng dẫn đầu tư bất động sản từ đội ngũ RealHub.
-          </p>
-        </div>
-      </RevealSection>
+    <>
+      <PageBanner
+        title={active ? active.name : "Tin tức bất động sản"}
+        description="Cập nhật xu hướng, phân tích thị trường."
+        backgroundImage="/background/news.jpg"
+        breadcrumbs={[{ label: "Trang chủ", href: "/" }, { label: active ? active.name : "Tin tức" }]}
+      />
 
-      <RevealSection>
-        <NewsFilter categories={categories} activeCategory={isAll ? undefined : categoryCode} />
-      </RevealSection>
+      <div className="container py-12 md:py-16">
+        <RevealSection>
+          <NewsFilter categories={categories} activeCategory={isAll ? undefined : categoryCode} />
+        </RevealSection>
 
-      <RevealSection>
-        <NewsGrid news={news} />
-      </RevealSection>
-    </div>
+        <RevealSection>
+          <NewsGrid news={news} />
+        </RevealSection>
+      </div>
+    </>
   );
 }

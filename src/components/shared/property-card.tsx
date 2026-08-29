@@ -82,19 +82,13 @@ export function PropertyCard({
             className="h-full w-full object-cover"
           />
         )}
-        {/* Status badge — top right */}
-        {badge && (
-          <div className="absolute top-3 right-3 z-10">
-            <span className={cn(propertyBadgeBase, badge.className)}>{badge.label}</span>
-          </div>
-        )}
         {/* Transaction badge — top left */}
         <div className="absolute top-3 left-3 z-10">
           <span
             className={cn(
               propertyBadgeBase,
               property.transactionType === "SALE"
-                ? "bg-primary text-primary-foreground"
+                ? "bg-[#FCEAEB] text-[#C57B7A]"
                 : "bg-accent-blue text-accent-blue-text",
             )}
           >

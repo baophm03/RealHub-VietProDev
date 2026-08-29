@@ -368,4 +368,8 @@ body::before {
   html {
     @apply font-sans;
   }
+
+  .container {
+    @apply mx-auto px-5 md:px-15 lg:px-25;
+  }
 }

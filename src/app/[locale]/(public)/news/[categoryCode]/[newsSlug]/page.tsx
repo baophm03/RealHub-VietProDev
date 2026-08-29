@@ -9,7 +9,9 @@ import type {
   News,
 } from "@/lib/api/types/news";
 import { Link } from "@/i18n/navigation";
-import { ArrowLeft, ArrowRight, Calendar, ImageIcon } from "lucide-react";
+import { ArrowLeft, ImageIcon } from "lucide-react";
+import { NewsContent } from "./_components/news-content";
+import { RelatedNews } from "./_components/related-news";
 
 type Props = {
   params: Promise<{ locale: string; categoryCode: string; newsSlug: string }>;
@@ -98,7 +100,7 @@ export default async function NewsDetailPage({ params }: Props) {
 
   if (!article) {
     return (
-      <div className="mx-auto max-w-[1400px] px-6 py-8 md:px-8 md:py-12 lg:px-12">
+      <div className="container pb-8 md:pb-12">
         <Link
           href={`/news/${categoryCode}`}
           className="mb-6 inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
@@ -114,108 +116,42 @@ export default async function NewsDetailPage({ params }: Props) {
   }
 
   return (
-    <div className="mx-auto max-w-[1400px] px-6 py-8 md:px-8 md:py-12 lg:px-12">
-      <Link
-        href={`/news/${categoryCode}`}
-        className="mb-6 inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
-      >
-        <ArrowLeft size={16} /> Quay lại tin tức
-      </Link>
-
-      <div className="mx-auto max-w-3xl">
-        {/* Header */}
-        <div className="mb-8">
-          {article.category && (
-            <span className="mb-4 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-              {article.category.name}
-            </span>
+    <>
+      <div className="relative -mt-20 lg:-mt-100 ">
+        <div className="relative aspect-[21/9] w-full overflow-hidden">
+          {article.thumbnail?.url ? (
+            <img
+              src={article.thumbnail.url}
+              alt={article.title}
+              className="size-full object-cover"
+            />
+          ) : (
+            <div className="flex size-full items-center justify-center bg-surface-muted">
+              <ImageIcon size={48} className="text-foreground-muted" />
+            </div>
           )}
-          <h1 className="mb-4 font-serif text-3xl font-semibold leading-tight tracking-tight md:text-4xl">
-            {article.title}
-          </h1>
-          <p className="mb-4 text-base leading-relaxed text-foreground-muted">
-            {article.description ?? ""}
-          </p>
-          <div className="flex items-center gap-4 text-xs text-foreground-muted">
-            {article.creator && (
-              <span className="font-medium text-foreground">{article.creator.fullName}</span>
-            )}
-            <span className="flex items-center gap-1">
-              <Calendar size={12} /> {formatDate(article.createdAt)}
-            </span>
-          </div>
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
         </div>
-
-        {/* Featured image */}
-        <div className="mb-8 aspect-[16/9] overflow-hidden rounded-lg">
-          <NewsImage
-            url={article.thumbnail?.url}
-            alt={article.title}
-            className="size-full object-cover"
-          />
-        </div>
-
-        {/* Content */}
-        {article.content ? (
-          <div className="mb-12">{renderContent(article.content)}</div>
-        ) : (
-          <div className="mb-12 text-sm text-foreground-muted">Nội dung đang được cập nhật.</div>
-        )}
       </div>
 
-      {/* Related news */}
-      {relatedNews.length > 0 && (
-        <div className="mx-auto max-w-[1400px]">
-          <h2 className="mb-6 font-serif text-2xl font-semibold tracking-tight">
-            Bài viết liên quan
-          </h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {relatedNews.map((n) => {
-              const catCode = n.category?.code ?? categoryCode;
-              return (
-                <Link
-                  key={n.id}
-                  href={`/news/${catCode}/${n.slug}`}
-                  className="group flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
-                >
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    <NewsImage
-                      url={n.thumbnail?.url}
-                      alt={n.title}
-                      className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      iconSize={24}
-                    />
-                  </div>
-                  <div className="flex flex-1 flex-col gap-2 p-4">
-                    {n.category && (
-                      <span className="text-[10px] font-medium uppercase tracking-wide text-primary">
-                        {n.category.name}
-                      </span>
-                    )}
-                    <h3 className="font-serif text-base font-medium leading-snug tracking-tight transition-colors group-hover:text-primary">
-                      {n.title}
-                    </h3>
-                    {n.description && (
-                      <p className="line-clamp-2 text-sm leading-relaxed text-foreground-muted">
-                        {n.description}
-                      </p>
-                    )}
-                    <div className="mt-auto flex items-center justify-between border-t border-border pt-3 text-xs text-foreground-muted">
-                      <span className="flex items-center gap-1">
-                        <Calendar size={12} /> {formatDate(n.createdAt)}
-                      </span>
-                      <ArrowRight
-                        size={14}
-                        className="transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary"
-                      />
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
+      <div className="container relative z-10 -mt-[10%] pb-8 md:pb-12">
+        <Link
+          href={`/news/${categoryCode}`}
+          className="mb-6 inline-flex items-center gap-2 text-sm text-white transition-colors hover:text-white/80"
+        >
+          <ArrowLeft size={16} /> Quay lại tin tức
+        </Link>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-8">
+            <NewsContent article={article} renderContent={renderContent} />
+          </div>
+          <div className="lg:col-span-4">
+            <RelatedNews news={relatedNews} categoryCode={categoryCode} />
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }

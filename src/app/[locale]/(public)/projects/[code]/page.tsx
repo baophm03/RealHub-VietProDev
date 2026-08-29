@@ -9,6 +9,8 @@ import { Link } from "@/i18n/navigation";
 import { MapPin, ArrowLeft, Phone, Calendar, ArrowRight, Camera, Building2, Hash, Ruler, Tag, Home, BedDouble, Bath, Square, ImageIcon } from "lucide-react";
 import { formatPriceWithTransaction } from "@/utils";
 import type { ProjectProperty } from "@/lib/api/types/projects";
+import { getProjectPriceRange } from "@/utils/project-helpers";
+import { ProjectCard } from "@/components/shared/project-card";
 
 type Props = {
   params: Promise<{ locale: string; code: string }>;
@@ -114,7 +116,7 @@ export default async function ProjectDetailPage({ params }: Props) {
 
   if (!project) {
     return (
-      <div className="mx-auto max-w-[1400px] px-6 py-8 md:px-8 md:py-12 lg:px-12">
+      <div className="container py-8 md:py-12">
         <Link
           href="/projects"
           className="mb-6 inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
@@ -135,7 +137,7 @@ export default async function ProjectDetailPage({ params }: Props) {
   const heroImage = projectImages[0]?.url || null;
 
   return (
-    <div className="mx-auto max-w-[1400px] px-6 py-8 md:px-8 md:py-12 lg:px-12">
+    <div className="container pb-8 md:pb-12">
       <Link
         href="/projects"
         className="mb-6 inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
@@ -192,7 +194,6 @@ export default async function ProjectDetailPage({ params }: Props) {
       )}
 
       <div className="grid gap-10 lg:grid-cols-12">
-        {/* Left column — Giới thiệu + Thông tin chi tiết */}
         <div className="flex flex-col gap-8 lg:col-span-8">
           {/* Description */}
           <div>
@@ -204,49 +205,51 @@ export default async function ProjectDetailPage({ params }: Props) {
             )}
           </div>
 
-          {/* Details — gộp Quick Info + Thông tin chi tiết, mỗi mục có icon */}
           <div>
             <h2 className="mb-4 font-serif text-xl font-semibold">Thông tin chi tiết</h2>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-              {[
-                { label: "Tên dự án", value: project.name, icon: Building2 },
-                { label: "Mã dự án", value: project.code, icon: Hash },
-                { label: "Vị trí", value: location, icon: MapPin },
-                { label: "Chủ đầu tư", value: project.developer ?? "Đang cập nhật", icon: Building2 },
-                { label: "Quy mô", value: scale, icon: Ruler },
-                {
-                  label: "Trạng thái",
-                  value: projectStatusLabels[project.status] ?? project.status,
-                  icon: Tag,
-                },
-                { label: "Loại hình", value: "Đang cập nhật", icon: Home },
-                { label: "Bàn giao", value: project.handoverDate ?? "Đang cập nhật", icon: Calendar },
-              ].map(({ label, value, icon: Icon }) => (
-                <div
-                  key={label}
-                  className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4"
-                >
-                  <div className="flex items-center gap-2 text-foreground-muted">
-                    <Icon size={14} className="shrink-0 text-primary" />
-                    <span className="text-[10px] font-medium uppercase tracking-wide">
-                      {label}
-                    </span>
+            <div className="rounded-xl border border-border bg-white p-6 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
+              <div className="grid grid-cols-2 divide-y divide-border md:grid-cols-2 md:divide-y-0">
+                {[
+                  { label: "Tên dự án", value: project.name, icon: Building2 },
+                  { label: "Mã dự án", value: project.code, icon: Hash },
+                  { label: "Vị trí", value: location, icon: MapPin },
+                  { label: "Chủ đầu tư", value: project.developer ?? "Đang cập nhật", icon: Building2 },
+                  { label: "Quy mô", value: scale, icon: Ruler },
+                  {
+                    label: "Trạng thái",
+                    value: projectStatusLabels[project.status] ?? project.status,
+                    icon: Tag,
+                  },
+                  { label: "Loại hình", value: "Đang cập nhật", icon: Home },
+                  { label: "Bàn giao", value: project.handoverDate ?? "Đang cập nhật", icon: Calendar },
+                ].map(({ label, value, icon: Icon }, i) => (
+                  <div
+                    key={label}
+                    className={`flex items-center gap-3 py-4 ${i % 2 === 0 ? "md:pr-6 md:border-r md:border-border" : "md:pl-6"} ${i >= 2 ? "md:border-t md:border-border" : ""} ${i < 2 ? "pt-0" : ""} ${i >= 6 ? "pb-0" : ""}`}
+                  >
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                      <Icon size={16} className="text-primary" />
+                    </div>
+                    <div className="flex flex-col gap-0.5 min-w-0">
+                      <span className="text-[11px] font-medium uppercase tracking-wide text-foreground-muted">
+                        {label}
+                      </span>
+                      <span className="text-sm font-semibold text-foreground line-clamp-1">
+                        {value}
+                      </span>
+                    </div>
                   </div>
-                  <span className="text-sm font-semibold text-foreground line-clamp-2">
-                    {value}
-                  </span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Right column — Sidebar liên hệ (4/12) */}
         <aside className="lg:col-span-4 lg:sticky lg:top-24 lg:self-start">
           <div className="flex flex-col gap-5 rounded-lg border border-border bg-surface p-6">
             <div>
               <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Khoảng giá</span>
-              <p className="text-2xl font-semibold text-primary">Đang cập nhật</p>
+              <p className="text-2xl font-semibold text-primary">{getProjectPriceRange(project)}</p>
             </div>
 
             <div className="h-px w-full bg-border" />
@@ -265,7 +268,6 @@ export default async function ProjectDetailPage({ params }: Props) {
         </aside>
       </div>
 
-      {/* Properties in project — full width, bên dưới grid info + liên hệ */}
       {properties.length > 0 && (
         <div className="mt-10">
           <h2 className="mb-4 font-serif text-xl font-semibold">Bất động sản thuộc dự án</h2>
@@ -396,70 +398,9 @@ export default async function ProjectDetailPage({ params }: Props) {
             </Link>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {relatedProjects.map((p) => {
-              const imageUrl = getProjectImages(p)[0]?.url ?? null;
-              return (
-                <Link
-                  key={p.id}
-                  href={`/projects/${p.code}`}
-                  className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-500 hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)]"
-                >
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    {imageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={imageUrl}
-                        alt={p.name}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-surface-muted">
-                        <div className="flex flex-col items-center gap-2 text-foreground-muted">
-                          <ImageIcon size={32} />
-                          <span className="text-xs">Không có hình ảnh</span>
-                        </div>
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  </div>
-
-                  <div className="flex flex-1 flex-col gap-3 p-5">
-                    <h3 className="font-serif text-xl font-semibold leading-snug tracking-tight transition-colors group-hover:text-primary">
-                      {p.name}
-                    </h3>
-
-                    <p className="flex items-center gap-1.5 text-sm text-foreground-muted">
-                      <MapPin size={14} />
-                      <span className="line-clamp-1">{getProjectLocation(p)}</span>
-                    </p>
-
-                    <p className="text-sm leading-relaxed text-foreground-muted line-clamp-2">
-                      {p.description ?? `Đang cập nhật thông tin giới thiệu cho dự án ${p.name}.`}
-                    </p>
-
-                    <div className="flex flex-col gap-2 border-t border-border pt-3 text-sm">
-                      <div className="flex items-center justify-between">
-                        <span className="text-foreground-muted">Giá từ</span>
-                        <span className="font-semibold text-primary">Đang cập nhật</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-foreground-muted">Quy mô</span>
-                        <span className="font-medium text-foreground">{getProjectScale(p)}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-foreground-muted">Chủ đầu tư</span>
-                        <span className="font-medium text-foreground">{p.developer ?? "Đang cập nhật"}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-foreground-muted">Bàn giao</span>
-                        <span className="font-medium text-foreground">{p.handoverDate ?? "Đang cập nhật"}</span>
-                      </div>
-                    </div>
-
-                  </div>
-                </Link>
-              );
-            })}
+            {relatedProjects.map((p) => (
+              <ProjectCard key={p.id} project={p} />
+            ))}
           </div>
         </div>
       )}
