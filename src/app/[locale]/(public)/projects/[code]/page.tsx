@@ -207,36 +207,40 @@ export default async function ProjectDetailPage({ params }: Props) {
 
           <div>
             <h2 className="mb-4 font-serif text-xl font-semibold">Thông tin chi tiết</h2>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-              {[
-                { label: "Tên dự án", value: project.name, icon: Building2 },
-                { label: "Mã dự án", value: project.code, icon: Hash },
-                { label: "Vị trí", value: location, icon: MapPin },
-                { label: "Chủ đầu tư", value: project.developer ?? "Đang cập nhật", icon: Building2 },
-                { label: "Quy mô", value: scale, icon: Ruler },
-                {
-                  label: "Trạng thái",
-                  value: projectStatusLabels[project.status] ?? project.status,
-                  icon: Tag,
-                },
-                { label: "Loại hình", value: "Đang cập nhật", icon: Home },
-                { label: "Bàn giao", value: project.handoverDate ?? "Đang cập nhật", icon: Calendar },
-              ].map(({ label, value, icon: Icon }) => (
-                <div
-                  key={label}
-                  className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4"
-                >
-                  <div className="flex items-center gap-2 text-foreground-muted">
-                    <Icon size={14} className="shrink-0 text-primary" />
-                    <span className="text-[10px] font-medium uppercase tracking-wide">
-                      {label}
-                    </span>
+            <div className="rounded-xl border border-border bg-white p-6 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
+              <div className="grid grid-cols-2 divide-y divide-border md:grid-cols-2 md:divide-y-0">
+                {[
+                  { label: "Tên dự án", value: project.name, icon: Building2 },
+                  { label: "Mã dự án", value: project.code, icon: Hash },
+                  { label: "Vị trí", value: location, icon: MapPin },
+                  { label: "Chủ đầu tư", value: project.developer ?? "Đang cập nhật", icon: Building2 },
+                  { label: "Quy mô", value: scale, icon: Ruler },
+                  {
+                    label: "Trạng thái",
+                    value: projectStatusLabels[project.status] ?? project.status,
+                    icon: Tag,
+                  },
+                  { label: "Loại hình", value: "Đang cập nhật", icon: Home },
+                  { label: "Bàn giao", value: project.handoverDate ?? "Đang cập nhật", icon: Calendar },
+                ].map(({ label, value, icon: Icon }, i) => (
+                  <div
+                    key={label}
+                    className={`flex items-center gap-3 py-4 ${i % 2 === 0 ? "md:pr-6 md:border-r md:border-border" : "md:pl-6"} ${i >= 2 ? "md:border-t md:border-border" : ""} ${i < 2 ? "pt-0" : ""} ${i >= 6 ? "pb-0" : ""}`}
+                  >
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                      <Icon size={16} className="text-primary" />
+                    </div>
+                    <div className="flex flex-col gap-0.5 min-w-0">
+                      <span className="text-[11px] font-medium uppercase tracking-wide text-foreground-muted">
+                        {label}
+                      </span>
+                      <span className="text-sm font-semibold text-foreground line-clamp-1">
+                        {value}
+                      </span>
+                    </div>
                   </div>
-                  <span className="text-sm font-semibold text-foreground line-clamp-2">
-                    {value}
-                  </span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
