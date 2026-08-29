@@ -16,7 +16,7 @@ export async function FeaturedProjects() {
 
   return (
     <section className="bg-white py-16 md:py-24">
-      <div className="mx-auto max-w-[1400px] px-6 md:px-8 lg:px-12">
+      <div className="container">
         {/* Header */}
         <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="flex flex-col gap-4">

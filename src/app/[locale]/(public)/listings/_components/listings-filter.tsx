@@ -128,7 +128,7 @@ export function ListingsFilter({
     <div className="flex flex-col gap-6 lg:sticky lg:top-24 lg:self-start">
       <div className="bg-surface rounded-xl border border-border p-4 flex flex-col gap-4">
         <div className="flex justify-between items-center">
-          <h2 className="font-serif text-xl font-medium text-primary flex items-center gap-2">
+          <h2 className="font-serif text-xl font-medium text-[#072707] flex items-center gap-2">
             <Filter size={16} /> Bộ lọc tìm kiếm
           </h2>
           {hasFilters && (
@@ -142,18 +142,24 @@ export function ListingsFilter({
         <div className="flex flex-col gap-2">
           <label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Loại giao dịch</label>
           <div className="flex gap-2">
-            {(["ALL", "SALE", "RENT"] as const).map((t) => (
-              <Button
-                key={t}
-                onClick={() => setDraftTransactionType(t)}
-                className={`flex h-9 rounded-lg text-xs font-medium transition-colors ${draftTransactionType === t
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-surface-muted text-foreground-muted hover:bg-border/40"
-                  }`}
-              >
-                {t === "ALL" ? "Tất cả" : t === "SALE" ? "Bán" : "Cho thuê"}
-              </Button>
-            ))}
+            {(["ALL", "SALE", "RENT"] as const).map((t) => {
+              const activeColor =
+                t === "SALE" ? "bg-[#FCEAEB] text-[#C57B7A] hover:bg-[#FCEAEB]"
+                  : t === "RENT" ? "bg-accent-blue text-accent-blue-text hover:bg-accent-blue"
+                    : "bg-[#072707] text-white hover:bg-[#072707]";
+              return (
+                <Button
+                  key={t}
+                  onClick={() => setDraftTransactionType(t)}
+                  className={`flex h-9 rounded-lg text-xs font-medium transition-colors hover:bg-surface-muted ${draftTransactionType === t
+                    ? activeColor
+                    : "bg-surface-muted text-foreground-muted"
+                    }`}
+                >
+                  {t === "ALL" ? "Tất cả" : t === "SALE" ? "Bán" : "Cho thuê"}
+                </Button>
+              );
+            })}
           </div>
         </div>
 
@@ -161,8 +167,14 @@ export function ListingsFilter({
         <div className="flex flex-col gap-2">
           <Label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Khu vực</Label>
           <Select value={draftSelectedZone} onValueChange={(value) => setDraftSelectedZone(value ?? "")}>
-            <SelectTrigger className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
-              <SelectValue placeholder="Tất cả" />
+            <SelectTrigger className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-[#072707] focus:outline-none focus:ring-1 focus:ring-[#072707]">
+              <SelectValue placeholder="Tất cả">
+                {(value: string) => {
+                  if (!value) return "Tất cả";
+                  const p = provinces.find((p) => p.id === value);
+                  return p?.name || value;
+                }}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="" label="Tất cả">Tất cả</SelectItem>
@@ -186,7 +198,7 @@ export function ListingsFilter({
               value={draftPriceFrom}
               onChange={(e) => setDraftPriceFrom(e.target.value)}
               placeholder="Từ"
-              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-[#072707] focus:outline-none focus:ring-1 focus:ring-[#072707]"
             />
             <span className="text-foreground-muted">—</span>
             <Input
@@ -194,7 +206,7 @@ export function ListingsFilter({
               value={draftPriceTo}
               onChange={(e) => setDraftPriceTo(e.target.value)}
               placeholder="Đến"
-              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-[#072707] focus:outline-none focus:ring-1 focus:ring-[#072707]"
             />
           </div>
         </div>
@@ -209,7 +221,7 @@ export function ListingsFilter({
                   type="checkbox"
                   checked={draftSelectedTypes.includes(t.code)}
                   onChange={() => toggleType(t.code)}
-                  className="size-4 rounded border-border text-primary focus:ring-primary"
+                  className="size-4 rounded border-border accent-[#072707]"
                 />
                 {t.name}
               </Label>
@@ -217,19 +229,19 @@ export function ListingsFilter({
           </div>
         </div>
 
-        <Button className="w-full" size="lg" onClick={applyFilters}>
+        <Button className="w-full bg-[#072707] hover:bg-[#072707]/90" size="lg" onClick={applyFilters}>
           Áp dụng bộ lọc
         </Button>
       </div>
 
       {/* Notification Card */}
-      <div className="bg-primary rounded-xl p-4 flex flex-col gap-2 text-center items-center justify-center">
-        <Bell size={32} className="text-primary-foreground mb-1" />
-        <h3 className="font-serif text-lg font-medium text-primary-foreground">Tạo thông báo</h3>
-        <p className="text-sm text-primary-foreground/80">
+      <div className="bg-[#072707] rounded-xl p-4 flex flex-col gap-2 text-center items-center justify-center">
+        <Bell size={32} className="text-white mb-1" />
+        <h3 className="font-serif text-lg font-medium text-white">Tạo thông báo</h3>
+        <p className="text-sm text-white/80">
           Nhận thông báo khi có bất động sản mới phù hợp với tìm kiếm này.
         </p>
-        <Button className="w-full mt-2 py-2 bg-surface text-primary rounded-lg text-xs font-semibold uppercase tracking-wide hover:bg-surface-muted transition-colors">
+        <Button className="w-full mt-2 py-2 bg-surface text-[#072707] rounded-lg text-xs font-semibold uppercase tracking-wide hover:bg-surface-muted transition-colors">
           Đăng ký nhận tin
         </Button>
       </div>

@@ -1,22 +1,22 @@
 "use client";
 
-import { useEffect, useCallback, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Image as ImageIcon, X } from "lucide-react";
+import { useEffect, useCallback } from "react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogPortal,
-  DialogOverlay,
+  DialogTitle,
 } from "@/components/ui/dialog";
 
 export interface LightboxImage {
-  id: string;
+  id?: string;
   url: string;
   alt?: string;
-  caption?: string | null;
+  name?: string;
+  caption?: string;
 }
 
-export interface ImageLightboxProps {
+interface ImageLightboxProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   images: LightboxImage[];
@@ -31,122 +31,81 @@ export function ImageLightbox({
   index,
   onIndexChange,
 }: ImageLightboxProps) {
-  const total = images.length;
-  const current = useMemo(() => images[index], [images, index]);
+  const current = open && index >= 0 && index < images.length ? images[index] : null;
 
   const goPrev = useCallback(() => {
-    if (total === 0) return;
-    onIndexChange((index - 1 + total) % total);
-  }, [index, total, onIndexChange]);
+    onIndexChange((index - 1 + images.length) % images.length);
+  }, [index, images.length, onIndexChange]);
 
   const goNext = useCallback(() => {
-    if (total === 0) return;
-    onIndexChange((index + 1) % total);
-  }, [index, total, onIndexChange]);
+    onIndexChange((index + 1) % images.length);
+  }, [index, images.length, onIndexChange]);
 
   useEffect(() => {
     if (!open) return;
-    const handler = (e: KeyboardEvent) => {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") goPrev();
       else if (e.key === "ArrowRight") goNext();
       else if (e.key === "Escape") onOpenChange(false);
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [open, goPrev, goNext, onOpenChange]);
 
-  if (total === 0) return null;
+  if (!current) return null;
+
+  const label = current.name || current.alt || current.caption || "";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogPortal>
-        <DialogOverlay className="bg-black/80 supports-backdrop-filter:backdrop-blur-sm" />
-        <DialogContent
-          showCloseButton={false}
-          className="fixed inset-0 top-0 left-0 grid max-h-none w-full max-w-none translate-x-0 translate-y-0 gap-0 rounded-none border-0 bg-transparent p-0 shadow-none outline-none sm:max-w-none"
-        >
-          {/* Close button */}
+      <DialogContent className="max-w-[90vw] max-h-[90vh] overflow-hidden rounded-lg border border-border bg-black/95 p-0 sm:max-w-[900px]">
+        <DialogTitle className="sr-only">{label}</DialogTitle>
+        <div className="relative flex h-full max-h-[90vh] items-center justify-center">
+          <img
+            src={current.url}
+            alt={label}
+            className="max-h-[85vh] w-auto object-contain"
+          />
+
+          {/* Close */}
           <button
-            type="button"
             onClick={() => onOpenChange(false)}
-            className="absolute top-4 right-4 z-10 inline-flex size-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+            className="absolute top-3 right-3 flex size-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
             aria-label="Đóng"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
 
-          {/* Prev button */}
-          {total > 1 && (
+          {/* Prev */}
+          {images.length > 1 && (
             <button
-              type="button"
               onClick={goPrev}
-              className="absolute left-4 top-1/2 z-10 inline-flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
-              aria-label="Ảnh trước"
+              className="absolute left-3 top-1/2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+              aria-label="Trước"
             >
-              <ChevronLeft size={24} />
+              <ChevronLeft size={22} />
             </button>
           )}
 
-          {/* Next button */}
-          {total > 1 && (
+          {/* Next */}
+          {images.length > 1 && (
             <button
-              type="button"
               onClick={goNext}
-              className="absolute right-4 top-1/2 z-10 inline-flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
-              aria-label="Ảnh sau"
+              className="absolute right-3 top-1/2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+              aria-label="Sau"
             >
-              <ChevronRight size={24} />
+              <ChevronRight size={22} />
             </button>
           )}
 
-          {/* Image */}
-          <div className="flex flex-col items-center justify-center gap-4 px-4 pb-24 pt-4 sm:px-16">
-            {current?.url ? (
-              <img
-                src={current.url}
-                alt={current.alt ?? ""}
-                className="max-h-[80vh] max-w-full object-contain"
-              />
-            ) : (
-              <div className="flex h-64 w-64 items-center justify-center rounded-lg bg-white/5">
-                <ImageIcon size={48} className="text-white/40" />
-              </div>
-            )}
-
-            {/* Caption + counter */}
-            <div className="flex flex-col items-center gap-1 text-center">
-              {current?.caption && (
-                <p className="text-sm text-white/80">{current.caption}</p>
-              )}
-              {total > 1 && (
-                <p className="text-xs text-white/50 tabular-nums">
-                  {index + 1} / {total}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Thumbnails strip */}
-          {total > 1 && (
-            <div className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-2 overflow-x-auto p-4">
-              {images.map((img, i) => (
-                <button
-                  type="button"
-                  key={img.id}
-                  onClick={() => onIndexChange(i)}
-                  className={`relative size-14 shrink-0 overflow-hidden rounded-md border-2 transition-all ${i === index ? "border-white opacity-100" : "border-transparent opacity-50 hover:opacity-80"}`}
-                >
-                  <img
-                    src={img.url}
-                    alt={img.alt ?? ""}
-                    className="h-full w-full object-cover"
-                  />
-                </button>
-              ))}
+          {/* Counter */}
+          {images.length > 1 && (
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white">
+              {index + 1} / {images.length}
             </div>
           )}
-        </DialogContent>
-      </DialogPortal>
+        </div>
+      </DialogContent>
     </Dialog>
   );
 }

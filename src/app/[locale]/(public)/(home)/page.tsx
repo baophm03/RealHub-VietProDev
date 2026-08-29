@@ -1,8 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 import { Hero } from "./_components/hero";
 import { StatsBar } from "./_components/stats-bar";
-import { FeaturedPropertiesSale } from "./_components/featured-properties-sale";
-import { FeaturedPropertiesRent } from "./_components/featured-properties-rent";
+import { FeaturedPropertiesSection } from "./_components/featured-properties-section";
 import { FeaturedProjects } from "./_components/featured-projects";
 import { FeaturedNews } from "./_components/featured-news";
 import { CtaSection } from "./_components/cta-section";
@@ -25,10 +24,22 @@ export default async function HomePage({ params }: Props) {
         <StatsBar />
       </RevealSection>
       <RevealSection>
-        <FeaturedPropertiesSale />
+        <FeaturedPropertiesSection
+          transactionType="SALE"
+          eyebrow="Bán"
+          title="Bất động sản bán"
+          description="Những bất động sản đang bán tốt nhất từ các agency và chủ đầu tư trên toàn hệ sinh thái."
+          sectionClassName="bg-white"
+        />
       </RevealSection>
       <RevealSection>
-        <FeaturedPropertiesRent />
+        <FeaturedPropertiesSection
+          transactionType="RENT"
+          eyebrow="Cho thuê"
+          title="Bất động sản cho thuê"
+          description="Những bất động sản đang cho thuê tốt nhất từ các agency và chủ đầu tư trên toàn hệ sinh thái."
+          sectionClassName="bg-surface-muted/30"
+        />
       </RevealSection>
       <RevealSection>
         <FeaturedProjects />

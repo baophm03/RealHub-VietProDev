@@ -4,101 +4,34 @@ import { useState, useCallback, useMemo } from "react";
 import { useDropzone } from "react-dropzone";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  Download,
-  Eye,
-  FileText,
   Files as FilesIcon,
-  Image as ImageIcon,
-  Lock,
-  Trash2,
   Upload,
-  Video,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/shared/empty-state";
+import { ImageLightbox, type LightboxImage } from "@/components/shared/image-lightbox";
+import { FileCard, visibilityLabel, visibilityOptions } from "./_components/file-card";
 import { ability } from "@/config/casl/ability";
 import {
   useGetApiFilesAdmin,
   getGetApiFilesAdminQueryKey,
   usePostApiFileUpload,
   useDeleteApiFile,
-  usePatchApiFileVisibility,
   getApiFileDownloadUrl,
 } from "@/lib/api/endpoints/files";
-import type {
-  FileItem,
-  FileVisibility,
-} from "@/lib/api/types/files";
+import type { FileItem } from "@/lib/api/types/files";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-const visibilityVariant: Record<string, "default" | "secondary" | "destructive" | "outline" | "ghost" | "link"> = {
-  PUBLIC: "outline",
-  TENANT: "outline",
-  ASSIGNED: "outline",
-  PRIVATE: "default",
-  SENSITIVE: "destructive",
-};
-
-const visibilityColor: Record<string, string> = {
-  PUBLIC: "text-green-600 border-green-600/30 bg-green-500/10",
-  TENANT: "text-blue-600 border-blue-600/30 bg-blue-500/10",
-  ASSIGNED: "text-yellow-600 border-yellow-600/30 bg-yellow-500/10",
-  PRIVATE: "",
-  SENSITIVE: "",
-};
-
-const visibilityLabel: Record<string, string> = {
-  PUBLIC: "Công khai",
-  TENANT: "Thuê nhà",
-  ASSIGNED: "Gán cho",
-  PRIVATE: "Riêng tư",
-  SENSITIVE: "Nhạy cảm",
-};
-
-const visibilityOptions: FileVisibility[] = [
-  "PUBLIC",
-  "TENANT",
-  "ASSIGNED",
-  "PRIVATE",
-  "SENSITIVE",
-];
-
-function getFileIcon(type: string) {
-  if (type.startsWith("image/")) return ImageIcon;
-  if (type.startsWith("video/")) return Video;
-  if (type === "application/pdf") return FileText;
-  return FileText;
-}
-
-function formatSize(bytes: number): string {
-  if (bytes >= 1000000000) return `${(bytes / 1000000000).toFixed(1)} GB`;
-  if (bytes >= 1000000) return `${(bytes / 1000000).toFixed(1)} MB`;
-  if (bytes >= 1000) return `${(bytes / 1000).toFixed(0)} KB`;
-  return `${bytes} B`;
-}
-
-function formatDate(iso: string): string {
-  try {
-    return new Date(iso).toLocaleDateString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  } catch {
-    return iso;
-  }
-}
 
 export default function FilesPage() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [visibilityFilter, setVisibilityFilter] = useState<string>("");
   const [uploading, setUploading] = useState(false);
-  const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const params = useMemo(
     () => (visibilityFilter ? { visibility: visibilityFilter as any } : undefined),
@@ -113,7 +46,6 @@ export default function FilesPage() {
 
   const { mutateAsync: uploadFile } = usePostApiFileUpload();
   const { mutateAsync: deleteFile } = useDeleteApiFile();
-  const { mutateAsync: patchVisibility } = usePatchApiFileVisibility();
 
   const invalidateFiles = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: getGetApiFilesAdminQueryKey() });
@@ -171,6 +103,19 @@ export default function FilesPage() {
     );
   }, [files, search]);
 
+  const lightboxImages = useMemo<LightboxImage[]>(
+    () => filtered.filter((f) => f.mimeType.startsWith("image/") && f.url).map((f) => ({ url: f.url!, name: f.original })),
+    [filtered],
+  );
+
+  const openLightbox = (file: FileItem) => {
+    const idx = lightboxImages.findIndex((img) => img.url === file.url);
+    if (idx >= 0) {
+      setPreviewIndex(idx);
+      setLightboxOpen(true);
+    }
+  };
+
   const handleDelete = async (file: FileItem) => {
     if (!confirm(`Xóa file "${file.original}"?`)) return;
     try {
@@ -195,18 +140,6 @@ export default function FilesPage() {
     } catch (err) {
       console.error(err);
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi khi lấy URL download");
-    }
-  };
-
-  const handleUpdateVisibility = async (file: FileItem, visibility: string) => {
-    try {
-      await patchVisibility({ id: file.id, data: { visibility: visibility as any } });
-      invalidateFiles();
-      toast.success("Đã cập nhật visibility");
-      setMenuOpenId(null);
-    } catch (err) {
-      console.error(err);
-      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi khi cập nhật visibility");
     }
   };
 
@@ -291,106 +224,27 @@ export default function FilesPage() {
         />
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filtered.map((file) => {
-            const Icon = getFileIcon(file.mimeType);
-            const isImage = file.mimeType.startsWith("image/");
-            return (
-              <div
-                key={file.id}
-                className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
-              >
-                {/* Preview */}
-                <div className="relative aspect-[4/3] overflow-hidden bg-surface-muted">
-                  {isImage && file.url ? (
-                    <img
-                      src={file.url}
-                      alt={file.original}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-foreground-muted">
-                      <Icon size={32} />
-                      <span className="text-xs uppercase">{file.mimeType.split("/").pop()}</span>
-                    </div>
-                  )}
-
-                  {/* Visibility badge */}
-                  <div className="absolute top-2 left-2">
-                    <Badge
-                      variant={visibilityVariant[file.visibility] ?? "default"}
-                      className={`text-[10px] ${visibilityColor[file.visibility] ?? ""}`}
-                    >
-                      {file.isSensitive && <Lock size={10} />}
-                      {visibilityLabel[file.visibility] ?? file.visibility}
-                    </Badge>
-                  </div>
-
-                  {/* Action overlay */}
-                  {(canWrite || canDelete) && (
-                    <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-                      <Button
-                        size="icon-sm"
-                        variant="secondary"
-                        onClick={() => handleDownload(file)}
-                        title="Tải xuống"
-                      >
-                        <Download size={14} />
-                      </Button>
-                      {canWrite && (
-                        <Button
-                          size="icon-sm"
-                          variant="secondary"
-                          onClick={() => setMenuOpenId(menuOpenId === file.id ? null : file.id)}
-                          title="Đổi visibility"
-                        >
-                          <Eye size={14} />
-                        </Button>
-                      )}
-                      {canDelete && (
-                        <Button
-                          size="icon-sm"
-                          variant="destructive"
-                          onClick={() => handleDelete(file)}
-                          title="Xóa"
-                        >
-                          <Trash2 size={14} />
-                        </Button>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Visibility menu */}
-                  {menuOpenId === file.id && (
-                    <div className="absolute top-2 right-2 z-10 flex flex-col gap-1 rounded-md border border-border bg-surface p-1 shadow-lg">
-                      {visibilityOptions.map((v) => (
-                        <button
-                          key={v}
-                          onClick={() => handleUpdateVisibility(file, v)}
-                          className={`rounded px-2 py-1 text-left text-xs hover:bg-surface-muted ${file.visibility === v ? "font-semibold text-primary" : "text-foreground"
-                            }`}
-                        >
-                          {visibilityLabel[v]}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Info */}
-                <div className="flex flex-1 flex-col gap-0.5 p-3">
-                  <span className="truncate text-sm font-medium" title={file.original}>
-                    {file.original}
-                  </span>
-                  <div className="flex items-center justify-between text-xs text-foreground-muted tabular-nums">
-                    <span>{formatSize(Number(file.fileSize || 0))}</span>
-                    <span>{formatDate(file.createdAt)}</span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {filtered.map((file) => (
+            <FileCard
+              key={file.id}
+              file={file}
+              canDelete={canDelete}
+              onPreview={openLightbox}
+              onDownload={handleDownload}
+              onDelete={handleDelete}
+            />
+          ))}
         </div>
       )}
+
+      {/* Image Lightbox */}
+      <ImageLightbox
+        open={lightboxOpen}
+        onOpenChange={setLightboxOpen}
+        images={lightboxImages}
+        index={previewIndex ?? 0}
+        onIndexChange={setPreviewIndex}
+      />
     </div>
   );
 }

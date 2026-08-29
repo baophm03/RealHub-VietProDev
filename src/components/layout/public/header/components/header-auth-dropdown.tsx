@@ -41,11 +41,11 @@ export function HeaderAuthDropdown({ initials }: HeaderAuthDropdownProps) {
           {user?.avatarUrl && (
             <AvatarImage src={user.avatarUrl} alt={user?.fullName ?? "User"} />
           )}
-          <AvatarFallback className="flex size-8 items-center justify-center rounded-full bg-white/15 text-xs font-medium text-white">
+          <AvatarFallback className="flex size-8 items-center justify-center rounded-full bg-[#092909]/10 text-xs font-medium text-[#092909]">
             {initials}
           </AvatarFallback>
         </Avatar>
-        <span className="hidden text-sm font-medium text-white/90 md:block">
+        <span className="hidden text-sm font-medium text-[#092909] md:block">
           {user?.fullName ?? "User"}
         </span>
       </DropdownMenuTrigger>

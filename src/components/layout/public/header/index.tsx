@@ -44,20 +44,18 @@ export function PublicHeader() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-30 [--primary-foreground:#ffffff]">
-      <div
-        className="bg-[#092909]"
-      >
-        <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-6 md:h-18 md:px-8 lg:px-12">
+      <div className="bg-white border-b border-black/10 shadow-[0_4px_20px_-6px_rgba(0,0,0,0.15)]">
+        <div className="container mx-auto flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="group flex items-center gap-2.5">
-            <span className="flex size-9 items-center justify-center rounded-lg bg-white text-primary-foreground transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105">
-              <Building2 size={22} className="text-primary" />
+            <span className="flex size-9 items-center justify-center rounded-lg bg-[#092909] text-white transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105">
+              <Building2 size={22} className="text-white" />
             </span>
             <div className="flex flex-col leading-none">
-              <span className="font-serif text-lg font-semibold tracking-tight text-white">
+              <span className="font-serif text-lg font-semibold tracking-tight text-[#092909]">
                 RealHub
               </span>
-              <span className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.2em] text-white/60">
+              <span className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.2em] text-black/60">
                 Real Estate Platform
               </span>
             </div>
@@ -72,7 +70,7 @@ export function PublicHeader() {
             ) : (
               <Link
                 href="/login"
-                className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-[#092909] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-white/90"
+                className="rounded-lg bg-[#0D2D0D] px-4 py-2 text-[15px] font-medium text-white transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[#0D2D0D]/80"
               >
                 Tham gia ngay
               </Link>
@@ -80,7 +78,7 @@ export function PublicHeader() {
 
             {/* Mobile Toggle */}
             <button
-              className="flex size-10 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/10 lg:hidden"
+              className="flex size-10 items-center justify-center rounded-lg text-[#092909] transition-colors hover:bg-[#092909]/10 lg:hidden"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label="Toggle menu"
             >

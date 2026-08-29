@@ -1,16 +1,80 @@
 "use client"
 
-import { Button, Input } from "@base-ui/react";
-import { ChevronDown, Home, Map, Search, Wallet } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ChevronDown, Home, Map, Search, Wallet, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useGetApiLocations } from "@/lib/api/endpoints/locations";
+import { useGetApiPropertyTypes } from "@/lib/api/endpoints/properties";
+import type { Location } from "@/lib/api/types/locations";
+
+type PropertyType = {
+  id: string;
+  name: string;
+  code: string;
+  group?: string | null;
+};
+
+const priceRanges = [
+  { label: "Tất cả mức giá", from: "", to: "" },
+  { label: "Dưới 1 tỷ", from: "0", to: "1" },
+  { label: "1 - 3 tỷ", from: "1", to: "3" },
+  { label: "3 - 5 tỷ", from: "3", to: "5" },
+  { label: "5 - 10 tỷ", from: "5", to: "10" },
+  { label: "10 - 20 tỷ", from: "10", to: "20" },
+  { label: "Trên 20 tỷ", from: "20", to: "" },
+  { label: "Dưới 10 triệu/tháng", from: "0", to: "10" },
+  { label: "10 - 30 triệu/tháng", from: "10", to: "30" },
+  { label: "Trên 30 triệu/tháng", from: "30", to: "" },
+];
 
 export function Hero() {
+  const router = useRouter();
+
+  const [selectedProvince, setSelectedProvince] = useState<Location | null>(null);
+  const [selectedType, setSelectedType] = useState<PropertyType | null>(null);
+  const [selectedPriceRange, setSelectedPriceRange] = useState<(typeof priceRanges)[number] | null>(null);
+
+  const { data: provincesData } = useGetApiLocations({ type: "PROVINCE" as any, limit: 100 } as any);
+  const provinces: Location[] = ((provincesData as any)?.data as Location[]) || [];
+
+  const { data: propertyTypesData } = useGetApiPropertyTypes();
+  const propertyTypes: PropertyType[] = ((propertyTypesData as any)?.data as PropertyType[]) || [];
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (selectedProvince) params.set("provinceId", selectedProvince.id);
+    if (selectedType) params.set("types", selectedType.code);
+    if (selectedPriceRange) {
+      const multiplier = 1000000000; // default SALE
+      if (selectedPriceRange.from) params.set("minPrice", String(parseFloat(selectedPriceRange.from) * multiplier));
+      if (selectedPriceRange.to) params.set("maxPrice", String(parseFloat(selectedPriceRange.to) * multiplier));
+    }
+    const qs = params.toString();
+    router.push(qs ? `/listings?${qs}` : "/listings");
+  };
+
+  const handleClear = () => {
+    setSelectedProvince(null);
+    setSelectedType(null);
+    setSelectedPriceRange(null);
+  };
+
+  const hasSelection = selectedProvince || selectedType || selectedPriceRange;
+
   return (
     <section className="relative bg-background pt-15 -mt-20 lg:-mt-28">
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage:
-            "url(/background.jpg)",
+            "url(/background/home.jpg)",
         }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
@@ -25,44 +89,158 @@ export function Hero() {
           </p>
         </div>
         <div className="flex w-full max-w-3xl flex-col gap-2 rounded-xl border border-border bg-surface/95 p-3 shadow-lg backdrop-blur-sm md:flex-row md:items-center">
-          <div className="flex flex-1 items-center gap-2">
-            <Map size={28} className="text-foreground-muted" />
-            <Input
-              onClick={() => console.log('clicked')}
-              disabled
-              placeholder="Hồ Chí Minh"
-              className="h-10 w-full border-0 bg-transparent px-0 text-sm text-foreground placeholder:text-foreground disabled:text-foreground disabled:opacity-100 focus:outline-none"
+          {/* Location picker */}
+          <Popover>
+            <PopoverTrigger
+              render={
+                <button
+                  type="button"
+                  className="flex flex-1 items-center gap-2 rounded-lg px-2 py-2 text-left text-sm transition-colors hover:bg-surface-muted/60 cursor-pointer"
+                >
+                  <Map size={22} className="shrink-0 text-foreground-muted" />
+                  <span className={`flex-1 truncate ${selectedProvince ? "text-foreground font-medium" : "text-foreground-muted"}`}>
+                    {selectedProvince ? selectedProvince.name : "Tất cả khu vực"}
+                  </span>
+                  <ChevronDown size={16} className="shrink-0 text-foreground-muted" />
+                </button>
+              }
             />
-            <ChevronDown size={18} className="shrink-0 text-foreground-muted" />
-          </div>
+            <PopoverContent align="start" className="max-h-[320px] w-[280px] overflow-y-auto p-1">
+              <button
+                type="button"
+                onClick={() => setSelectedProvince(null)}
+                className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-surface-muted ${!selectedProvince ? "bg-primary/10 text-primary font-medium" : "text-foreground"}`}
+              >
+                Tất cả khu vực
+              </button>
+              {provinces.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setSelectedProvince(p)}
+                  className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-surface-muted ${selectedProvince?.id === p.id ? "bg-primary/10 text-primary font-medium" : "text-foreground"}`}
+                >
+                  {p.name}
+                </button>
+              ))}
+            </PopoverContent>
+          </Popover>
+
           <div className="hidden h-8 w-px bg-border md:block" />
-          <div className="flex flex-1 items-center gap-2">
-            <Home size={28} className="text-foreground-muted" />
-            <Input
-              onClick={() => console.log('clicked')}
-              disabled
-              placeholder="Biệt thự"
-              className="h-10 w-full border-0 bg-transparent px-0 text-sm text-foreground placeholder:text-foreground disabled:text-foreground disabled:opacity-100 focus:outline-none"
+
+          {/* Property type picker */}
+          <Popover>
+            <PopoverTrigger
+              render={
+                <button
+                  type="button"
+                  className="flex flex-1 items-center gap-2 rounded-lg px-2 py-2 text-left text-sm transition-colors hover:bg-surface-muted/60 cursor-pointer"
+                >
+                  <Home size={22} className="shrink-0 text-foreground-muted" />
+                  <span className={`flex-1 truncate ${selectedType ? "text-foreground font-medium" : "text-foreground-muted"}`}>
+                    {selectedType ? selectedType.name : "Tất cả loại hình"}
+                  </span>
+                  <ChevronDown size={16} className="shrink-0 text-foreground-muted" />
+                </button>
+              }
             />
-            <ChevronDown size={18} className="shrink-0 text-foreground-muted" />
-          </div>
+            <PopoverContent align="start" className="max-h-[320px] w-[280px] overflow-y-auto p-1">
+              <button
+                type="button"
+                onClick={() => setSelectedType(null)}
+                className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-surface-muted ${!selectedType ? "bg-primary/10 text-primary font-medium" : "text-foreground"}`}
+              >
+                Tất cả loại hình
+              </button>
+              {propertyTypes.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setSelectedType(t)}
+                  className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-surface-muted ${selectedType?.id === t.id ? "bg-primary/10 text-primary font-medium" : "text-foreground"}`}
+                >
+                  {t.name}
+                </button>
+              ))}
+            </PopoverContent>
+          </Popover>
+
           <div className="hidden h-8 w-px bg-border md:block" />
-          <div className="flex flex-1 items-center gap-2">
-            <Wallet size={28} className="text-foreground-muted" />
-            <Input
-              onClick={() => console.log('clicked')}
-              disabled
-              placeholder="Giá từ 1 tỷ - 10 tỷ"
-              className="h-10 w-full border-0 bg-transparent px-0 text-sm text-foreground placeholder:text-foreground disabled:text-foreground disabled:opacity-100 focus:outline-none"
+
+          {/* Price range picker */}
+          <Popover>
+            <PopoverTrigger
+              render={
+                <button
+                  type="button"
+                  className="flex flex-1 items-center gap-2 rounded-lg px-2 py-2 text-left text-sm transition-colors hover:bg-surface-muted/60 cursor-pointer"
+                >
+                  <Wallet size={22} className="shrink-0 text-foreground-muted" />
+                  <span className={`flex-1 truncate ${selectedPriceRange ? "text-foreground font-medium" : "text-foreground-muted"}`}>
+                    {selectedPriceRange ? selectedPriceRange.label : "Tất cả mức giá"}
+                  </span>
+                  <ChevronDown size={16} className="shrink-0 text-foreground-muted" />
+                </button>
+              }
             />
-          </div>
+            <PopoverContent align="start" className="max-h-[320px] w-[280px] overflow-y-auto p-1">
+              {priceRanges.map((r) => (
+                <button
+                  key={r.label}
+                  type="button"
+                  onClick={() => setSelectedPriceRange(r)}
+                  className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-surface-muted ${selectedPriceRange?.label === r.label ? "bg-primary/10 text-primary font-medium" : "text-foreground"}`}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </PopoverContent>
+          </Popover>
+
           <Button
-            onClick={() => console.log('clicked')}
+            onClick={handleSearch}
             className="flex h-10 w-10 shrink-0 items-center justify-center bg-[#092909] cursor-pointer"
           >
             <Search size={16} className="text-white" />
           </Button>
         </div>
+
+        {/* Selected chips + clear */}
+        {hasSelection && (
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {selectedProvince && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
+                {selectedProvince.name}
+                <button type="button" onClick={() => setSelectedProvince(null)} className="hover:text-white/80">
+                  <X size={12} />
+                </button>
+              </span>
+            )}
+            {selectedType && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
+                {selectedType.name}
+                <button type="button" onClick={() => setSelectedType(null)} className="hover:text-white/80">
+                  <X size={12} />
+                </button>
+              </span>
+            )}
+            {selectedPriceRange && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
+                {selectedPriceRange.label}
+                <button type="button" onClick={() => setSelectedPriceRange(null)} className="hover:text-white/80">
+                  <X size={12} />
+                </button>
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={handleClear}
+              className="text-xs font-medium text-white/70 underline-offset-2 hover:text-white hover:underline"
+            >
+              Xóa tất cả
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

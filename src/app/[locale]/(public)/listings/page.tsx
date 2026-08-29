@@ -34,7 +34,7 @@ export default async function ListingsPage({ params, searchParams }: Props) {
     : "";
 
   return (
-    <div className="mx-auto max-w-[1440px] px-6 py-8 md:px-8">
+    <div className="container pb-10">
       <div className="flex flex-1 gap-6 flex-col lg:flex-row">
         <aside className="w-full lg:w-72 flex-shrink-0">
           <Suspense fallback={<ListingsFilterSkeleton />}>

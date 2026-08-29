@@ -13,14 +13,14 @@ export function Sidebar() {
   return (
     <aside className="flex w-64 shrink-0 flex-col border-r border-border bg-surface h-full">
       <Link href="/" className="group flex h-16 items-center gap-2.5 px-6">
-        <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105">
-          <Building2 size={22} className="text-primary-foreground" />
+        <span className="flex size-9 items-center justify-center rounded-lg bg-[#092909] text-white transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105">
+          <Building2 size={22} className="text-white" />
         </span>
         <div className="flex flex-col leading-none">
-          <span className="font-serif text-lg font-semibold tracking-tight text-foreground">
+          <span className="font-serif text-lg font-semibold tracking-tight text-[#092909]">
             RealHub
           </span>
-          <span className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.2em] text-foreground-muted/60">
+          <span className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.2em] text-black/60">
             Real Estate Platform
           </span>
         </div>

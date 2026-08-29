@@ -48,10 +48,10 @@ export function HeaderDesktopNav({ isActive, isListingsActive }: HeaderDesktopNa
         <button
           onClick={() => setMegaOpen(!megaOpen)}
           className={cn(
-            "group relative flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-300",
+            "group relative flex items-center gap-1.5 rounded-lg px-4 py-2 text-[15px] font-medium transition-colors duration-300",
             isListingsActive
-              ? "text-white"
-              : "text-white/90 hover:text-white"
+              ? "text-[#092909]"
+              : "text-black/80 hover:text-[#092909]"
           )}
         >
           {t("browseProperties")}
@@ -61,16 +61,16 @@ export function HeaderDesktopNav({ isActive, isListingsActive }: HeaderDesktopNa
           />
           <span
             className={cn(
-              "absolute bottom-0.5 left-1/2 h-px -translate-x-1/2 bg-white transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+              "absolute bottom-0.5 left-1/2 h-px -translate-x-1/2 bg-[#092909] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
               isListingsActive ? "w-5" : "w-0 group-hover:w-5"
             )}
           />
         </button>
 
         {megaOpen && (
-          <div className="absolute left-1/2 top-full mt-2 w-[480px] -translate-x-1/2 overflow-hidden rounded-lg border border-border bg-surface shadow-[0_16px_48px_-12px_rgba(0,0,0,0.12)]">
+          <div className="absolute left-1/2 top-full mt-2 w-[480px] -translate-x-1/2 overflow-hidden rounded-lg border border-border bg-white shadow-[0_16px_48px_-12px_rgba(0,0,0,0.12)]">
             <div className="border-b border-border px-5 py-3">
-              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-foreground-muted">
+              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-black/60">
                 Khám phá theo loại
               </span>
             </div>
@@ -82,7 +82,7 @@ export function HeaderDesktopNav({ isActive, isListingsActive }: HeaderDesktopNa
                   onClick={() => setMegaOpen(false)}
                   className="group flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-surface-muted"
                 >
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/8 text-primary transition-transform duration-300 group-hover:scale-110">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#092909]/8 text-[#092909] transition-transform duration-300 group-hover:scale-110">
                     <cat.icon size={20} />
                   </span>
                   <div className="flex flex-col gap-0.5">
@@ -91,7 +91,7 @@ export function HeaderDesktopNav({ isActive, isListingsActive }: HeaderDesktopNa
                   </div>
                   <ArrowUpRight
                     size={14}
-                    className="ml-auto text-foreground-muted/50 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary"
+                    className="ml-auto text-foreground-muted/50 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#092909]"
                   />
                 </Link>
               ))}
@@ -100,7 +100,7 @@ export function HeaderDesktopNav({ isActive, isListingsActive }: HeaderDesktopNa
               <Link
                 href="/listings"
                 onClick={() => setMegaOpen(false)}
-                className="flex items-center justify-between text-sm font-medium text-primary transition-colors hover:text-primary/80"
+                className="flex items-center justify-between text-sm font-medium text-[#092909] transition-colors hover:text-[#092909]/80"
               >
                 Xem tất cả bất động sản
                 <ArrowUpRight size={14} />
@@ -116,16 +116,16 @@ export function HeaderDesktopNav({ isActive, isListingsActive }: HeaderDesktopNa
           key={link.href}
           href={link.href}
           className={cn(
-            "group relative rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-300",
+            "group relative rounded-lg px-4 py-2 text-[15px] font-medium transition-colors duration-300",
             isActive(link.href)
-              ? "text-white"
-              : "text-white/90 hover:text-white"
+              ? "text-[#092909]"
+              : "text-black/80 hover:text-[#092909]"
           )}
         >
           {link.label}
           <span
             className={cn(
-              "absolute bottom-0.5 left-1/2 h-px -translate-x-1/2 bg-white transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+              "absolute bottom-0.5 left-1/2 h-px -translate-x-1/2 bg-[#092909] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
               isActive(link.href) ? "w-5" : "w-0 group-hover:w-5"
             )}
           />

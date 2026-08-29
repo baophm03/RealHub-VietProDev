@@ -7,7 +7,7 @@ export function PublicFooter() {
 
   return (
     <footer className="bg-white">
-      <div className="mx-auto max-w-[1400px] px-6 py-12 md:px-8 lg:px-12 pb-8">
+      <div className="container pt-14 pb-8">
         <div className="grid grid-cols-12 gap-8">
           <div className="col-span-12 md:col-span-4">
             <div className="flex items-center gap-2">
