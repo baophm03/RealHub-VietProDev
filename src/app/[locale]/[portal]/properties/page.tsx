@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
@@ -83,14 +83,6 @@ export default function PropertiesPage() {
   const properties = ((propertiesData as unknown as GetPropertiesResponse)?.data) || [];
   const meta = (propertiesData as unknown as GetPropertiesResponse)?.meta;
   const totalPages = meta?.totalPages ?? Math.max(1, Math.ceil((meta?.total ?? 0) / pagination.pageSize));
-
-  const filtered = useMemo(
-    () =>
-      properties.filter((p) =>
-        p.title.toLowerCase().includes(search.toLowerCase()),
-      ),
-    [properties, search],
-  );
 
   const getVerificationStatus = (p: Property) =>
     (p.verificationStatus ?? "DRAFT") as
@@ -206,6 +198,14 @@ export default function PropertiesPage() {
         eyebrow="Bất động sản"
         title="Quản lý bất động sản"
         description="Quản lý toàn bộ bất động sản trong hệ thống"
+        actions={
+          <Can I="CREATE" a="PROPERTY">
+            <Button onClick={() => router.push(portalPath("/properties/new"))}>
+              <Plus size={16} />
+              Thêm mới
+            </Button>
+          </Can>
+        }
       />
 
       <div className="flex flex-col gap-6">
@@ -218,17 +218,6 @@ export default function PropertiesPage() {
               onChange={(e) => setSearch(e.target.value)}
               className="w-full sm:w-auto min-w-0"
             />
-            <Button variant="outline" size="icon" aria-label="Bộ lọc" className="shrink-0">
-              <Filter size={16} />
-            </Button>
-          </div>
-          <div className="flex items-center gap-2">
-            <Can I="CREATE" a="PROPERTY">
-              <Button onClick={() => router.push(portalPath("/properties/new"))}>
-                <Plus size={16} />
-                Thêm mới
-              </Button>
-            </Can>
           </div>
         </div>
 
@@ -269,13 +258,13 @@ export default function PropertiesPage() {
         property={pendingSubmit}
         open={!!pendingSubmit}
         onOpenChange={(open) => !open && setPendingSubmit(null)}
-        onRefresh={refetch}
+        onRefresh={() => { refetch(); router.refresh(); }}
       />
       <DeletePropertyDialog
         property={pendingDelete}
         open={!!pendingDelete}
         onOpenChange={(open) => !open && setPendingDelete(null)}
-        onRefresh={refetch}
+        onRefresh={() => { refetch(); router.refresh(); }}
       />
     </div>
   );

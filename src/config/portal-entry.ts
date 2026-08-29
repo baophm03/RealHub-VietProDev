@@ -1,12 +1,11 @@
-import { Building2, LayoutDashboard, Store, UserCircle } from "lucide-react";
+import { Building2, LayoutDashboard, Store } from "lucide-react";
 import type { UserRole } from "@/lib/types";
 
 export const dashboardRoles: UserRole[] = ["SUPER_ADMIN", "OPERATOR", "AGENCY_ADMIN", "TEAM_LEADER"];
 export const salesRoles: UserRole[] = ["SALES", "COLLABORATOR"];
-export const customerRoles: UserRole[] = ["CUSTOMER"];
 export const ownerRoles: UserRole[] = ["OWNER"];
 
-export type PortalSlug = "dashboard" | "sales-portal" | "customer-portal" | "owner-portal";
+export type PortalSlug = "dashboard" | "sales-portal" | "owner-portal";
 
 export interface PortalEntry {
   slug: PortalSlug;
@@ -24,19 +23,13 @@ export const portalEntries: Record<PortalSlug, PortalEntry> = {
   },
   "sales-portal": {
     slug: "sales-portal",
-    label: "Sales Portal",
+    label: "Quản lý bán hàng",
     icon: Store,
     roles: salesRoles,
   },
-  "customer-portal": {
-    slug: "customer-portal",
-    label: "Customer Portal",
-    icon: UserCircle,
-    roles: customerRoles,
-  },
   "owner-portal": {
     slug: "owner-portal",
-    label: "Owner Portal",
+    label: "Quản lý BĐS",
     icon: Building2,
     roles: ownerRoles,
   },
@@ -55,9 +48,6 @@ export function getPortalEntry(roleCodes?: string[] | string | null): PortalEntr
   }
   if (codes.some((c) => salesRoles.includes(c as UserRole))) {
     return portalEntries["sales-portal"];
-  }
-  if (codes.some((c) => customerRoles.includes(c as UserRole))) {
-    return portalEntries["customer-portal"];
   }
   if (codes.some((c) => ownerRoles.includes(c as UserRole))) {
     return portalEntries["owner-portal"];

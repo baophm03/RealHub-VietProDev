@@ -138,6 +138,14 @@ export default function ProjectsPage() {
         eyebrow="Dự án"
         title="Quản lý dự án"
         description="Quản lý toàn bộ dự án và quỹ căn trong hệ thống"
+        actions={
+          <Can I="CREATE" a="PROPERTY">
+            <Button onClick={() => router.push(portalPath("/projects/new"))}>
+              <Plus size={16} />
+              Thêm dự án
+            </Button>
+          </Can>
+        }
       />
 
       <div className="flex flex-col gap-6">
@@ -154,12 +162,6 @@ export default function ProjectsPage() {
               <Filter size={16} />
             </Button>
           </div>
-          <Can I="CREATE" a="PROPERTY">
-            <Button onClick={() => router.push(portalPath("/projects/new"))}>
-              <Plus size={16} />
-              Thêm dự án
-            </Button>
-          </Can>
         </div>
 
         {filtered.length > 0 ? (

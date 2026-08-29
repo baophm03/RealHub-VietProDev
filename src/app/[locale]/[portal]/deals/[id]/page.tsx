@@ -19,18 +19,8 @@ import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogPortal,
-  DialogOverlay,
-} from "@/components/ui/dialog";
 import {
   useGetApiDealId,
   useGetApiDealActivities,
@@ -43,6 +33,8 @@ import {
   usePatchApiRejectReservation,
 } from "@/lib/api/endpoints/deals-reservations";
 import type { UpdateDealDtoStatus } from "@/lib/api/models/updateDealDtoStatus";
+import { DeleteDealDialog } from "./_components/delete-deal-dialog";
+import { CreateReservationDialog } from "./_components/create-reservation-dialog";
 
 interface DealProperty {
   id: string;
@@ -148,14 +140,6 @@ const reservationStatusLabel: Record<string, { label: string; variant: "blue" | 
   CONVERTED: { label: "Đã chuyển", variant: "green" },
 };
 
-function toLocalDatetimeInput(iso?: string): string {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return "";
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
 export default function DealDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -165,10 +149,6 @@ export default function DealDetailPage() {
   const [activityType, setActivityType] = useState("NOTE");
   const [activityContent, setActivityContent] = useState("");
   const [resvOpen, setResvOpen] = useState(false);
-  const [resvType, setResvType] = useState("SOFT");
-  const [resvStartsAt, setResvStartsAt] = useState("");
-  const [resvExpiresAt, setResvExpiresAt] = useState("");
-  const [resvNote, setResvNote] = useState("");
 
   const { data: dealData, isLoading, refetch } = useGetApiDealId(id);
   const deal = (dealData as unknown as { data: Deal })?.data;
@@ -206,6 +186,7 @@ export default function DealDetailPage() {
     try {
       await deleteDeal({ id });
       toast.success(`Đã xóa giao dịch "${deal?.dealCode}"`);
+      router.refresh();
       router.push(portalPath("/deals"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa giao dịch thất bại");
@@ -232,25 +213,27 @@ export default function DealDetailPage() {
     }
   };
 
-  const handleCreateReservation = async () => {
-    if (!deal || !resvStartsAt || !resvExpiresAt) return;
+  const handleCreateReservation = async (data: {
+    reservationType: string;
+    startsAt: string;
+    expiresAt: string;
+    note?: string;
+  }) => {
+    if (!deal || !data.startsAt || !data.expiresAt) return;
     try {
       await createReservation({
         data: {
           dealId: deal.id,
           propertyId: deal.property?.id ?? "",
           customerId: deal.customer?.id || undefined,
-          reservationType: resvType as any,
-          startsAt: resvStartsAt,
-          expiresAt: resvExpiresAt,
-          note: resvNote || undefined,
+          reservationType: data.reservationType as any,
+          startsAt: data.startsAt,
+          expiresAt: data.expiresAt,
+          note: data.note || undefined,
         },
       });
       toast.success("Đã tạo reservation");
       setResvOpen(false);
-      setResvStartsAt("");
-      setResvExpiresAt("");
-      setResvNote("");
       refetchReservations();
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Tạo reservation thất bại");
@@ -590,99 +573,21 @@ export default function DealDetailPage() {
       </div>
 
       {/* Delete dialog */}
-      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogPortal>
-          <DialogOverlay />
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Xóa giao dịch</DialogTitle>
-              <DialogDescription>
-                Hành động này sẽ ẩn giao dịch (soft delete). Bạn có chắc chắn?
-              </DialogDescription>
-            </DialogHeader>
-            <div className="rounded-lg border border-border bg-surface-muted/40 p-4 text-sm">
-              <p className="font-medium">{deal.dealCode}</p>
-              {deal.customer?.fullName && (
-                <p className="text-foreground-muted">{deal.customer.fullName}</p>
-              )}
-            </div>
-            <div className="flex items-center justify-end gap-2">
-              <Button variant="outline" onClick={() => setDeleteOpen(false)}>Hủy</Button>
-              <Button variant="destructive" disabled={isDeleting} onClick={handleDelete}>
-                {isDeleting ? "Đang xóa..." : "Xóa"}
-              </Button>
-            </div>
-          </DialogContent>
-        </DialogPortal>
-      </Dialog>
+      <DeleteDealDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        deal={deal}
+        isDeleting={isDeleting}
+        onConfirm={handleDelete}
+      />
 
       {/* Create reservation dialog */}
-      <Dialog open={resvOpen} onOpenChange={setResvOpen}>
-        <DialogPortal>
-          <DialogOverlay />
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Tạo reservation</DialogTitle>
-              <DialogDescription>
-                Đặt giữ BĐS cho giao dịch này.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold tracking-wide text-foreground-muted">Loại reservation</label>
-                <Select
-                  value={resvType}
-                  items={{ SOFT: "Cọc mềm", HARD: "Cọc cứng" }}
-                  onValueChange={(v) => v && setResvType(v)}
-                >
-                  <SelectTrigger className="h-9 w-full">
-                    <SelectValue placeholder="Chọn loại reservation" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SOFT" label="Cọc mềm">Cọc mềm</SelectItem>
-                    <SelectItem value="HARD" label="Cọc cứng">Cọc cứng</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-semibold tracking-wide text-foreground-muted">Bắt đầu</label>
-                  <Input
-                    type="datetime-local"
-                    value={resvStartsAt}
-                    onChange={(e) => setResvStartsAt(e.target.value)}
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-semibold tracking-wide text-foreground-muted">Hết hạn</label>
-                  <Input
-                    type="datetime-local"
-                    value={resvExpiresAt}
-                    onChange={(e) => setResvExpiresAt(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold tracking-wide text-foreground-muted">Ghi chú</label>
-                <Textarea
-                  value={resvNote}
-                  onChange={(e) => setResvNote(e.target.value)}
-                  placeholder="Ghi chú (tùy chọn)"
-                />
-              </div>
-            </div>
-            <div className="flex items-center justify-end gap-2">
-              <Button variant="outline" onClick={() => setResvOpen(false)}>Hủy</Button>
-              <Button
-                disabled={isCreatingResv || !resvStartsAt || !resvExpiresAt}
-                onClick={handleCreateReservation}
-              >
-                {isCreatingResv ? "Đang lưu..." : "Tạo reservation"}
-              </Button>
-            </div>
-          </DialogContent>
-        </DialogPortal>
-      </Dialog>
+      <CreateReservationDialog
+        open={resvOpen}
+        onOpenChange={setResvOpen}
+        isCreating={isCreatingResv}
+        onSubmit={handleCreateReservation}
+      />
     </div>
   );
 }

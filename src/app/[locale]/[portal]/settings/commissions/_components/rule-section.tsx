@@ -206,7 +206,6 @@ export function RuleSection({
                 <SplitItem
                   key={sIdx}
                   split={split}
-                  splitIdx={sIdx}
                   splitsCount={splits.length}
                   totalPercent={totalPercent}
                   isLast={sIdx === splits.length - 1}

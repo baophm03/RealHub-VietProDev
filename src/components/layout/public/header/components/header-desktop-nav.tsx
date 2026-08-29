@@ -50,8 +50,8 @@ export function HeaderDesktopNav({ isActive, isListingsActive }: HeaderDesktopNa
           className={cn(
             "group relative flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-300",
             isListingsActive
-              ? "text-primary-foreground"
-              : "text-primary-foreground/70 hover:text-primary-foreground"
+              ? "text-white"
+              : "text-white/90 hover:text-white"
           )}
         >
           {t("browseProperties")}
@@ -61,7 +61,7 @@ export function HeaderDesktopNav({ isActive, isListingsActive }: HeaderDesktopNa
           />
           <span
             className={cn(
-              "absolute bottom-0.5 left-1/2 h-px -translate-x-1/2 bg-primary-foreground transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+              "absolute bottom-0.5 left-1/2 h-px -translate-x-1/2 bg-white transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
               isListingsActive ? "w-5" : "w-0 group-hover:w-5"
             )}
           />
@@ -118,14 +118,14 @@ export function HeaderDesktopNav({ isActive, isListingsActive }: HeaderDesktopNa
           className={cn(
             "group relative rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-300",
             isActive(link.href)
-              ? "text-primary-foreground"
-              : "text-primary-foreground/70 hover:text-primary-foreground"
+              ? "text-white"
+              : "text-white/90 hover:text-white"
           )}
         >
           {link.label}
           <span
             className={cn(
-              "absolute bottom-0.5 left-1/2 h-px -translate-x-1/2 bg-primary-foreground transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+              "absolute bottom-0.5 left-1/2 h-px -translate-x-1/2 bg-white transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
               isActive(link.href) ? "w-5" : "w-0 group-hover:w-5"
             )}
           />

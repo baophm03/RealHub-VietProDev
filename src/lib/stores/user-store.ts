@@ -25,7 +25,7 @@ const updateCaslAbility = (user: User | null) => {
 
 export const useUserStore = create<UserState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
       setUser: (user) => {
         set({ user });

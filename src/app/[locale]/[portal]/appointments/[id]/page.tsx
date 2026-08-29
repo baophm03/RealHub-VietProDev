@@ -110,6 +110,7 @@ export default function AppointmentDetailPage() {
     try {
       await deleteAppointment({ id });
       toast.success(`Đã xóa lịch hẹn "${appointment?.title}"`);
+      router.refresh();
       router.push(portalPath("/appointments"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa lịch hẹn thất bại");

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Building2 } from "lucide-react";
 import { navGroups } from "./nav.config";
 import { ability } from "@/config/casl/ability";
 import { cn } from "@/lib/utils";
@@ -11,10 +12,18 @@ export function Sidebar() {
 
   return (
     <aside className="flex w-64 shrink-0 flex-col border-r border-border bg-surface h-full">
-      <Link href="/" className="flex h-16 items-center px-6">
-        <span className="font-serif text-xl font-semibold tracking-tight text-foreground">
-          RealHub
+      <Link href="/" className="group flex h-16 items-center gap-2.5 px-6">
+        <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105">
+          <Building2 size={22} className="text-primary-foreground" />
         </span>
+        <div className="flex flex-col leading-none">
+          <span className="font-serif text-lg font-semibold tracking-tight text-foreground">
+            RealHub
+          </span>
+          <span className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.2em] text-foreground-muted/60">
+            Real Estate Platform
+          </span>
+        </div>
       </Link>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4">

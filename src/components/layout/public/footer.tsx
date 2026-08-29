@@ -6,8 +6,8 @@ export function PublicFooter() {
   const t = useTranslations("public");
 
   return (
-    <footer className="border-t border-border bg-surface-muted">
-      <div className="mx-auto max-w-[1400px] px-6 py-12 md:px-8 lg:px-12">
+    <footer className="bg-white">
+      <div className="mx-auto max-w-[1400px] px-6 py-12 md:px-8 lg:px-12 pb-8">
         <div className="grid grid-cols-12 gap-8">
           <div className="col-span-12 md:col-span-4">
             <div className="flex items-center gap-2">
@@ -106,19 +106,19 @@ export function PublicFooter() {
         </div>
 
         <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 md:flex-row md:items-center">
-          <p className="text-sm text-foreground-muted">
+          <p className="text-xs text-foreground-muted">
             © {new Date().getFullYear()} RealHub. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <Link
               href="/about"
-              className="text-sm text-foreground-muted transition-colors hover:text-foreground"
+              className="text-xs text-foreground-muted transition-colors hover:text-foreground"
             >
               Điều khoản
             </Link>
             <Link
               href="/about"
-              className="text-sm text-foreground-muted transition-colors hover:text-foreground"
+              className="text-xs text-foreground-muted transition-colors hover:text-foreground"
             >
               Bảo mật
             </Link>

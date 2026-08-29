@@ -24,7 +24,7 @@ import { useGetApiProjects } from "@/lib/api/endpoints/projects";
 import { toast } from "sonner";
 import { useGetApiLocations } from "@/lib/api/endpoints/locations";
 import { Property } from "@/lib/api/types/properties";
-import { GetProjectsResponse, Project } from "@/lib/api/types/projects";
+import { GetProjectsResponse } from "@/lib/api/types/projects";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Location } from "@/lib/api/types/locations";
 import { DynamicFieldsSection } from "@/components/shared/dynamic-fields-section";
@@ -188,6 +188,7 @@ export default function PropertyEditPage() {
       await updateProperty({ id, data: { ...data, dynamicValuesJson: Object.keys(dynamicValues).length > 0 ? dynamicValues : undefined } as any });
       await queryClient.invalidateQueries({ queryKey: getGetApiPropertyIdQueryKey(id) });
       toast.success("Cập nhật bất động sản thành công");
+      router.refresh();
       router.push(portalPath(`/properties/${id}`));
     } catch (err) {
       setError((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật bất động sản. Vui lòng thử lại.");

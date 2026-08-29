@@ -16,6 +16,7 @@ import {
 import {
   useDeleteApiProperty,
   getGetApiPropertiesQueryKey,
+  getGetApiPropertiesAdminQueryKey,
 } from "@/lib/api/endpoints/properties";
 import type { Property } from "@/lib/api/types/properties";
 
@@ -43,6 +44,9 @@ export function DeletePropertyDialog({
       await deleteProperty({ id: property.id });
       await queryClient.invalidateQueries({
         queryKey: getGetApiPropertiesQueryKey(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: getGetApiPropertiesAdminQueryKey(),
       });
       toast.success(`Đã xóa "${property.title}"`);
       onOpenChange(false);

@@ -12,6 +12,10 @@ export interface CreateProjectDto {
   /** Auto-generated as DA-DDMMyy-NNN if omitted */
   code?: string;
   developer?: string;
+  /** Thời gian bàn giao (text tự do, vd: "Quý 4/2026", "12/2027") */
+  handoverDate?: string;
+  /** Mô tả dự án */
+  description?: string;
   provinceId?: string;
   districtId?: string;
   status?: CreateProjectDtoStatus;

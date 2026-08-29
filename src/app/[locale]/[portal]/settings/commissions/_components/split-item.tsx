@@ -20,7 +20,6 @@ import {
 
 interface SplitItemProps {
   split: Split;
-  splitIdx: number;
   splitsCount: number;
   totalPercent: number;
   isLast: boolean;
@@ -30,7 +29,6 @@ interface SplitItemProps {
 
 export function SplitItem({
   split,
-  splitIdx,
   splitsCount,
   totalPercent,
   isLast,

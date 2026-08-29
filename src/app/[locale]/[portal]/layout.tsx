@@ -11,7 +11,6 @@ import { useAuthStore } from "@/lib/stores/auth-store";
 import { use } from "react";
 import { DashboardLayout } from "@/components/layout/portal/dashboard";
 import { SalesPortalLayout } from "@/components/layout/portal/sales";
-import { CustomerPortalLayout } from "@/components/layout/portal/customer";
 import { OwnerPortalLayout } from "@/components/layout/portal/owner";
 
 export default function PortalLayout({ children, params }: {
@@ -55,10 +54,6 @@ export default function PortalLayout({ children, params }: {
         {
           portal === portalEntries["sales-portal"].slug &&
           <SalesPortalLayout>{children}</SalesPortalLayout>
-        }
-        {
-          portal === portalEntries["customer-portal"].slug &&
-          <CustomerPortalLayout>{children}</CustomerPortalLayout>
         }
         {
           portal === portalEntries["owner-portal"].slug &&

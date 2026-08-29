@@ -1,42 +1,13 @@
-import { MapPin, Square, BedDouble, Bath, ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import {
-  formatPriceWithTransaction as formatPrice,
-} from "@/utils";
 import { getApiProperties } from "@/lib/api/endpoints/properties";
 import { getApiFormSchemas } from "@/lib/api/endpoints/dynamic-fields";
 import type {
   GetPropertiesResponse,
   Property,
-  PropertyMedia,
 } from "@/lib/api/types/properties";
 import { ListingsToolbar } from "./listings-toolbar";
-
-const statusBadge: Record<string, { label: string; class: string }> = {
-  AVAILABLE: { label: "Sẵn có", class: "bg-accent-green text-accent-green-text" },
-  RESERVED: { label: "Đặt cọc", class: "bg-accent-yellow text-accent-yellow-text" },
-  SOLD: { label: "Đã bán", class: "bg-accent-red text-accent-red-text" },
-  RENTED: { label: "Đã thuê", class: "bg-accent-blue text-accent-blue-text" },
-  OFF_MARKET: { label: "Ngừng bán", class: "bg-surface-muted text-foreground-muted" },
-};
-
-const txLabel: Record<string, string> = {
-  SALE: "Bán",
-  RENT: "Cho thuê",
-  TRANSFER: "Chuyển nhượng",
-  INVESTMENT: "Đầu tư",
-};
-
-const badgeBase =
-  "inline-flex h-6 min-w-[3.25rem] items-center justify-center px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide rounded-md shadow-sm whitespace-nowrap";
-
-function extractFirstImageUrlFromMedia(media: PropertyMedia[] | undefined): string | null {
-  if (!media || media.length === 0) return null;
-  const imageItem = media
-    .filter((m) => m.type === "IMAGE" || m.file?.mimeType?.startsWith("image/"))
-    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))[0];
-  return imageItem?.file?.url ?? null;
-}
+import { PropertyCard } from "@/components/shared/property-card";
+import { extractFirstImageUrlFromMedia } from "@/components/shared/property-utils";
 
 function findFieldValue(
   schemas: any[],
@@ -169,108 +140,15 @@ export async function ListingsContentSection({
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {result.map((property) => {
-            const badge = statusBadge[property.businessStatus ?? ""];
-            const imageUrl = propertyImageMap.get(property.id) ?? null;
-            return (
-              <Link
-                key={property.id}
-                href={`/listings/${property.propertyCode}`}
-                className="group flex flex-col bg-surface rounded-xl border border-border overflow-hidden hover:border-primary transition-colors shadow-sm hover:shadow-md"
-              >
-                {/* Image */}
-                <div className="relative h-52 overflow-hidden">
-                  {imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={imageUrl}
-                      alt={property.title}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-surface-muted">
-                      <span className="text-xs text-foreground-muted">Không có hình ảnh</span>
-                    </div>
-                  )}
-                  {badge && (
-                    <div className="absolute top-3 right-3 z-10">
-                      <span className={`${badgeBase} ${badge.class}`}>{badge.label}</span>
-                    </div>
-                  )}
-                  <div className="absolute top-3 left-3 z-10">
-                    <span className={`${badgeBase} ${property.transactionType === "SALE" ? "bg-primary text-primary-foreground" : "bg-accent-blue text-accent-blue-text"}`}>
-                      {txLabel[property.transactionType] ?? property.transactionType}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-4 flex flex-col gap-2 flex-1">
-                  <div className="flex justify-between items-start">
-                    <h3 className="font-serif text-lg font-medium text-primary truncate pr-2 group-hover:text-primary/80 transition-colors">
-                      {property.title}
-                    </h3>
-                  </div>
-
-                  <p className="text-sm text-foreground-muted flex items-center gap-1">
-                    <MapPin size={16} />
-                    <span>
-                      {property?.district?.name ?? "Đang cập nhật"},{" "}
-                      {property?.province?.name ?? "Đang cập nhật"}
-                    </span>
-                  </p>
-
-                  {property.propertyType?.name && (
-                    <div className="flex gap-2 mt-1">
-                      <span className="bg-surface-muted text-xs px-2 py-1 rounded text-foreground-muted">
-                        {property.propertyType.name}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Giá tiền */}
-                  <div className="flex flex-col items-start justify-start gap-1 mt-1">
-                    <div className="font-serif text-2xl font-bold text-primary">
-                      {formatPrice(property.price, property.transactionType)}
-                    </div>
-                  </div>
-
-                  {/* Thông tin phòng ngủ, phòng tắm, diện tích */}
-                  <div className="flex flex-wrap items-center justify-start gap-3 mt-auto pt-4 border-t border-border text-xs text-foreground-muted">
-                    {bedroomsMap.get(property.id) && (
-                      <span className="flex items-center gap-1">
-                        <BedDouble size={13} className="shrink-0" />
-                        <span className="tabular-nums">{bedroomsMap.get(property.id)}</span>
-                        <span>PN</span>
-                      </span>
-                    )}
-                    {bathroomsMap.get(property.id) && (
-                      <span className="flex items-center gap-1">
-                        <Bath size={13} className="shrink-0" />
-                        <span className="tabular-nums">{bathroomsMap.get(property.id)}</span>
-                        <span>WC</span>
-                      </span>
-                    )}
-                    {property.area != null && (
-                      <span className="flex items-center gap-1">
-                        <Square size={13} className="shrink-0" />
-                        <span className="tabular-nums">
-                          {property.area.toLocaleString("vi-VN")}
-                        </span>
-                        <span>m²</span>
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Xem chi tiết */}
-                  <div className="flex items-center gap-1 pt-2 text-xs font-medium text-primary">
-                    Xem chi tiết
-                    <ArrowRight size={13} className="shrink-0" />
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+          {result.map((property) => (
+            <PropertyCard
+              key={property.id}
+              property={property}
+              imageUrl={propertyImageMap.get(property.id) ?? null}
+              bedrooms={bedroomsMap.get(property.id)}
+              bathrooms={bathroomsMap.get(property.id)}
+            />
+          ))}
         </div>
       )}
     </div>

@@ -4,8 +4,6 @@ import { useAuthStore } from "@/lib/stores/auth-store";
 import { useUserStore } from "@/lib/stores/user-store";
 import { useRouter } from "next/navigation";
 import {
-  Bell,
-  CircleUser,
   List,
   LogOut,
   Moon,

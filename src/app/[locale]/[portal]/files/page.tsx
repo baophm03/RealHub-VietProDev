@@ -3,13 +3,11 @@
 import { useState, useCallback, useMemo } from "react";
 import { useDropzone } from "react-dropzone";
 import { useQueryClient } from "@tanstack/react-query";
-import { Can } from "@casl/react";
 import {
   Download,
   Eye,
   FileText,
   Files as FilesIcon,
-  Filter,
   Image as ImageIcon,
   Lock,
   Trash2,
@@ -33,7 +31,6 @@ import {
 } from "@/lib/api/endpoints/files";
 import type {
   FileItem,
-  GetFilesResponse,
   FileVisibility,
 } from "@/lib/api/types/files";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";

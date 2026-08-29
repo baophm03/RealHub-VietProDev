@@ -16,7 +16,11 @@ const registerSchema = z.object({
   fullName: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
   email: z.string().email("Email không hợp lệ"),
   password: z.string().min(10, "Mật khẩu phải có ít nhất 10 ký tự"),
+  confirmPassword: z.string().min(10, "Mật khẩu phải có ít nhất 10 ký tự"),
   phone: z.string().min(10, "Số điện thoại không hợp lệ"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Xác nhận mật khẩu không khớp",
+  path: ["confirmPassword"],
 });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -54,6 +58,7 @@ export default function RegisterPage() {
         fullName: formData.fullName,
         email: formData.email,
         password: formData.password,
+        confirmPassword: formData.confirmPassword,
         phone: formData.phone,
       },
     });
@@ -157,6 +162,34 @@ export default function RegisterPage() {
             {errors.password && (
               <p id="password-error" className="text-xs text-accent-red-text">
                 {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="confirmPassword" className="text-[13px] font-medium">Xác nhận mật khẩu</Label>
+            <div className="relative">
+              <Input
+                id="confirmPassword"
+                type={showPassword ? "text" : "password"}
+                placeholder="Nhập lại mật khẩu"
+                className="pr-11"
+                {...register("confirmPassword")}
+                aria-invalid={!!errors.confirmPassword}
+                aria-describedby={errors.confirmPassword ? "confirmPassword-error" : undefined}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground-muted hover:text-foreground transition-colors duration-300"
+                aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+            {errors.confirmPassword && (
+              <p id="confirmPassword-error" className="text-xs text-accent-red-text">
+                {errors.confirmPassword.message}
               </p>
             )}
           </div>

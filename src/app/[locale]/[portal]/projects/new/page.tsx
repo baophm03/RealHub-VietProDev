@@ -10,6 +10,7 @@ import { ArrowLeft } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { FormSection, FormField } from "@/components/shared/form-section";
 import {
   Select,
@@ -18,14 +19,17 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { usePostApiProject } from "@/lib/api/endpoints/projects";
+import { usePostApiProject, getGetApiProjectsQueryKey } from "@/lib/api/endpoints/projects";
 import { useGetApiLocations } from "@/lib/api/endpoints/locations";
 import { toast } from "sonner";
-import type { Location, GetLocationsResponse } from "@/lib/api/types/locations";
+import type { GetLocationsResponse } from "@/lib/api/types/locations";
+import { useQueryClient } from "@tanstack/react-query";
 
 const projectSchema = z.object({
   name: z.string().min(1, "Vui lòng nhập tên dự án"),
+  description: z.string().optional(),
   developer: z.string().optional(),
+  handoverDate: z.string().optional(),
   provinceId: z.string().optional(),
   districtId: z.string().optional(),
   status: z.enum(["ACTIVE", "INACTIVE"]),
@@ -41,6 +45,7 @@ const statusLabels: Record<string, string> = {
 export default function ProjectFormPage() {
   const router = useRouter();
   const portalPath = usePortalPath();
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedProvinceId, setSelectedProvinceId] = useState<string | undefined>(undefined);
@@ -78,7 +83,9 @@ export default function ProjectFormPage() {
     setError(null);
     try {
       await createProject({ data: data as any });
+      await queryClient.invalidateQueries({ queryKey: getGetApiProjectsQueryKey() });
       toast.success("Tạo dự án thành công");
+      router.refresh();
       router.push(portalPath("/projects"));
     } catch (err) {
       setError((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo dự án. Vui lòng thử lại.");
@@ -118,11 +125,14 @@ export default function ProjectFormPage() {
             <FormField label="Tên dự án" htmlFor="name" required error={errors.name?.message}>
               <Input id="name" placeholder="Vinhomes Central Park" {...register("name")} />
             </FormField>
+            <FormField label="Chủ đầu tư" htmlFor="developer">
+              <Input id="developer" placeholder="Vingroup" {...register("developer")} />
+            </FormField>
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Chủ đầu tư" htmlFor="developer">
-              <Input id="developer" placeholder="Vingroup" {...register("developer")} />
+            <FormField label="Thời gian bàn giao" htmlFor="handoverDate">
+              <Input id="handoverDate" placeholder="Quý 4/2026" {...register("handoverDate")} />
             </FormField>
             <FormField label="Trạng thái" required>
               <Select
@@ -130,7 +140,7 @@ export default function ProjectFormPage() {
                 items={statusLabels}
                 onValueChange={(v) => setValue("status", v as ProjectFormData["status"])}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Chọn trạng thái" />
                 </SelectTrigger>
                 <SelectContent>
@@ -140,6 +150,15 @@ export default function ProjectFormPage() {
               </Select>
             </FormField>
           </div>
+
+          <FormField label="Mô tả" htmlFor="description">
+            <Textarea
+              id="description"
+              rows={4}
+              placeholder="Mô tả ngắn về dự án..."
+              {...register("description")}
+            />
+          </FormField>
         </FormSection>
 
         <FormSection title="Vị trí" description="Địa điểm của dự án">
@@ -155,7 +174,7 @@ export default function ProjectFormPage() {
                   setValue("districtId", "");
                 }}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder={provincesLoading ? "Đang tải..." : "Chọn tỉnh/thành phố"} />
                 </SelectTrigger>
                 <SelectContent>
@@ -174,7 +193,7 @@ export default function ProjectFormPage() {
                 disabled={!selectedProvinceId}
                 onValueChange={(v) => setValue("districtId", v as string)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder={
                     !selectedProvinceId
                       ? "Chọn tỉnh/thành phố trước"
@@ -203,7 +222,7 @@ export default function ProjectFormPage() {
             {loading ? "Đang lưu..." : "Lưu dự án"}
           </Button>
         </div>
-      </form>
-    </div>
+      </form >
+    </div >
   );
 }

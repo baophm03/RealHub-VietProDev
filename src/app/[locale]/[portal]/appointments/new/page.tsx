@@ -115,6 +115,7 @@ export default function AppointmentFormPage() {
         },
       });
       toast.success("Đã tạo lịch hẹn mới");
+      router.refresh();
       router.push(portalPath("/appointments"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo lịch hẹn, vui lòng thử lại");

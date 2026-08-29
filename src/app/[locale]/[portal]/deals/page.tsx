@@ -14,21 +14,13 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { KanbanBoard, type KanbanColumn } from "@/components/shared/kanban-board";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogPortal,
-  DialogOverlay,
-} from "@/components/ui/dialog";
-import {
   useGetApiDeals,
   usePatchApiDeal,
   useDeleteApiDeal,
 } from "@/lib/api/endpoints/deals-reservations";
 import type { GetApiDealsStatus } from "@/lib/api/models/getApiDealsStatus";
 import type { UpdateDealDtoStatus } from "@/lib/api/models/updateDealDtoStatus";
+import { DeleteDealDialog } from "./_components/delete-deal-dialog";
 
 interface DealProperty {
   id: string;
@@ -116,7 +108,7 @@ export default function DealsPage() {
   const deals = ((dealsData as unknown as DealsResponse)?.data) || [];
   const totalCount = (dealsData as unknown as DealsResponse)?.meta?.total ?? deals.length;
 
-  const { mutateAsync: updateDeal, isPending: isUpdating } = usePatchApiDeal();
+  const { mutateAsync: updateDeal } = usePatchApiDeal();
   const { mutateAsync: deleteDeal, isPending: isDeleting } = useDeleteApiDeal();
 
   const handleDrop = async (deal: Deal, targetStatus: string) => {
@@ -125,6 +117,7 @@ export default function DealsPage() {
       await updateDeal({ id: deal.id, data: { status: targetStatus as UpdateDealDtoStatus } });
       toast.success(`Đã chuyển giao dịch sang "${statusLabel[targetStatus] ?? targetStatus}"`);
       refetch();
+      router.refresh();
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Cập nhật trạng thái giao dịch thất bại");
       console.error(err);
@@ -138,6 +131,7 @@ export default function DealsPage() {
       toast.success(`Đã xóa giao dịch "${deleteTarget.dealCode}"`);
       setDeleteTarget(null);
       refetch();
+      router.refresh();
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa giao dịch thất bại");
       console.error(err);
@@ -205,23 +199,28 @@ export default function DealsPage() {
         }
       />
 
-      <div className="flex items-center justify-end gap-2">
-        <Select
-          value={statusFilter}
-          items={Object.fromEntries(statusFilters.map((f) => [f.value, f.label]))}
-          onValueChange={(v) => setStatusFilter((v ?? "ALL") as GetApiDealsStatus | "ALL")}
-        >
-          <SelectTrigger className="h-9 w-[200px]">
-            <SelectValue placeholder="Tất cả trạng thái" />
-          </SelectTrigger>
-          <SelectContent>
-            {statusFilters.map((f) => (
-              <SelectItem key={f.value} value={f.value} label={f.label}>
-                {f.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-foreground-muted">
+          <span className="font-medium text-foreground">{deals.length}</span> giao dịch
+        </p>
+        <div className="flex items-center gap-2">
+          <Select
+            value={statusFilter}
+            items={Object.fromEntries(statusFilters.map((f) => [f.value, f.label]))}
+            onValueChange={(v) => setStatusFilter((v ?? "ALL") as GetApiDealsStatus | "ALL")}
+          >
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Tất cả trạng thái" />
+            </SelectTrigger>
+            <SelectContent>
+              {statusFilters.map((f) => (
+                <SelectItem key={f.value} value={f.value} label={f.label}>
+                  {f.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {isLoading ? (
@@ -242,7 +241,6 @@ export default function DealsPage() {
         />
       ) : (
         <>
-          <div className="text-xs text-foreground-muted">{totalCount} giao dịch</div>
           {view === "kanban" ? (
             <KanbanBoard
               columns={columns}
@@ -314,38 +312,13 @@ export default function DealsPage() {
       )}
 
       {/* Delete confirmation dialog */}
-      <Dialog
+      <DeleteDealDialog
         open={!!deleteTarget}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
-      >
-        <DialogPortal>
-          <DialogOverlay />
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Xóa giao dịch</DialogTitle>
-              <DialogDescription>
-                Hành động này sẽ ẩn giao dịch (soft delete). Bạn có chắc chắn?
-              </DialogDescription>
-            </DialogHeader>
-            {deleteTarget && (
-              <div className="rounded-lg border border-border bg-surface-muted/40 p-4 text-sm">
-                <p className="font-medium">{deleteTarget.dealCode}</p>
-                {deleteTarget.customer?.fullName && (
-                  <p className="text-foreground-muted">{deleteTarget.customer.fullName}</p>
-                )}
-              </div>
-            )}
-            <div className="flex items-center justify-end gap-2">
-              <Button variant="outline" onClick={() => setDeleteTarget(null)}>Hủy</Button>
-              <Can I="DELETE_OWN" a="DEAL">
-                <Button variant="destructive" disabled={isDeleting} onClick={handleDelete}>
-                  {isDeleting ? "Đang xóa..." : "Xóa"}
-                </Button>
-              </Can>
-            </div>
-          </DialogContent>
-        </DialogPortal>
-      </Dialog>
+        deal={deleteTarget}
+        isDeleting={isDeleting}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Can } from "@casl/react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -28,6 +29,7 @@ import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
   usePatchApiPropertyContactsId,
   useDeleteApiPropertyContactsId,
+  getGetApiPropertyContactsQueryKey,
 } from "@/lib/api/endpoints/property-contacts";
 
 export interface PropertyContact {
@@ -76,6 +78,7 @@ export function ConsultationDetailDialog({
 }: ConsultationDetailDialogProps) {
   const router = useRouter();
   const portalPath = usePortalPath();
+  const queryClient = useQueryClient();
   const { mutateAsync: updateContact, isPending: isUpdating } = usePatchApiPropertyContactsId();
   const { mutateAsync: deleteContact, isPending: isDeleting } = useDeleteApiPropertyContactsId();
 
@@ -85,6 +88,10 @@ export function ConsultationDetailDialog({
   ) => {
     try {
       await updateContact({ id, data: { status } });
+      await queryClient.invalidateQueries({
+        queryKey: getGetApiPropertyContactsQueryKey(),
+      });
+      router.refresh();
       toast.success(`Đã cập nhật: ${statusConfig[status].label}`);
       onUpdated?.({ ...contact!, status });
     } catch (err) {
@@ -96,6 +103,10 @@ export function ConsultationDetailDialog({
   const handleDelete = async (id: string) => {
     try {
       await deleteContact({ id });
+      await queryClient.invalidateQueries({
+        queryKey: getGetApiPropertyContactsQueryKey(),
+      });
+      router.refresh();
       toast.success("Đã lưu trữ yêu cầu");
       onDeleted?.(id);
       onOpenChange(false);

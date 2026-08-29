@@ -16,6 +16,7 @@ import {
 import {
   usePatchApiProperty,
   getGetApiPropertiesQueryKey,
+  getGetApiPropertiesAdminQueryKey,
 } from "@/lib/api/endpoints/properties";
 import type { Property } from "@/lib/api/types/properties";
 
@@ -46,6 +47,9 @@ export function SubmitVerificationDialog({
       });
       await queryClient.invalidateQueries({
         queryKey: getGetApiPropertiesQueryKey(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: getGetApiPropertiesAdminQueryKey(),
       });
       toast.success(`Đã gửi duyệt "${property.title}"`);
       onOpenChange(false);

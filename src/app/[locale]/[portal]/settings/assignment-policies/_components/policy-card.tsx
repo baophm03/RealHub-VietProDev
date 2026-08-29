@@ -2,7 +2,6 @@
 
 import { Pencil, Trash2, Users, Clock, Handshake, MoreVertical } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,

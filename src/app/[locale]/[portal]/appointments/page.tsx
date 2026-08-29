@@ -14,6 +14,7 @@ import { Can } from "@casl/react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { useGetApiAppointmentsAdmin } from "@/lib/api/endpoints/appointments";
@@ -125,12 +126,12 @@ export default function AppointmentsPage() {
       />
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <input
+        <Input
           type="search"
           placeholder="Tìm kiếm..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="h-9 w-full rounded-md border border-border bg-surface px-3 text-sm text-foreground outline-none focus:border-ring sm:w-auto sm:min-w-[280px]"
+          className="w-full sm:w-auto min-w-0"
         />
         <div className="flex items-center justify-end gap-2">
           <Select
@@ -138,7 +139,7 @@ export default function AppointmentsPage() {
             items={Object.fromEntries(statusFilters.map((f) => [f.value, f.label]))}
             onValueChange={(v) => setStatusFilter((v ?? "ALL") as GetApiAppointmentsStatus | "ALL")}
           >
-            <SelectTrigger className="h-9 w-[200px]">
+            <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Tất cả trạng thái" />
             </SelectTrigger>
             <SelectContent>

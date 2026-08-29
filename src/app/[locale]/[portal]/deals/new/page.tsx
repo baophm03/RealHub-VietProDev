@@ -16,7 +16,6 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { usePostApiDeal } from "@/lib/api/endpoints/deals-reservations";
 import { useGetApiLeadsAdmin } from "@/lib/api/endpoints/leads";
 import { useUserStore } from "@/lib/stores/user-store";
-import { formatPrice } from "@/utils";
 import type { GetLeadsResponse, Lead } from "@/lib/api/types/leads";
 
 const txOptions = [
@@ -92,6 +91,7 @@ export default function DealFormPage() {
         } as any,
       });
       toast.success("Đã tạo giao dịch mới");
+      router.refresh();
       router.push(portalPath("/deals"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo giao dịch, vui lòng thử lại");

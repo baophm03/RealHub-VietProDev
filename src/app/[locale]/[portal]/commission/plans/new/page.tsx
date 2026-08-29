@@ -65,6 +65,7 @@ export default function CommissionPlanFormPage() {
         rules,
       };
       await createPlan({ data });
+      router.refresh();
       router.push(portalPath("/commission/plans"));
     } catch (err) {
       setError("Co loi xay ra khi tao ke hoach. Vui long thu lai.");

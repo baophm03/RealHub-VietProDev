@@ -7,8 +7,10 @@ import {
   Handshake,
   Users,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle, CardAction } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useGetApiDashboardSummary, useGetApiDashboardRecentLeads } from "@/lib/api/endpoints/dashboard";
 import type { DashboardSummary } from "@/lib/api/types/dashboard";
 
@@ -26,6 +28,7 @@ const leadStatusConfig: Record<string, { label: string; variant: "blue" | "yello
 };
 
 export default function DashboardPage() {
+  const portalPath = usePortalPath();
   const { data: summaryData } = useGetApiDashboardSummary();
   const summary = (summaryData as unknown as DashboardSummary)?.data;
 
@@ -95,17 +98,19 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 animate-fade-up-delay-2">
         <Card className="lg:col-span-3">
-          <CardHeader className="flex-row items-center justify-between gap-2">
+          <CardHeader>
             <CardTitle>Nguồn khách hàng</CardTitle>
-            <a
-              href="/leads"
-              className="group inline-flex items-center gap-1.5 text-xs font-medium text-foreground-muted transition-colors hover:text-foreground shrink-0"
-            >
-              Xem tất cả
-              <span className="inline-flex size-5 items-center justify-center rounded-lg bg-surface-muted transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                <ArrowUpRight size={10} />
-              </span>
-            </a>
+            <CardAction>
+              <Link
+                href={portalPath("/leads")}
+                className="group flex items-center gap-1.5 text-xs font-medium text-foreground-muted transition-colors hover:text-foreground shrink-0"
+              >
+                Xem tất cả
+                <span className="inline-flex size-5 items-center justify-center rounded-lg bg-surface-muted transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                  <ArrowUpRight size={10} />
+                </span>
+              </Link>
+            </CardAction>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col divide-y divide-border">

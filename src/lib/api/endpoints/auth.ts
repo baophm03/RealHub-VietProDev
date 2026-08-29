@@ -30,6 +30,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ChangePasswordDto,
   LoginDto,
   RegisterDto,
   ReplaceProfileDto,
@@ -548,6 +549,69 @@ export const usePutApiMe = <TError = unknown,
       > => {
 
       const mutationOptions = getPutApiMeMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Change current user password
+ */
+export const patchApiPassword = (
+    changePasswordDto: ChangePasswordDto,
+ ) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/auth/password`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: changePasswordDto
+    },
+      );
+    }
+  
+
+
+export const getPatchApiPasswordMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiPassword>>, TError,{data: ChangePasswordDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiPassword>>, TError,{data: ChangePasswordDto}, TContext> => {
+
+const mutationKey = ['patchApiPassword'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiPassword>>, {data: ChangePasswordDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  patchApiPassword(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PatchApiPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiPassword>>>
+    export type PatchApiPasswordMutationBody = ChangePasswordDto
+    export type PatchApiPasswordMutationError = unknown
+
+    /**
+ * @summary Change current user password
+ */
+export const usePatchApiPassword = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiPassword>>, TError,{data: ChangePasswordDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof patchApiPassword>>,
+        TError,
+        {data: ChangePasswordDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPatchApiPasswordMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }
