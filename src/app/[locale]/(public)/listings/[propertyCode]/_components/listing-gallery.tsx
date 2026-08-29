@@ -10,7 +10,7 @@ interface ListingGalleryProps {
 }
 
 export function ListingGallery({ images, propertyCode }: ListingGalleryProps) {
-  const [activeImage, setActiveImage] = useState(0);
+  const [activeImage] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const gallery = images;

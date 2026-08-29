@@ -1,5 +1,3 @@
-import type { ReactNode } from "react";
-
 interface JsonLdProps {
   data: Record<string, unknown> | Record<string, unknown>[];
 }

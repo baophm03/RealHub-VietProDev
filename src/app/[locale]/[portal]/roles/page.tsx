@@ -177,13 +177,13 @@ export default function RolesPage() {
         }
       />
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Input
           type="search"
-          placeholder="Tìm role theo tên, code, mô tả..."
+          placeholder="Tìm kiếm..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full sm:w-auto min-w-[260px]"
+          className="w-full sm:w-auto min-w-0"
         />
         <Select
           value={statusFilter}

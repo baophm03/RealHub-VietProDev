@@ -19,18 +19,8 @@ import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogPortal,
-  DialogOverlay,
-} from "@/components/ui/dialog";
 import {
   useGetApiLeadId,
   useGetApiLeadActivities,
@@ -39,6 +29,7 @@ import {
   usePostApiLeadActivity,
 } from "@/lib/api/endpoints/leads";
 import type { UpdateLeadDtoStatus } from "@/lib/api/models/updateLeadDtoStatus";
+import { DeleteLeadDialog } from "./_components/delete-lead-dialog";
 
 interface LeadCustomer {
   id: string;
@@ -167,6 +158,7 @@ export default function LeadDetailPage() {
     try {
       await deleteLead({ id });
       toast.success(`Đã xóa nguồn khách hàng "${lead?.leadCode}"`);
+      router.refresh();
       router.push(portalPath("/leads"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa lead thất bại");
@@ -440,31 +432,13 @@ export default function LeadDetailPage() {
       </div>
 
       {/* Delete dialog */}
-      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogPortal>
-          <DialogOverlay />
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Xóa nguồn khách hàng</DialogTitle>
-              <DialogDescription>
-                Hành động này sẽ ẩn nguồn khách hàng (soft delete). Bạn có chắc chắn?
-              </DialogDescription>
-            </DialogHeader>
-            <div className="rounded-lg border border-border bg-surface-muted/40 p-4 text-sm">
-              <p className="font-medium">{lead.leadCode}</p>
-              {lead.customer?.fullName && (
-                <p className="text-foreground-muted">{lead.customer.fullName}</p>
-              )}
-            </div>
-            <div className="flex items-center justify-end gap-2">
-              <Button variant="outline" onClick={() => setDeleteOpen(false)}>Hủy</Button>
-              <Button variant="destructive" disabled={isDeleting} onClick={handleDelete}>
-                {isDeleting ? "Đang xóa..." : "Xóa"}
-              </Button>
-            </div>
-          </DialogContent>
-        </DialogPortal>
-      </Dialog>
+      <DeleteLeadDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        lead={lead}
+        isDeleting={isDeleting}
+        onConfirm={handleDelete}
+      />
     </div >
   );
 }

@@ -150,12 +150,6 @@ export default function ConsultationsPage() {
     [router, portalPath],
   );
 
-  const totalCount = (allContactsData as unknown as PropertyContactsResponse)?.meta?.total ?? allContacts.length;
-  const unreadCount = useMemo(
-    () => allContacts.filter((c) => c.status === "UNREAD").length,
-    [allContacts],
-  );
-
   const filterTabs: { value: PropertyContact["status"] | "ALL"; label: string }[] = [
     { value: "ALL", label: "Tất cả" },
     { value: "UNREAD", label: "Chưa đọc" },
@@ -249,9 +243,11 @@ export default function ConsultationsPage() {
         onUpdated={(updated) => {
           setDetailContact(updated);
           refetch();
+          router.refresh();
         }}
         onDeleted={() => {
           refetch();
+          router.refresh();
         }}
       />
     </div>

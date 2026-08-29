@@ -18,10 +18,10 @@ export default function NewsPage() {
           <TabsTrigger value="articles">Bài viết</TabsTrigger>
           <TabsTrigger value="categories">Chuyên mục</TabsTrigger>
         </TabsList>
-        <TabsContent value="articles">
+        <TabsContent value="articles" className="mt-2">
           <NewsList />
         </TabsContent>
-        <TabsContent value="categories">
+        <TabsContent value="categories" className="mt-2">
           <CategoriesList />
         </TabsContent>
       </Tabs>

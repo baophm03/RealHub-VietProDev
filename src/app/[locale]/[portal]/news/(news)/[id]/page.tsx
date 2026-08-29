@@ -141,6 +141,7 @@ export default function NewsFormPage() {
         ]);
         toast.success("Cập nhật bài viết thành công");
       }
+      router.refresh();
       router.push(portalPath("/news"));
     } catch (err) {
       setError(

@@ -8,7 +8,6 @@ import {
   House,
   Key,
   Newspaper,
-  Percent,
   Settings,
   ShieldCheck,
   UserCog,

@@ -11,19 +11,10 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { FormField } from "@/components/shared/form-section";
+import { GroupFormDialog } from "./group-form-dialog";
+import { AssignDefinitionDialog } from "./assign-definition-dialog";
 import {
   Select,
   SelectTrigger,
@@ -80,15 +71,23 @@ interface FieldDefinition {
   status?: string;
 }
 
+const entityTypeOptions: { value: string; label: string }[] = [
+  { value: "PROPERTY", label: "Bất động sản" },
+  { value: "CUSTOMER_NEED", label: "Nhu cầu khách hàng" },
+  { value: "LEAD", label: "Nguồn khách hàng" },
+  { value: "DEAL", label: "Giao dịch" },
+  { value: "OWNER_PROFILE", label: "Hồ sơ chủ nhà" },
+];
+
 interface GroupsTabProps {
-  entityType?: GetApiFieldGroupsEntityType;
-  propertyTypeId?: string;
   canCreate?: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
 }
 
-export function GroupsTab({ entityType, propertyTypeId, canCreate = true, canUpdate = true, canDelete = true }: GroupsTabProps) {
+export function GroupsTab({ canCreate = true, canUpdate = true, canDelete = true }: GroupsTabProps) {
+  const [entityType, setEntityType] = useState<string>("");
+  const [propertyTypeId, setPropertyTypeId] = useState<string>("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
@@ -97,7 +96,7 @@ export function GroupsTab({ entityType, propertyTypeId, canCreate = true, canUpd
   const [form, setForm] = useState({
     name: "",
     code: "",
-    entityType: entityType || "PROPERTY",
+    entityType: "PROPERTY",
     propertyTypeId: "",
     sortOrder: 0,
   });
@@ -106,12 +105,12 @@ export function GroupsTab({ entityType, propertyTypeId, canCreate = true, canUpd
   const propertyTypes = ((propertyTypesData as any)?.data as PropertyType[]) || [];
 
   const { data, isLoading, refetch } = useGetApiFieldGroups(
-    entityType ? { entityType, ...(propertyTypeId ? { propertyTypeId } : {}) } : undefined,
+    entityType ? { entityType: entityType as GetApiFieldGroupsEntityType, ...(propertyTypeId ? { propertyTypeId } : {}) } : undefined,
   );
   const groups = ((data as any)?.data as FieldGroup[]) || [];
 
   const { data: defsData, refetch: refetchDefs } = useGetApiFieldDefinitions(
-    entityType ? { entityType, ...(propertyTypeId ? { propertyTypeId } : {}) } : undefined,
+    entityType ? { entityType: entityType as GetApiFieldGroupsEntityType, ...(propertyTypeId ? { propertyTypeId } : {}) } : undefined,
   );
   const allDefinitions = ((defsData as any)?.data as FieldDefinition[]) || [];
   const unassignedDefinitions = allDefinitions.filter((d) => !d.group?.id);
@@ -271,13 +270,67 @@ export function GroupsTab({ entityType, propertyTypeId, canCreate = true, canUpd
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-end">
-        {canCreate && (
-          <Button size="sm" onClick={openCreateDialog}>
-            <Plus size={16} />
-            Thêm nhóm
-          </Button>
-        )}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-foreground-muted">
+          <span className="font-medium text-foreground">{groups.length}</span> nhóm trường
+        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <Select
+            value={entityType}
+            onValueChange={(v) => {
+              setEntityType(v as string);
+              setPropertyTypeId("");
+            }}
+          >
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Tất cả">
+                {(value: string) => {
+                  if (!value) return "Tất cả";
+                  const opt = entityTypeOptions.find((o) => o.value === value);
+                  return opt?.label || value;
+                }}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="" label="Tất cả">Tất cả</SelectItem>
+              {entityTypeOptions.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value} label={opt.label}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {entityType === "PROPERTY" && (
+            <Select
+              value={propertyTypeId}
+              onValueChange={(v) => setPropertyTypeId(v as string)}
+            >
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Tất cả loại BĐS">
+                  {(value: string) => {
+                    if (!value) return "Tất cả loại BĐS";
+                    const pt = propertyTypes.find((p) => p.id === value);
+                    return pt?.name || value;
+                  }}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="" label="Tất cả loại BĐS">Tất cả loại BĐS</SelectItem>
+                {propertyTypes.map((pt) => (
+                  <SelectItem key={pt.id} value={pt.id} label={pt.name}>
+                    {pt.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          {canCreate && (
+            <Button onClick={openCreateDialog}>
+              <Plus size={16} />
+              Thêm nhóm
+            </Button>
+          )}
+        </div>
       </div>
 
       {isLoading ? (
@@ -297,7 +350,7 @@ export function GroupsTab({ entityType, propertyTypeId, canCreate = true, canUpd
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {groups.map((group) => (
             <Card key={group.id}>
               <CardHeader>
@@ -369,160 +422,28 @@ export function GroupsTab({ entityType, propertyTypeId, canCreate = true, canUpd
         </div>
       )}
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>{editingId ? "Chỉnh sửa nhóm trường" : "Tạo nhóm trường"}</DialogTitle>
-            <DialogDescription>Nhóm các trường động theo logic nghiệp vụ</DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-4">
-            <FormField label="Tên nhóm" required>
-              <Input
-                placeholder="VD: Thông tin cơ bản"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-              />
-            </FormField>
-            <FormField label="Loại nhóm" required>
-              <Select
-                value={form.code}
-                onValueChange={(v) => setForm({ ...form, code: v ?? "" })}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn loại nhóm">
-                    {(value: string) =>
-                      value === "basic_info"
-                        ? "Thông tin cơ bản"
-                        : value === "special"
-                          ? "Thông tin nổi bật"
-                          : value === "contact_info"
-                            ? "Thông tin liên hệ"
-                            : "Chọn loại nhóm"
-                    }
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="basic_info" label="Thông tin cơ bản">Thông tin cơ bản</SelectItem>
-                  <SelectItem value="special" label="Thông tin nổi bật">Thông tin nổi bật</SelectItem>
-                  <SelectItem value="contact_info" label="Thông tin liên hệ">Thông tin liên hệ</SelectItem>
-                </SelectContent>
-              </Select>
-            </FormField>
-            <FormField label="Đối tượng" required>
-              <Select
-                value={form.entityType}
-                onValueChange={(v) => setForm({ ...form, entityType: v as GetApiFieldGroupsEntityType })}
-                disabled={!!editingId}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn đối tượng">
-                    {(value: string) => entityTypeLabels[value] || value}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(entityTypeLabels).map(([value, label]) => (
-                    <SelectItem key={value} value={value} label={label}>{label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormField>
-            {form.entityType === "PROPERTY" && (
-              <FormField label="Loại bất động sản" helper="Để trống nếu áp dụng cho tất cả loại BĐS">
-                <Select
-                  value={form.propertyTypeId || "__all__"}
-                  onValueChange={(v) => setForm({ ...form, propertyTypeId: !v || v === "__all__" ? "" : v })}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Tất cả loại BĐS">
-                      {(value: string) =>
-                        !value || value === "__all__"
-                          ? "Tất cả loại BĐS"
-                          : propertyTypes.find((p) => p.id === value)?.name || "Tất cả loại BĐS"
-                      }
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="__all__" label="-- Tất cả loại BĐS --">-- Tất cả loại BĐS --</SelectItem>
-                    {propertyTypes.map((pt) => (
-                      <SelectItem key={pt.id} value={pt.id} label={pt.name}>{pt.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormField>
-            )}
-            <FormField label="Thứ tự hiển thị">
-              <Input
-                type="number"
-                value={form.sortOrder}
-                onChange={(e) => setForm({ ...form, sortOrder: Number(e.target.value) })}
-              />
-            </FormField>
-          </div>
-          <DialogFooter>
-            <DialogClose render={<Button variant="outline" />}>
-              Hủy
-            </DialogClose>
-            <Button onClick={handleSubmit} disabled={isPending}>
-              {isPending ? "Đang lưu..." : editingId ? "Cập nhật" : "Tạo nhóm"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <GroupFormDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        editingId={editingId}
+        form={form}
+        setForm={setForm}
+        propertyTypes={propertyTypes}
+        isPending={isPending}
+        onSubmit={handleSubmit}
+        onClose={closeDialog}
+      />
 
-      <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Gán trường vào nhóm</DialogTitle>
-            <DialogDescription>
-              {assignTargetGroup
-                ? `Chọn các trường chưa có nhóm để gán vào "${assignTargetGroup.name}"`
-                : ""}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto">
-            {(() => {
-              const targetPropTypeId = assignTargetGroup?.propertyType?.id;
-              const eligibleDefs = targetPropTypeId
-                ? unassignedDefinitions.filter((d) => !d.propertyType?.id || d.propertyType?.id === targetPropTypeId)
-                : unassignedDefinitions;
-              if (eligibleDefs.length === 0) {
-                return (
-                  <p className="text-sm text-foreground-muted py-4 text-center">
-                    Không có trường nào phù hợp để gán
-                  </p>
-                );
-              }
-              return eligibleDefs.map((def) => (
-                <label
-                  key={def.id}
-                  className="flex items-center gap-2 rounded-md border border-border px-3 py-2 cursor-pointer hover:bg-surface-muted"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedDefIds.includes(def.id)}
-                    onChange={() => handleToggleDef(def.id)}
-                    className="h-4 w-4"
-                  />
-                  <div className="flex flex-1 items-center gap-2">
-                    <span className="text-sm font-medium">{def.fieldLabel}</span>
-                    <code className="rounded bg-surface-muted px-1 py-0.5 font-mono text-xs">
-                      {def.fieldKey}
-                    </code>
-                  </div>
-                </label>
-              ));
-            })()}
-          </div>
-          <DialogFooter>
-            <DialogClose render={<Button variant="outline" />}>
-              Hủy
-            </DialogClose>
-            <Button onClick={handleAssignSubmit} disabled={isAssigning || selectedDefIds.length === 0}>
-              {isAssigning ? "Đang gán..." : `Gán ${selectedDefIds.length} trường`}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AssignDefinitionDialog
+        open={assignDialogOpen}
+        onOpenChange={setAssignDialogOpen}
+        assignTargetGroup={assignTargetGroup}
+        unassignedDefinitions={unassignedDefinitions}
+        selectedDefIds={selectedDefIds}
+        onToggleDef={handleToggleDef}
+        onSubmit={handleAssignSubmit}
+        isAssigning={isAssigning}
+      />
     </div>
   );
 }

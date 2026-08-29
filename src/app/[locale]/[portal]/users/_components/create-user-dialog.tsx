@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
@@ -27,6 +28,7 @@ interface CreateUserDialogProps {
 
 export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const { mutateAsync: createUser, isPending } = usePostApiUser();
 
   const [fullName, setFullName] = useState("");
@@ -55,6 +57,7 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
       };
       await createUser({ data: dto });
       await queryClient.invalidateQueries({ queryKey: getGetApiMembershipsQueryKey() });
+      router.refresh();
       toast.success(`Đã tạo người dùng "${fullName.trim()}"`);
       reset();
       onOpenChange(false);

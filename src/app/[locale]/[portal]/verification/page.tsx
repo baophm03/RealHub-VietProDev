@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePortalPath } from "@/lib/hooks/use-portal";
 import { usePagination } from "@/lib/hooks/use-pagination";
-import { useQueryClient } from "@tanstack/react-query";
 import { formatPrice } from "@/utils";
 import {
   CircleCheck,
@@ -248,7 +247,7 @@ export default function VerificationPage() {
   ];
 
   return (
-    <>
+    <div className="flex flex-col gap-6">
       <PageHeader
         eyebrow="Kiểm duyệt"
         title="Duyệt bất động sản"
@@ -343,6 +342,6 @@ export default function VerificationPage() {
         open={!!pendingAction}
         onOpenChange={(open) => !open && setPendingAction(null)}
       />
-    </>
+    </div>
   );
 }

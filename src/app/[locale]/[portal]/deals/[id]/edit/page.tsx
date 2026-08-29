@@ -17,7 +17,7 @@ import { useGetApiDealId, usePatchApiDeal } from "@/lib/api/endpoints/deals-rese
 import { useGetApiPropertiesAdmin } from "@/lib/api/endpoints/properties";
 import { useUserStore } from "@/lib/stores/user-store";
 import type { UpdateDealDtoStatus } from "@/lib/api/models/updateDealDtoStatus";
-import type { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
+import type { GetPropertiesResponse } from "@/lib/api/types/properties";
 
 interface Deal {
   id: string;
@@ -107,6 +107,7 @@ export default function DealEditPage() {
         },
       });
       toast.success("Đã cập nhật giao dịch");
+      router.refresh();
       router.push(portalPath(`/deals/${id}`));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật giao dịch, vui lòng thử lại");

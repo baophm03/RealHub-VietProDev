@@ -35,7 +35,6 @@ import type { CreateAssignmentPolicyDto } from "@/lib/api/models/createAssignmen
 import type { UpdateAssignmentPolicyDto } from "@/lib/api/models/updateAssignmentPolicyDto";
 import {
   statusFilters,
-  emptyPolicy,
   type AssignmentPolicy,
   type PoliciesResponse,
   type CreatePolicyDto,
@@ -51,8 +50,6 @@ export default function AssignmentPoliciesPage() {
 
   const queryClient = useQueryClient();
   const canCreate = ability.can("CREATE", "SETTING");
-  const canUpdate = ability.can("UPDATE", "SETTING");
-  const canDelete = ability.can("DELETE", "SETTING");
 
   const { data: policiesRaw, isLoading } = useGetApiAssignmentPolicies();
   const allPolicies: AssignmentPolicy[] =
@@ -137,38 +134,44 @@ export default function AssignmentPoliciesPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         eyebrow="Cài đặt"
-        title="Phụ trách sản phẩm"
+        title="Cài đặt phụ trách sản phẩm"
         description="Chính sách nhận phụ trách: số sales tối đa, thời hạn, hành vi hết hạn. Policy cụ thể hơn được ưu tiên áp dụng."
         actions={
-          <div className="flex items-center gap-2">
-            <Select
-              value={statusFilter}
-              onValueChange={(v) => setStatusFilter((v as string) ?? "")}
-            >
-              <SelectTrigger className="w-44">
-                <SelectValue placeholder="Tất cả trạng thái">
-                  {(value: string) =>
-                    statusFilters.find((s) => s.value === value)?.label || "Tất cả trạng thái"
-                  }
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {statusFilters.map((s) => (
-                  <SelectItem key={s.value} value={s.value} label={s.label}>
-                    {s.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {canCreate && (
-              <Button onClick={() => setDialogOpen(true)}>
-                <Plus size={16} />
-                Tạo chính sách
-              </Button>
-            )}
-          </div>
+          canCreate && (
+            <Button onClick={() => setDialogOpen(true)}>
+              <Plus size={16} />
+              Tạo chính sách
+            </Button>
+          )
         }
       />
+
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-foreground-muted">
+          <span className="font-medium text-foreground">{policies.length}</span> chính sách
+        </p>
+        <div className="flex items-center gap-2">
+          <Select
+            value={statusFilter}
+            onValueChange={(v) => setStatusFilter((v as string) ?? "")}
+          >
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Tất cả trạng thái">
+                {(value: string) =>
+                  statusFilters.find((s) => s.value === value)?.label || "Tất cả trạng thái"
+                }
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {statusFilters.map((s) => (
+                <SelectItem key={s.value} value={s.value} label={s.label}>
+                  {s.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       {isLoading ? (
         <div className="flex flex-col gap-3">

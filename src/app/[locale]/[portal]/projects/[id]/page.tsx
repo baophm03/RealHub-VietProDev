@@ -25,7 +25,6 @@ import {
   Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useGetApiProjectId } from "@/lib/api/endpoints/projects";
 import { Project, ProjectProperty } from "@/lib/api/types/projects";
 import { formatPriceWithTransaction } from "@/utils";
@@ -134,7 +133,7 @@ export default function ProjectDetailPage() {
     return (
       <div className="mx-auto max-w-[1400px] px-6 py-8 md:px-8 md:py-12 lg:px-12">
         <Link
-          href={portalPath("/properties")}
+          href={portalPath("/projects")}
           className="mb-6 inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
         >
           <ArrowLeft size={16} /> Quay lại danh sách
@@ -157,28 +156,11 @@ export default function ProjectDetailPage() {
     <div className="mx-auto max-w-[1400px] px-6 py-8 md:px-8 md:py-12 lg:px-12">
       <div className="mb-6 flex items-center justify-between">
         <Link
-          href={portalPath("/properties")}
+          href={portalPath("/projects")}
           className="inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
         >
           <ArrowLeft size={16} /> Quay lại danh sách
         </Link>
-        <div className="flex items-center gap-2 text-sm text-foreground-muted">
-          <Link
-            href={portalPath("/properties")}
-            className="transition-colors hover:text-foreground"
-          >
-            Bất động sản
-          </Link>
-          <ChevronRight size={12} />
-          <Link
-            href={portalPath("/properties?tab=projects")}
-            className="transition-colors hover:text-foreground"
-          >
-            Dự án
-          </Link>
-          <ChevronRight size={12} />
-          <span className="text-foreground">{project.name}</span>
-        </div>
       </div>
 
       <div className="mb-6 flex items-center justify-end gap-2">
@@ -256,9 +238,15 @@ export default function ProjectDetailPage() {
         {/* Description */}
         <div>
           <h2 className="mb-3 font-serif text-xl font-semibold">Giới thiệu dự án</h2>
-          <p className="text-base leading-relaxed text-foreground-muted">
-            Đang cập nhật thông tin giới thiệu cho dự án {project.name}.
-          </p>
+          {project.description ? (
+            <p className="whitespace-pre-line text-base leading-relaxed text-foreground-muted">
+              {project.description}
+            </p>
+          ) : (
+            <p className="text-base leading-relaxed text-foreground-muted">
+              Đang cập nhật thông tin giới thiệu cho dự án {project.name}.
+            </p>
+          )}
         </div>
 
         {/* Details — gộp Quick Info + Thông tin chi tiết, mỗi mục có icon */}
@@ -278,7 +266,7 @@ export default function ProjectDetailPage() {
               },
               { label: "Giá từ", value: "Đang cập nhật", icon: Wallet },
               { label: "Loại hình", value: "Đang cập nhật", icon: Home },
-              { label: "Bàn giao", value: "Đang cập nhật", icon: Calendar },
+              { label: "Bàn giao", value: (project as any).handoverDate ?? "Đang cập nhật", icon: Calendar },
             ].map(({ label, value, icon: Icon }) => (
               <div
                 key={label}

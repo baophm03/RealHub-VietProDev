@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Building2, Handshake, Loader2, Search } from "lucide-react";
+import { Handshake, Loader2, Search } from "lucide-react";
 import { usePortalPath } from "@/lib/hooks/use-portal";
 import { formatPrice } from "@/utils";
 import { Button } from "@/components/ui/button";
@@ -56,7 +55,6 @@ const sellingModeLabel: Record<string, string> = {
 export default function AvailablePropertiesPage() {
   const router = useRouter();
   const portalPath = usePortalPath();
-  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [claimingId, setClaimingId] = useState<string | null>(null);
   const pagination = usePagination(12);

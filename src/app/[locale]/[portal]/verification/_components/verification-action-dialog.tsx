@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -63,6 +64,7 @@ export function VerificationActionDialog({
   onOpenChange,
 }: VerificationActionDialogProps) {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const { mutateAsync: patchProperty, isPending } = usePatchApiProperty();
   const [confirming, setConfirming] = useState(false);
 
@@ -78,6 +80,7 @@ export function VerificationActionDialog({
       await queryClient.invalidateQueries({
         queryKey: getGetApiPropertiesQueryKey(),
       });
+      router.refresh();
       toast.success(
         `Đã chuyển "${property.title}" sang "${statusLabel[status]}"`,
       );

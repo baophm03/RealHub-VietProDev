@@ -69,6 +69,7 @@ export function CategoriesList() {
     try {
       await deleteCategory({ id });
       await refetchCategories();
+      router.refresh();
       toast.success("Đã xóa chuyên mục");
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Không thể xóa chuyên mục");
@@ -149,19 +150,24 @@ export function CategoriesList() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Input
-          type="search"
-          placeholder="Tìm kiếm chuyên mục..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full sm:w-auto min-w-0"
-        />
-        <Can I="CREATE" a="NEWS">
-          <Button onClick={() => router.push(portalPath("/news/categories/new"))}>
-            <Plus size={16} />
-            Thêm chuyên mục
-          </Button>
-        </Can>
+        <p className="text-sm text-foreground-muted">
+          <span className="font-medium text-foreground">{filtered.length}</span> chuyên mục
+        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <Input
+            type="search"
+            placeholder="Tìm kiếm chuyên mục..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full sm:w-auto min-w-0"
+          />
+          <Can I="CREATE" a="NEWS">
+            <Button onClick={() => router.push(portalPath("/news/categories/new"))}>
+              <Plus size={16} />
+              Thêm chuyên mục
+            </Button>
+          </Can>
+        </div>
       </div>
 
       {isLoading ? (

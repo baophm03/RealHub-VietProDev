@@ -1,0 +1,74 @@
+"use client";
+
+import { Phone } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import type { Property } from "@/lib/api/types/properties";
+
+interface ContactSidebarProps {
+  property: Property | null | undefined;
+}
+
+interface ContactInfo {
+  id: string | null;
+  name: string | null;
+  phone: string | null;
+  position: string;
+}
+
+export function ContactSidebar({ property }: ContactSidebarProps) {
+  // Contact fallback chain: active assigned sales → owner → RealHub support
+  const activeAssignment = (property as any)?.assignments?.find((a: any) => a.status === "ACTIVE");
+  const assignedUser = activeAssignment?.assignedUser;
+  const owner = (property as any)?.owner;
+
+  const contacts: ContactInfo[] = assignedUser && (assignedUser.fullName || assignedUser.phone)
+    ? [{
+      id: assignedUser.id ?? null,
+      name: assignedUser.fullName ?? null,
+      phone: assignedUser.phone ?? null,
+      position: "Nhân viên kinh doanh",
+    }]
+    : owner && (owner.fullName || owner.phone)
+      ? [{
+        id: owner.id ?? null,
+        name: owner.fullName ?? null,
+        phone: owner.phone ?? null,
+        position: "Chủ bất động sản",
+      }]
+      : [{
+        id: null,
+        name: "Liên hệ RealHub",
+        phone: null,
+        position: "Nhân viên hỗ trợ",
+      }];
+
+  return (
+    <div className="w-full lg:w-1/3 lg:sticky lg:top-24">
+      <div className="flex flex-col gap-6 rounded-lg border border-border bg-surface p-6 shadow-[0_1px_3px_rgba(42,37,32,0.02),0_8px_24px_-12px_rgba(45,95,63,0.06)]">
+        {contacts.map((item) => (
+          <div key={`${item.id ?? item.name ?? item.phone ?? "contact"}`}>
+            <div className="flex items-center gap-4 border-border pb-6">
+              <div className="size-16 overflow-hidden rounded-lg border border-primary/20">
+                <img
+                  src="/avatar-fallback.png"
+                  alt={item.name ?? ""}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <h3 className="text-base font-semibold text-foreground">{item.name || "Chưa có thông tin"}</h3>
+                <p className="text-xs text-foreground-muted">{item.position || "Chưa có vị trí"}</p>
+              </div>
+            </div>
+            {item.phone && (
+              <Button type="button" variant="outline" className="w-full" render={<a href={`tel:${item.phone}`} />}>
+                <Phone size={14} />
+                {item.phone}
+              </Button>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

@@ -34,17 +34,6 @@ const statusLabel: Record<string, string> = {
   ARCHIVED: "Lưu trữ",
 };
 
-const calcTypeLabel: Record<string, string> = {
-  PERCENT: "Theo %",
-  FIXED: "Cố định",
-};
-
-const calcBaseLabel: Record<string, string> = {
-  EXPECTED_VALUE: "Giá trị dự kiến",
-  ACTUAL_VALUE: "Giá trị thực tế",
-  NET_VALUE: "Giá trị ròng",
-};
-
 const columns: ColumnDef<PlanRow>[] = [
   { accessorKey: "name", header: "Tên kế hoạch", cell: ({ row }) => <span className="font-medium">{row.original.name}</span> },
   { accessorKey: "priority", header: "Độ ưu tiên", cell: ({ row }) => <span className="tabular-nums text-sm text-foreground-muted">{row.original.priority ?? "-"}</span> },

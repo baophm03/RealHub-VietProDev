@@ -45,14 +45,6 @@ interface FormSchema {
   fields?: FormSchemaField[];
 }
 
-interface FieldGroup {
-  id: string;
-  name: string;
-  code: string;
-  entityType: string;
-  propertyType?: { id: string; name: string; code: string } | null;
-}
-
 interface DynamicFieldsSectionProps {
   entityType: string;
   propertyTypeId?: string;

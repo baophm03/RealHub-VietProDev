@@ -61,13 +61,13 @@ export function NewsList() {
       n.title.toLowerCase().includes(search.toLowerCase()) ||
       (n.description ?? "").toLowerCase().includes(search.toLowerCase()),
   );
-
   const handleDelete = async (id: string) => {
     if (!confirm("Xóa bài viết này? Hành động không thể hoàn tác.")) return;
     setDeletingId(id);
     try {
       await deleteNews({ id });
       await refetchNews();
+      router.refresh();
       toast.success("Đã xóa bài viết");
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Không thể xóa bài viết");
@@ -144,19 +144,24 @@ export function NewsList() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Input
-          type="search"
-          placeholder="Tìm kiếm bài viết..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full sm:w-auto min-w-0"
-        />
-        <Can I="CREATE" a="NEWS">
-          <Button onClick={() => router.push(portalPath("/news/new"))}>
-            <Plus size={16} />
-            Thêm bài viết
-          </Button>
-        </Can>
+        <p className="text-sm text-foreground-muted">
+          <span className="font-medium text-foreground">{filtered.length}</span> bài viết
+        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <Input
+            type="search"
+            placeholder="Tìm kiếm bài viết..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full sm:w-auto min-w-0"
+          />
+          <Can I="CREATE" a="NEWS">
+            <Button onClick={() => router.push(portalPath("/news/new"))}>
+              <Plus size={16} />
+              Thêm bài viết
+            </Button>
+          </Can>
+        </div>
       </div>
 
       {isLoading ? (

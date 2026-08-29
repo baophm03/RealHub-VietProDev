@@ -93,7 +93,7 @@ export default function LeadFormPage() {
     return map;
   }, [properties]);
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<LeadFormData>({
+  const { register, handleSubmit, setValue } = useForm<LeadFormData>({
     resolver: zodResolver(leadSchema),
     defaultValues: { source: "MANUAL_INPUT", status: "NEW" },
   });
@@ -111,6 +111,7 @@ export default function LeadFormPage() {
         },
       });
       toast.success("Đã tạo nguồn khách hàng mới");
+      router.refresh();
       router.push(portalPath("/leads"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo nguồn khách hàng, vui lòng thử lại");

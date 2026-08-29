@@ -24,11 +24,6 @@ import {
   type LeadDeleteTarget,
 } from "./_components/delete-lead-dialog";
 
-interface LeadCustomer {
-  id: string;
-  fullName: string;
-  phone: string;
-}
 interface LeadProperty {
   id: string;
   title: string;
@@ -144,6 +139,7 @@ export default function LeadsPage() {
       await updateLead({ id: lead.id, data: { status: targetStatus as UpdateLeadDtoStatus } });
       toast.success(`Đã chuyển lead sang "${statusLabel[targetStatus] ?? targetStatus}"`);
       refetch();
+      router.refresh();
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Cập nhật trạng thái lead thất bại");
       console.error(err);
@@ -217,20 +213,16 @@ export default function LeadsPage() {
       />
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <input
-          type="search"
-          placeholder="Tìm kiếm..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="h-9 w-full rounded-md border border-border bg-surface px-3 text-sm text-foreground outline-none focus:border-ring sm:w-auto sm:min-w-[260px]"
-        />
+        <p className="text-sm text-foreground-muted">
+          <span className="font-medium text-foreground">{leads.length}</span> nguồn khách hàng
+        </p>
         <div className="flex items-center gap-2">
           <Select
             value={statusFilter}
             items={Object.fromEntries(statusFilters.map((f) => [f.value, f.label]))}
             onValueChange={(v) => setStatusFilter((v ?? "ALL") as GetApiLeadsStatus | "ALL")}
           >
-            <SelectTrigger className="h-9 w-[180px]">
+            <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Tất cả trạng thái" />
             </SelectTrigger>
             <SelectContent>
@@ -278,7 +270,6 @@ export default function LeadsPage() {
         />
       ) : (
         <>
-          <div className="text-xs text-foreground-muted">{totalCount} nguồn khách hàng</div>
           {view === "kanban" ? (
             <KanbanBoard
               columns={columns}

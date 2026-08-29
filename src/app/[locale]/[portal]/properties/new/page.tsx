@@ -24,7 +24,7 @@ import { useGetApiProjects } from "@/lib/api/endpoints/projects";
 import { toast } from "sonner";
 import { useGetApiLocations } from "@/lib/api/endpoints/locations";
 import type { Location } from "@/lib/api/types/locations";
-import { GetProjectsResponse, Project } from "@/lib/api/types/projects";
+import { GetProjectsResponse } from "@/lib/api/types/projects";
 import { DynamicFieldsSection } from "@/components/shared/dynamic-fields-section";
 
 type PropertyType = {
@@ -171,8 +171,10 @@ function PropertyFormContent() {
       const newId = (result as any)?.id || (result as any)?.data?.id;
       toast.success("Tạo bất động sản thành công");
       if (newId) {
+        router.refresh();
         router.push(portalPath(`/properties/${newId}/edit`));
       } else {
+        router.refresh();
         router.push(portalPath("/properties"));
       }
     } catch (err) {

@@ -137,6 +137,7 @@ export default function CustomerDetailPage() {
     try {
       await deleteCustomer({ id });
       toast.success(`Đã xóa khách hàng "${customer?.fullName}"`);
+      router.refresh();
       router.push(portalPath("/customers"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa khách hàng thất bại");

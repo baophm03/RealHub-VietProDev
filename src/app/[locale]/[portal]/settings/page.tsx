@@ -1,12 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { usePortalPath } from "@/lib/hooks/use-portal";
 import { PageHeader } from "@/components/shared/page-header";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { FormSection, FormField } from "@/components/shared/form-section";
-import { Switch } from "@/components/ui/switch";
 import { Link } from "@/i18n/navigation";
 import {
   Columns2,

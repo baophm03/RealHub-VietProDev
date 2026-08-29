@@ -7,8 +7,8 @@ import {
   Headset,
   House,
   Key,
+  MailCheck,
   Newspaper,
-  Percent,
   Settings,
   ShieldCheck,
   UserCog,
@@ -80,6 +80,12 @@ export const navGroups: NavGroup[] = [
         href: `/${entryPortal?.slug}/consultations`,
         icon: Headset,
         permission: { action: "VIEW", subject: "PROPERTY_CONTACT" },
+      },
+      {
+        label: "Liên hệ",
+        href: `/${entryPortal?.slug}/contact-requests`,
+        icon: MailCheck,
+        permission: { action: "VIEW", subject: "CONTACT_REQUEST" },
       },
       {
         label: "Lịch hẹn",

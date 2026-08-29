@@ -273,7 +273,6 @@ export default function CustomersPage() {
         <div className="h-96 animate-pulse rounded-lg bg-surface-muted" />
       ) : customers.length > 0 ? (
         <>
-          <div className="text-xs text-foreground-muted">{totalCount} khách hàng</div>
           <DataTable
             columns={columns}
             data={customers}

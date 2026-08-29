@@ -48,6 +48,7 @@ export default function CommissionPlanEditPage() {
     setError(null);
     try {
       await updateStatus({ id, data: { status } });
+      router.refresh();
       router.push(portalPath(`/commission/plans/${id}`));
     } catch (err) {
       setError("Co loi xay ra khi cap nhat trang thai. Vui long thu lai.");

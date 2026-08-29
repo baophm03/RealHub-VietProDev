@@ -197,7 +197,11 @@ export default async function ProjectDetailPage({ params }: Props) {
           {/* Description */}
           <div>
             <h2 className="mb-3 font-serif text-xl font-semibold">Giới thiệu dự án</h2>
-            <p className="text-base leading-relaxed text-foreground-muted">Đang cập nhật thông tin giới thiệu cho dự án {project.name}.</p>
+            {project.description ? (
+              <p className="whitespace-pre-line text-base leading-relaxed text-foreground-muted">{project.description}</p>
+            ) : (
+              <p className="text-base leading-relaxed text-foreground-muted">Đang cập nhật thông tin giới thiệu cho dự án {project.name}.</p>
+            )}
           </div>
 
           {/* Details — gộp Quick Info + Thông tin chi tiết, mỗi mục có icon */}
@@ -216,7 +220,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                   icon: Tag,
                 },
                 { label: "Loại hình", value: "Đang cập nhật", icon: Home },
-                { label: "Bàn giao", value: "Đang cập nhật", icon: Calendar },
+                { label: "Bàn giao", value: project.handoverDate ?? "Đang cập nhật", icon: Calendar },
               ].map(({ label, value, icon: Icon }) => (
                 <div
                   key={label}
@@ -430,7 +434,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                     </p>
 
                     <p className="text-sm leading-relaxed text-foreground-muted line-clamp-2">
-                      Đang cập nhật thông tin giới thiệu cho dự án {p.name}.
+                      {p.description ?? `Đang cập nhật thông tin giới thiệu cho dự án ${p.name}.`}
                     </p>
 
                     <div className="flex flex-col gap-2 border-t border-border pt-3 text-sm">
@@ -448,7 +452,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-foreground-muted">Bàn giao</span>
-                        <span className="font-medium text-foreground">Đang cập nhật</span>
+                        <span className="font-medium text-foreground">{p.handoverDate ?? "Đang cập nhật"}</span>
                       </div>
                     </div>
 

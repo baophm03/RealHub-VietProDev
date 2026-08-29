@@ -104,38 +104,44 @@ export default function CommissionsPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         eyebrow="Cài đặt"
-        title="Hoa hồng"
+        title="Cài đặt hoa hồng"
         description="Quản lý các chính sách hoa hồng — plan, rule, split cho sales/CTV/team/agency"
         actions={
-          <div className="flex items-center gap-2">
-            <Select
-              value={statusFilter}
-              onValueChange={(v) => setStatusFilter((v as string) ?? "")}
-            >
-              <SelectTrigger className="w-44">
-                <SelectValue placeholder="Tất cả trạng thái">
-                  {(value: string) =>
-                    statusFilters.find((s) => s.value === value)?.label || "Tất cả trạng thái"
-                  }
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {statusFilters.map((s) => (
-                  <SelectItem key={s.value} value={s.value} label={s.label}>
-                    {s.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {canCreate && (
-              <Button onClick={() => setDialogOpen(true)}>
-                <Plus size={16} />
-                Tạo plan
-              </Button>
-            )}
-          </div>
+          canCreate && (
+            <Button onClick={() => setDialogOpen(true)}>
+              <Plus size={16} />
+              Tạo plan
+            </Button>
+          )
         }
       />
+
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-foreground-muted">
+          <span className="font-medium text-foreground">{plans.length}</span> plan hoa hồng
+        </p>
+        <div className="flex items-center gap-2">
+          <Select
+            value={statusFilter}
+            onValueChange={(v) => setStatusFilter((v as string) ?? "")}
+          >
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Tất cả trạng thái">
+                {(value: string) =>
+                  statusFilters.find((s) => s.value === value)?.label || "Tất cả trạng thái"
+                }
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {statusFilters.map((s) => (
+                <SelectItem key={s.value} value={s.value} label={s.label}>
+                  {s.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       {isLoading ? (
         <div className="flex flex-col gap-3">
@@ -158,7 +164,7 @@ export default function CommissionsPage() {
           }
         />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {plans.map((plan) => (
             <PlanCard
               key={plan.id}

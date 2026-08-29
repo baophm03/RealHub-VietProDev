@@ -2,31 +2,27 @@
 
 import { useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import Link from "next/link";
 import { formatPrice } from "@/utils";
 import {
   ArrowLeft,
-  Bath,
-  Bed,
-  Camera,
   ChevronRight,
   Handshake,
   Loader2,
   MapPin,
-  Ruler,
-  ShieldCheck,
-  Star,
-  Users,
-  Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useGetApiPropertyId, useGetApiPropertyMedia } from "@/lib/api/endpoints/properties";
 import { useGetApiFormSchemas } from "@/lib/api/endpoints/dynamic-fields";
 import { Property } from "@/lib/api/types/properties";
-import { ImageLightbox, type LightboxImage } from "@/components/shared/image-lightbox";
+import { PropertyGallery } from "./_components/property-gallery";
+import { PropertyHighlights } from "./_components/property-highlights";
+import { PropertySpecs } from "./_components/property-specs";
+import { PropertyDescription } from "./_components/property-description";
+import { PropertyMap } from "./_components/property-map";
+import { OwnerContactSidebar } from "./_components/owner-contact-sidebar";
 import { customInstance } from "@/lib/api/mutator/custom-instance";
 
 const txLabel: Record<string, string> = {
@@ -62,25 +58,7 @@ export default function AvailablePropertyDetailPage() {
       .sort((a: any, b: any) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
   }, [mediaData]);
 
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
   const [claiming, setClaiming] = useState(false);
-
-  const lightboxImages = useMemo<LightboxImage[]>(
-    () =>
-      mediaItems.map((m: any) => ({
-        id: m.id,
-        url: m.file?.url ?? "",
-        alt: m.caption || property?.title || "",
-        caption: m.caption,
-      })),
-    [mediaItems, property],
-  );
-
-  const openLightbox = (i: number) => {
-    setLightboxIndex(i);
-    setLightboxOpen(true);
-  };
 
   const priceNum = Number(property?.price || 0);
   const areaNum = property?.area ?? 0;
@@ -96,87 +74,6 @@ export default function AvailablePropertyDetailPage() {
     ),
     [allSchemas, propertyTypeId],
   );
-
-  const dynamicValues = (property as any)?.dynamicValuesJson as Record<string, unknown> | undefined;
-
-  const findFieldValue = useMemo(() => {
-    return (patterns: string[]): string | null => {
-      for (const schema of schemas) {
-        for (const f of (schema.fields || [])) {
-          const field = f.field;
-          if (!field) continue;
-          const key = (field.fieldKey || "").toLowerCase();
-          const label = (field.fieldLabel || "").toLowerCase();
-          if (patterns.some((p) => key.includes(p) || label.includes(p))) {
-            const rawValue = dynamicValues?.[field.fieldKey];
-            if (rawValue === undefined || rawValue === null || rawValue === "") return null;
-            if (field.options && Array.isArray(field.options)) {
-              const opt = field.options.find((o: any) => o.value === String(rawValue));
-              if (opt) return opt.label;
-            }
-            return String(rawValue);
-          }
-        }
-      }
-      return null;
-    };
-  }, [schemas, dynamicValues]);
-
-  const bedrooms = findFieldValue(["bedroom", "beds", "phong_ngu", "phòng ngủ"]);
-  const bathrooms = findFieldValue(["bathroom", "baths", "phong_tam", "phòng tắm"]);
-  const legalStatus = findFieldValue(["legal", "phap_ly", "pháp lý", "ownership"]);
-
-  const getFieldsByGroupCode = useMemo(() => {
-    return (code: string) => {
-      const result: { key: string; label: string; value: string }[] = [];
-      for (const schema of schemas) {
-        for (const f of (schema.fields || [])) {
-          const field = f.field;
-          if (!field) continue;
-          if (f.group?.code === code) {
-            const rawValue = dynamicValues?.[field.fieldKey];
-            if (rawValue === undefined || rawValue === null || rawValue === "") continue;
-            let displayValue = String(rawValue);
-            if (field.options && Array.isArray(field.options)) {
-              const opt = field.options.find((o: any) => o.value === String(rawValue));
-              if (opt) displayValue = opt.label;
-            }
-            result.push({ key: field.fieldKey, label: field.fieldLabel, value: displayValue });
-          }
-        }
-      }
-      return result;
-    };
-  }, [schemas, dynamicValues]);
-
-  const basicInfoFields = getFieldsByGroupCode("basic_info");
-  const specialFields = getFieldsByGroupCode("special");
-
-  const staticSpecs = [
-    { icon: Ruler, label: "Diện tích", value: property ? `${areaNum} m2` : "-", accent: false },
-    { icon: Bed, label: "Phòng ngủ", value: bedrooms || (property ? "-" : "-"), accent: false },
-    { icon: Bath, label: "Phòng tắm", value: bathrooms || (property ? "-" : "-"), accent: false },
-    { icon: ShieldCheck, label: "Pháp lý", value: legalStatus || (property ? "-" : "-"), accent: true },
-  ];
-
-  const staticSpecLabels = new Set(["Diện tích", "Phòng ngủ", "Phòng tắm", "Pháp lý"]);
-
-  const dynamicSpecs = basicInfoFields
-    .filter((f) => !staticSpecLabels.has(f.label))
-    .map((f) => ({
-      icon: Ruler,
-      label: f.label,
-      value: f.value,
-      accent: false,
-    }));
-
-  const specs = [...staticSpecs, ...dynamicSpecs];
-
-  const highlights = specialFields.map((f) => ({
-    icon: Star,
-    title: f.label,
-    desc: f.value,
-  }));
 
   const handleClaim = async () => {
     setClaiming(true);
@@ -279,110 +176,24 @@ export default function AvailablePropertyDetailPage() {
       </div>
 
       {/* Image Gallery Grid */}
-      {mediaItems.length > 0 ? (
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-4 h-[400px] md:h-[500px] rounded-lg overflow-hidden">
-          {mediaItems.slice(0, 5).map((img: any, i: number) => {
-            const url = img.file?.url;
-            const isPrimary = img.isPrimary;
-            const hasMore = mediaItems.length > 5 && i === 4;
-            return (
-              <div
-                key={img.id || i}
-                onClick={() => (hasMore ? openLightbox(0) : openLightbox(i))}
-                className={`relative group cursor-pointer ${i === 0 ? "md:col-span-2 md:row-span-2" : ""} ${i >= 1 ? "hidden md:block" : ""}`}
-              >
-                {url ? (
-                  <img
-                    src={url}
-                    alt={img.caption || property?.title || ""}
-                    className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-surface-muted">
-                    <Camera size={32} className="text-foreground-muted" />
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-transparent" />
-                {isPrimary && i === 0 && (
-                  <div className="absolute top-4 right-4 rounded-lg bg-primary/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white backdrop-blur-sm">
-                    Ảnh chính
-                  </div>
-                )}
-                {hasMore && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 transition-colors group-hover:bg-black/20">
-                    <span className="font-serif text-xl font-medium text-white">+{mediaItems.length - 5} Ảnh</span>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="flex h-[300px] items-center justify-center rounded-lg bg-surface-muted">
-          <div className="flex flex-col items-center gap-2 text-foreground-muted">
-            <Camera size={40} />
-            <span className="text-sm">Chưa có hình ảnh</span>
-          </div>
-        </div>
-      )}
+      <PropertyGallery mediaItems={mediaItems} title={property?.title} />
 
-      {/* Specs grid */}
-      {specs.length > 0 && (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {specs.map((spec, i) => {
-            const Icon = spec.icon;
-            return (
-              <div key={i} className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4">
-                <Icon size={18} className={spec.accent ? "text-primary" : "text-foreground-muted"} />
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-[10px] uppercase tracking-wide text-foreground-muted">{spec.label}</span>
-                  <span className="text-sm font-medium text-foreground">{spec.value}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+      {/* Main Layout: Content + Sidebar */}
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+        {/* Left Column: Details */}
+        <div className="flex-grow space-y-10 w-full lg:w-2/3">
+          <PropertySpecs property={property} schemas={schemas} />
 
-      {/* Highlights */}
-      {highlights.length > 0 && (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {highlights.map((h, i) => {
-            const Icon = h.icon;
-            return (
-              <div key={i} className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4">
-                <Icon size={18} className="text-primary" />
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-sm font-medium text-foreground">{h.title}</span>
-                  <span className="text-xs text-foreground-muted">{h.desc}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+          <PropertyDescription property={property} />
 
-      {/* Description */}
-      {property?.description ? (
-        <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-6">
-          <h2 className="font-serif text-xl font-medium tracking-tight text-foreground border-b border-border pb-3">
-            Mô tả chi tiết
-          </h2>
-          <div
-            className="prose prose-sm max-w-none prose-headings:font-serif prose-headings:font-semibold prose-a:text-primary prose-img:rounded-lg prose-img:my-4 text-foreground-muted"
-            dangerouslySetInnerHTML={{ __html: property.description }}
-          />
+          <PropertyHighlights property={property} schemas={schemas} />
+
+          <PropertyMap property={property} />
         </div>
-      ) : (
-        <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-6">
-          <h2 className="font-serif text-xl font-medium tracking-tight text-foreground border-b border-border pb-3">
-            Mô tả chi tiết
-          </h2>
-          <p className="text-base leading-relaxed text-foreground-muted">
-            Chưa có mô tả chi tiết cho bất động sản này.
-          </p>
-        </div>
-      )}
+
+        {/* Right Column: Owner Contact Sidebar */}
+        <OwnerContactSidebar property={property} />
+      </div>
 
       {/* CTA bottom */}
       <div className="sticky bottom-4 z-10 flex items-center justify-between rounded-lg border border-border bg-surface/95 p-4 shadow-lg backdrop-blur">
@@ -408,16 +219,6 @@ export default function AvailablePropertyDetailPage() {
           )}
         </Button>
       </div>
-
-      {lightboxOpen && (
-        <ImageLightbox
-          open={lightboxOpen}
-          onOpenChange={setLightboxOpen}
-          images={lightboxImages}
-          index={lightboxIndex}
-          onIndexChange={setLightboxIndex}
-        />
-      )}
     </div>
   );
 }

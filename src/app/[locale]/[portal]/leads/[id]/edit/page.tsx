@@ -79,6 +79,7 @@ export default function LeadEditPage() {
         },
       });
       toast.success("Đã cập nhật nguồn khách hàng");
+      router.refresh();
       router.push(portalPath(`/leads/${id}`));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật nguồn khách hàng, vui lòng thử lại");

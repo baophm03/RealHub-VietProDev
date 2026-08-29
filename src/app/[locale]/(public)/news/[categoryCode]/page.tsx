@@ -9,6 +9,7 @@ import type {
 } from "@/lib/api/types/news";
 import { NewsFilter } from "../_components/news-filter";
 import { NewsGrid } from "../_components/news-grid";
+import { RevealSection } from "@/components/shared/reveal-section";
 
 export const ALL_SLUG = "all";
 
@@ -49,21 +50,27 @@ export default async function NewsListPage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-12 md:px-8 md:py-16 lg:px-12">
-      {/* Header */}
-      <div className="mb-10 flex flex-col gap-4">
-        <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-primary">
-          Tin tức
-        </span>
-        <h1 className="font-serif text-4xl font-semibold tracking-tight md:text-5xl">
-          {active ? active.name : "Tin tức bất động sản"}
-        </h1>
-        <p className="max-w-[56ch] text-base leading-relaxed text-foreground-muted">
-          Cập nhật xu hướng, phân tích thị trường và hướng dẫn đầu tư bất động sản từ đội ngũ RealHub.
-        </p>
-      </div>
+      <RevealSection>
+        <div className="mb-10 flex flex-col gap-4">
+          <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-primary">
+            Tin tức
+          </span>
+          <h1 className="font-serif text-4xl font-semibold tracking-tight md:text-5xl">
+            {active ? active.name : "Tin tức bất động sản"}
+          </h1>
+          <p className="max-w-[56ch] text-base leading-relaxed text-foreground-muted">
+            Cập nhật xu hướng, phân tích thị trường và hướng dẫn đầu tư bất động sản từ đội ngũ RealHub.
+          </p>
+        </div>
+      </RevealSection>
 
-      <NewsFilter categories={categories} activeCategory={isAll ? undefined : categoryCode} />
-      <NewsGrid news={news} />
+      <RevealSection>
+        <NewsFilter categories={categories} activeCategory={isAll ? undefined : categoryCode} />
+      </RevealSection>
+
+      <RevealSection>
+        <NewsGrid news={news} />
+      </RevealSection>
     </div>
   );
 }

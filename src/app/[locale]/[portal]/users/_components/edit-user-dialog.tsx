@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Dialog,
@@ -74,6 +74,7 @@ interface EditUserDialogProps {
 
 export function EditUserDialog({ membership, open, onOpenChange }: EditUserDialogProps) {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const { mutateAsync: putMembership, isPending } = usePutApiMembershipsId();
 
   const { data: rolesData } = useGetApiRoles();
@@ -110,6 +111,7 @@ export function EditUserDialog({ membership, open, onOpenChange }: EditUserDialo
       await queryClient.invalidateQueries({
         queryKey: getGetApiMembershipsQueryKey(),
       });
+      router.refresh();
       toast.success(
         `Đã cập nhật vai trò cho "${membership.user?.fullName ?? membership.id}"`,
       );

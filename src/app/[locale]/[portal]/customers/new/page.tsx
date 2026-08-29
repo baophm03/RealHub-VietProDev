@@ -49,6 +49,7 @@ export default function CustomerFormPage() {
         },
       });
       toast.success("Đã tạo khách hàng mới");
+      router.refresh();
       router.push(portalPath("/customers"));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra, vui lòng thử lại");

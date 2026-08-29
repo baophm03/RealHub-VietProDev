@@ -156,6 +156,7 @@ export default function AppointmentEditPage() {
         },
       });
       toast.success("Đã cập nhật lịch hẹn");
+      router.refresh();
       router.push(portalPath(`/appointments/${id}`));
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật, vui lòng thử lại");

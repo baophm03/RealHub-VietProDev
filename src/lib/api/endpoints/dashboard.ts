@@ -417,3 +417,196 @@ export const prefetchGetApiDashboardRecentLeadsQuery = async <TData = Awaited<Re
 
 
 
+/**
+ * @summary Get public stats for marketing home page
+ */
+export const getApiDashboardPublicStats = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/dashboard/public-stats`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiDashboardPublicStatsInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/dashboard/public-stats`
+    ] as const;
+    }
+
+export const getGetApiDashboardPublicStatsQueryKey = () => {
+    return [
+    `/api/dashboard/public-stats`
+    ] as const;
+    }
+
+    
+export const getGetApiDashboardPublicStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardPublicStats>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiDashboardPublicStatsInfiniteQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiDashboardPublicStats>>> = ({ signal }) => getApiDashboardPublicStats(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiDashboardPublicStatsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiDashboardPublicStats>>>
+export type GetApiDashboardPublicStatsInfiniteQueryError = unknown
+
+
+export function useGetApiDashboardPublicStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardPublicStats>>>, TError = unknown>(
+  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDashboardPublicStats>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDashboardPublicStats>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDashboardPublicStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardPublicStats>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDashboardPublicStats>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDashboardPublicStats>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDashboardPublicStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardPublicStats>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get public stats for marketing home page
+ */
+
+export function useGetApiDashboardPublicStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardPublicStats>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiDashboardPublicStatsInfiniteQueryOptions(options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get public stats for marketing home page
+ */
+export const prefetchGetApiDashboardPublicStatsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiDashboardPublicStatsInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiDashboardPublicStatsQueryOptions = <TData = Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiDashboardPublicStatsQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiDashboardPublicStats>>> = ({ signal }) => getApiDashboardPublicStats(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiDashboardPublicStatsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiDashboardPublicStats>>>
+export type GetApiDashboardPublicStatsQueryError = unknown
+
+
+export function useGetApiDashboardPublicStats<TData = Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDashboardPublicStats>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDashboardPublicStats>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDashboardPublicStats<TData = Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDashboardPublicStats>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDashboardPublicStats>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDashboardPublicStats<TData = Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get public stats for marketing home page
+ */
+
+export function useGetApiDashboardPublicStats<TData = Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiDashboardPublicStatsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get public stats for marketing home page
+ */
+export const prefetchGetApiDashboardPublicStatsQuery = async <TData = Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardPublicStats>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiDashboardPublicStatsQueryOptions(options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
