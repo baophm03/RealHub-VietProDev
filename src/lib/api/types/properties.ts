@@ -51,10 +51,10 @@ export interface Property {
   seoDescription: string | null;
   canonicalUrl: string | null;
   metadata: Record<string, unknown> | null;
-  createdBy: string | null;
-  updatedBy: string | null;
   createdAt: string;
   updatedAt: string;
+  creator?: { id: string; fullName: string; avatarUrl: string | null } | null;
+  updater?: { id: string; fullName: string; avatarUrl: string | null } | null;
   propertyType: {
     id: string;
     name: string;

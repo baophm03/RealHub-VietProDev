@@ -28,7 +28,7 @@ export default async function HomePage({ params }: Props) {
           transactionType="SALE"
           eyebrow="Bán"
           title="Bất động sản bán"
-          description="Những bất động sản đang bán tốt nhất từ các agency và chủ đầu tư trên toàn hệ sinh thái."
+          description="Những bất động sản đang bán tốt nhất từ các chủ đầu tư trong hệ sinh thái."
           sectionClassName="bg-white"
         />
       </RevealSection>
@@ -37,7 +37,7 @@ export default async function HomePage({ params }: Props) {
           transactionType="RENT"
           eyebrow="Cho thuê"
           title="Bất động sản cho thuê"
-          description="Những bất động sản đang cho thuê tốt nhất từ các agency và chủ đầu tư trên toàn hệ sinh thái."
+          description="Những bất động sản đang cho thuê tốt nhất từ các chủ đầu tư trong hệ sinh thái."
           sectionClassName="bg-surface-muted/30"
         />
       </RevealSection>
