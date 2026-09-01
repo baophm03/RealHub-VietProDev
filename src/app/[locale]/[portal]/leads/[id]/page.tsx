@@ -30,6 +30,7 @@ import {
 } from "@/lib/api/endpoints/leads";
 import type { UpdateLeadDtoStatus } from "@/lib/api/models/updateLeadDtoStatus";
 import { DeleteLeadDialog } from "./_components/delete-lead-dialog";
+import { LeadWorkflowActions } from "./_components/lead-workflow-actions";
 
 interface LeadCustomer {
   id: string;
@@ -416,6 +417,7 @@ export default function LeadDetailPage() {
 
         {/* Sidebar */}
         <div className="flex flex-col gap-4">
+          <LeadWorkflowActions leadId={id} />
           <div className="rounded-lg border border-border bg-surface p-6">
             <h3 className="text-sm font-semibold mb-4">Thông tin liên quan</h3>
             <div className="flex flex-col gap-4 text-sm">

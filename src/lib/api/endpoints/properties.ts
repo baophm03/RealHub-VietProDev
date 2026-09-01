@@ -37,6 +37,7 @@ import type {
   GetApiPropertiesAvailableForAssignmentParams,
   GetApiPropertiesParams,
   ReorderPropertyMediaDto,
+  TransitionPropertyDto,
   UpdatePropertyDto,
   UpdatePropertyMediaDto
 } from '../models';
@@ -1849,7 +1850,7 @@ export const prefetchGetApiPropertyIdQuery = async <TData = Awaited<ReturnType<t
 
 
 /**
- * @summary Update a property
+ * @summary Update a property (status columns are managed via /transition)
  */
 export const patchApiProperty = (
     id: string,
@@ -1897,7 +1898,7 @@ const {mutation: mutationOptions} = options ?
     export type PatchApiPropertyMutationError = unknown
 
     /**
- * @summary Update a property
+ * @summary Update a property (status columns are managed via /transition)
  */
 export const usePatchApiProperty = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiProperty>>, TError,{id: string;data: UpdatePropertyDto}, TContext>, }
@@ -1970,6 +1971,264 @@ export const useDeleteApiProperty = <TError = unknown,
       > => {
 
       const mutationOptions = getDeleteApiPropertyMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Get available workflow transitions for a property
+ */
+export const getApiPropertyTransitions = (
+    id: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/properties/${id}/transitions`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiPropertyTransitionsInfiniteQueryKey = (id?: string,) => {
+    return [
+    'infinite', `/api/properties/${id}/transitions`
+    ] as const;
+    }
+
+export const getGetApiPropertyTransitionsQueryKey = (id?: string,) => {
+    return [
+    `/api/properties/${id}/transitions`
+    ] as const;
+    }
+
+    
+export const getGetApiPropertyTransitionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyTransitions>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPropertyTransitionsInfiniteQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPropertyTransitions>>> = ({ signal }) => getApiPropertyTransitions(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPropertyTransitionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPropertyTransitions>>>
+export type GetApiPropertyTransitionsInfiniteQueryError = unknown
+
+
+export function useGetApiPropertyTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyTransitions>>>, TError = unknown>(
+ id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertyTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertyTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertyTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyTransitions>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertyTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertyTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertyTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyTransitions>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get available workflow transitions for a property
+ */
+
+export function useGetApiPropertyTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPropertyTransitions>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPropertyTransitionsInfiniteQueryOptions(id,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get available workflow transitions for a property
+ */
+export const prefetchGetApiPropertyTransitionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError = unknown>(
+ queryClient: QueryClient, id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiPropertyTransitionsInfiniteQueryOptions(id,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiPropertyTransitionsQueryOptions = <TData = Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPropertyTransitionsQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPropertyTransitions>>> = ({ signal }) => getApiPropertyTransitions(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPropertyTransitionsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPropertyTransitions>>>
+export type GetApiPropertyTransitionsQueryError = unknown
+
+
+export function useGetApiPropertyTransitions<TData = Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError = unknown>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertyTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertyTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertyTransitions<TData = Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPropertyTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPropertyTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPropertyTransitions<TData = Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get available workflow transitions for a property
+ */
+
+export function useGetApiPropertyTransitions<TData = Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPropertyTransitionsQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get available workflow transitions for a property
+ */
+export const prefetchGetApiPropertyTransitionsQuery = async <TData = Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError = unknown>(
+ queryClient: QueryClient, id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPropertyTransitions>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiPropertyTransitionsQueryOptions(id,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Execute a workflow transition on a property by transitionId
+ */
+export const postApiPropertyTransition = (
+    id: string,
+    transitionPropertyDto: TransitionPropertyDto,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/properties/${id}/transition`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: transitionPropertyDto, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiPropertyTransitionMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiPropertyTransition>>, TError,{id: string;data: TransitionPropertyDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiPropertyTransition>>, TError,{id: string;data: TransitionPropertyDto}, TContext> => {
+
+const mutationKey = ['postApiPropertyTransition'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiPropertyTransition>>, {id: string;data: TransitionPropertyDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  postApiPropertyTransition(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiPropertyTransitionMutationResult = NonNullable<Awaited<ReturnType<typeof postApiPropertyTransition>>>
+    export type PostApiPropertyTransitionMutationBody = TransitionPropertyDto
+    export type PostApiPropertyTransitionMutationError = unknown
+
+    /**
+ * @summary Execute a workflow transition on a property by transitionId
+ */
+export const usePostApiPropertyTransition = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiPropertyTransition>>, TError,{id: string;data: TransitionPropertyDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiPropertyTransition>>,
+        TError,
+        {id: string;data: TransitionPropertyDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiPropertyTransitionMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

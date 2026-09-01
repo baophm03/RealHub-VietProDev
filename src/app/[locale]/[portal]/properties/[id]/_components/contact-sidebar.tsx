@@ -43,7 +43,7 @@ export function ContactSidebar({ property }: ContactSidebarProps) {
       }];
 
   return (
-    <div className="w-full lg:w-1/3 lg:sticky lg:top-24">
+    <div className="w-full lg:sticky lg:top-24">
       <div className="flex flex-col gap-6 rounded-lg border border-border bg-surface p-6 shadow-[0_1px_3px_rgba(42,37,32,0.02),0_8px_24px_-12px_rgba(45,95,63,0.06)]">
         {contacts.map((item) => (
           <div key={`${item.id ?? item.name ?? item.phone ?? "contact"}`}>

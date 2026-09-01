@@ -6,4 +6,7 @@
  * OpenAPI spec version: v1
  */
 
-export type CreateNotificationRuleDtoConditionJson = { [key: string]: unknown };
+export interface SetGroupFieldsDto {
+  /** Danh sách field IDs thuộc group (thay toàn bộ) */
+  fieldIds: string[];
+}

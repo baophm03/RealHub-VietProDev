@@ -9,6 +9,5 @@ import type { GetApiFieldGroupsEntityType } from './getApiFieldGroupsEntityType'
 
 export type GetApiFieldGroupsParams = {
 entityType?: GetApiFieldGroupsEntityType;
-propertyTypeId?: string;
 code?: string;
 };

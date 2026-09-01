@@ -9,5 +9,4 @@ import type { GetApiFieldDefinitionsEntityType } from './getApiFieldDefinitionsE
 
 export type GetApiFieldDefinitionsParams = {
 entityType?: GetApiFieldDefinitionsEntityType;
-propertyTypeId?: string;
 };

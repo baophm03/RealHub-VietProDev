@@ -5,15 +5,15 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
-import type { WorkflowTransitionDtoConditionJson } from './workflowTransitionDtoConditionJson';
 import type { WorkflowTransitionDtoRequiredRoleJson } from './workflowTransitionDtoRequiredRoleJson';
 
 export interface WorkflowTransitionDto {
-  fromStateCode: string;
-  toStateCode: string;
+  /** Name of the source state */
+  fromStateName: string;
+  /** Name of the target state */
+  toStateName: string;
   actionCode: string;
   actionLabel: string;
-  conditionJson?: WorkflowTransitionDtoConditionJson;
   requiredRoleJson?: WorkflowTransitionDtoRequiredRoleJson;
   requireReason?: boolean;
   requireAttachment?: boolean;

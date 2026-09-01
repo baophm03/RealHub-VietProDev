@@ -55,7 +55,7 @@ export default function LeadEditPage() {
 
   const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<LeadFormData>({
     resolver: zodResolver(leadSchema),
-    defaultValues: { status: "NEW" },
+    defaultValues: { status: "NEW", phoneNormalized: "" },
   });
 
   useEffect(() => {
@@ -117,7 +117,7 @@ export default function LeadEditPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <FormSection
           title="Thông tin nguồn khách hàng"
-          description="Chỉ có thể cập nhật trạng thái và số điện thoại."
+          description="Cập nhật trạng thái và số điện thoại."
         >
           <FormField label="Trạng thái" required>
             <Select

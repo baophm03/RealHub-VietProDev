@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const dynamic = "force-static";
-export const revalidate = 3600;
+export const revalidate = 1800;
 
 export default async function ProjectsPage({ params }: Props) {
   const { locale } = await params;

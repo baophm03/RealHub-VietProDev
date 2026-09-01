@@ -7,13 +7,11 @@
  */
 import type { UpdateNotificationRuleDtoReceiverType } from './updateNotificationRuleDtoReceiverType';
 import type { UpdateNotificationRuleDtoChannel } from './updateNotificationRuleDtoChannel';
-import type { UpdateNotificationRuleDtoConditionJson } from './updateNotificationRuleDtoConditionJson';
 
 export interface UpdateNotificationRuleDto {
   eventCode?: string;
   receiverType?: UpdateNotificationRuleDtoReceiverType;
   channel?: UpdateNotificationRuleDtoChannel;
   templateId?: string;
-  conditionJson?: UpdateNotificationRuleDtoConditionJson;
   isEnabled?: boolean;
 }

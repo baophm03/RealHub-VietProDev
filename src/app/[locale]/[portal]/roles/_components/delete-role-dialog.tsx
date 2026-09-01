@@ -81,7 +81,7 @@ export function DeleteRoleDialog({ role, open, onOpenChange }: DeleteRoleDialogP
               Vui lòng gán lại user sang role khác trước khi xóa.
             </div>
           ) : (
-            <div className="rounded-lg bg-accent-red/10 px-4 py-3 text-sm text-accent-red">
+            <div className="rounded-lg bg-accent-red/20 px-4 py-3 text-sm text-accent-red-text">
               Bạn có chắc chắn muốn xóa role này? Tất cả quyền sẽ bị xóa theo.
             </div>
           )}

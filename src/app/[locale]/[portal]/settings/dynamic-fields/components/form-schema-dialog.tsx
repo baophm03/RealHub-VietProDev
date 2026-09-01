@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
@@ -24,13 +23,7 @@ import {
 } from "@/components/ui/select";
 import type { FormSchemaFieldDto } from "@/lib/api/models";
 import type { GetApiFormSchemasEntityType } from "@/lib/api/models/getApiFormSchemasEntityType";
-
-const entityTypeLabels: Record<string, string> = {
-  PROPERTY: "Bất động sản",
-  CUSTOMER_NEED: "Nhu cầu khách hàng",
-  LEAD: "Nguồn khách hàng",
-  DEAL: "Giao dịch",
-};
+import { entityTypeOptions, getEntityTypeLabel } from "./entity-type.constants";
 
 interface FieldDefinition {
   id: string;
@@ -38,7 +31,7 @@ interface FieldDefinition {
   fieldLabel: string;
   fieldType: string;
   entityType: string;
-  group?: { id: string; name: string } | null;
+  groupItems?: { id: string; group: { id: string; name: string } }[];
 }
 
 type PropertyType = {
@@ -88,7 +81,7 @@ export function FormSchemaDialog({
       ...selectedFields,
       {
         fieldId: def.id,
-        groupId: def.group?.id,
+        groupId: def.groupItems?.[0]?.group.id,
         isRequired: false,
         isVisible: true,
         isReadonly: false,
@@ -101,29 +94,24 @@ export function FormSchemaDialog({
     setSelectedFields(selectedFields.filter((_, i) => i !== idx));
   };
 
-  const handleToggleField = (idx: number, key: "isRequired" | "isVisible" | "isReadonly") => {
-    const next = [...selectedFields];
-    next[idx] = { ...next[idx], [key]: !next[idx][key] };
-    setSelectedFields(next);
-  };
-
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); onOpenChange(v); }}>
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
-          <DialogTitle>{editingId ? "Chỉnh sửa nhóm đối tượng" : "Tạo nhóm đối tượng"}</DialogTitle>
-          <DialogDescription>Ráp các trường dữ liệu thành form hoàn chỉnh</DialogDescription>
+          <DialogTitle>{editingId ? "Chỉnh sửa đối tượng áp dụng" : "Tạo đối tượng áp dụng"}</DialogTitle>
+          <DialogDescription>Ráp các loại dữ liệu thành form hoàn chỉnh</DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-4">
-          <FormField label="Tên nhóm đối tượng" required>
-            <Input
-              placeholder="VD: Form tạo bất động sản"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
-          </FormField>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-[40fr_60fr]">
+          {/* Cột trái: Thông tin cơ bản */}
+          <div className="flex flex-col gap-4">
+            <FormField label="Tên đối tượng áp dụng" required>
+              <Input
+                placeholder="VD: Form tạo bất động sản"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+              />
+            </FormField>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField label="Đối tượng" required>
               <Select
                 value={form.entityType}
@@ -132,19 +120,25 @@ export function FormSchemaDialog({
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Chọn đối tượng">
-                    {(value: string) => entityTypeLabels[value] || value}
+                    {(value: string) => getEntityTypeLabel(value)}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(entityTypeLabels).map(([value, label]) => (
-                    <SelectItem key={value} value={value} label={label}>{label}</SelectItem>
+                  {entityTypeOptions.map((opt) => (
+                    <SelectItem
+                      key={opt.value}
+                      value={opt.value}
+                      label={opt.label}
+                    >
+                      {opt.label}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </FormField>
 
             {form.entityType === "PROPERTY" && (
-              <FormField label="Loại bất động sản">
+              <FormField label="Loại BĐS">
                 <Select
                   value={form.propertyTypeId || "__all__"}
                   onValueChange={(v) => setForm({ ...form, propertyTypeId: !v || v === "__all__" ? "" : v })}
@@ -169,100 +163,56 @@ export function FormSchemaDialog({
             )}
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <FormField label="Chọn trường" helper="Nhấn Thêm để đưa vào form">
-              <div className="flex flex-col gap-2 max-h-80 overflow-y-auto rounded-lg border border-border p-3">
-                {definitions.length === 0 ? (
-                  <p className="text-sm text-foreground-muted text-center py-4">
-                    Chưa có định nghĩa trường nào
-                  </p>
-                ) : (
-                  definitions.map((def) => {
-                    const isAdded = selectedFields.some((f) => f.fieldId === def.id);
-                    return (
-                      <div
-                        key={def.id}
-                        className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-2"
+          {/* Cột phải: Chọn trường */}
+          <div className="flex flex-col gap-3">
+            <div className="text-sm font-semibold text-foreground">
+              Chọn trường ({selectedFields.length} đã chọn)
+            </div>
+            <div className="flex flex-col gap-2 max-h-[600px] overflow-y-auto rounded-lg border border-border p-3">
+              {definitions.length === 0 ? (
+                <p className="text-sm text-foreground-muted text-center py-4">
+                  Chưa có định nghĩa trường nào
+                </p>
+              ) : (
+                definitions.map((def) => {
+                  const selectedIdx = selectedFields.findIndex((f) => f.fieldId === def.id);
+                  const isAdded = selectedIdx >= 0;
+                  const groupNames = (def.groupItems || []).map((gi) => gi.group.name).join(", ");
+                  return (
+                    <div
+                      key={def.id}
+                      className={`flex items-center justify-between gap-2 rounded-md border px-3 py-2 ${isAdded ? "border-primary bg-primary/5" : "border-border"
+                        }`}
+                    >
+                      <div className="flex flex-col min-w-0 flex-1">
+                        <span className="text-sm font-medium truncate">{def.fieldLabel}</span>
+                        <span className="text-xs text-foreground-muted truncate">
+                          {def.fieldKey} · {def.fieldType}
+                          {groupNames ? ` · ${groupNames}` : ""}
+                        </span>
+                      </div>
+                      <Button
+                        variant={isAdded ? "destructive" : "default"}
+                        size="sm"
+                        onClick={() => isAdded ? handleRemoveField(selectedIdx) : handleAddField(def)}
                       >
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-sm font-medium truncate">{def.fieldLabel}</span>
-                          <span className="text-xs text-foreground-muted truncate">
-                            {def.fieldKey} · {def.fieldType}
-                            {def.group?.name ? ` · ${def.group.name}` : ""}
-                          </span>
-                        </div>
-                        <Button
-                          variant={isAdded ? "secondary" : "outline"}
-                          size="sm"
-                          disabled={isAdded}
-                          onClick={() => handleAddField(def)}
-                        >
-                          {isAdded ? "Đã thêm" : (
-                            <>
-                              <Plus size={14} />
-                              Thêm
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </FormField>
-
-            <FormField label={`Trường đã chọn (${selectedFields.length})`}>
-              <div className="flex flex-col gap-2 max-h-80 overflow-y-auto rounded-lg border border-border p-3">
-                {selectedFields.length === 0 ? (
-                  <p className="text-sm text-foreground-muted text-center py-4">
-                    Chưa chọn trường nào
-                  </p>
-                ) : (
-                  selectedFields.map((sf, idx) => {
-                    const def = definitions.find((d) => d.id === sf.fieldId);
-                    return (
-                      <div key={idx} className="flex flex-col gap-2 rounded-md border border-border p-3">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium truncate">
-                            {def?.fieldLabel || sf.fieldId}
-                          </span>
-                          <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            onClick={() => handleRemoveField(idx)}
-                          >
+                        {isAdded ? (
+                          <>
                             <X size={14} />
-                          </Button>
-                        </div>
-                        <div className="flex items-center gap-3 flex-wrap">
-                          <label className="flex items-center gap-1.5 text-xs">
-                            <Switch
-                              checked={sf.isRequired || false}
-                              onCheckedChange={() => handleToggleField(idx, "isRequired")}
-                            />
-                            Bắt buộc
-                          </label>
-                          <label className="flex items-center gap-1.5 text-xs">
-                            <Switch
-                              checked={sf.isVisible !== false}
-                              onCheckedChange={() => handleToggleField(idx, "isVisible")}
-                            />
-                            Hiển thị
-                          </label>
-                          <label className="flex items-center gap-1.5 text-xs">
-                            <Switch
-                              checked={sf.isReadonly || false}
-                              onCheckedChange={() => handleToggleField(idx, "isReadonly")}
-                            />
-                            Chỉ đọc
-                          </label>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </FormField>
+                            Hủy
+                          </>
+                        ) : (
+                          <>
+                            <Plus size={14} />
+                            Thêm
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
         </div>
         <DialogFooter>
@@ -270,7 +220,7 @@ export function FormSchemaDialog({
             Hủy
           </DialogClose>
           <Button onClick={onSubmit} disabled={isPending}>
-            {isPending ? "Đang lưu..." : editingId ? "Cập nhật" : "Tạo form schema"}
+            {isPending ? "Đang lưu..." : editingId ? "Cập nhật" : "Tạo đối tượng áp dụng"}
           </Button>
         </DialogFooter>
       </DialogContent>

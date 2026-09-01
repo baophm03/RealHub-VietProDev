@@ -6,7 +6,22 @@ import type {
   Project,
 } from "@/lib/api/types/projects";
 import { Link } from "@/i18n/navigation";
-import { MapPin, ArrowLeft, Phone, Calendar, ArrowRight, Camera, Building2, Hash, Ruler, Tag, Home, BedDouble, Bath, Square, ImageIcon } from "lucide-react";
+import {
+  MapPin,
+  ArrowLeft,
+  Phone,
+  Calendar,
+  ArrowRight,
+  Camera,
+  Building2,
+  Hash,
+  Ruler,
+  Tag,
+  Home,
+  BedDouble,
+  Bath,
+  Square
+} from "lucide-react";
 import { formatPriceWithTransaction } from "@/utils";
 import type { ProjectProperty } from "@/lib/api/types/projects";
 import { getProjectPriceRange } from "@/utils/project-helpers";
@@ -17,7 +32,7 @@ type Props = {
 };
 
 export const dynamic = "force-static";
-export const revalidate = 3600;
+export const revalidate = 1800;
 
 export async function generateStaticParams() {
   const projectsRes = await getApiProjects({ limit: "100" });

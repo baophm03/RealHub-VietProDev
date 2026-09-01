@@ -35,6 +35,7 @@ import type {
   GetApiCustomerNeedsParams,
   GetApiCustomersAdminParams,
   GetApiCustomersParams,
+  TransitionCustomerNeedDto,
   UpdateCustomerDto
 } from '../models';
 
@@ -1069,6 +1070,264 @@ export const usePostApiCustomerNeed = <TError = unknown,
       > => {
 
       const mutationOptions = getPostApiCustomerNeedMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Get available workflow transitions for a customer need
+ */
+export const getApiCustomerNeedTransitions = (
+    id: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/customer-needs/${id}/transitions`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiCustomerNeedTransitionsInfiniteQueryKey = (id?: string,) => {
+    return [
+    'infinite', `/api/customer-needs/${id}/transitions`
+    ] as const;
+    }
+
+export const getGetApiCustomerNeedTransitionsQueryKey = (id?: string,) => {
+    return [
+    `/api/customer-needs/${id}/transitions`
+    ] as const;
+    }
+
+    
+export const getGetApiCustomerNeedTransitionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCustomerNeedTransitionsInfiniteQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>> = ({ signal }) => getApiCustomerNeedTransitions(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiCustomerNeedTransitionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>>
+export type GetApiCustomerNeedTransitionsInfiniteQueryError = unknown
+
+
+export function useGetApiCustomerNeedTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>>, TError = unknown>(
+ id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCustomerNeedTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCustomerNeedTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get available workflow transitions for a customer need
+ */
+
+export function useGetApiCustomerNeedTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiCustomerNeedTransitionsInfiniteQueryOptions(id,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get available workflow transitions for a customer need
+ */
+export const prefetchGetApiCustomerNeedTransitionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError = unknown>(
+ queryClient: QueryClient, id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiCustomerNeedTransitionsInfiniteQueryOptions(id,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiCustomerNeedTransitionsQueryOptions = <TData = Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCustomerNeedTransitionsQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>> = ({ signal }) => getApiCustomerNeedTransitions(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiCustomerNeedTransitionsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>>
+export type GetApiCustomerNeedTransitionsQueryError = unknown
+
+
+export function useGetApiCustomerNeedTransitions<TData = Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError = unknown>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCustomerNeedTransitions<TData = Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCustomerNeedTransitions<TData = Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get available workflow transitions for a customer need
+ */
+
+export function useGetApiCustomerNeedTransitions<TData = Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiCustomerNeedTransitionsQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get available workflow transitions for a customer need
+ */
+export const prefetchGetApiCustomerNeedTransitionsQuery = async <TData = Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError = unknown>(
+ queryClient: QueryClient, id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCustomerNeedTransitions>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiCustomerNeedTransitionsQueryOptions(id,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Execute a workflow transition on a customer need by transitionId
+ */
+export const postApiCustomerNeedTransition = (
+    id: string,
+    transitionCustomerNeedDto: TransitionCustomerNeedDto,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/customer-needs/${id}/transition`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: transitionCustomerNeedDto, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiCustomerNeedTransitionMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCustomerNeedTransition>>, TError,{id: string;data: TransitionCustomerNeedDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiCustomerNeedTransition>>, TError,{id: string;data: TransitionCustomerNeedDto}, TContext> => {
+
+const mutationKey = ['postApiCustomerNeedTransition'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiCustomerNeedTransition>>, {id: string;data: TransitionCustomerNeedDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  postApiCustomerNeedTransition(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiCustomerNeedTransitionMutationResult = NonNullable<Awaited<ReturnType<typeof postApiCustomerNeedTransition>>>
+    export type PostApiCustomerNeedTransitionMutationBody = TransitionCustomerNeedDto
+    export type PostApiCustomerNeedTransitionMutationError = unknown
+
+    /**
+ * @summary Execute a workflow transition on a customer need by transitionId
+ */
+export const usePostApiCustomerNeedTransition = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCustomerNeedTransition>>, TError,{id: string;data: TransitionCustomerNeedDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiCustomerNeedTransition>>,
+        TError,
+        {id: string;data: TransitionCustomerNeedDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiCustomerNeedTransitionMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

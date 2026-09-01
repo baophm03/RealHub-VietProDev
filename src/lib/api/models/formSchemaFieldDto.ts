@@ -5,8 +5,6 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
-import type { FormSchemaFieldDtoLayoutJson } from './formSchemaFieldDtoLayoutJson';
-import type { FormSchemaFieldDtoConditionJson } from './formSchemaFieldDtoConditionJson';
 
 export interface FormSchemaFieldDto {
   fieldId?: string;
@@ -15,6 +13,4 @@ export interface FormSchemaFieldDto {
   isVisible?: boolean;
   isReadonly?: boolean;
   sortOrder?: number;
-  layoutJson?: FormSchemaFieldDtoLayoutJson;
-  conditionJson?: FormSchemaFieldDtoConditionJson;
 }

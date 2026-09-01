@@ -2,7 +2,7 @@ import { getApiProperties, getApiPropertyMedia } from "@/lib/api/endpoints/prope
 import type { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "lucide-react";
-import { FeaturedPropertiesCarousel } from "@/app/[locale]/(public)/(home)/_components/featured-properties-carousel";
+import { FeaturedPropertiesCarousel } from "@/components/shared/featured-properties-carousel";
 
 function extractFirstImageUrl(mediaRes: unknown): string | null {
   const raw = mediaRes as any;

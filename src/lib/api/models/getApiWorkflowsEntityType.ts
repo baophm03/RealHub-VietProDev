@@ -12,8 +12,8 @@ export type GetApiWorkflowsEntityType = typeof GetApiWorkflowsEntityType[keyof t
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GetApiWorkflowsEntityType = {
   PROPERTY: 'PROPERTY',
-  CUSTOMER: 'CUSTOMER',
   LEAD: 'LEAD',
   DEAL: 'DEAL',
+  CUSTOMER_NEED: 'CUSTOMER_NEED',
   OWNER_PROFILE: 'OWNER_PROFILE',
 } as const;

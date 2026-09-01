@@ -11,9 +11,12 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { useGetApiPropertyTypes } from "@/lib/api/endpoints/properties";
 import {
   calculationBaseOptions,
   calculationTypeOptions,
+  dealTypeOptions,
+  sellingModeOptions,
   emptySplit,
   type Rule,
   type Split,
@@ -49,6 +52,9 @@ export function RuleSection({
   const totalPercent = splits
     .filter((s) => s.splitType === "PERCENT")
     .reduce((acc, s) => acc + (Number(s.splitValue) || 0), 0);
+
+  const { data: propertyTypesData } = useGetApiPropertyTypes();
+  const propertyTypes = (propertyTypesData as any) ?? [];
 
   return (
     <section className="flex flex-col gap-3 rounded-lg border border-border bg-surface-muted/20 p-4">
@@ -91,6 +97,97 @@ export function RuleSection({
                     value={rule.name}
                     onChange={(e) => onRuleChange({ name: e.target.value })}
                   />
+                </FormField>
+
+                <FormField
+                  label="Loại giao dịch"
+                  className="col-span-2"
+                >
+                  <Select
+                    value={rule.dealType ?? ""}
+                    onValueChange={(v) =>
+                      onRuleChange({ dealType: (v as string) || "" })
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Tất cả loại giao dịch">
+                        {(value: string) =>
+                          dealTypeOptions.find((o) => o.value === value)?.label ||
+                          "Tất cả loại giao dịch"
+                        }
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {dealTypeOptions.map((o) => (
+                        <SelectItem key={o.value} value={o.value} label={o.label}>
+                          {o.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormField>
+
+                <FormField
+                  label="Loại BĐS"
+                  className="col-span-2"
+                >
+                  <Select
+                    value={rule.propertyTypeId ?? ""}
+                    onValueChange={(v) =>
+                      onRuleChange({ propertyTypeId: (v as string) || "" })
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Tất cả loại BĐS">
+                        {(value: string) =>
+                          propertyTypes.find((pt: any) => pt.id === value)?.name ||
+                          "Tất cả loại BĐS"
+                        }
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="" label="Tất cả loại BĐS">
+                        Tất cả loại BĐS
+                      </SelectItem>
+                      {propertyTypes.map((pt: any) => (
+                        <SelectItem
+                          key={pt.id}
+                          value={pt.id}
+                          label={pt.name}
+                        >
+                          {pt.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormField>
+
+                <FormField
+                  label="Chế độ khai thác"
+                  className="col-span-2"
+                >
+                  <Select
+                    value={rule.sellingMode ?? ""}
+                    onValueChange={(v) =>
+                      onRuleChange({ sellingMode: (v as string) || "" })
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Tất cả chế độ khai thác">
+                        {(value: string) =>
+                          sellingModeOptions.find((o) => o.value === value)?.label ||
+                          "Tất cả chế độ khai thác"
+                        }
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sellingModeOptions.map((o) => (
+                        <SelectItem key={o.value} value={o.value} label={o.label}>
+                          {o.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormField>
 
                 <FormField label="Cách tính" required>

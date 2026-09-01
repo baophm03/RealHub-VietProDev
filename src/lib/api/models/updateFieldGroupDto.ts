@@ -9,7 +9,6 @@
 export interface UpdateFieldGroupDto {
   name?: string;
   code?: string;
-  propertyTypeId?: string;
   sortOrder?: number;
   status?: string;
 }

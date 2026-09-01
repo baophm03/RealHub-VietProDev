@@ -12,13 +12,10 @@ import type { FieldOptionDto } from './fieldOptionDto';
 
 export interface CreateFieldDefinitionDto {
   entityType: CreateFieldDefinitionDtoEntityType;
-  propertyTypeId?: string;
-  groupId?: string;
   fieldKey: string;
   fieldLabel: string;
   fieldType: CreateFieldDefinitionDtoFieldType;
   isRequired?: boolean;
-  isSearchable?: boolean;
   isFilterable?: boolean;
   isPublic?: boolean;
   isSensitive?: boolean;
