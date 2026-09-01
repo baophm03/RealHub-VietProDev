@@ -17,6 +17,8 @@ export default async function ListingsPage({ params, searchParams }: Props) {
   setRequestLocale(locale);
 
   const sp = await searchParams;
+
+  // filters
   const transactionType = (sp.transactionType as string) ?? "";
   const provinceId = (sp.provinceId as string) ?? "";
   const typesRaw = (sp.types as string) ?? "";
@@ -24,14 +26,9 @@ export default async function ListingsPage({ params, searchParams }: Props) {
   const minPrice = (sp.minPrice as string) ?? "";
   const maxPrice = (sp.maxPrice as string) ?? "";
   const sort = (sp.sort as string) ?? "newest";
-
   const priceMultiplier = transactionType === "RENT" ? 1000000 : 1000000000;
-  const currentPriceFrom = minPrice
-    ? String(Number(minPrice) / priceMultiplier)
-    : "";
-  const currentPriceTo = maxPrice
-    ? String(Number(maxPrice) / priceMultiplier)
-    : "";
+  const currentPriceFrom = minPrice ? String(Number(minPrice) / priceMultiplier) : "";
+  const currentPriceTo = maxPrice ? String(Number(maxPrice) / priceMultiplier) : "";
 
   return (
     <div className="container pb-10">

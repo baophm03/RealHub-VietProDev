@@ -34,6 +34,7 @@ import type {
   CreateLeadDto,
   GetApiLeadsAdminParams,
   GetApiLeadsParams,
+  TransitionLeadDto,
   UpdateLeadDto
 } from '../models';
 
@@ -810,6 +811,264 @@ export const useDeleteApiLead = <TError = unknown,
       > => {
 
       const mutationOptions = getDeleteApiLeadMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Get available workflow transitions for a lead
+ */
+export const getApiLeadTransitions = (
+    id: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/leads/${id}/transitions`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiLeadTransitionsInfiniteQueryKey = (id?: string,) => {
+    return [
+    'infinite', `/api/leads/${id}/transitions`
+    ] as const;
+    }
+
+export const getGetApiLeadTransitionsQueryKey = (id?: string,) => {
+    return [
+    `/api/leads/${id}/transitions`
+    ] as const;
+    }
+
+    
+export const getGetApiLeadTransitionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadTransitions>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadTransitions>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiLeadTransitionsInfiniteQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLeadTransitions>>> = ({ signal }) => getApiLeadTransitions(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadTransitions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiLeadTransitionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiLeadTransitions>>>
+export type GetApiLeadTransitionsInfiniteQueryError = unknown
+
+
+export function useGetApiLeadTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadTransitions>>>, TError = unknown>(
+ id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadTransitions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiLeadTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiLeadTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiLeadTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadTransitions>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadTransitions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiLeadTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiLeadTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiLeadTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadTransitions>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get available workflow transitions for a lead
+ */
+
+export function useGetApiLeadTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiLeadTransitions>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiLeadTransitionsInfiniteQueryOptions(id,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get available workflow transitions for a lead
+ */
+export const prefetchGetApiLeadTransitionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiLeadTransitions>>, TError = unknown>(
+ queryClient: QueryClient, id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiLeadTransitions>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiLeadTransitionsInfiniteQueryOptions(id,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiLeadTransitionsQueryOptions = <TData = Awaited<ReturnType<typeof getApiLeadTransitions>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadTransitions>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiLeadTransitionsQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLeadTransitions>>> = ({ signal }) => getApiLeadTransitions(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiLeadTransitions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiLeadTransitionsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiLeadTransitions>>>
+export type GetApiLeadTransitionsQueryError = unknown
+
+
+export function useGetApiLeadTransitions<TData = Awaited<ReturnType<typeof getApiLeadTransitions>>, TError = unknown>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadTransitions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiLeadTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiLeadTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiLeadTransitions<TData = Awaited<ReturnType<typeof getApiLeadTransitions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadTransitions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiLeadTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiLeadTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiLeadTransitions<TData = Awaited<ReturnType<typeof getApiLeadTransitions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get available workflow transitions for a lead
+ */
+
+export function useGetApiLeadTransitions<TData = Awaited<ReturnType<typeof getApiLeadTransitions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiLeadTransitionsQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get available workflow transitions for a lead
+ */
+export const prefetchGetApiLeadTransitionsQuery = async <TData = Awaited<ReturnType<typeof getApiLeadTransitions>>, TError = unknown>(
+ queryClient: QueryClient, id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiLeadTransitions>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiLeadTransitionsQueryOptions(id,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Execute a workflow transition on a lead by transitionId
+ */
+export const postApiLeadTransition = (
+    id: string,
+    transitionLeadDto: TransitionLeadDto,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/leads/${id}/transition`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: transitionLeadDto, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiLeadTransitionMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiLeadTransition>>, TError,{id: string;data: TransitionLeadDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiLeadTransition>>, TError,{id: string;data: TransitionLeadDto}, TContext> => {
+
+const mutationKey = ['postApiLeadTransition'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiLeadTransition>>, {id: string;data: TransitionLeadDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  postApiLeadTransition(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiLeadTransitionMutationResult = NonNullable<Awaited<ReturnType<typeof postApiLeadTransition>>>
+    export type PostApiLeadTransitionMutationBody = TransitionLeadDto
+    export type PostApiLeadTransitionMutationError = unknown
+
+    /**
+ * @summary Execute a workflow transition on a lead by transitionId
+ */
+export const usePostApiLeadTransition = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiLeadTransition>>, TError,{id: string;data: TransitionLeadDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiLeadTransition>>,
+        TError,
+        {id: string;data: TransitionLeadDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiLeadTransitionMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

@@ -24,14 +24,14 @@ import { ListingHighlights } from "./_components/listing-highlights";
 import { ListingTags } from "./_components/listing-tags";
 import { ListingMap } from "./_components/listing-map";
 import { ContactSidebar } from "./_components/contact-sidebar";
-import { FeaturedPropertiesCarousel } from "@/app/[locale]/(public)/(home)/_components/featured-properties-carousel";
+import { FeaturedPropertiesCarousel } from "@/components/shared/featured-properties-carousel";
 
 type Props = {
   params: Promise<{ locale: string; propertyCode: string }>;
 };
 
 export const dynamic = "force-static";
-export const revalidate = 3600;
+export const revalidate = 1800;
 
 export async function generateStaticParams() {
   const propertiesRes = await getApiProperties({

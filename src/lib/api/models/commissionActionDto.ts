@@ -6,9 +6,6 @@
  * OpenAPI spec version: v1
  */
 
-export interface EstimateCommissionDto {
-  dealId: string;
-  propertyId: string;
-  leadId?: string;
-  transactionValueEstimated: number;
+export interface CommissionActionDto {
+  reason?: string;
 }

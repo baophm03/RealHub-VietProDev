@@ -52,7 +52,7 @@ export default function AboutPage() {
         breadcrumbs={[{ label: "Trang chủ", href: "/" }, { label: "Về chúng tôi" }]}
       />
 
-      {/* Stats Bar — giống home nhưng nội dung khác */}
+      {/* Stats Bar */}
       <section className="border-y border-border bg-[#F9FAFB] py-12 md:py-16">
         <div className="container">
           <div className="grid grid-cols-2 md:grid-cols-4">
@@ -118,7 +118,7 @@ export default function AboutPage() {
           </div>
         </RevealSection>
 
-        {/* Giá trị cốt lõi — grid 3 cột giống home */}
+        {/* Giá trị cốt lõi */}
         <RevealSection className="mb-20">
           <div>
             <div className="mb-8 flex flex-col gap-2">
@@ -177,7 +177,7 @@ export default function AboutPage() {
           </div>
         </RevealSection>
 
-        {/* CTA section — giống home */}
+        {/* CTA section */}
         <RevealSection>
           <section className="bg-[#0B2A0B] py-16 md:py-24 rounded-2xl">
             <motion.div

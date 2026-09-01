@@ -20,19 +20,19 @@ export default function DynamicFieldsPage() {
         description="Nhóm trường, định nghĩa và form schema — render động theo đối tượng"
       />
 
-      <Tabs defaultValue="groups">
+      <Tabs defaultValue="definitions">
         <TabsList>
-          <TabsTrigger value="groups">Nhóm trường dữ liệu</TabsTrigger>
-          <TabsTrigger value="definitions">Trường dữ liệu</TabsTrigger>
-          <TabsTrigger value="form-schemas">Nhóm đối tượng</TabsTrigger>
+          <TabsTrigger value="definitions">Loại dữ liệu</TabsTrigger>
+          <TabsTrigger value="groups">Gom nhóm</TabsTrigger>
+          <TabsTrigger value="form-schemas">Đối tượng áp dụng</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="groups" className="mt-2">
-          <GroupsTab canCreate={canCreate} canUpdate={canUpdate} canDelete={canDelete} />
-        </TabsContent>
 
         <TabsContent value="definitions" className="mt-2">
           <DefinitionsTab canCreate={canCreate} canUpdate={canUpdate} canDelete={canDelete} />
+        </TabsContent>
+
+        <TabsContent value="groups" className="mt-2">
+          <GroupsTab canCreate={canCreate} canUpdate={canUpdate} canDelete={canDelete} />
         </TabsContent>
 
         <TabsContent value="form-schemas" className="mt-2">

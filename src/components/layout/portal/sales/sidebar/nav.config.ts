@@ -51,6 +51,12 @@ export const navGroups: NavGroup[] = [
         permission: { action: "VIEW", subject: "PROPERTY" },
       },
       {
+        label: "Duyệt BĐS",
+        href: `/${entryPortal?.slug}/verification`,
+        icon: ShieldCheck,
+        permission: { action: "APPROVE_VIEW", subject: "PROPERTY" },
+      },
+      {
         label: "BĐS phụ trách",
         href: `/${entryPortal?.slug}/available-properties`,
         icon: Handshake,
@@ -61,12 +67,6 @@ export const navGroups: NavGroup[] = [
         href: `/${entryPortal?.slug}/my-properties`,
         icon: Building2,
         permission: { action: "VIEW", subject: "ASSIGNMENT" },
-      },
-      {
-        label: "Duyệt BĐS",
-        href: `/${entryPortal?.slug}/verification`,
-        icon: ShieldCheck,
-        permission: { action: "APPROVE_VIEW", subject: "PROPERTY" },
       },
       {
         label: "Dự án",
@@ -104,12 +104,6 @@ export const navGroups: NavGroup[] = [
         icon: Handshake,
         permission: { action: "VIEW", subject: "DEAL" },
       },
-      // {
-      //   label: "Hoa hồng",
-      //   href: `/${entryPortal?.slug}/commission`,
-      //   icon: Percent,
-      //   permission: { action: "READ", subject: "COMMISSION" },
-      // },
     ],
   },
   {

@@ -9,7 +9,6 @@ import type { CreateFieldGroupDtoEntityType } from './createFieldGroupDtoEntityT
 
 export interface CreateFieldGroupDto {
   entityType: CreateFieldGroupDtoEntityType;
-  propertyTypeId?: string;
   name: string;
   code: string;
   sortOrder?: number;

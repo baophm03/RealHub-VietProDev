@@ -30,6 +30,7 @@ import {
   DialogOverlay,
 } from "@/components/ui/dialog";
 import { useGetApiCustomerId, useDeleteApiCustomer } from "@/lib/api/endpoints/customers";
+import { CustomerNeedWorkflowActions } from "../_components/customer-need-workflow-actions";
 
 interface CustomerType {
   id: string;
@@ -244,10 +245,18 @@ export default function CustomerDetailPage() {
             {customer.needs.map((need) => (
               <div key={need.id} className="flex flex-col gap-2 rounded-lg border border-border bg-surface-muted/40 p-4">
                 <div className="flex items-center justify-between">
-                  <Badge variant="purple">{purposeLabel[need.purpose] ?? need.purpose}</Badge>
-                  <span className="text-xs tabular-nums text-foreground-muted">
-                    {new Date(need.createdAt).toLocaleDateString("vi-VN")}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="purple">{purposeLabel[need.purpose] ?? need.purpose}</Badge>
+                    {need.status && need.status !== "ACTIVE" && (
+                      <Badge variant="default" className="text-[10px]">{need.status}</Badge>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CustomerNeedWorkflowActions needId={need.id} />
+                    <span className="text-xs tabular-nums text-foreground-muted">
+                      {new Date(need.createdAt).toLocaleDateString("vi-VN")}
+                    </span>
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
                   <div>

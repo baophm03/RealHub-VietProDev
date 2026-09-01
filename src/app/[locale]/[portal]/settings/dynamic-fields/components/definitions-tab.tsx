@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/select";
 import {
   useGetApiFieldDefinitions,
-  useGetApiFieldGroups,
   usePostApiFieldDefinition,
   useDeleteApiFieldDefinition,
   patchApiFieldDefinition,
@@ -32,6 +31,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { FieldDefinitionDialog } from "./field-definition-dialog";
+import { entityTypeOptions, getEntityTypeLabel } from "./entity-type.constants";
 
 const fieldTypeLabels: Record<string, string> = {
   TEXT: "Text ngắn",
@@ -59,10 +59,8 @@ interface FieldDefinition {
   fieldLabel: string;
   fieldType: string;
   entityType: string;
-  group?: { id: string; name: string } | null;
-  propertyType?: { id: string; name: string; code: string } | null;
+  groupItems?: { id: string; group: { id: string; name: string; code: string } }[];
   isRequired?: boolean;
-  isSearchable?: boolean;
   isFilterable?: boolean;
   isPublic?: boolean;
   isSensitive?: boolean;
@@ -78,21 +76,6 @@ type PropertyType = {
   code: string;
 };
 
-interface FieldGroup {
-  id: string;
-  name: string;
-  code: string;
-  entityType: string;
-}
-
-const entityTypeOptions: { value: string; label: string }[] = [
-  { value: "PROPERTY", label: "Bất động sản" },
-  { value: "CUSTOMER_NEED", label: "Nhu cầu khách hàng" },
-  { value: "LEAD", label: "Nguồn khách hàng" },
-  { value: "DEAL", label: "Giao dịch" },
-  { value: "OWNER_PROFILE", label: "Hồ sơ chủ nhà" },
-];
-
 interface DefinitionsTabProps {
   canCreate?: boolean;
   canUpdate?: boolean;
@@ -101,32 +84,26 @@ interface DefinitionsTabProps {
 
 export function DefinitionsTab({ canCreate = true, canUpdate = true, canDelete = true }: DefinitionsTabProps) {
   const [entityType, setEntityType] = useState<string>("");
-  const [propertyTypeId, setPropertyTypeId] = useState<string>("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingDef, setEditingDef] = useState<FieldDefinition | null>(null);
 
   const { data, isLoading, refetch } = useGetApiFieldDefinitions(
-    entityType ? { entityType: entityType as GetApiFieldDefinitionsEntityType, ...(propertyTypeId ? { propertyTypeId } : {}) } : undefined,
+    entityType ? { entityType: entityType as GetApiFieldDefinitionsEntityType } : undefined,
   );
   const definitions = ((data as any)?.data as FieldDefinition[]) || [];
 
   const { data: propertyTypesData } = useGetApiPropertyTypes();
   const propertyTypes = ((propertyTypesData as any)?.data as PropertyType[]) || [];
 
-  const { data: groupsData } = useGetApiFieldGroups(
-    entityType ? { entityType: entityType as GetApiFieldDefinitionsEntityType } : undefined,
-  );
-  const availableGroups = ((groupsData as any)?.data as FieldGroup[]) || [];
-
   const { mutateAsync: createDefinition, isPending: isCreating } = usePostApiFieldDefinition({
     mutation: {
       onSuccess: () => {
-        toast.success("Tạo định nghĩa trường thành công");
+        toast.success("Tạo loại dữ liệu thành công");
         closeDialog();
         refetch();
       },
       onError: (err: any) => {
-        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo định nghĩa trường");
+        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo loại dữ liệu");
       },
     },
   });
@@ -135,23 +112,23 @@ export function DefinitionsTab({ canCreate = true, canUpdate = true, canDelete =
     mutationFn: (vars: { id: string; data: UpdateFieldDefinitionDto }) =>
       patchApiFieldDefinition(vars.id, vars.data),
     onSuccess: () => {
-      toast.success("Cập nhật định nghĩa trường thành công");
+      toast.success("Cập nhật loại dữ liệu thành công");
       closeDialog();
       refetch();
     },
     onError: (err: any) => {
-      toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật định nghĩa trường");
+      toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật loại dữ liệu");
     },
   });
 
   const { mutateAsync: deleteDefinition } = useDeleteApiFieldDefinition({
     mutation: {
       onSuccess: () => {
-        toast.success("Xóa định nghĩa trường thành công");
+        toast.success("Xóa loại dữ liệu thành công");
         refetch();
       },
       onError: (err: any) => {
-        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi xóa định nghĩa trường");
+        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi xóa loại dữ liệu");
       },
     },
   });
@@ -184,10 +161,7 @@ export function DefinitionsTab({ canCreate = true, canUpdate = true, canDelete =
       fieldLabel: string;
       fieldType: string;
       entityType: string;
-      propertyTypeId: string;
-      groupId: string;
       isRequired: boolean;
-      isSearchable: boolean;
       isFilterable: boolean;
       isPublic: boolean;
       isSensitive: boolean;
@@ -202,11 +176,8 @@ export function DefinitionsTab({ canCreate = true, canUpdate = true, canDelete =
     }
     if (editingId) {
       const updateDto: UpdateFieldDefinitionDto = {
-        propertyTypeId: form.propertyTypeId || "null",
-        groupId: form.groupId || "null",
         fieldLabel: form.fieldLabel,
         isRequired: form.isRequired,
-        isSearchable: form.isSearchable,
         isFilterable: form.isFilterable,
         isPublic: form.isPublic,
         isSensitive: form.isSensitive,
@@ -223,10 +194,7 @@ export function DefinitionsTab({ canCreate = true, canUpdate = true, canDelete =
         fieldLabel: form.fieldLabel,
         fieldType: form.fieldType as any,
         entityType: form.entityType as any,
-        propertyTypeId: form.propertyTypeId || "null",
-        groupId: form.groupId || "null",
         isRequired: form.isRequired,
-        isSearchable: form.isSearchable,
         isFilterable: form.isFilterable,
         isPublic: form.isPublic,
         isSensitive: form.isSensitive,
@@ -244,14 +212,13 @@ export function DefinitionsTab({ canCreate = true, canUpdate = true, canDelete =
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-foreground-muted">
-          <span className="font-medium text-foreground">{definitions.length}</span> trường
+          <span className="font-medium text-foreground">{definitions.length}</span> loại dữ liệu
         </p>
         <div className="flex flex-wrap items-center gap-2">
           <Select
             value={entityType}
             onValueChange={(v) => {
               setEntityType(v as string);
-              setPropertyTypeId("");
             }}
           >
             <SelectTrigger className="w-48">
@@ -272,34 +239,10 @@ export function DefinitionsTab({ canCreate = true, canUpdate = true, canDelete =
               ))}
             </SelectContent>
           </Select>
-          {entityType === "PROPERTY" && (
-            <Select
-              value={propertyTypeId}
-              onValueChange={(v) => setPropertyTypeId(v as string)}
-            >
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Tất cả loại BĐS">
-                  {(value: string) => {
-                    if (!value) return "Tất cả loại BĐS";
-                    const pt = propertyTypes.find((p) => p.id === value);
-                    return pt?.name || value;
-                  }}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="" label="Tất cả loại BĐS">Tất cả loại BĐS</SelectItem>
-                {propertyTypes.map((pt) => (
-                  <SelectItem key={pt.id} value={pt.id} label={pt.name}>
-                    {pt.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
           {canCreate && (
             <Button onClick={openCreateDialog}>
               <Plus size={16} />
-              Thêm trường
+              Thêm loại dữ liệu
             </Button>
           )}
         </div>
@@ -313,11 +256,11 @@ export function DefinitionsTab({ canCreate = true, canUpdate = true, canDelete =
         </div>
       ) : definitions.length === 0 ? (
         <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
-          <p className="text-sm text-foreground-muted">Chưa có định nghĩa trường nào</p>
+          <p className="text-sm text-foreground-muted">Chưa có loại dữ liệu nào</p>
           {canCreate && (
             <Button variant="outline" size="sm" onClick={openCreateDialog}>
               <Plus size={16} />
-              Tạo trường đầu tiên
+              Tạo loại dữ liệu đầu tiên
             </Button>
           )}
         </div>
@@ -326,63 +269,65 @@ export function DefinitionsTab({ canCreate = true, canUpdate = true, canDelete =
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Tên trường</TableHead>
-                <TableHead>Key</TableHead>
+                <TableHead>Mã định dạng</TableHead>
+                <TableHead>Tên loại dữ liệu</TableHead>
                 <TableHead>Loại</TableHead>
-                <TableHead>Loại BĐS</TableHead>
+                <TableHead>Đối tượng</TableHead>
                 <TableHead>Nhóm</TableHead>
                 <TableHead>Flags</TableHead>
                 <TableHead className="text-right">Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {definitions.map((def) => (
-                <TableRow key={def.id}>
-                  <TableCell className="font-medium">{def.fieldLabel}</TableCell>
-                  <TableCell>
-                    <code className="rounded bg-surface-muted px-1.5 py-0.5 font-mono text-xs">
-                      {def.fieldKey}
-                    </code>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="blue">{fieldTypeLabels[def.fieldType] || def.fieldType}</Badge>
-                  </TableCell>
-                  <TableCell className="text-sm text-foreground-muted">
-                    {def.entityType === "PROPERTY"
-                      ? (propertyTypes.find((p) => p.id === def.propertyType?.id)?.name || "Tất cả loại BĐS")
-                      : "-"}
-                  </TableCell>
-                  <TableCell className="text-sm text-foreground-muted">
-                    {def.group?.name || "-"}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {def.isRequired && <Badge variant="red">Bắt buộc</Badge>}
-                      {def.isSearchable && <Badge variant="green">Tìm kiếm</Badge>}
-                      {def.isFilterable && <Badge variant="yellow">Lọc</Badge>}
-                      {def.isSensitive && <Badge variant="red">Nhạy cảm</Badge>}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      {canUpdate && (
-                        <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(def)}>
-                          <Pencil size={14} />
-                        </Button>
-                      )}
-                      {canDelete && (
-                        <Button variant="ghost" size="icon-sm" onClick={() => {
-                          if (confirm(`Xóa trường "${def.fieldLabel}"?`)) {
-                            deleteDefinition({ id: def.id });
-                          }
-                        }}>
-                          <Trash2 size={14} />
-                        </Button>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {definitions.map((def) => {
+                return (
+                  <TableRow key={def.id}>
+                    <TableCell>
+                      <code className="rounded bg-surface-muted px-1.5 py-0.5 font-mono text-xs">
+                        {def.fieldKey}
+                      </code>
+                    </TableCell>
+                    <TableCell className="font-medium">{def.fieldLabel}</TableCell>
+                    <TableCell>
+                      <Badge variant="purple">{fieldTypeLabels[def.fieldType] || def.fieldType}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="blue">{getEntityTypeLabel(def.entityType)}</Badge>
+                    </TableCell>
+                    <TableCell className="text-sm text-foreground-muted">
+                      {def.groupItems && def.groupItems.length > 0
+                        ? def.groupItems.map((gi: any) => gi.group.name).join(", ")
+                        : "-"}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {def.isRequired && <Badge variant="red">Bắt buộc</Badge>}
+                        {def.isFilterable && <Badge variant="yellow">Lọc</Badge>}
+                        {def.isPublic && <Badge variant="green">Công khai</Badge>}
+                        {def.isSensitive && <Badge variant="red">Nhạy cảm</Badge>}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        {canUpdate && (
+                          <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(def)}>
+                            <Pencil size={14} />
+                          </Button>
+                        )}
+                        {canDelete && (
+                          <Button variant="ghost" size="icon-sm" onClick={() => {
+                            if (confirm(`Xóa loại dữ liệu "${def.fieldLabel}"?`)) {
+                              deleteDefinition({ id: def.id });
+                            }
+                          }}>
+                            <Trash2 size={14} />
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
@@ -393,9 +338,7 @@ export function DefinitionsTab({ canCreate = true, canUpdate = true, canDelete =
         onOpenChange={(open) => !open && closeDialog()}
         editingDef={editingDef}
         entityType={entityType as GetApiFieldDefinitionsEntityType}
-        propertyTypeId={propertyTypeId}
         propertyTypes={propertyTypes}
-        availableGroups={availableGroups}
         isPending={isPending}
         onSubmit={handleSubmit}
       />

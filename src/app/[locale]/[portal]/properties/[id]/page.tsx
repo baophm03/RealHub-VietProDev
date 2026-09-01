@@ -21,6 +21,7 @@ import { PropertyHighlights } from "./_components/property-highlights";
 import { PropertySpecs } from "./_components/property-specs";
 import { PropertyDescription } from "./_components/property-description";
 import { PropertyMap } from "./_components/property-map";
+import { WorkflowActions } from "./_components/workflow-actions";
 
 export default function PropertyDetailPage() {
   const params = useParams();
@@ -144,8 +145,11 @@ export default function PropertyDetailPage() {
           <PropertyMap property={property} />
         </div>
 
-        {/* Right Column: Contact Sidebar */}
-        <ContactSidebar property={property} />
+        {/* Right Column: Workflow Actions + Contact Sidebar */}
+        <div className="flex flex-col gap-4 w-full lg:w-1/3">
+          <WorkflowActions propertyId={id} />
+          <ContactSidebar property={property} />
+        </div>
       </div>
     </div>
   );

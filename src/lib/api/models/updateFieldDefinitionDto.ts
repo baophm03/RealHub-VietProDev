@@ -9,11 +9,8 @@ import type { UpdateFieldDefinitionDtoValidationJson } from './updateFieldDefini
 import type { FieldOptionDto } from './fieldOptionDto';
 
 export interface UpdateFieldDefinitionDto {
-  groupId?: string;
-  propertyTypeId?: string;
   fieldLabel?: string;
   isRequired?: boolean;
-  isSearchable?: boolean;
   isFilterable?: boolean;
   isPublic?: boolean;
   isSensitive?: boolean;

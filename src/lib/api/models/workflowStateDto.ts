@@ -7,8 +7,10 @@
  */
 
 export interface WorkflowStateDto {
-  stateCode: string;
+  /** State name (also used as the value to set on the entity column) */
   stateName: string;
+  /** Entity column this state maps to */
+  columnName: string;
   isInitial?: boolean;
   isFinal?: boolean;
   sortOrder?: number;

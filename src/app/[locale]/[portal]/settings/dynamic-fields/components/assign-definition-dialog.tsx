@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,10 +17,9 @@ interface FieldGroup {
   name: string;
   code: string;
   entityType: string;
-  propertyType?: { id: string; name: string; code: string } | null;
   sortOrder?: number;
   status?: string;
-  definitions?: FieldDefinition[];
+  groupItems?: { id: string; field: FieldDefinition }[];
 }
 
 interface FieldDefinition {
@@ -28,33 +28,54 @@ interface FieldDefinition {
   fieldLabel: string;
   fieldType: string;
   entityType: string;
-  group?: { id: string; name: string } | null;
-  propertyType?: { id: string; name: string; code: string } | null;
   isRequired?: boolean;
   status?: string;
+  groupItems?: { id: string; group: { id: string; name: string } }[];
 }
 
 interface AssignDefinitionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   assignTargetGroup: FieldGroup | null;
-  unassignedDefinitions: FieldDefinition[];
-  selectedDefIds: string[];
-  onToggleDef: (id: string) => void;
-  onSubmit: () => void;
-  isAssigning: boolean;
+  allDefinitions: FieldDefinition[];
+  onSubmit: (fieldIds: string[]) => void;
+  isPending: boolean;
 }
 
 export function AssignDefinitionDialog({
   open,
   onOpenChange,
   assignTargetGroup,
-  unassignedDefinitions,
-  selectedDefIds,
-  onToggleDef,
+  allDefinitions,
   onSubmit,
-  isAssigning,
+  isPending,
 }: AssignDefinitionDialogProps) {
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (open && assignTargetGroup) {
+      const existing = (assignTargetGroup.groupItems || []).map((item) => item.field.id);
+      setSelectedIds(existing);
+    }
+  }, [open, assignTargetGroup]);
+
+  const toggle = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  };
+
+  const eligibleDefs = assignTargetGroup
+    ? allDefinitions.filter((d) => {
+      if (d.entityType !== assignTargetGroup.entityType) return false;
+      // Ẩn field đã thuộc nhóm khác (cùng entityType)
+      const inOtherGroup = (d.groupItems || []).some(
+        (gi) => gi.group.id !== assignTargetGroup.id,
+      );
+      return !inOtherGroup;
+    })
+    : allDefinitions;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -62,32 +83,25 @@ export function AssignDefinitionDialog({
           <DialogTitle>Gán trường vào nhóm</DialogTitle>
           <DialogDescription>
             {assignTargetGroup
-              ? `Chọn các trường chưa có nhóm để gán vào "${assignTargetGroup.name}"`
+              ? `Chọn các trường thuộc "${assignTargetGroup.name}"`
               : ""}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto">
-          {(() => {
-            const targetPropTypeId = assignTargetGroup?.propertyType?.id;
-            const eligibleDefs = targetPropTypeId
-              ? unassignedDefinitions.filter((d) => !d.propertyType?.id || d.propertyType?.id === targetPropTypeId)
-              : unassignedDefinitions;
-            if (eligibleDefs.length === 0) {
-              return (
-                <p className="text-sm text-foreground-muted py-4 text-center">
-                  Không có trường nào phù hợp để gán
-                </p>
-              );
-            }
-            return eligibleDefs.map((def) => (
+          {eligibleDefs.length === 0 ? (
+            <p className="text-sm text-foreground-muted py-4 text-center">
+              Không có trường nào phù hợp
+            </p>
+          ) : (
+            eligibleDefs.map((def) => (
               <label
                 key={def.id}
                 className="flex items-center gap-2 rounded-md border border-border px-3 py-2 cursor-pointer hover:bg-surface-muted"
               >
                 <input
                   type="checkbox"
-                  checked={selectedDefIds.includes(def.id)}
-                  onChange={() => onToggleDef(def.id)}
+                  checked={selectedIds.includes(def.id)}
+                  onChange={() => toggle(def.id)}
                   className="h-4 w-4"
                 />
                 <div className="flex flex-1 items-center gap-2">
@@ -97,15 +111,15 @@ export function AssignDefinitionDialog({
                   </code>
                 </div>
               </label>
-            ));
-          })()}
+            ))
+          )}
         </div>
         <DialogFooter>
           <DialogClose render={<Button variant="outline" />}>
             Hủy
           </DialogClose>
-          <Button onClick={onSubmit} disabled={isAssigning || selectedDefIds.length === 0}>
-            {isAssigning ? "Đang gán..." : `Gán ${selectedDefIds.length} trường`}
+          <Button onClick={() => onSubmit(selectedIds)} disabled={isPending}>
+            {isPending ? "Đang lưu..." : `Lưu (${selectedIds.length} trường)`}
           </Button>
         </DialogFooter>
       </DialogContent>

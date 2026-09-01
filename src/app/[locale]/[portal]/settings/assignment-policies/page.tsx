@@ -241,7 +241,7 @@ export default function AssignmentPoliciesPage() {
                 </p>
               </div>
             )}
-            <div className="rounded-lg bg-accent-red/10 px-4 py-3 text-sm text-accent-red">
+            <div className="rounded-lg bg-accent-red/20 px-4 py-3 text-sm text-accent-red-text">
               Bạn có chắc chắn muốn xóa chính sách này?
             </div>
             <div className="flex items-center justify-end gap-2">

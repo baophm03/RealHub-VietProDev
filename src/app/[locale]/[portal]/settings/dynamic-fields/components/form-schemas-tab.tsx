@@ -4,8 +4,15 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table";
 import {
   Select,
   SelectTrigger,
@@ -24,13 +31,7 @@ import { useGetApiPropertyTypes } from "@/lib/api/endpoints/properties";
 import type { CreateFormSchemaDto, UpdateFormSchemaDto, FormSchemaFieldDto } from "@/lib/api/models";
 import type { GetApiFormSchemasEntityType } from "@/lib/api/models/getApiFormSchemasEntityType";
 import { FormSchemaDialog } from "./form-schema-dialog";
-
-const entityTypeLabels: Record<string, string> = {
-  PROPERTY: "Bất động sản",
-  CUSTOMER_NEED: "Nhu cầu khách hàng",
-  LEAD: "Nguồn khách hàng",
-  DEAL: "Giao dịch",
-};
+import { entityTypeOptions, getEntityTypeLabel } from "./entity-type.constants";
 
 interface FormSchema {
   id: string;
@@ -64,14 +65,6 @@ type PropertyType = {
   name: string;
   code: string;
 };
-
-const entityTypeOptions: { value: string; label: string }[] = [
-  { value: "PROPERTY", label: "Bất động sản" },
-  { value: "CUSTOMER_NEED", label: "Nhu cầu khách hàng" },
-  { value: "LEAD", label: "Nguồn khách hàng" },
-  { value: "DEAL", label: "Giao dịch" },
-  { value: "OWNER_PROFILE", label: "Hồ sơ chủ nhà" },
-];
 
 interface FormSchemasTabProps {
   canCreate?: boolean;
@@ -112,12 +105,12 @@ export function FormSchemasTab({ canCreate = true, canUpdate = true, canDelete =
   const { mutateAsync: createSchema, isPending: isCreating } = usePostApiFormSchema({
     mutation: {
       onSuccess: () => {
-        toast.success("Tạo form schema thành công");
+        toast.success("Tạo đối tượng áp dụng thành công");
         closeDialog();
         refetch();
       },
       onError: (err: any) => {
-        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo form schema");
+        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi tạo đối tượng áp dụng");
       },
     },
   });
@@ -125,12 +118,12 @@ export function FormSchemasTab({ canCreate = true, canUpdate = true, canDelete =
   const { mutateAsync: updateSchema, isPending: isUpdating } = usePatchApiFormSchema({
     mutation: {
       onSuccess: () => {
-        toast.success("Cập nhật form schema thành công");
+        toast.success("Cập nhật đối tượng áp dụng thành công");
         closeDialog();
         refetch();
       },
       onError: (err: any) => {
-        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật form schema");
+        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi cập nhật đối tượng áp dụng");
       },
     },
   });
@@ -138,11 +131,11 @@ export function FormSchemasTab({ canCreate = true, canUpdate = true, canDelete =
   const { mutateAsync: deleteSchema } = useDeleteApiFormSchema({
     mutation: {
       onSuccess: () => {
-        toast.success("Xóa form schema thành công");
+        toast.success("Xóa đối tượng áp dụng thành công");
         refetch();
       },
       onError: (err: any) => {
-        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi xóa form schema");
+        toast.error(err?.response?.data?.error?.message?.[0] || "Có lỗi xảy ra khi xóa đối tượng áp dụng");
       },
     },
   });
@@ -180,13 +173,13 @@ export function FormSchemasTab({ canCreate = true, canUpdate = true, canDelete =
   };
 
   const handleDelete = (schema: FormSchema) => {
-    if (!confirm(`Xóa form schema "${schema.name}"?`)) return;
+    if (!confirm(`Xóa đối tượng áp dụng "${schema.name}"?`)) return;
     deleteSchema({ id: schema.id });
   };
 
   const handleSubmit = () => {
     if (!form.name) {
-      toast.error("Vui lòng nhập tên form schema");
+      toast.error("Vui lòng nhập tên đối tượng áp dụng");
       return;
     }
     if (editingId) {
@@ -211,7 +204,7 @@ export function FormSchemasTab({ canCreate = true, canUpdate = true, canDelete =
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-foreground-muted">
-          <span className="font-medium text-foreground">{schemas.length}</span> nhóm đối tượng
+          <span className="font-medium text-foreground">{schemas.length}</span> đối tượng áp dụng
         </p>
         <div className="flex flex-wrap items-center gap-2">
           <Select
@@ -266,7 +259,7 @@ export function FormSchemasTab({ canCreate = true, canUpdate = true, canDelete =
           {canCreate && (
             <Button onClick={openCreateDialog}>
               <Plus size={16} />
-              Thêm nhóm đối tượng
+              Thêm đối tượng áp dụng
             </Button>
           )}
         </div>
@@ -275,68 +268,88 @@ export function FormSchemasTab({ canCreate = true, canUpdate = true, canDelete =
       {isLoading ? (
         <div className="flex flex-col gap-3">
           {[1, 2].map((i) => (
-            <div key={i} className="h-24 animate-pulse rounded-lg bg-surface-muted" />
+            <div key={i} className="h-12 animate-pulse rounded-lg bg-surface-muted" />
           ))}
         </div>
       ) : schemas.length === 0 ? (
         <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
-          <p className="text-sm text-foreground-muted">Chưa có nhóm đối tượng nào</p>
+          <p className="text-sm text-foreground-muted">Chưa có đối tượng áp dụng nào</p>
           {canCreate && (
             <Button variant="outline" size="sm" onClick={openCreateDialog}>
               <Plus size={16} />
-              Tạo nhóm đối tượng đầu tiên
+              Tạo đối tượng áp dụng đầu tiên
             </Button>
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {schemas.map((schema) => (
-            <Card key={schema.id}>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base truncate">{schema.name}</CardTitle>
-                  <div className="flex gap-1 shrink-0">
-                    {canUpdate && (
-                      <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(schema)}>
-                        <Pencil size={14} />
-                      </Button>
-                    )}
-                    {canDelete && (
-                      <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(schema)}>
-                        <Trash2 size={14} />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-                <div className="mt-1 flex flex-wrap gap-1">
-                  <Badge variant="blue">{entityTypeLabels[schema.entityType] || schema.entityType}</Badge>
-                  {schema.entityType === "PROPERTY" && (
-                    <Badge variant="default">
-                      {propertyTypes.find((p) => p.id === schema.propertyType?.id)?.name || "Tất cả loại BĐS"}
-                    </Badge>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-1">
-                  {schema.fields && schema.fields.length > 0 ? (
-                    <>
-                      {schema.fields.slice(0, 5).map((f) => (
-                        <Badge key={f.id} variant="default">
-                          {f.field?.fieldLabel || f.field?.id}
-                        </Badge>
-                      ))}
-                      {schema.fields.length > 5 && (
-                        <Badge variant="default">+{schema.fields.length - 5}</Badge>
-                      )}
-                    </>
-                  ) : (
-                    <span className="text-sm text-foreground-muted">Chưa có trường nào</span>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="rounded-lg border border-border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Tên đối tượng áp dụng</TableHead>
+                <TableHead>Đối tượng</TableHead>
+                <TableHead>Loại BĐS</TableHead>
+                <TableHead>Phiên bản</TableHead>
+                <TableHead className="text-center">Số loại dữ liệu</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {schemas.map((schema) => {
+                const fieldCount = schema.fields?.length ?? 0;
+                return (
+                  <TableRow key={schema.id}>
+                    <TableCell className="font-medium">{schema.name}</TableCell>
+                    <TableCell>
+                      <Badge variant="blue">
+                        {getEntityTypeLabel(schema.entityType)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm text-foreground-muted">
+                      {schema.entityType === "PROPERTY"
+                        ? (propertyTypes.find((p) => p.id === schema.propertyType?.id)?.name || "Tất cả loại BĐS")
+                        : "-"}
+                    </TableCell>
+                    <TableCell className="text-sm text-foreground-muted">
+                      v{schema.version ?? 1}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <button
+                        type="button"
+                        onClick={() => canUpdate && openEditDialog(schema)}
+                        className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-sm font-medium hover:bg-surface-muted disabled:cursor-default disabled:opacity-100"
+                        title={canUpdate ? "Click để chỉnh sửa fields" : undefined}
+                      >
+                        <span className={fieldCount > 0 ? "text-foreground" : "text-foreground-muted"}>
+                          {fieldCount}
+                        </span>
+                      </button>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={schema.status === "ACTIVE" ? "green" : "default"}>
+                        {schema.status === "ACTIVE" ? "Hoạt động" : schema.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        {canUpdate && (
+                          <Button variant="ghost" size="icon-sm" onClick={() => openEditDialog(schema)}>
+                            <Pencil size={14} />
+                          </Button>
+                        )}
+                        {canDelete && (
+                          <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(schema)}>
+                            <Trash2 size={14} />
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         </div>
       )}
 

@@ -30,10 +30,14 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  CommissionActionDto,
+  ConfirmDealCommissionDto,
   CreateCommissionPlanDto,
-  EstimateCommissionDto,
+  CreateDealCommissionDto,
   GetApiCommissionPlansParams,
   GetApiDealCommissionsParams,
+  UpdateCommissionPlanDto,
+  UpdateDealCommissionDto,
   UpdatePlanStatusDto
 } from '../models';
 
@@ -495,6 +499,131 @@ export const prefetchGetApiCommissionPlanIdQuery = async <TData = Awaited<Return
 
 
 /**
+ * @summary Update a commission plan (name, description, priority, effective dates, rules)
+ */
+export const patchApiCommissionPlanId = (
+    id: string,
+    updateCommissionPlanDto: UpdateCommissionPlanDto,
+ ) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/commission/plans/${id}`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: updateCommissionPlanDto
+    },
+      );
+    }
+  
+
+
+export const getPatchApiCommissionPlanIdMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiCommissionPlanId>>, TError,{id: string;data: UpdateCommissionPlanDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiCommissionPlanId>>, TError,{id: string;data: UpdateCommissionPlanDto}, TContext> => {
+
+const mutationKey = ['patchApiCommissionPlanId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiCommissionPlanId>>, {id: string;data: UpdateCommissionPlanDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  patchApiCommissionPlanId(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PatchApiCommissionPlanIdMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiCommissionPlanId>>>
+    export type PatchApiCommissionPlanIdMutationBody = UpdateCommissionPlanDto
+    export type PatchApiCommissionPlanIdMutationError = unknown
+
+    /**
+ * @summary Update a commission plan (name, description, priority, effective dates, rules)
+ */
+export const usePatchApiCommissionPlanId = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiCommissionPlanId>>, TError,{id: string;data: UpdateCommissionPlanDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof patchApiCommissionPlanId>>,
+        TError,
+        {id: string;data: UpdateCommissionPlanDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPatchApiCommissionPlanIdMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Delete a commission plan (only if not ACTIVE and not referenced)
+ */
+export const deleteApiCommissionPlanId = (
+    id: string,
+ ) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/commission/plans/${id}`, method: 'DELETE'
+    },
+      );
+    }
+  
+
+
+export const getDeleteApiCommissionPlanIdMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCommissionPlanId>>, TError,{id: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteApiCommissionPlanId>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteApiCommissionPlanId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiCommissionPlanId>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteApiCommissionPlanId(id,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteApiCommissionPlanIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiCommissionPlanId>>>
+    
+    export type DeleteApiCommissionPlanIdMutationError = unknown
+
+    /**
+ * @summary Delete a commission plan (only if not ACTIVE and not referenced)
+ */
+export const useDeleteApiCommissionPlanId = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCommissionPlanId>>, TError,{id: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteApiCommissionPlanId>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteApiCommissionPlanIdMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
  * @summary Update plan status (e.g. approve to ACTIVE)
  */
 export const patchApiCommissionPlanStatus = (
@@ -753,6 +882,70 @@ export const prefetchGetApiDealCommissionsQuery = async <TData = Awaited<ReturnT
 
 
 /**
+ * @summary Create a deal commission (estimate) based on active plans
+ */
+export const postApiDealCommission = (
+    createDealCommissionDto: CreateDealCommissionDto,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/commission/deals`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createDealCommissionDto, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiDealCommissionMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommission>>, TError,{data: CreateDealCommissionDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommission>>, TError,{data: CreateDealCommissionDto}, TContext> => {
+
+const mutationKey = ['postApiDealCommission'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiDealCommission>>, {data: CreateDealCommissionDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiDealCommission(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiDealCommissionMutationResult = NonNullable<Awaited<ReturnType<typeof postApiDealCommission>>>
+    export type PostApiDealCommissionMutationBody = CreateDealCommissionDto
+    export type PostApiDealCommissionMutationError = unknown
+
+    /**
+ * @summary Create a deal commission (estimate) based on active plans
+ */
+export const usePostApiDealCommission = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommission>>, TError,{data: CreateDealCommissionDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiDealCommission>>,
+        TError,
+        {data: CreateDealCommissionDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiDealCommissionMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
  * @summary Get deal commission by ID
  */
 export const getApiDealCommissionId = (
@@ -946,29 +1139,29 @@ export const prefetchGetApiDealCommissionIdQuery = async <TData = Awaited<Return
 
 
 /**
- * @summary Estimate commission for a deal based on active plans
+ * @summary Update a deal commission (confirmed values, status)
  */
-export const postApiEstimateCommission = (
-    estimateCommissionDto: EstimateCommissionDto,
- signal?: AbortSignal
-) => {
+export const patchApiDealCommissionId = (
+    id: string,
+    updateDealCommissionDto: UpdateDealCommissionDto,
+ ) => {
       
       
-      return customInstance<unknown>(
-      {url: `/api/commission/estimate`, method: 'POST',
+      return customInstance<void>(
+      {url: `/api/commission/deals/${id}`, method: 'PATCH',
       headers: {'Content-Type': 'application/json', },
-      data: estimateCommissionDto, signal
+      data: updateDealCommissionDto
     },
       );
     }
   
 
 
-export const getPostApiEstimateCommissionMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiEstimateCommission>>, TError,{data: EstimateCommissionDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof postApiEstimateCommission>>, TError,{data: EstimateCommissionDto}, TContext> => {
+export const getPatchApiDealCommissionIdMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiDealCommissionId>>, TError,{id: string;data: UpdateDealCommissionDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiDealCommissionId>>, TError,{id: string;data: UpdateDealCommissionDto}, TContext> => {
 
-const mutationKey = ['postApiEstimateCommission'];
+const mutationKey = ['patchApiDealCommissionId'];
 const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -978,10 +1171,10 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiEstimateCommission>>, {data: EstimateCommissionDto}> = (props) => {
-          const {data} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiDealCommissionId>>, {id: string;data: UpdateDealCommissionDto}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  postApiEstimateCommission(data,)
+          return  patchApiDealCommissionId(id,data,)
         }
 
         
@@ -989,23 +1182,344 @@ const {mutation: mutationOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PostApiEstimateCommissionMutationResult = NonNullable<Awaited<ReturnType<typeof postApiEstimateCommission>>>
-    export type PostApiEstimateCommissionMutationBody = EstimateCommissionDto
-    export type PostApiEstimateCommissionMutationError = unknown
+    export type PatchApiDealCommissionIdMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiDealCommissionId>>>
+    export type PatchApiDealCommissionIdMutationBody = UpdateDealCommissionDto
+    export type PatchApiDealCommissionIdMutationError = unknown
 
     /**
- * @summary Estimate commission for a deal based on active plans
+ * @summary Update a deal commission (confirmed values, status)
  */
-export const usePostApiEstimateCommission = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiEstimateCommission>>, TError,{data: EstimateCommissionDto}, TContext>, }
+export const usePatchApiDealCommissionId = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiDealCommissionId>>, TError,{id: string;data: UpdateDealCommissionDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postApiEstimateCommission>>,
+        Awaited<ReturnType<typeof patchApiDealCommissionId>>,
         TError,
-        {data: EstimateCommissionDto},
+        {id: string;data: UpdateDealCommissionDto},
         TContext
       > => {
 
-      const mutationOptions = getPostApiEstimateCommissionMutationOptions(options);
+      const mutationOptions = getPatchApiDealCommissionIdMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Delete a deal commission (only if not APPROVED/PAID)
+ */
+export const deleteApiDealCommissionId = (
+    id: string,
+ ) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/commission/deals/${id}`, method: 'DELETE'
+    },
+      );
+    }
+  
+
+
+export const getDeleteApiDealCommissionIdMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiDealCommissionId>>, TError,{id: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteApiDealCommissionId>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteApiDealCommissionId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiDealCommissionId>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteApiDealCommissionId(id,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteApiDealCommissionIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiDealCommissionId>>>
+    
+    export type DeleteApiDealCommissionIdMutationError = unknown
+
+    /**
+ * @summary Delete a deal commission (only if not APPROVED/PAID)
+ */
+export const useDeleteApiDealCommissionId = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiDealCommissionId>>, TError,{id: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteApiDealCommissionId>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteApiDealCommissionIdMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Confirm deal commission with actual transaction value
+ */
+export const postApiDealCommissionConfirm = (
+    id: string,
+    confirmDealCommissionDto: ConfirmDealCommissionDto,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/commission/deals/${id}/confirm`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: confirmDealCommissionDto, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiDealCommissionConfirmMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommissionConfirm>>, TError,{id: string;data: ConfirmDealCommissionDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommissionConfirm>>, TError,{id: string;data: ConfirmDealCommissionDto}, TContext> => {
+
+const mutationKey = ['postApiDealCommissionConfirm'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiDealCommissionConfirm>>, {id: string;data: ConfirmDealCommissionDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  postApiDealCommissionConfirm(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiDealCommissionConfirmMutationResult = NonNullable<Awaited<ReturnType<typeof postApiDealCommissionConfirm>>>
+    export type PostApiDealCommissionConfirmMutationBody = ConfirmDealCommissionDto
+    export type PostApiDealCommissionConfirmMutationError = unknown
+
+    /**
+ * @summary Confirm deal commission with actual transaction value
+ */
+export const usePostApiDealCommissionConfirm = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommissionConfirm>>, TError,{id: string;data: ConfirmDealCommissionDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiDealCommissionConfirm>>,
+        TError,
+        {id: string;data: ConfirmDealCommissionDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiDealCommissionConfirmMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Approve a confirmed deal commission
+ */
+export const postApiDealCommissionApprove = (
+    id: string,
+    commissionActionDto: CommissionActionDto,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/commission/deals/${id}/approve`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: commissionActionDto, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiDealCommissionApproveMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommissionApprove>>, TError,{id: string;data: CommissionActionDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommissionApprove>>, TError,{id: string;data: CommissionActionDto}, TContext> => {
+
+const mutationKey = ['postApiDealCommissionApprove'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiDealCommissionApprove>>, {id: string;data: CommissionActionDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  postApiDealCommissionApprove(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiDealCommissionApproveMutationResult = NonNullable<Awaited<ReturnType<typeof postApiDealCommissionApprove>>>
+    export type PostApiDealCommissionApproveMutationBody = CommissionActionDto
+    export type PostApiDealCommissionApproveMutationError = unknown
+
+    /**
+ * @summary Approve a confirmed deal commission
+ */
+export const usePostApiDealCommissionApprove = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommissionApprove>>, TError,{id: string;data: CommissionActionDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiDealCommissionApprove>>,
+        TError,
+        {id: string;data: CommissionActionDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiDealCommissionApproveMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Reject a deal commission (sets status to CANCELLED)
+ */
+export const postApiDealCommissionReject = (
+    id: string,
+    commissionActionDto: CommissionActionDto,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/commission/deals/${id}/reject`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: commissionActionDto, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiDealCommissionRejectMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommissionReject>>, TError,{id: string;data: CommissionActionDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommissionReject>>, TError,{id: string;data: CommissionActionDto}, TContext> => {
+
+const mutationKey = ['postApiDealCommissionReject'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiDealCommissionReject>>, {id: string;data: CommissionActionDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  postApiDealCommissionReject(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiDealCommissionRejectMutationResult = NonNullable<Awaited<ReturnType<typeof postApiDealCommissionReject>>>
+    export type PostApiDealCommissionRejectMutationBody = CommissionActionDto
+    export type PostApiDealCommissionRejectMutationError = unknown
+
+    /**
+ * @summary Reject a deal commission (sets status to CANCELLED)
+ */
+export const usePostApiDealCommissionReject = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommissionReject>>, TError,{id: string;data: CommissionActionDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiDealCommissionReject>>,
+        TError,
+        {id: string;data: CommissionActionDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiDealCommissionRejectMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Mark an approved deal commission as PAID
+ */
+export const postApiDealCommissionMarkPaid = (
+    id: string,
+    commissionActionDto: CommissionActionDto,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/commission/deals/${id}/mark-paid`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: commissionActionDto, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiDealCommissionMarkPaidMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommissionMarkPaid>>, TError,{id: string;data: CommissionActionDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommissionMarkPaid>>, TError,{id: string;data: CommissionActionDto}, TContext> => {
+
+const mutationKey = ['postApiDealCommissionMarkPaid'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiDealCommissionMarkPaid>>, {id: string;data: CommissionActionDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  postApiDealCommissionMarkPaid(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiDealCommissionMarkPaidMutationResult = NonNullable<Awaited<ReturnType<typeof postApiDealCommissionMarkPaid>>>
+    export type PostApiDealCommissionMarkPaidMutationBody = CommissionActionDto
+    export type PostApiDealCommissionMarkPaidMutationError = unknown
+
+    /**
+ * @summary Mark an approved deal commission as PAID
+ */
+export const usePostApiDealCommissionMarkPaid = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiDealCommissionMarkPaid>>, TError,{id: string;data: CommissionActionDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiDealCommissionMarkPaid>>,
+        TError,
+        {id: string;data: CommissionActionDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiDealCommissionMarkPaidMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

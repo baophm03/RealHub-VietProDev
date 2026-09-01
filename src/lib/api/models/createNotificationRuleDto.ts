@@ -7,13 +7,11 @@
  */
 import type { CreateNotificationRuleDtoReceiverType } from './createNotificationRuleDtoReceiverType';
 import type { CreateNotificationRuleDtoChannel } from './createNotificationRuleDtoChannel';
-import type { CreateNotificationRuleDtoConditionJson } from './createNotificationRuleDtoConditionJson';
 
 export interface CreateNotificationRuleDto {
   eventCode: string;
   receiverType: CreateNotificationRuleDtoReceiverType;
   channel?: CreateNotificationRuleDtoChannel;
   templateId?: string;
-  conditionJson?: CreateNotificationRuleDtoConditionJson;
   isEnabled?: boolean;
 }

@@ -35,6 +35,7 @@ import type {
   CreateReservationDto,
   GetApiDealsParams,
   GetApiReservationsParams,
+  TransitionDealDto,
   UpdateDealDto
 } from '../models';
 
@@ -617,6 +618,264 @@ export const useDeleteApiDeal = <TError = unknown,
       > => {
 
       const mutationOptions = getDeleteApiDealMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Get available workflow transitions for a deal
+ */
+export const getApiDealTransitions = (
+    id: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/deals/${id}/transitions`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiDealTransitionsInfiniteQueryKey = (id?: string,) => {
+    return [
+    'infinite', `/api/deals/${id}/transitions`
+    ] as const;
+    }
+
+export const getGetApiDealTransitionsQueryKey = (id?: string,) => {
+    return [
+    `/api/deals/${id}/transitions`
+    ] as const;
+    }
+
+    
+export const getGetApiDealTransitionsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiDealTransitions>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealTransitions>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiDealTransitionsInfiniteQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiDealTransitions>>> = ({ signal }) => getApiDealTransitions(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealTransitions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiDealTransitionsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiDealTransitions>>>
+export type GetApiDealTransitionsInfiniteQueryError = unknown
+
+
+export function useGetApiDealTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDealTransitions>>>, TError = unknown>(
+ id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealTransitions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDealTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDealTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDealTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDealTransitions>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealTransitions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDealTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDealTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDealTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDealTransitions>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get available workflow transitions for a deal
+ */
+
+export function useGetApiDealTransitionsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDealTransitions>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiDealTransitionsInfiniteQueryOptions(id,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get available workflow transitions for a deal
+ */
+export const prefetchGetApiDealTransitionsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiDealTransitions>>, TError = unknown>(
+ queryClient: QueryClient, id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDealTransitions>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiDealTransitionsInfiniteQueryOptions(id,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiDealTransitionsQueryOptions = <TData = Awaited<ReturnType<typeof getApiDealTransitions>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealTransitions>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiDealTransitionsQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiDealTransitions>>> = ({ signal }) => getApiDealTransitions(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiDealTransitions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiDealTransitionsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiDealTransitions>>>
+export type GetApiDealTransitionsQueryError = unknown
+
+
+export function useGetApiDealTransitions<TData = Awaited<ReturnType<typeof getApiDealTransitions>>, TError = unknown>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealTransitions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDealTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDealTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDealTransitions<TData = Awaited<ReturnType<typeof getApiDealTransitions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealTransitions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDealTransitions>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDealTransitions>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDealTransitions<TData = Awaited<ReturnType<typeof getApiDealTransitions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get available workflow transitions for a deal
+ */
+
+export function useGetApiDealTransitions<TData = Awaited<ReturnType<typeof getApiDealTransitions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealTransitions>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiDealTransitionsQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get available workflow transitions for a deal
+ */
+export const prefetchGetApiDealTransitionsQuery = async <TData = Awaited<ReturnType<typeof getApiDealTransitions>>, TError = unknown>(
+ queryClient: QueryClient, id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDealTransitions>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiDealTransitionsQueryOptions(id,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
+ * @summary Execute a workflow transition on a deal by transitionId
+ */
+export const postApiDealTransition = (
+    id: string,
+    transitionDealDto: TransitionDealDto,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/deals/${id}/transition`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: transitionDealDto, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiDealTransitionMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiDealTransition>>, TError,{id: string;data: TransitionDealDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiDealTransition>>, TError,{id: string;data: TransitionDealDto}, TContext> => {
+
+const mutationKey = ['postApiDealTransition'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiDealTransition>>, {id: string;data: TransitionDealDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  postApiDealTransition(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiDealTransitionMutationResult = NonNullable<Awaited<ReturnType<typeof postApiDealTransition>>>
+    export type PostApiDealTransitionMutationBody = TransitionDealDto
+    export type PostApiDealTransitionMutationError = unknown
+
+    /**
+ * @summary Execute a workflow transition on a deal by transitionId
+ */
+export const usePostApiDealTransition = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiDealTransition>>, TError,{id: string;data: TransitionDealDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiDealTransition>>,
+        TError,
+        {id: string;data: TransitionDealDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiDealTransitionMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

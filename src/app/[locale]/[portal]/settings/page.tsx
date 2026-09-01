@@ -8,6 +8,7 @@ import {
   TrendingUp,
   MapPin,
   Handshake,
+  GitBranch,
 } from "lucide-react";
 
 const settingModules = [
@@ -22,6 +23,12 @@ const settingModules = [
     icon: TrendingUp,
     title: "Hoa hồng",
     description: "Cấu hình hoa hồng cho các đối tượng",
+  },
+  {
+    href: "/settings/workflows",
+    icon: GitBranch,
+    title: "Workflow",
+    description: "Định nghĩa trạng thái và chuyển trạng thái cho sản phẩm, lead, deal",
   },
   {
     href: "/settings/locations",

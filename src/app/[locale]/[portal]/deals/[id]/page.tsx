@@ -9,6 +9,7 @@ import {
   House,
   MessageSquare,
   Pencil,
+  Plus,
   SquareKanban,
   Trash2,
   User,
@@ -35,6 +36,8 @@ import {
 import type { UpdateDealDtoStatus } from "@/lib/api/models/updateDealDtoStatus";
 import { DeleteDealDialog } from "./_components/delete-deal-dialog";
 import { CreateReservationDialog } from "./_components/create-reservation-dialog";
+import { DealWorkflowActions } from "./_components/deal-workflow-actions";
+import { useGetApiDealCommissions } from "@/lib/api/endpoints/commission";
 
 interface DealProperty {
   id: string;
@@ -139,6 +142,91 @@ const reservationStatusLabel: Record<string, { label: string; variant: "blue" | 
   CANCELLED: { label: "Đã hủy", variant: "default" },
   CONVERTED: { label: "Đã chuyển", variant: "green" },
 };
+
+const commissionStatusVariant: Record<string, "default" | "green" | "yellow" | "blue" | "red"> = {
+  DRAFT: "default",
+  ESTIMATED: "blue",
+  CONFIRMED: "yellow",
+  APPROVED: "green",
+  PAID: "green",
+  DISPUTED: "red",
+  CANCELLED: "default",
+};
+
+const commissionStatusLabel: Record<string, string> = {
+  DRAFT: "Nháp",
+  ESTIMATED: "Đã ước tính",
+  CONFIRMED: "Đã xác nhận",
+  APPROVED: "Đã duyệt",
+  PAID: "Đã thanh toán",
+  DISPUTED: "Tranh chấp",
+  CANCELLED: "Đã hủy",
+};
+
+const formatVnd = (v: string | null | undefined) => {
+  if (!v) return "—";
+  const n = Number(v);
+  if (isNaN(n)) return v;
+  return n.toLocaleString("vi-VN") + " ₫";
+};
+
+function DealCommissionsSection({ dealId }: { dealId: string }) {
+  const router = useRouter();
+  const portalPath = usePortalPath();
+  const { data: dcsData, isLoading } = useGetApiDealCommissions(
+    { dealId, status: undefined },
+  );
+  const dcs = ((dcsData as unknown as { data: any[] })?.data) || [];
+
+  return (
+    <div className="rounded-lg border border-border bg-surface p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <h3 className="text-sm font-semibold">Hoa hồng</h3>
+          <Badge variant="default" className="text-[10px]">{dcs.length}</Badge>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => router.push(portalPath(`/commission/deals/new?dealId=${dealId}`))}
+        >
+          <Plus size={14} className="mr-1" />
+          Tạo ước tính
+        </Button>
+      </div>
+
+      {isLoading ? (
+        <p className="text-xs text-foreground-muted py-2">Đang tải...</p>
+      ) : dcs.length === 0 ? (
+        <p className="text-xs text-foreground-muted py-2">
+          Chưa có hoa hồng nào cho giao dịch này.
+        </p>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {dcs.map((dc) => (
+            <button
+              key={dc.id}
+              onClick={() => router.push(portalPath(`/commission/deals/${dc.id}`))}
+              className="flex items-center justify-between rounded-lg border border-border bg-surface-muted/40 px-3 py-2 text-left transition-colors hover:border-foreground/20 hover:bg-surface-muted/50"
+            >
+              <div className="flex flex-col gap-0.5">
+                <span className="text-sm font-medium">
+                  {dc.plan?.name ?? "—"}
+                </span>
+                <span className="text-[10px] text-foreground-muted">
+                  ước tính: {formatVnd(dc.totalCommissionEstimated)} · thực tế: {formatVnd(dc.totalCommissionConfirmed)}
+                </span>
+              </div>
+              <Badge variant={commissionStatusVariant[dc.status] ?? "default"} className="text-[10px]">
+                {commissionStatusLabel[dc.status] ?? dc.status}
+              </Badge>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function DealDetailPage() {
   const params = useParams();
@@ -553,8 +641,12 @@ export default function DealDetailPage() {
           </div>
         </div>
 
+        {/* Commissions for this deal */}
+        <DealCommissionsSection dealId={id} />
+
         {/* Sidebar */}
         <div className="flex flex-col gap-4">
+          <DealWorkflowActions dealId={id} />
           <div className="rounded-lg border border-border bg-surface p-6">
             <h3 className="text-sm font-semibold mb-4">Thông tin liên quan</h3>
             <div className="flex flex-col gap-4 text-sm">

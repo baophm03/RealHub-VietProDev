@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Plus } from "lucide-react";
 import { FormField } from "@/components/shared/form-section";
@@ -20,24 +20,64 @@ import type { CreateCommissionPlanDto } from "@/lib/api/models/createCommissionP
 import {
   emptyRule,
   emptySplit,
+  type Plan,
   type Rule,
   type Split,
 } from "./types";
 import { RuleSection } from "./rule-section";
 
-interface CreatePlanDialogProps {
+interface PlanFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (dto: CreateCommissionPlanDto) => Promise<void>;
   isSubmitting: boolean;
+  initialPlan?: Plan | null;
 }
 
-export function CreatePlanDialog({
+function planToRules(plan: Plan): Rule[] {
+  if (!plan.rules || plan.rules.length === 0) return [emptyRule()];
+  return plan.rules.map((r) => ({
+    id: r.id,
+    name: r.name,
+    priority: r.priority ?? 0,
+    dealType: (r as any).dealType ?? "",
+    propertyTypeId: (r as any).propertyTypeId ?? "",
+    sellingMode: (r as any).sellingMode ?? "",
+    calculationType: r.calculationType,
+    calculationValue: Number(r.calculationValue) || 0,
+    calculationBase: r.calculationBase,
+    minCommissionAmount: r.minCommissionAmount ? Number(r.minCommissionAmount) : undefined,
+    maxCommissionAmount: r.maxCommissionAmount ? Number(r.maxCommissionAmount) : undefined,
+    splits: (r.splits ?? []).map((s) => ({
+      id: s.id,
+      receiverType: s.receiverType,
+      receiverRole: s.receiverRole,
+      receiverUserId: s.receiverUserId,
+      splitType: s.splitType,
+      splitValue: Number(s.splitValue) || 0,
+      minAmount: s.minAmount ? Number(s.minAmount) : undefined,
+      maxAmount: s.maxAmount ? Number(s.maxAmount) : undefined,
+      priority: s.priority ?? 0,
+    })),
+  }));
+}
+
+function isoToDateInput(iso?: string | null): string {
+  if (!iso) return "";
+  try {
+    return new Date(iso).toISOString().slice(0, 10);
+  } catch {
+    return "";
+  }
+}
+
+export function PlanFormDialog({
   open,
   onOpenChange,
   onSubmit,
   isSubmitting,
-}: CreatePlanDialogProps) {
+  initialPlan,
+}: PlanFormDialogProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState(0);
@@ -45,6 +85,19 @@ export function CreatePlanDialog({
   const [effectiveTo, setEffectiveTo] = useState("");
   const [rules, setRules] = useState<Rule[]>([emptyRule()]);
   const [collapsedRules, setCollapsedRules] = useState<Set<number>>(new Set());
+
+  // Hydrate from initialPlan when opening in edit mode
+  useEffect(() => {
+    if (open && initialPlan) {
+      setName(initialPlan.name);
+      setDescription(initialPlan.description ?? "");
+      setPriority(initialPlan.priority ?? 0);
+      setEffectiveFrom(isoToDateInput(initialPlan.effectiveFrom));
+      setEffectiveTo(isoToDateInput(initialPlan.effectiveTo));
+      setRules(planToRules(initialPlan));
+      setCollapsedRules(new Set());
+    }
+  }, [open, initialPlan]);
 
   const toggleRule = (idx: number) =>
     setCollapsedRules((prev) => {
@@ -93,7 +146,7 @@ export function CreatePlanDialog({
 
   const handleSubmit = async () => {
     if (!name.trim()) {
-      toast.error("Vui lòng nhập tên plan");
+      toast.error("Vui lòng nhập tên kế hoạch");
       return;
     }
     if (!effectiveFrom) {
@@ -120,7 +173,9 @@ export function CreatePlanDialog({
       rules: rules.map((r) => ({
         name: r.name.trim(),
         priority: r.priority ?? 0,
-        conditionsJson: r.conditionsJson,
+        dealType: (r as any).dealType || undefined,
+        propertyTypeId: (r as any).propertyTypeId || undefined,
+        sellingMode: (r as any).sellingMode || undefined,
         calculationType: r.calculationType,
         calculationValue: Number(r.calculationValue) || 0,
         calculationBase: r.calculationBase,
@@ -147,16 +202,16 @@ export function CreatePlanDialog({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-7xl h-[96vh] overflow-hidden flex flex-col">
         <DialogHeader>
-          <DialogTitle>Tạo plan hoa hồng</DialogTitle>
+          <DialogTitle>{initialPlan ? "Sửa kế hoạch hoa hồng" : "Tạo kế hoạch hoa hồng"}</DialogTitle>
           <DialogDescription>
-            Plan chứa nhiều rule — mỗi rule áp dụng theo điều kiện và chia hoa hồng cho các role
+            Kế hoạch chứa nhiều rule — mỗi rule áp dụng theo điều kiện và chia hoa hồng cho các role
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-1 lg:grid-cols-10 gap-4 flex-1 min-h-0">
           {/* Left column: Plan info */}
           <div className="flex flex-col gap-3 col-span-3 overflow-y-auto pr-1">
-            <FormField label="Tên plan" required>
+            <FormField label="Tên kế hoạch" required>
               <Input
                 placeholder="VD: Hoa hồng 2026"
                 value={name}
@@ -224,7 +279,7 @@ export function CreatePlanDialog({
         <DialogFooter>
           <DialogClose render={<Button variant="outline" />}>Hủy</DialogClose>
           <Button onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? "Đang tạo..." : "Tạo plan"}
+            {isSubmitting ? "Đang lưu..." : initialPlan ? "Lưu thay đổi" : "Tạo kế hoạch"}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -52,20 +52,6 @@ const sellingModeLabels: Record<string, string> = {
   AGENCY_DISTRIBUTION: "Sàn công khai",
 };
 
-const businessStatusLabels: Record<string, string> = {
-  AVAILABLE: "Sẵn có",
-  RESERVED: "Đặt cọc",
-  SOLD: "Đã bán",
-  RENTED: "Đã thuê",
-  OFF_MARKET: "Không còn",
-};
-
-const publicationStatusLabels: Record<string, string> = {
-  PRIVATE: "Riêng tư",
-  PUBLIC: "Công khai",
-  ARCHIVED: "Lưu trữ",
-};
-
 const priceUnitLabels: Record<string, string> = {
   VND: "VND",
   USD: "USD",
@@ -87,8 +73,6 @@ const propertySchema = z.object({
   latitude: z.number().optional(),
   longitude: z.number().optional(),
   projectId: z.string().optional(),
-  publicationStatus: z.enum(["PRIVATE", "PUBLIC", "ARCHIVED"]),
-  businessStatus: z.enum(["AVAILABLE", "RESERVED", "SOLD", "RENTED", "OFF_MARKET"]),
 });
 
 type PropertyFormData = z.infer<typeof propertySchema>;
@@ -143,8 +127,6 @@ export default function PropertyEditPage() {
     defaultValues: {
       transactionType: "SALE",
       sellingMode: "SELF_SELL",
-      publicationStatus: "PRIVATE",
-      businessStatus: "AVAILABLE",
       priceUnit: "VND",
       areaUnit: "SQM",
     },
@@ -174,8 +156,6 @@ export default function PropertyEditPage() {
         area: property.area || 0,
         areaUnit: property.areaUnit || "SQM",
         projectId: property.project?.id || "",
-        publicationStatus: (property.publicationStatus as PropertyFormData["publicationStatus"]) || "PRIVATE",
-        businessStatus: (property.businessStatus as PropertyFormData["businessStatus"]) || "AVAILABLE",
       });
       setDynamicValues((property as any).dynamicValuesJson || {});
     }
@@ -433,45 +413,6 @@ export default function PropertyEditPage() {
             allowFullScreen
             src={`https://maps.google.com/maps?q=${watch("latitude") || 0},${watch("longitude") || 0}&z=15&output=embed`}>
           </iframe>
-        </FormSection>
-
-        <FormSection title="Trạng thái" description="Trạng thái kinh doanh và xuất bản">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="Trạng thái kinh doanh">
-              <Select
-                value={watch("businessStatus")}
-                items={businessStatusLabels}
-                onValueChange={(v) => setValue("businessStatus", v as PropertyFormData["businessStatus"])}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="AVAILABLE" label="Sẵn có">Sẵn có</SelectItem>
-                  <SelectItem value="RESERVED" label="Đặt cọc">Đặt cọc</SelectItem>
-                  <SelectItem value="SOLD" label="Đã bán">Đã bán</SelectItem>
-                  <SelectItem value="RENTED" label="Đã thuê">Đã thuê</SelectItem>
-                  <SelectItem value="OFF_MARKET" label="Không còn">Không còn</SelectItem>
-                </SelectContent>
-              </Select>
-            </FormField>
-            <FormField label="Trạng thái xuất bản">
-              <Select
-                value={watch("publicationStatus")}
-                items={publicationStatusLabels}
-                onValueChange={(v) => setValue("publicationStatus", v as PropertyFormData["publicationStatus"])}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="PRIVATE" label="Riêng tư">Riêng tư</SelectItem>
-                  <SelectItem value="PUBLIC" label="Công khai">Công khai</SelectItem>
-                  <SelectItem value="ARCHIVED" label="Lưu trữ">Lưu trữ</SelectItem>
-                </SelectContent>
-              </Select>
-            </FormField>
-          </div>
         </FormSection>
 
         <DynamicFieldsSection

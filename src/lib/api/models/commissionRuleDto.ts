@@ -5,13 +5,17 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
-import type { CommissionRuleDtoConditionsJson } from './commissionRuleDtoConditionsJson';
 import type { CommissionSplitDto } from './commissionSplitDto';
 
 export interface CommissionRuleDto {
   name: string;
   priority?: number;
-  conditionsJson?: CommissionRuleDtoConditionsJson;
+  /** SALE | RENT | TRANSFER. Null = áp dụng mọi deal type. */
+  dealType?: string;
+  /** UUID của PropertyType. Null = áp dụng mọi loại BĐS. */
+  propertyTypeId?: string;
+  /** SELF_SELL | SALES_DISTRIBUTION | HYBRID | INTERNAL_ONLY | AGENCY_DISTRIBUTION. Null = áp dụng mọi selling mode. */
+  sellingMode?: string;
   calculationType: string;
   calculationValue: number;
   calculationBase: string;

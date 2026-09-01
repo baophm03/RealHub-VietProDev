@@ -36,6 +36,7 @@ import type {
   GetApiFieldDefinitionsParams,
   GetApiFieldGroupsParams,
   GetApiFormSchemasParams,
+  SetGroupFieldsDto,
   UpdateFieldDefinitionDto,
   UpdateFieldGroupDto,
   UpdateFormSchemaDto
@@ -427,6 +428,70 @@ export const useDeleteApiFieldGroup = <TError = unknown,
       > => {
 
       const mutationOptions = getDeleteApiFieldGroupMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Set fields for a group (replace all)
+ */
+export const putApiFieldGroupFields = (
+    id: string,
+    setGroupFieldsDto: SetGroupFieldsDto,
+ ) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/dynamic-fields/groups/${id}/fields`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: setGroupFieldsDto
+    },
+      );
+    }
+  
+
+
+export const getPutApiFieldGroupFieldsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiFieldGroupFields>>, TError,{id: string;data: SetGroupFieldsDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putApiFieldGroupFields>>, TError,{id: string;data: SetGroupFieldsDto}, TContext> => {
+
+const mutationKey = ['putApiFieldGroupFields'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiFieldGroupFields>>, {id: string;data: SetGroupFieldsDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  putApiFieldGroupFields(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiFieldGroupFieldsMutationResult = NonNullable<Awaited<ReturnType<typeof putApiFieldGroupFields>>>
+    export type PutApiFieldGroupFieldsMutationBody = SetGroupFieldsDto
+    export type PutApiFieldGroupFieldsMutationError = unknown
+
+    /**
+ * @summary Set fields for a group (replace all)
+ */
+export const usePutApiFieldGroupFields = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiFieldGroupFields>>, TError,{id: string;data: SetGroupFieldsDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiFieldGroupFields>>,
+        TError,
+        {id: string;data: SetGroupFieldsDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPutApiFieldGroupFieldsMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

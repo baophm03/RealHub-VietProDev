@@ -18,8 +18,11 @@ export interface Plan {
   updatedAt?: string;
 }
 
-export interface Rule extends Omit<CommissionRuleDto, "splits"> {
+export interface Rule extends Omit<CommissionRuleDto, "splits" | "conditionsJson"> {
   id?: string;
+  dealType?: string;
+  propertyTypeId?: string;
+  sellingMode?: string;
   splits: Split[];
 }
 
@@ -81,6 +84,22 @@ export const splitTypeOptions: { value: string; label: string }[] = [
   { value: "FIXED", label: "Số tiền" },
 ];
 
+export const dealTypeOptions: { value: string; label: string }[] = [
+  { value: "", label: "Tất cả loại giao dịch" },
+  { value: "SALE", label: "Bán" },
+  { value: "RENT", label: "Cho thuê" },
+  { value: "TRANSFER", label: "Chuyển nhượng" },
+];
+
+export const sellingModeOptions: { value: string; label: string }[] = [
+  { value: "", label: "Tất cả chế độ khai thác" },
+  { value: "SELF_SELL", label: "Tự bán" },
+  { value: "SALES_DISTRIBUTION", label: "Sales khai thác" },
+  { value: "HYBRID", label: "Kết hợp" },
+  { value: "INTERNAL_ONLY", label: "Nội bộ" },
+  { value: "AGENCY_DISTRIBUTION", label: "Phân phối agency" },
+];
+
 // ── Helpers ──────────────────────────────────────────────
 
 export function formatDate(iso?: string | null) {
@@ -100,7 +119,9 @@ export function emptyRule(): Rule {
   return {
     name: "",
     priority: 0,
-    conditionsJson: {},
+    dealType: "",
+    propertyTypeId: "",
+    sellingMode: "",
     calculationType: "PERCENT",
     calculationValue: 0,
     calculationBase: "EXPECTED_VALUE",
