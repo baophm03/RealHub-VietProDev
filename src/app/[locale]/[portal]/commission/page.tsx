@@ -28,6 +28,18 @@ export default function CommissionPage() {
             <p className="text-sm text-foreground-muted">Tạo ước tính, xác nhận, duyệt và thanh toán hoa hồng</p>
           </div>
         </Link>
+        <Link
+          href={portalPath("/commission/reports")}
+          className="group flex flex-col gap-4 rounded-lg border border-border bg-surface p-6 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.08)]"
+        >
+          <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
+            <BarChart3 size={24} className="text-primary" />
+          </div>
+          <div>
+            <h3 className="font-serif text-lg font-semibold">Báo cáo hoa hồng</h3>
+            <p className="text-sm text-foreground-muted">Tổng quan hoa hồng theo trạng thái, vai trò và thời gian</p>
+          </div>
+        </Link>
       </div>
     </div>
   );

@@ -140,6 +140,11 @@ export const navGroups: NavGroup[] = [
         icon: UserCog,
         permission: { action: "VIEW", subject: "USER" },
       },
+    ],
+  },
+  {
+    label: "Cài đặt",
+    items: [
       {
         label: "Cài đặt",
         href: `/${entryPortal?.slug}/settings`,

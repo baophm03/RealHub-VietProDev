@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import {
   getApiPropertyCode,
@@ -25,6 +26,8 @@ import { ListingTags } from "./_components/listing-tags";
 import { ListingMap } from "./_components/listing-map";
 import { ContactSidebar } from "./_components/contact-sidebar";
 import { FeaturedPropertiesCarousel } from "@/components/shared/featured-properties-carousel";
+import { generateSeoMetadata } from "@/lib/seo";
+import { buildPropertyDetailContext } from "@/lib/seo-context";
 
 type Props = {
   params: Promise<{ locale: string; propertyCode: string }>;
@@ -32,6 +35,32 @@ type Props = {
 
 export const dynamic = "force-static";
 export const revalidate = 1800;
+
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata> {
+  const { propertyCode } = await params;
+  try {
+    const propertyRes = await getApiPropertyCode(propertyCode);
+    const property = (propertyRes as unknown as GetPropertyItemResponse)?.data;
+    if (!property) {
+      return generateSeoMetadata("PROPERTY_DETAIL", {}, {
+        title: "Chi tiết bất động sản - RealHub",
+        description: "Xem chi tiết bất động sản trên RealHub.",
+      });
+    }
+    const context = buildPropertyDetailContext(property);
+    return generateSeoMetadata("PROPERTY_DETAIL", context, {
+      title: `${property.title} - RealHub`,
+      description: `${property.title} tại ${context.location || "Việt Nam"}`,
+    });
+  } catch {
+    return generateSeoMetadata("PROPERTY_DETAIL", {}, {
+      title: "Chi tiết bất động sản - RealHub",
+      description: "Xem chi tiết bất động sản trên RealHub.",
+    });
+  }
+}
 
 export async function generateStaticParams() {
   const propertiesRes = await getApiProperties({

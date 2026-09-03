@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Plus, TrendingUp, Filter, Trash2, Pencil, MoreVertical, CheckCircle2, Layers } from "lucide-react";
+import { Plus, TrendingUp, Trash2, Pencil, MoreVertical, CheckCircle2, Layers } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Can } from "@casl/react";
 import { ability } from "@/config/casl/ability";
@@ -358,15 +358,18 @@ export default function CommissionsSettingsPage() {
         }
       />
 
-      {/* Search + filter bar */}
+      {/* Count + filter bar */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-foreground-muted">
+          <span className="font-medium text-foreground">{filtered.length}</span> kế hoạch
+        </p>
         <div className="flex items-center gap-2">
           <Input
             type="search"
             placeholder="Tìm kiếm kế hoạch..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full sm:w-auto min-w-0"
+            className="w-full sm:w-[280px]"
           />
           <Select
             value={statusFilter}
@@ -387,9 +390,6 @@ export default function CommissionsSettingsPage() {
               ))}
             </SelectContent>
           </Select>
-          <Button variant="outline" size="icon" aria-label="Bộ lọc" className="shrink-0">
-            <Filter size={16} />
-          </Button>
         </div>
       </div>
 

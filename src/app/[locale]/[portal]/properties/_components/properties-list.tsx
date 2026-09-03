@@ -10,7 +10,7 @@ import {
   Send,
   Trash2,
 } from "lucide-react";
-import { formatPrice } from "@/utils";
+import { formatPrice, formatLocationShort } from "@/utils";
 import { Can } from "@casl/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -125,10 +125,12 @@ export function PropertiesList() {
       ),
     },
     {
-      accessorKey: "address",
+      id: "location",
       header: "Vị trí",
       cell: ({ row }) => (
-        <span className="text-sm text-foreground-muted">{row.original.address ?? "-"}</span>
+        <span className="text-sm text-foreground-muted">
+          {formatLocationShort(row.original)}
+        </span>
       ),
     },
     {

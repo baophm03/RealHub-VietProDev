@@ -1,9 +1,19 @@
+import type { Metadata } from "next";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { ContactForm } from "./_components/contact-form";
 import { RevealSection } from "@/components/shared/reveal-section";
 import { PageBanner } from "@/components/shared/page-banner";
+import { generateSeoMetadata } from "@/lib/seo";
+import { buildStaticContext } from "@/lib/seo-context";
 
 export const dynamic = "force-static";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generateSeoMetadata("CONTACT", buildStaticContext(), {
+    title: "Liên hệ - RealHub",
+    description: "Liên hệ với RealHub để được hỗ trợ nhanh nhất.",
+  });
+}
 
 export default function ContactPage() {
   return (

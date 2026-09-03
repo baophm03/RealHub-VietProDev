@@ -14,6 +14,8 @@ import {
   ShieldCheck,
   UserCog,
   Users,
+  Building,
+  ScrollText,
 } from "lucide-react";
 import type { Actions, Features } from "@/config/casl/ability";
 import { portalEntries } from "@/config/portal-entry";
@@ -147,6 +149,23 @@ export const navGroups: NavGroup[] = [
         icon: UserCog,
         permission: { action: "VIEW", subject: "USER" },
       },
+      {
+        label: "Audit logs",
+        href: `/${entryPortal?.slug}/audit-logs`,
+        icon: ScrollText,
+        permission: { action: "READ", subject: "AUDIT" },
+      },
+      {
+        label: "Tenants",
+        href: `/${entryPortal?.slug}/tenants`,
+        icon: Building,
+        permission: { action: "READ", subject: "TENANT" },
+      },
+    ],
+  },
+  {
+    label: "Cài đặt",
+    items: [
       {
         label: "Cài đặt",
         href: `/${entryPortal?.slug}/settings`,

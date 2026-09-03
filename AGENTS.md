@@ -35,7 +35,7 @@ GUEST, CUSTOMER, OWNER, SALES, COLLABORATOR (CTV), TEAM_LEADER, AGENCY_ADMIN, OP
 SELF_SELL, SALES_DISTRIBUTION, HYBRID, INTERNAL_ONLY, AGENCY_DISTRIBUTION
 
 ## FE Tech Stack
-Next.js 16 App Router + React 19 + Tailwind CSS 4 + Zustand + TanStack Query v5 + React Hook Form + Zod + Phosphor Icons + Recharts + Base UI + react-dropzone + date-fns + Leaflet + Framer Motion
+Next.js 16 App Router + React 19 + Tailwind CSS 4 + Zustand + TanStack Query v5 + React Hook Form + Zod + Lucide React + Recharts + Base UI + react-dropzone + date-fns + Leaflet + Framer Motion
 
 ## Dev Environment
 - API: `http://localhost:3001/api`

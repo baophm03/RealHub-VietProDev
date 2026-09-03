@@ -75,7 +75,8 @@ export interface Property {
   street: { id: string; name: string; code: string } | null;
   zone: { id: string; name: string; code: string } | null;
   project: { id: string; name: string; code: string; developer: string | null } | null;
-  address?: string;
+  addressPublic: string | null;
+  addressPrivate: string | null;
   latitude?: number;
   longitude?: number;
   bedrooms?: number;

@@ -7,6 +7,7 @@ import {
   Headset,
   House,
   Key,
+  Mail,
   Newspaper,
   Settings,
   ShieldCheck,
@@ -81,6 +82,12 @@ export const navGroups: NavGroup[] = [
         permission: { action: "VIEW", subject: "PROPERTY_CONTACT" },
       },
       {
+        label: "Liên hệ",
+        href: `/${entryPortal?.slug}/contact-requests`,
+        icon: Mail,
+        permission: { action: "VIEW", subject: "CONTACT_REQUEST" },
+      },
+      {
         label: "Lịch hẹn",
         href: `/${entryPortal?.slug}/appointments`,
         icon: Calendar,
@@ -133,6 +140,11 @@ export const navGroups: NavGroup[] = [
         icon: UserCog,
         permission: { action: "VIEW", subject: "USER" },
       },
+    ],
+  },
+  {
+    label: "Cài đặt",
+    items: [
       {
         label: "Cài đặt",
         href: `/${entryPortal?.slug}/settings`,

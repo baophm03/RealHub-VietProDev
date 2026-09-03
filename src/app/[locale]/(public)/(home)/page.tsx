@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { Hero } from "./_components/hero";
 import { StatsBar } from "./_components/stats-bar";
@@ -6,6 +7,8 @@ import { FeaturedProjects } from "./_components/featured-projects";
 import { FeaturedNews } from "./_components/featured-news";
 import { CtaSection } from "./_components/cta-section";
 import { RevealSection } from "@/components/shared/reveal-section";
+import { generateSeoMetadata } from "@/lib/seo";
+import { buildStaticContext } from "@/lib/seo-context";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -13,6 +16,13 @@ type Props = {
 
 export const dynamic = "force-static";
 export const revalidate = 1800;
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generateSeoMetadata("HOME", buildStaticContext(), {
+    title: "RealHub - Nền tảng bất động sản",
+    description: "Hệ thống mua bán quản lý bất động sản cho đa người dùng",
+  });
+}
 
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;

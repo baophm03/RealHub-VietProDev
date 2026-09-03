@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { getApiNewsCategories } from "@/lib/api/endpoints/news-categories";
 import { getApiNews, getApiNewsCategoryCode } from "@/lib/api/endpoints/news";
@@ -12,6 +13,8 @@ import { NewsGrid } from "../_components/news-grid";
 import { NewsCarousel } from "@/components/shared/news-carousel";
 import { RevealSection } from "@/components/shared/reveal-section";
 import { PageBanner } from "@/components/shared/page-banner";
+import { generateSeoMetadata } from "@/lib/seo";
+import { buildBlogListContext } from "@/lib/seo-context";
 
 export const ALL_SLUG = "all";
 
@@ -21,6 +24,21 @@ type Props = {
 
 export const dynamic = "force-static";
 export const revalidate = 1800;
+
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata> {
+  const { categoryCode } = await params;
+  const categoryName = categoryCode === ALL_SLUG ? "Tin tức" : categoryCode;
+  return generateSeoMetadata(
+    "BLOG_LIST",
+    buildBlogListContext(categoryName),
+    {
+      title: `${categoryName} - RealHub`,
+      description: `Tin tức bất động sản - ${categoryName}`,
+    },
+  );
+}
 
 export async function generateStaticParams() {
   const catsRes = await getApiNewsCategories({ limit: "100" });

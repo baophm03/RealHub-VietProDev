@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import {
   getApiNews,
@@ -12,6 +13,8 @@ import { Link } from "@/i18n/navigation";
 import { ArrowLeft, ImageIcon } from "lucide-react";
 import { NewsContent } from "./_components/news-content";
 import { RelatedNews } from "./_components/related-news";
+import { generateSeoMetadata } from "@/lib/seo";
+import { buildBlogDetailContext } from "@/lib/seo-context";
 
 type Props = {
   params: Promise<{ locale: string; categoryCode: string; newsSlug: string }>;
@@ -19,6 +22,32 @@ type Props = {
 
 export const dynamic = "force-static";
 export const revalidate = 1800;
+
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata> {
+  const { newsSlug } = await params;
+  try {
+    const newsRes = await getApiNewsSlug(newsSlug);
+    const news = (newsRes as unknown as GetNewsItemResponse)?.data;
+    if (!news) {
+      return generateSeoMetadata("BLOG_DETAIL", {}, {
+        title: "Tin tức - RealHub",
+        description: "Tin tức bất động sản từ RealHub.",
+      });
+    }
+    const context = buildBlogDetailContext(news, newsSlug);
+    return generateSeoMetadata("BLOG_DETAIL", context, {
+      title: `${news.title} - RealHub`,
+      description: (news as any)?.excerpt ?? news.title,
+    });
+  } catch {
+    return generateSeoMetadata("BLOG_DETAIL", {}, {
+      title: "Tin tức - RealHub",
+      description: "Tin tức bất động sản từ RealHub.",
+    });
+  }
+}
 
 export async function generateStaticParams() {
   const newsRes = await getApiNews({ limit: "100" });
