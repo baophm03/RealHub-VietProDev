@@ -54,7 +54,7 @@ export function RuleSection({
     .reduce((acc, s) => acc + (Number(s.splitValue) || 0), 0);
 
   const { data: propertyTypesData } = useGetApiPropertyTypes();
-  const propertyTypes = (propertyTypesData as any) ?? [];
+  const propertyTypes = ((propertyTypesData as any)?.data as { id: string; name: string }[]) ?? [];
 
   return (
     <section className="flex flex-col gap-3 rounded-lg border border-border bg-surface-muted/20 p-4">

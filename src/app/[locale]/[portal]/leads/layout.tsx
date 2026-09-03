@@ -1,17 +1,19 @@
 "use client";
 
 import { ability } from "@/config/casl/ability";
-import { useEffect } from "react";
 import { notFound } from "next/navigation";
+import { useAuthStore } from "@/lib/stores/auth-store";
+import { useUserStore } from "@/lib/stores/user-store";
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
-  const checkPermission = ability.can('VIEW', 'LEAD');
+  const hasHydrated = useAuthStore((s) => s._hasHydrated);
+  const user = useUserStore((s) => s.user);
 
-  useEffect(() => {
-    if (!checkPermission) {
-      return notFound();
-    }
-  }, [checkPermission]);
+  if (!hasHydrated || !user) return null;
+
+  if (!ability.can('VIEW', 'LEAD')) {
+    notFound();
+  }
 
   return children;
 }
