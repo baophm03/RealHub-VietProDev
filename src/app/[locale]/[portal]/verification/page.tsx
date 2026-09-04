@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePortalPath } from "@/lib/hooks/use-portal";
 import { usePagination } from "@/lib/hooks/use-pagination";
-import { formatPrice } from "@/utils";
+import { formatPrice, formatLocationShort } from "@/utils";
 import {
   CircleCheck,
   CircleX,
@@ -140,15 +140,11 @@ export default function VerificationPage() {
       ),
     },
     {
-      accessorKey: "address",
+      id: "location",
       header: "Vị trí",
       cell: ({ row }) => (
         <span className="text-sm text-foreground-muted">
-          {row.original.address ??
-            [row.original.district?.name, row.original.province?.name]
-              .filter(Boolean)
-              .join(", ") ??
-            "-"}
+          {formatLocationShort(row.original)}
         </span>
       ),
     },

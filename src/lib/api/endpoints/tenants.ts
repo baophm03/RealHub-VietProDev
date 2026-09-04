@@ -30,12 +30,209 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  CreateTenantDto
+  CreateTenantDto,
+  GetApiTenantsParams,
+  ToggleTenantFeatureDto,
+  UpsertTenantSettingDto
 } from '../models';
 
 import { customInstance } from '../mutator/custom-instance';
 
 
+
+
+
+/**
+ * @summary List all tenants (super admin)
+ */
+export const getApiTenants = (
+    params?: GetApiTenantsParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/tenants`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiTenantsInfiniteQueryKey = (params?: GetApiTenantsParams,) => {
+    return [
+    'infinite', `/api/tenants`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiTenantsQueryKey = (params?: GetApiTenantsParams,) => {
+    return [
+    `/api/tenants`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiTenantsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiTenants>>>, TError = unknown>(params?: GetApiTenantsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiTenantsInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiTenants>>> = ({ signal }) => getApiTenants(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiTenantsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiTenants>>>
+export type GetApiTenantsInfiniteQueryError = unknown
+
+
+export function useGetApiTenantsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiTenants>>>, TError = unknown>(
+ params: undefined |  GetApiTenantsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiTenants>>,
+          TError,
+          Awaited<ReturnType<typeof getApiTenants>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiTenantsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiTenants>>>, TError = unknown>(
+ params?: GetApiTenantsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiTenants>>,
+          TError,
+          Awaited<ReturnType<typeof getApiTenants>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiTenantsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiTenants>>>, TError = unknown>(
+ params?: GetApiTenantsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all tenants (super admin)
+ */
+
+export function useGetApiTenantsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiTenants>>>, TError = unknown>(
+ params?: GetApiTenantsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiTenantsInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all tenants (super admin)
+ */
+export const prefetchGetApiTenantsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiTenants>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiTenantsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiTenantsInfiniteQueryOptions(params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiTenantsQueryOptions = <TData = Awaited<ReturnType<typeof getApiTenants>>, TError = unknown>(params?: GetApiTenantsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiTenantsQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiTenants>>> = ({ signal }) => getApiTenants(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiTenantsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiTenants>>>
+export type GetApiTenantsQueryError = unknown
+
+
+export function useGetApiTenants<TData = Awaited<ReturnType<typeof getApiTenants>>, TError = unknown>(
+ params: undefined |  GetApiTenantsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiTenants>>,
+          TError,
+          Awaited<ReturnType<typeof getApiTenants>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiTenants<TData = Awaited<ReturnType<typeof getApiTenants>>, TError = unknown>(
+ params?: GetApiTenantsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiTenants>>,
+          TError,
+          Awaited<ReturnType<typeof getApiTenants>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiTenants<TData = Awaited<ReturnType<typeof getApiTenants>>, TError = unknown>(
+ params?: GetApiTenantsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all tenants (super admin)
+ */
+
+export function useGetApiTenants<TData = Awaited<ReturnType<typeof getApiTenants>>, TError = unknown>(
+ params?: GetApiTenantsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiTenantsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary List all tenants (super admin)
+ */
+export const prefetchGetApiTenantsQuery = async <TData = Awaited<ReturnType<typeof getApiTenants>>, TError = unknown>(
+ queryClient: QueryClient, params?: GetApiTenantsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiTenantsQueryOptions(params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
 
 
 
@@ -687,11 +884,14 @@ export const prefetchGetApiTenantSettingsQuery = async <TData = Awaited<ReturnTy
  */
 export const patchApiTenantSetting = (
     id: string,
+    upsertTenantSettingDto: UpsertTenantSettingDto,
  ) => {
       
       
       return customInstance<unknown>(
-      {url: `/api/tenants/${id}/settings`, method: 'PATCH'
+      {url: `/api/tenants/${id}/settings`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: upsertTenantSettingDto
     },
       );
     }
@@ -699,8 +899,8 @@ export const patchApiTenantSetting = (
 
 
 export const getPatchApiTenantSettingMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiTenantSetting>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiTenantSetting>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiTenantSetting>>, TError,{id: string;data: UpsertTenantSettingDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiTenantSetting>>, TError,{id: string;data: UpsertTenantSettingDto}, TContext> => {
 
 const mutationKey = ['patchApiTenantSetting'];
 const {mutation: mutationOptions} = options ?
@@ -712,10 +912,10 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiTenantSetting>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiTenantSetting>>, {id: string;data: UpsertTenantSettingDto}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiTenantSetting(id,)
+          return  patchApiTenantSetting(id,data,)
         }
 
         
@@ -724,18 +924,18 @@ const {mutation: mutationOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiTenantSettingMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiTenantSetting>>>
-    
+    export type PatchApiTenantSettingMutationBody = UpsertTenantSettingDto
     export type PatchApiTenantSettingMutationError = unknown
 
     /**
  * @summary Upsert a tenant setting
  */
 export const usePatchApiTenantSetting = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiTenantSetting>>, TError,{id: string}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiTenantSetting>>, TError,{id: string;data: UpsertTenantSettingDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiTenantSetting>>,
         TError,
-        {id: string},
+        {id: string;data: UpsertTenantSettingDto},
         TContext
       > => {
 
@@ -941,11 +1141,14 @@ export const prefetchGetApiTenantFeaturesQuery = async <TData = Awaited<ReturnTy
  */
 export const patchApiTenantFeature = (
     id: string,
+    toggleTenantFeatureDto: ToggleTenantFeatureDto,
  ) => {
       
       
       return customInstance<unknown>(
-      {url: `/api/tenants/${id}/features`, method: 'PATCH'
+      {url: `/api/tenants/${id}/features`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: toggleTenantFeatureDto
     },
       );
     }
@@ -953,8 +1156,8 @@ export const patchApiTenantFeature = (
 
 
 export const getPatchApiTenantFeatureMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiTenantFeature>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof patchApiTenantFeature>>, TError,{id: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiTenantFeature>>, TError,{id: string;data: ToggleTenantFeatureDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof patchApiTenantFeature>>, TError,{id: string;data: ToggleTenantFeatureDto}, TContext> => {
 
 const mutationKey = ['patchApiTenantFeature'];
 const {mutation: mutationOptions} = options ?
@@ -966,10 +1169,10 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiTenantFeature>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchApiTenantFeature>>, {id: string;data: ToggleTenantFeatureDto}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  patchApiTenantFeature(id,)
+          return  patchApiTenantFeature(id,data,)
         }
 
         
@@ -978,18 +1181,18 @@ const {mutation: mutationOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PatchApiTenantFeatureMutationResult = NonNullable<Awaited<ReturnType<typeof patchApiTenantFeature>>>
-    
+    export type PatchApiTenantFeatureMutationBody = ToggleTenantFeatureDto
     export type PatchApiTenantFeatureMutationError = unknown
 
     /**
  * @summary Toggle a tenant feature flag
  */
 export const usePatchApiTenantFeature = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiTenantFeature>>, TError,{id: string}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchApiTenantFeature>>, TError,{id: string;data: ToggleTenantFeatureDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchApiTenantFeature>>,
         TError,
-        {id: string},
+        {id: string;data: ToggleTenantFeatureDto},
         TContext
       > => {
 

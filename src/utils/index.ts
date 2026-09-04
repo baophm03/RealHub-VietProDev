@@ -3,4 +3,6 @@ export {
     formatPriceWithTransaction,
     formatPricePerSqm,
     formatBudget,
-} from "./format";
+} from "./price";
+
+export { formatLocation, formatLocationShort } from "./location";

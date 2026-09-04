@@ -140,7 +140,7 @@ Xem chi tiết tại [`design.md`](./design.md) — nguồn sự thật duy nh�
 - **Typography**: Geist (sans) + Newsreader (serif heading) + Geist Mono (data)
 - **Layout**: Asymmetric bento grid, editorial split, generous whitespace
 - **Motion**: Spring physics, cubic-bezier, scroll reveal, subtle hover
-- **Icons**: Phosphor Icons (regular/duotone weight)
+- **Icons**: Lucide React
 
 ## Scripts
 

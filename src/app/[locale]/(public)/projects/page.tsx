@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { getApiProjects } from "@/lib/api/endpoints/projects";
 import type { GetProjectsResponse } from "@/lib/api/types/projects";
 import { RevealSection } from "@/components/shared/reveal-section";
 import { ProjectCard } from "@/components/shared/project-card";
 import { PageBanner } from "@/components/shared/page-banner";
+import { generateSeoMetadata } from "@/lib/seo";
+import { buildPropertyListContext } from "@/lib/seo-context";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -11,6 +14,13 @@ type Props = {
 
 export const dynamic = "force-static";
 export const revalidate = 1800;
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generateSeoMetadata("PROPERTY_LISTING", buildPropertyListContext(), {
+    title: "Danh sách dự án - RealHub",
+    description: "Khám phá các dự án bất động sản nổi bật từ RealHub.",
+  });
+}
 
 export default async function ProjectsPage({ params }: Props) {
   const { locale } = await params;

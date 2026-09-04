@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { getApiProjectCode, getApiProjects } from "@/lib/api/endpoints/projects";
 import type {
@@ -23,9 +24,12 @@ import {
   Square
 } from "lucide-react";
 import { formatPriceWithTransaction } from "@/utils";
-import type { ProjectProperty } from "@/lib/api/types/projects";
-import { getProjectPriceRange } from "@/utils/project-helpers";
+import { getProjectScale, getProjectPriceRange, getProjectImage, getProjectImages, getPropertyImageUrl } from "@/utils/project-helpers";
+import { pickDynamicValue } from "@/components/shared/property-utils";
+import { formatLocationShort } from "@/utils";
 import { ProjectCard } from "@/components/shared/project-card";
+import { generateSeoMetadata } from "@/lib/seo";
+import { buildProjectDetailContext } from "@/lib/seo-context";
 
 type Props = {
   params: Promise<{ locale: string; code: string }>;
@@ -33,6 +37,32 @@ type Props = {
 
 export const dynamic = "force-static";
 export const revalidate = 1800;
+
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata> {
+  const { code } = await params;
+  try {
+    const projectRes = await getApiProjectCode(code);
+    const project = (projectRes as unknown as GetProjectItemResponse)?.data;
+    if (!project) {
+      return generateSeoMetadata("PROPERTY_DETAIL", {}, {
+        title: "Chi tiết dự án - RealHub",
+        description: "Xem chi tiết dự án bất động sản trên RealHub.",
+      });
+    }
+    const context = buildProjectDetailContext(project);
+    return generateSeoMetadata("PROPERTY_DETAIL", context, {
+      title: `${project.name} - RealHub`,
+      description: `${project.name} - ${project.developer ?? "Dự án bất động sản"}`,
+    });
+  } catch {
+    return generateSeoMetadata("PROPERTY_DETAIL", {}, {
+      title: "Chi tiết dự án - RealHub",
+      description: "Xem chi tiết dự án bất động sản trên RealHub.",
+    });
+  }
+}
 
 export async function generateStaticParams() {
   const projectsRes = await getApiProjects({ limit: "100" });
@@ -46,28 +76,6 @@ const projectStatusLabels: Record<string, string> = {
   ACTIVE: "Đang hoạt động",
   INACTIVE: "Ngừng hoạt động",
 };
-
-function getProjectLocation(project: Project): string {
-  const parts: string[] = [];
-  if (project.district?.name) parts.push(project.district.name);
-  if (project.province?.name) parts.push(project.province.name);
-  return parts.length > 0 ? parts.join(", ") : "Đang cập nhật";
-}
-
-function getProjectScale(project: Project): string {
-  const count = project._count?.properties;
-  if (count && count > 0) return `${count.toLocaleString("vi-VN")} BĐS`;
-  return "Đang cập nhật";
-}
-
-function getProjectImages(project: Project): { url: string; caption: string | null; id: string }[] {
-  const mediaList = project.media;
-  if (!mediaList || mediaList.length === 0) return [];
-  return mediaList
-    .filter((m) => m.type === "IMAGE" || m.file?.mimeType?.startsWith("image/"))
-    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-    .map((m) => ({ url: m.file?.url ?? "", caption: m.caption, id: m.id }));
-}
 
 const buttonBase =
   "inline-flex shrink-0 items-center justify-center rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none select-none gap-1.5 h-10 px-2.5 w-full";
@@ -94,24 +102,6 @@ const propertyBadgeBase =
 
 const BEDROOM_KEYS = ["bed_room_count", "bedroom_count", "bedrooms", "beds", "phong_ngu"];
 const BATHROOM_KEYS = ["bathroom_count", "bathrooms", "baths", "pathroom_count", "phong_tam"];
-
-function pickDynamicValue(
-  dynamicValues: Record<string, unknown> | null | undefined,
-  keys: string[],
-): string | null {
-  if (!dynamicValues) return null;
-  for (const k of keys) {
-    const v = dynamicValues[k];
-    if (v !== undefined && v !== null && v !== "") return String(v);
-  }
-  return null;
-}
-
-function firstPropertyImageUrl(property: ProjectProperty): string | null {
-  if (!property.media || property.media.length === 0) return null;
-  const imageItem = property.media.filter((m) => m.file?.url)[0];
-  return imageItem?.file?.url ?? null;
-}
 
 export default async function ProjectDetailPage({ params }: Props) {
   const { locale, code } = await params;
@@ -146,7 +136,7 @@ export default async function ProjectDetailPage({ params }: Props) {
     );
   }
 
-  const location = getProjectLocation(project);
+  const location = formatLocationShort(project, "Đang cập nhật");
   const scale = getProjectScale(project);
   const projectImages = getProjectImages(project);
   const heroImage = projectImages[0]?.url || null;
@@ -289,7 +279,7 @@ export default async function ProjectDetailPage({ params }: Props) {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
             {properties.map((property) => {
               const badge = businessStatusBadge[property.businessStatus ?? ""];
-              const imageUrl = firstPropertyImageUrl(property);
+              const imageUrl = getPropertyImageUrl(property);
               const bedrooms = pickDynamicValue(property.dynamicValuesJson, BEDROOM_KEYS);
               const bathrooms = pickDynamicValue(property.dynamicValuesJson, BATHROOM_KEYS);
               const tx = property.transactionType ?? "";

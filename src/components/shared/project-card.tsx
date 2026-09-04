@@ -3,9 +3,10 @@
 import type { Project } from "@/lib/api/types/projects";
 import { Link } from "@/i18n/navigation";
 import { MapPin } from "lucide-react";
-import { getProjectLocation, getProjectScale, getProjectImage, getProjectPriceRange } from "@/utils/project-helpers";
+import { getProjectScale, getProjectImage, getProjectPriceRange } from "@/utils/project-helpers";
+import { formatLocationShort } from "@/utils";
 
-export { getProjectLocation, getProjectScale, getProjectImage, getProjectPriceRange };
+export { getProjectScale, getProjectImage, getProjectPriceRange };
 
 interface ProjectCardProps {
   project: Project;
@@ -51,7 +52,7 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
 
         <p className="flex items-center gap-1.5 text-sm text-foreground-muted">
           <MapPin size={14} className="shrink-0 mt-0.5" />
-          <span className="line-clamp-2">{getProjectLocation(project)}</span>
+          <span className="line-clamp-2">{formatLocationShort(project, "Đang cập nhật")}</span>
         </p>
 
         <div className="flex flex-col gap-2 border-t border-border pt-3 text-sm">

@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { usePortalPath } from "@/lib/hooks/use-portal";
-import { Filter, Plus, UserX, Users } from "lucide-react";
+import { Plus, UserX, Users } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -228,9 +228,6 @@ export default function CustomersPage() {
             onChange={(e) => setSearch(e.target.value)}
             className="w-full sm:w-auto min-w-0 sm:min-w-[260px]"
           />
-          <Button variant="outline" size="icon" aria-label="Bộ lọc" className="shrink-0">
-            <Filter size={16} />
-          </Button>
         </div>
 
         <div className="flex items-center gap-2">

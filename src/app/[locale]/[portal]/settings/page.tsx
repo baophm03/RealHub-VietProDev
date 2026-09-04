@@ -9,6 +9,9 @@ import {
   MapPin,
   Handshake,
   GitBranch,
+  Eye,
+  Globe,
+  Bell,
 } from "lucide-react";
 
 const settingModules = [
@@ -41,6 +44,30 @@ const settingModules = [
     icon: Handshake,
     title: "Phụ trách sản phẩm",
     description: "Chính sách nhận phụ trách: số sales, thời hạn, khu vực",
+  },
+  {
+    href: "/settings/visibility",
+    icon: Eye,
+    title: "Hiển thị dữ liệu",
+    description: "Quy định role nào thấy trường nào, mask dữ liệu nhạy cảm",
+  },
+  // {
+  //   href: "/settings/lead-protection",
+  //   icon: Shield,
+  //   title: "Bảo vệ lead",
+  //   description: "Thời gian bảo vệ, reclaim, reassign và xử lý tranh chấp",
+  // },
+  {
+    href: "/settings/seo",
+    icon: Globe,
+    title: "SEO templates",
+    description: "Template title, description, OG, robots cho từng loại trang",
+  },
+  {
+    href: "/settings/notifications",
+    icon: Bell,
+    title: "Notifications",
+    description: "Rule gửi thông báo tự động + template nội dung theo event",
   },
 ];
 

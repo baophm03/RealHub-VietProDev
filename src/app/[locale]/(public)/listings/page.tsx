@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { setRequestLocale } from "next-intl/server";
 import { ListingsFilterSection } from "./_components/listings-filter-section";
@@ -6,11 +7,20 @@ import {
   ListingsFilterSkeleton,
   ListingsContentSkeleton,
 } from "./_components/listings-skeletons";
+import { generateSeoMetadata } from "@/lib/seo";
+import { buildPropertyListContext } from "@/lib/seo-context";
 
 type Props = {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generateSeoMetadata("PROPERTY_LISTING", buildPropertyListContext(), {
+    title: "Danh sách bất động sản - RealHub",
+    description: "Khám phá danh sách bất động sản bán và cho thuê từ RealHub.",
+  });
+}
 
 export default async function ListingsPage({ params, searchParams }: Props) {
   const { locale } = await params;
