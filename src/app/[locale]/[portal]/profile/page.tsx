@@ -114,7 +114,6 @@ export default function ProfilePage() {
         data: {
           currentPassword: data.currentPassword,
           newPassword: data.newPassword,
-          confirmPassword: data.confirmPassword,
         },
       });
       toast.success("Đổi mật khẩu thành công. Vui lòng đăng nhập lại.");

@@ -11,7 +11,5 @@ export interface RegisterDto {
   email: string;
   /** @minLength 10 */
   password: string;
-  /** @minLength 10 */
-  confirmPassword: string;
   phone?: string;
 }
