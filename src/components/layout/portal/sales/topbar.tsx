@@ -22,6 +22,7 @@ import {
 import { useTheme } from "@/lib/hooks/use-theme";
 import { usePostApiLogout } from "@/lib/api/endpoints/auth";
 import { usePortalPath } from "@/lib/hooks/use-portal";
+import { NotificationMenu } from "@/components/layout/portal/notification-menu";
 
 export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const user = useUserStore((s) => s.user);
@@ -80,15 +81,7 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
           {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
         </Button>
 
-        {/* <Button
-          variant="ghost"
-          size="icon"
-          className="relative"
-          aria-label="Notifications"
-        >
-          <Bell size={18} />
-          <span className="absolute right-2 top-2 size-2 rounded-full bg-red-500 ring-2 ring-surface" />
-        </Button> */}
+        <NotificationMenu />
 
         <DropdownMenu>
           <DropdownMenuTrigger
