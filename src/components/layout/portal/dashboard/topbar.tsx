@@ -88,9 +88,9 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
             className="flex items-center gap-2 rounded-full p-0 hover:bg-transparent transition-all duration-300"
           >
             <Avatar className="size-10 rounded-full overflow-hidden">
-              {user?.avatarUrl && (
+              {user?.avatarFile?.url && (
                 <AvatarImage
-                  src={user.avatarUrl}
+                  src={user.avatarFile?.url}
                   alt={user?.fullName ?? "User"}
                 />
               )}

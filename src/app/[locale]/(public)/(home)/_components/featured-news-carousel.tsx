@@ -74,10 +74,10 @@ export function FeaturedNewsCarousel({ newsList }: FeaturedNewsCarouselProps) {
                 )}
 
                 <div className="mt-auto flex items-center gap-2.5">
-                  {news.creator?.avatarUrl ? (
+                  {news.creator?.avatarFile?.url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={news.creator.avatarUrl}
+                      src={news.creator.avatarFile.url}
                       alt={news.creator.fullName}
                       className="h-9 w-9 shrink-0 rounded-full object-cover"
                     />

@@ -71,7 +71,7 @@ export default function LoginPage() {
             email: profileData.email,
             fullName: profileData.fullName,
             phone: profileData.phone,
-            avatarUrl: profileData.avatarUrl,
+            avatarFile: profileData.avatarFile,
             status: profileData.status,
             roles: (profileData.roles ?? []).map(mapRole),
             lastLoginAt: profileData.lastLoginAt,

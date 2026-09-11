@@ -20,7 +20,6 @@ import { EmptyState } from "@/components/shared/empty-state";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useGetApiProperties } from "@/lib/api/endpoints/properties";
 import { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
-import { SubmitVerificationDialog } from "./submit-verification-dialog";
 import { DeletePropertyDialog } from "./delete-property-dialog";
 
 const statusVariant: Record<string, "green" | "yellow" | "red" | "blue" | "default"> = {
@@ -239,11 +238,6 @@ export function PropertiesList() {
         />
       )}
 
-      <SubmitVerificationDialog
-        property={pendingSubmit}
-        open={!!pendingSubmit}
-        onOpenChange={(open) => !open && setPendingSubmit(null)}
-      />
       <DeletePropertyDialog
         property={pendingDelete}
         open={!!pendingDelete}

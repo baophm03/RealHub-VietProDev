@@ -106,10 +106,13 @@ export function emptyTransition(): WorkflowTransitionDto {
     toStateName: "",
     actionCode: "",
     actionLabel: "",
+    requiredRoleJson: [] as any,
     requireReason: false,
     requireAttachment: false,
   };
 }
+
+export const roleLabel: Record<string, string> = {};
 
 export function formatDate(iso?: string | null) {
   if (!iso) return "—";

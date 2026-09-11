@@ -45,7 +45,7 @@ interface Props {
 }
 
 export function NotificationRuleFormDialog({ open, onOpenChange, editing }: Props) {
-  const [eventCode, setEventCode] = useState("");
+  const [eventCode, setEventCode] = useState("LEAD_ASSIGNED");
   const [receiverType, setReceiverType] = useState<string>("SALES_AGENT");
   const [channel, setChannel] = useState<string>("IN_APP");
   const [templateId, setTemplateId] = useState<string>("");
@@ -56,7 +56,7 @@ export function NotificationRuleFormDialog({ open, onOpenChange, editing }: Prop
   const { data: templatesRaw } = useGetApiNotificationTemplates(undefined, {
     query: { enabled: open },
   });
-  const templates: any[] = Array.isArray(templatesRaw) ? templatesRaw : [];
+  const templates: any[] = (templatesRaw as any)?.data ?? [];
 
   const { mutateAsync: createRule, isPending: isCreating } = usePostApiNotificationRule({
     mutation: {
@@ -90,7 +90,7 @@ export function NotificationRuleFormDialog({ open, onOpenChange, editing }: Prop
       setTemplateId(editing.templateId ?? "");
       setIsEnabled(editing.isEnabled);
     } else {
-      setEventCode("");
+      setEventCode("LEAD_ASSIGNED");
       setReceiverType("SALES_AGENT");
       setChannel("IN_APP");
       setTemplateId("");
@@ -129,7 +129,7 @@ export function NotificationRuleFormDialog({ open, onOpenChange, editing }: Prop
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
         <DialogOverlay />
-        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{isEdit ? "Sửa notification rule" : "Tạo notification rule"}</DialogTitle>
             <DialogDescription>
@@ -142,7 +142,7 @@ export function NotificationRuleFormDialog({ open, onOpenChange, editing }: Prop
                 Event <span className="text-accent-red-text">*</span>
               </label>
               <Select value={eventCode} onValueChange={(v) => setEventCode((v as string) ?? "")}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Chọn event">
                     {(value: string) =>
                       eventCodeOptions.find((o) => o.value === value)?.label ?? value
@@ -171,7 +171,7 @@ export function NotificationRuleFormDialog({ open, onOpenChange, editing }: Prop
                   value={receiverType}
                   onValueChange={(v) => setReceiverType((v as string) ?? "SALES_AGENT")}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Chọn người nhận">
                       {(value: string) =>
                         receiverTypeOptions.find((o) => o.value === value)?.label ?? value
@@ -189,10 +189,10 @@ export function NotificationRuleFormDialog({ open, onOpenChange, editing }: Prop
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-semibold tracking-wide text-foreground-muted">
-                  Channel
+                  Hình thức nhận
                 </label>
                 <Select value={channel} onValueChange={(v) => setChannel((v as string) ?? "IN_APP")}>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Chọn channel">
                       {(value: string) =>
                         channelOptions.find((o) => o.value === value)?.label ?? value
@@ -218,7 +218,7 @@ export function NotificationRuleFormDialog({ open, onOpenChange, editing }: Prop
                 value={templateId}
                 onValueChange={(v) => setTemplateId((v as string) ?? "")}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Không dùng template">
                     {(value: string) => {
                       if (!value) return "Không dùng template";

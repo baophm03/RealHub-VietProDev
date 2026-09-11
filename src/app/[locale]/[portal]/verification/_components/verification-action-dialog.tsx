@@ -15,7 +15,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  usePatchApiProperty,
+  usePostApiPropertyTransition,
   getGetApiPropertiesQueryKey,
 } from "@/lib/api/endpoints/properties";
 import { Property } from "@/lib/api/types/properties";
@@ -50,6 +50,7 @@ const statusDescription: Record<VerificationStatus, string> = {
 export interface VerificationActionTarget {
   property: Property;
   status: VerificationStatus;
+  transitionId?: string;
 }
 
 interface VerificationActionDialogProps {
@@ -65,17 +66,21 @@ export function VerificationActionDialog({
 }: VerificationActionDialogProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { mutateAsync: patchProperty, isPending } = usePatchApiProperty();
+  const { mutateAsync: postTransition, isPending } = usePostApiPropertyTransition();
   const [confirming, setConfirming] = useState(false);
 
   const handleConfirm = async () => {
     if (!target) return;
-    const { property, status } = target;
+    const { property, status, transitionId } = target;
+    if (!transitionId) {
+      toast.error("Thiếu transitionId. Vui lòng chọn lại từ menu.");
+      return;
+    }
     setConfirming(true);
     try {
-      await patchProperty({
+      await postTransition({
         id: property.id,
-        data: { verificationStatus: status },
+        data: { transitionId },
       });
       await queryClient.invalidateQueries({
         queryKey: getGetApiPropertiesQueryKey(),

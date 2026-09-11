@@ -10,12 +10,18 @@ export interface AuthMeRole {
   permissions: AuthMePermission[];
 }
 
+export interface AuthMeAvatar {
+  id: string;
+  name: string;
+  url: string;
+}
+
 export interface AuthMeResponse {
   id: string;
   fullName: string;
   email: string;
   phone: string | null;
-  avatarUrl: string | null;
+  avatarFile: AuthMeAvatar | null;
   status: string;
   roles: AuthMeRole[];
   lastLoginAt: string | null;

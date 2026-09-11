@@ -66,7 +66,7 @@ const settingModules = [
   {
     href: "/settings/notifications",
     icon: Bell,
-    title: "Notifications",
+    title: "Thông báo",
     description: "Rule gửi thông báo tự động + template nội dung theo event",
   },
 ];

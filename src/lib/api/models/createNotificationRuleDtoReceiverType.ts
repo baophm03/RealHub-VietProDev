@@ -6,13 +6,22 @@
  * OpenAPI spec version: v1
  */
 
+/**
+ * Role code thật trong hệ thống (SALES, TEAM_LEADER, AGENCY_ADMIN, OWNER, CUSTOMER, COLLABORATOR, OPERATOR, SUPER_ADMIN) hoặc ALL_USERS / ASSIGNED_USER
+ */
 export type CreateNotificationRuleDtoReceiverType = typeof CreateNotificationRuleDtoReceiverType[keyof typeof CreateNotificationRuleDtoReceiverType];
 
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CreateNotificationRuleDtoReceiverType = {
-  SALES_AGENT: 'SALES_AGENT',
-  SALES_MANAGER: 'SALES_MANAGER',
-  TEAM_LEAD: 'TEAM_LEAD',
+  SALES: 'SALES',
+  TEAM_LEADER: 'TEAM_LEADER',
+  AGENCY_ADMIN: 'AGENCY_ADMIN',
+  OWNER: 'OWNER',
+  CUSTOMER: 'CUSTOMER',
+  COLLABORATOR: 'COLLABORATOR',
+  OPERATOR: 'OPERATOR',
+  SUPER_ADMIN: 'SUPER_ADMIN',
   ALL_USERS: 'ALL_USERS',
+  ASSIGNED_USER: 'ASSIGNED_USER',
 } as const;

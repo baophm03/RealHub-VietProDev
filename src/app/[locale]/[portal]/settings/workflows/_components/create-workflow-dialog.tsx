@@ -27,10 +27,12 @@ import type { CreateWorkflowDto } from "@/lib/api/models/createWorkflowDto";
 import type { WorkflowStateDto } from "@/lib/api/models/workflowStateDto";
 import type { WorkflowTransitionDto } from "@/lib/api/models/workflowTransitionDto";
 import { useGetApiWorkflowEntityStatusFields } from "@/lib/api/endpoints/workflow";
+import { useGetApiRoles } from "@/lib/api/endpoints/roles";
 import {
   entityTypeOptions,
   emptyState,
   emptyTransition,
+  roleLabel,
   stateColorPresets,
   type WorkflowDefinition,
 } from "./types";
@@ -45,6 +47,13 @@ interface StatusField {
   fieldKey: string;
   label: string;
   values: StatusFieldValue[];
+}
+
+interface RoleItem {
+  id: string;
+  code: string;
+  name: string;
+  status?: string;
 }
 
 interface CreateWorkflowDialogProps {
@@ -77,6 +86,15 @@ export function CreateWorkflowDialog({
   const raw = statusFieldsData as any;
   const statusFields: StatusField[] = Array.isArray(raw) ? raw : (raw?.data ?? []);
 
+  const { data: rolesRaw } = useGetApiRoles(undefined, {
+    query: { enabled: open },
+  });
+  const rolesData = (rolesRaw as any)?.data ?? (Array.isArray(rolesRaw) ? rolesRaw : []);
+  const roleOptions: { value: string; label: string }[] = (rolesData as RoleItem[])
+    .filter((r) => r?.code && r?.status !== "INACTIVE")
+    .map((r) => ({ value: r.code, label: r.name || r.code }));
+  for (const r of roleOptions) roleLabel[r.value] = r.label;
+
   // Load initial data when editing
   useEffect(() => {
     if (open && initialData) {
@@ -102,6 +120,9 @@ export function CreateWorkflowDialog({
           toStateName: t.toState.stateName,
           actionCode: t.actionCode,
           actionLabel: t.actionLabel,
+          requiredRoleJson: Array.isArray(t.requiredRoleJson)
+            ? (t.requiredRoleJson as any)
+            : ([] as any),
           requireReason: t.requireReason,
           requireAttachment: t.requireAttachment,
         })) ?? [],
@@ -207,6 +228,10 @@ export function CreateWorkflowDialog({
         ...t,
         actionCode: t.actionCode.trim().toUpperCase(),
         actionLabel: t.actionLabel.trim(),
+        requiredRoleJson:
+          Array.isArray(t.requiredRoleJson) && t.requiredRoleJson.length > 0
+            ? (t.requiredRoleJson as any)
+            : undefined,
       })),
     };
 
@@ -588,6 +613,46 @@ export function CreateWorkflowDialog({
                             >
                               <Trash2 size={14} />
                             </Button>
+                          </div>
+                        </FormField>
+                      </div>
+
+                      {/* Row 3: required roles (multi-select) */}
+                      <div className="flex items-end gap-2">
+                        <FormField label="Role được phép thực hiện" className="flex-1">
+                          <div className="flex flex-wrap gap-1.5 rounded-md border border-border bg-surface p-2 min-h-[36px]">
+                            {roleOptions.map((r) => {
+                              const selected = Array.isArray(t.requiredRoleJson)
+                                ? (t.requiredRoleJson as string[]).includes(r.value)
+                                : false;
+                              return (
+                                <button
+                                  key={r.value}
+                                  type="button"
+                                  onClick={() => {
+                                    const current = Array.isArray(t.requiredRoleJson)
+                                      ? (t.requiredRoleJson as string[])
+                                      : [];
+                                    const next = selected
+                                      ? current.filter((c) => c !== r.value)
+                                      : [...current, r.value];
+                                    updateTransition(idx, { requiredRoleJson: next as any });
+                                  }}
+                                  className={`rounded-full px-2 py-0.5 text-xs transition-colors ${selected
+                                    ? "bg-primary text-primary-foreground"
+                                    : "bg-surface-muted text-foreground-muted hover:bg-surface-muted/80"
+                                    }`}
+                                >
+                                  {r.label}
+                                </button>
+                              );
+                            })}
+                            {(!t.requiredRoleJson ||
+                              (Array.isArray(t.requiredRoleJson) && t.requiredRoleJson.length === 0)) && (
+                                <span className="text-xs text-foreground-muted italic">
+                                  Không chọn = tất cả role đều thực hiện được
+                                </span>
+                              )}
                           </div>
                         </FormField>
                       </div>

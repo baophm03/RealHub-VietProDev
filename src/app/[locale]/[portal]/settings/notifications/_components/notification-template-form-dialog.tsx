@@ -143,7 +143,7 @@ export function NotificationTemplateFormDialog({ open, onOpenChange, editing }: 
                   Channel
                 </label>
                 <Select value={channel} onValueChange={(v) => setChannel((v as string) ?? "IN_APP")}>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Chọn channel">
                       {(value: string) =>
                         channelOptions.find((o) => o.value === value)?.label ?? value

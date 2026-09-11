@@ -119,8 +119,8 @@ export function HeaderMobileMenu({
             <>
               <div className="flex items-center gap-3 rounded-lg bg-primary-foreground/10 px-4 py-3">
                 <Avatar className="size-9 rounded-full overflow-hidden">
-                  {user?.avatarUrl && (
-                    <AvatarImage src={user.avatarUrl} alt={user?.fullName ?? "User"} />
+                  {user?.avatarFile?.url && (
+                    <AvatarImage src={user.avatarFile?.url} alt={user?.fullName ?? "User"} />
                   )}
                   <AvatarFallback className="flex size-9 items-center justify-center rounded-full bg-primary-foreground/15 text-xs font-medium text-primary-foreground">
                     {initials}

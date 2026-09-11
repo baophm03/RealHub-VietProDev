@@ -13,6 +13,6 @@ export interface ReplaceProfileDto {
    */
   fullName: string;
   phone?: string;
-  /** @maxLength 2048 */
-  avatarUrl?: string;
+  /** File ID from uploaded avatar */
+  avatarFileId?: string;
 }

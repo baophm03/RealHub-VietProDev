@@ -38,8 +38,8 @@ export function HeaderAuthDropdown({ initials }: HeaderAuthDropdownProps) {
     <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center gap-2 rounded-full p-0 hover:bg-transparent transition-all duration-300">
         <Avatar className="size-8 rounded-full overflow-hidden">
-          {user?.avatarUrl && (
-            <AvatarImage src={user.avatarUrl} alt={user?.fullName ?? "User"} />
+          {user?.avatarFile?.url && (
+            <AvatarImage src={user.avatarFile?.url} alt={user?.fullName ?? "User"} />
           )}
           <AvatarFallback className="flex size-8 items-center justify-center rounded-full bg-[#092909]/10 text-xs font-medium text-[#092909]">
             {initials}

@@ -5,16 +5,7 @@ import { useRouter } from "next/navigation";
 import { usePortalPath } from "@/lib/hooks/use-portal";
 import { usePagination } from "@/lib/hooks/use-pagination";
 import { formatPrice, formatLocationShort } from "@/utils";
-import {
-  CircleCheck,
-  CircleX,
-  Clock,
-  Filter,
-  MoreVertical,
-  Pencil,
-  ShieldCheck,
-} from "lucide-react";
-import { Can } from "@casl/react";
+import { Filter, ShieldCheck } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,26 +14,13 @@ import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PaginationBar } from "@/components/shared/pagination-bar";
 import { PageHeader } from "@/components/shared/page-header";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
 import { useGetApiProperties } from "@/lib/api/endpoints/properties";
 import { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
 import type { UpdatePropertyDtoVerificationStatus } from "@/lib/api/models";
 import { VerificationActionDialog, type VerificationActionTarget } from "./_components/verification-action-dialog";
+import { VerificationActions } from "./_components/verification-actions";
 
 type VerificationStatus = UpdatePropertyDtoVerificationStatus;
-
-const VERIFICATION_STATUSES: VerificationStatus[] = [
-  "VERIFIED",
-  "REJECTED",
-];
 
 const statusVariant: Record<
   VerificationStatus,
@@ -59,13 +37,6 @@ const statusLabel: Record<VerificationStatus, string> = {
   PENDING: "Chờ duyệt",
   VERIFIED: "Đã duyệt",
   REJECTED: "Từ chối",
-};
-
-const statusIcon: Record<VerificationStatus, typeof ShieldCheck> = {
-  DRAFT: Pencil,
-  PENDING: Clock,
-  VERIFIED: CircleCheck,
-  REJECTED: CircleX,
 };
 
 const txLabel: Record<string, string> = {
@@ -163,75 +134,18 @@ export default function VerificationPage() {
     {
       id: "actions",
       header: "Hành động",
-      cell: ({ row }) => {
-        const current = (row.original.verificationStatus ?? "DRAFT") as VerificationStatus;
-        return (
-          <Can I="APPROVE" a="PROPERTY">
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="flex justify-end"
-            >
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      aria-label="Đổi trạng thái kiểm duyệt"
-                    />
-                  }
-                >
-                  <MoreVertical size={16} />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" sideOffset={4}>
-                  <DropdownMenuGroup>
-                    <DropdownMenuLabel>Chuyển trạng thái</DropdownMenuLabel>
-                  </DropdownMenuGroup>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuGroup>
-                    {VERIFICATION_STATUSES.map((status) => {
-                      const Icon = statusIcon[status];
-                      const isCurrent = status === current;
-                      return (
-                        <DropdownMenuItem
-                          key={status}
-                          disabled={isCurrent}
-                          onClick={() =>
-                            setPendingAction({ property: row.original, status })
-                          }
-                        >
-                          <Icon
-                            size={14}
-                            className={
-                              status === "VERIFIED"
-                                ? "text-accent-green-text"
-                                : status === "REJECTED"
-                                  ? "text-accent-red-text"
-                                  : status === "PENDING"
-                                    ? "text-accent-yellow-text"
-                                    : "text-foreground-muted"
-                            }
-                          />
-                          <span className="flex flex-col">
-                            <span className="text-sm font-medium">
-                              {statusLabel[status]}
-                              {isCurrent && (
-                                <span className="ml-1 text-xs text-foreground-muted">
-                                  (hiện tại)
-                                </span>
-                              )}
-                            </span>
-                          </span>
-                        </DropdownMenuItem>
-                      );
-                    })}
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </Can>
-        );
-      },
+      cell: ({ row }) => (
+        <VerificationActions
+          property={row.original}
+          onPick={(t) =>
+            setPendingAction({
+              property: t.property,
+              status: t.status,
+              transitionId: t.transitionId,
+            } as any)
+          }
+        />
+      ),
     },
   ];
 

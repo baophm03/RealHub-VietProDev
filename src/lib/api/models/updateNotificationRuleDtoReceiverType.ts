@@ -11,8 +11,14 @@ export type UpdateNotificationRuleDtoReceiverType = typeof UpdateNotificationRul
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const UpdateNotificationRuleDtoReceiverType = {
-  SALES_AGENT: 'SALES_AGENT',
-  SALES_MANAGER: 'SALES_MANAGER',
-  TEAM_LEAD: 'TEAM_LEAD',
+  SALES: 'SALES',
+  TEAM_LEADER: 'TEAM_LEADER',
+  AGENCY_ADMIN: 'AGENCY_ADMIN',
+  OWNER: 'OWNER',
+  CUSTOMER: 'CUSTOMER',
+  COLLABORATOR: 'COLLABORATOR',
+  OPERATOR: 'OPERATOR',
+  SUPER_ADMIN: 'SUPER_ADMIN',
   ALL_USERS: 'ALL_USERS',
+  ASSIGNED_USER: 'ASSIGNED_USER',
 } as const;
