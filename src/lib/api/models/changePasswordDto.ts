@@ -10,6 +10,4 @@ export interface ChangePasswordDto {
   currentPassword: string;
   /** @minLength 10 */
   newPassword: string;
-  /** @minLength 10 */
-  confirmPassword: string;
 }

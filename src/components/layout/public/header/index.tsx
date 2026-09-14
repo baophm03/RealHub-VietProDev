@@ -2,14 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Building2, List, X } from "lucide-react";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useUserStore } from "@/lib/stores/user-store";
 import { HeaderDesktopNav, useNavLinks } from "./components/header-desktop-nav";
 import { HeaderMobileMenu } from "./components/header-mobile-menu";
 import { HeaderAuthDropdown } from "./components/header-auth-dropdown";
+import { LanguageSwitcher } from "./components/language-switcher";
 
 export function PublicHeader() {
+  const t = useTranslations("public");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
@@ -56,7 +59,7 @@ export function PublicHeader() {
                 RealHub
               </span>
               <span className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.2em] text-black/60">
-                Real Estate Platform
+                {t("header.subtitle")}
               </span>
             </div>
           </Link>
@@ -65,6 +68,8 @@ export function PublicHeader() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+
             {mounted && isAuthenticated ? (
               <HeaderAuthDropdown initials={initials} />
             ) : (
@@ -72,7 +77,7 @@ export function PublicHeader() {
                 href="/login"
                 className="rounded-lg bg-[#0D2D0D] px-4 py-2 text-[15px] font-medium text-white transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[#0D2D0D]/80"
               >
-                Tham gia ngay
+                {t("header.joinNow")}
               </Link>
             )}
 

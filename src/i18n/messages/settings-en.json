@@ -1,0 +1,14 @@
+{
+  "title": "Settings",
+  "general": "General",
+  "users": "Users",
+  "locations": "Locations",
+  "workflows": "Workflows",
+  "dynamicFields": "Dynamic Fields",
+  "visibility": "Visibility",
+  "leadProtection": "Lead Protection",
+  "tenants": "Tenant",
+  "theme": "Theme",
+  "language": "Language",
+  "notifications": "Notifications"
+}

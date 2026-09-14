@@ -16,6 +16,7 @@ import {
   Users,
   Building,
   ScrollText,
+  BarChart3,
 } from "lucide-react";
 import type { Actions, Features } from "@/config/casl/ability";
 import { portalEntries } from "@/config/portal-entry";
@@ -76,7 +77,7 @@ export const navGroups: NavGroup[] = [
         label: "Dự án",
         href: `/${entryPortal?.slug}/projects`,
         icon: Building2,
-        permission: { action: "VIEW", subject: "PROPERTY" },
+        permission: { action: "VIEW", subject: "PROJECTS" },
       },
       {
         label: "Tư vấn",
@@ -116,9 +117,15 @@ export const navGroups: NavGroup[] = [
       },
       {
         label: "Hoa hồng",
-        href: `/${entryPortal?.slug}/commission`,
+        href: `/${entryPortal?.slug}/commission/deals`,
         icon: Percent,
         permission: { action: "VIEW", subject: "COMMISSION" },
+      },
+      {
+        label: "Báo cáo",
+        href: `/${entryPortal?.slug}/reports`,
+        icon: BarChart3,
+        permission: { action: "VIEW", subject: "REPORT" },
       },
     ],
   },

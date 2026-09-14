@@ -3,6 +3,7 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import { User } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { News } from "@/lib/api/types/news";
 import { formatNewsDate } from "@/components/shared/news-card";
@@ -15,6 +16,7 @@ interface FeaturedNewsCarouselProps {
 }
 
 export function FeaturedNewsCarousel({ newsList }: FeaturedNewsCarouselProps) {
+  const tc = useTranslations("public.common");
   if (newsList.length === 0) return null;
 
   return (
@@ -74,10 +76,10 @@ export function FeaturedNewsCarousel({ newsList }: FeaturedNewsCarouselProps) {
                 )}
 
                 <div className="mt-auto flex items-center gap-2.5">
-                  {news.creator?.avatarUrl ? (
+                  {news.creator?.avatarFile?.url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={news.creator.avatarUrl}
+                      src={news.creator.avatarFile.url}
                       alt={news.creator.fullName}
                       className="h-9 w-9 shrink-0 rounded-full object-cover"
                     />
@@ -88,7 +90,7 @@ export function FeaturedNewsCarousel({ newsList }: FeaturedNewsCarouselProps) {
                   )}
                   <div className="flex flex-col">
                     <span className="text-sm font-medium text-foreground">
-                      {news.creator?.fullName ?? "Ẩn danh"}
+                      {news.creator?.fullName ?? tc("anonymous")}
                     </span>
                     {news.creator?.role?.name && (
                       <span className="text-xs text-foreground-muted">

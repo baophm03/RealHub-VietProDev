@@ -2,6 +2,7 @@ import { getApiProperties, getApiPropertyMedia } from "@/lib/api/endpoints/prope
 import type { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { FeaturedPropertiesCarousel } from "@/components/shared/featured-properties-carousel";
 import { extractFirstImageUrlFromMedia } from "@/components/shared/property-utils";
 
@@ -20,6 +21,8 @@ export async function FeaturedPropertiesSection({
   description,
   sectionClassName = "bg-white",
 }: FeaturedPropertiesSectionProps) {
+  const t = await getTranslations("public.home");
+  const tc = await getTranslations("public.common");
   let properties: Property[] = [];
   let propertyImageMap = new Map<string, string | null>();
 
@@ -69,7 +72,7 @@ export async function FeaturedPropertiesSection({
             href="/listings"
             className="group inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-foreground-muted transition-colors hover:text-foreground"
           >
-            Xem tất cả
+            {tc("viewAll")}
             <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
@@ -82,7 +85,7 @@ export async function FeaturedPropertiesSection({
         {/* Empty state */}
         {properties.length === 0 && (
           <div className="flex items-center justify-center py-20 text-center">
-            <p className="text-sm text-foreground-muted">Chưa có bất động sản nào.</p>
+            <p className="text-sm text-foreground-muted">{t("noProperties")}</p>
           </div>
         )}
       </div>

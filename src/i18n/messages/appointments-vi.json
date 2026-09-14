@@ -1,0 +1,13 @@
+{
+  "title": "Lịch hẹn",
+  "addNew": "Tạo lịch hẹn",
+  "editTitle": "Chỉnh sửa lịch hẹn",
+  "customer": "Khách hàng",
+  "property": "Bất động sản",
+  "date": "Ngày",
+  "time": "Giờ",
+  "type": "Loại lịch hẹn",
+  "status": "Trạng thái",
+  "notes": "Ghi chú",
+  "agent": "Người phụ trách"
+}

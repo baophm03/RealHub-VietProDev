@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getApiProjects } from "@/lib/api/endpoints/projects";
 import type { GetProjectsResponse } from "@/lib/api/types/projects";
 import { RevealSection } from "@/components/shared/reveal-section";
@@ -12,13 +12,16 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export const dynamic = "force-static";
 export const revalidate = 1800;
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "public.projects" });
   return generateSeoMetadata("PROPERTY_LISTING", buildPropertyListContext(), {
-    title: "Danh sách dự án - RealHub",
-    description: "Khám phá các dự án bất động sản nổi bật từ RealHub.",
+    title: t("metaTitle"),
+    description: t("metaDesc"),
   });
 }
 
@@ -26,28 +29,31 @@ export default async function ProjectsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
+  const t = await getTranslations("public.projects");
+  const tc = await getTranslations("public.common");
+
   const projectsRes = await getApiProjects({ limit: "100" });
   const projects = (projectsRes as unknown as GetProjectsResponse)?.data ?? [];
 
   return (
     <>
       <PageBanner
-        title="Dự án bất động sản"
-        description="Khám phá các dự án bất động sản nổi bật trong hệ sinh thái RealHub."
+        title={t("bannerTitle")}
+        description={t("bannerDesc")}
         backgroundImage="/background/projects.jpg"
-        breadcrumbs={[{ label: "Trang chủ", href: "/" }, { label: "Dự án" }]}
+        breadcrumbs={[{ label: tc("home"), href: "/" }, { label: t("breadcrumbTitle") }]}
       />
 
       <div className="container py-10">
         <RevealSection>
           <p className="mb-6 text-sm text-foreground-muted">
-            Hiển thị <span className="font-medium text-foreground">{projects.length}</span> dự án
+            {t("showing", { count: projects.length })}
           </p>
         </RevealSection>
 
         {projects.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-            <p className="text-base text-foreground-muted">Chưa có dự án nào.</p>
+            <p className="text-base text-foreground-muted">{t("noProjects")}</p>
           </div>
         ) : (
           <RevealSection>

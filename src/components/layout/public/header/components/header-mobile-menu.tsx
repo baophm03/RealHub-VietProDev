@@ -56,7 +56,7 @@ export function HeaderMobileMenu({
           <Search size={18} className="text-primary-foreground/50" />
           <input
             type="text"
-            placeholder="Tìm kiếm bất động sản..."
+            placeholder={t("header.searchPlaceholder")}
             className="flex-1 bg-transparent text-sm text-primary-foreground placeholder:text-primary-foreground/40 focus:outline-none"
           />
         </div>
@@ -91,7 +91,7 @@ export function HeaderMobileMenu({
                 onClick={onClose}
                 className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-primary-foreground"
               >
-                Xem tất cả
+                {t("common.viewAll")}
                 <ArrowUpRight size={12} />
               </Link>
             </div>
@@ -119,8 +119,8 @@ export function HeaderMobileMenu({
             <>
               <div className="flex items-center gap-3 rounded-lg bg-primary-foreground/10 px-4 py-3">
                 <Avatar className="size-9 rounded-full overflow-hidden">
-                  {user?.avatarUrl && (
-                    <AvatarImage src={user.avatarUrl} alt={user?.fullName ?? "User"} />
+                  {user?.avatarFile?.url && (
+                    <AvatarImage src={user.avatarFile?.url} alt={user?.fullName ?? "User"} />
                   )}
                   <AvatarFallback className="flex size-9 items-center justify-center rounded-full bg-primary-foreground/15 text-xs font-medium text-primary-foreground">
                     {initials}
@@ -156,7 +156,7 @@ export function HeaderMobileMenu({
                 className="flex items-center justify-center gap-2 rounded-lg border border-primary-foreground/20 px-4 py-3 text-sm font-medium text-primary-foreground/80 transition-colors hover:bg-primary-foreground/10"
               >
                 <LogOut size={16} />
-                Đăng xuất
+                {t("header.logout")}
               </button>
             </>
           ) : (

@@ -1,0 +1,14 @@
+{
+  "title": "Leads",
+  "addNew": "Add Lead",
+  "editTitle": "Edit Lead",
+  "name": "Full Name",
+  "phone": "Phone Number",
+  "email": "Email",
+  "source": "Source",
+  "status": "Status",
+  "interest": "Interest Level",
+  "assignedTo": "Assigned To",
+  "notes": "Notes",
+  "convertToCustomer": "Convert to Customer"
+}

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Camera } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { ImageLightbox, type LightboxImage } from "@/components/shared/image-lightbox";
 
 interface ListingGalleryProps {
@@ -10,6 +11,8 @@ interface ListingGalleryProps {
 }
 
 export function ListingGallery({ images, propertyCode }: ListingGalleryProps) {
+  const t = useTranslations("public.listingDetail");
+  const tc = useTranslations("public.common");
   const [activeImage] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -30,7 +33,7 @@ export function ListingGallery({ images, propertyCode }: ListingGalleryProps) {
       <div className="flex h-[300px] md:h-[400px] items-center justify-center rounded-xl border border-dashed border-border bg-surface-muted mb-8">
         <div className="flex flex-col items-center gap-2 text-foreground-muted">
           <Camera size={32} />
-          <p className="text-sm">Chưa có hình ảnh cho bất động sản này</p>
+          <p className="text-sm">{t("noImages")}</p>
         </div>
       </div>
     );
@@ -70,7 +73,7 @@ export function ListingGallery({ images, propertyCode }: ListingGalleryProps) {
               {hasMore && (
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                   <span className="text-white font-serif text-xl font-medium">
-                    +{gallery.length - 5} Ảnh
+                    +{gallery.length - 5} {tc("photos")}
                   </span>
                 </div>
               )}

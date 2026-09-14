@@ -53,8 +53,8 @@ export interface Property {
   metadata: Record<string, unknown> | null;
   createdAt: string;
   updatedAt: string;
-  creator?: { id: string; fullName: string; avatarUrl: string | null } | null;
-  updater?: { id: string; fullName: string; avatarUrl: string | null } | null;
+  creator?: { id: string; fullName: string; avatarFile: { id: string; name: string; url: string } | null } | null;
+  updater?: { id: string; fullName: string; avatarFile: { id: string; name: string; url: string } | null } | null;
   propertyType: {
     id: string;
     name: string;

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Bell, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -40,6 +41,7 @@ export function ListingsFilter({
   currentPriceFrom,
   currentPriceTo,
 }: ListingsFilterProps) {
+  const t = useTranslations("public.listings");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -129,34 +131,34 @@ export function ListingsFilter({
       <div className="bg-surface rounded-xl border border-border p-4 flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <h2 className="font-serif text-xl font-medium text-[#072707] flex items-center gap-2">
-            <Filter size={16} /> Bộ lọc tìm kiếm
+            <Filter size={16} /> {t("filterTitle")}
           </h2>
           {hasFilters && (
             <Button variant="link" size="sm" onClick={clearFilters} className="h-auto p-0 text-xs font-medium">
-              Xóa bộ lọc
+              {t("clearFilter")}
             </Button>
           )}
         </div>
 
         {/* Transaction Type */}
         <div className="flex flex-col gap-2">
-          <label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Loại giao dịch</label>
+          <label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">{t("transactionType")}</label>
           <div className="flex gap-2">
-            {(["ALL", "SALE", "RENT"] as const).map((t) => {
+            {(["ALL", "SALE", "RENT"] as const).map((tx) => {
               const activeColor =
-                t === "SALE" ? "bg-[#FCEAEB] text-[#C57B7A] hover:bg-[#FCEAEB]"
-                  : t === "RENT" ? "bg-accent-blue text-accent-blue-text hover:bg-accent-blue"
+                tx === "SALE" ? "bg-[#FCEAEB] text-[#C57B7A] hover:bg-[#FCEAEB]"
+                  : tx === "RENT" ? "bg-accent-blue text-accent-blue-text hover:bg-accent-blue"
                     : "bg-[#072707] text-white hover:bg-[#072707]";
               return (
                 <Button
-                  key={t}
-                  onClick={() => setDraftTransactionType(t)}
-                  className={`flex h-9 rounded-lg text-xs font-medium transition-colors hover:bg-surface-muted ${draftTransactionType === t
+                  key={tx}
+                  onClick={() => setDraftTransactionType(tx)}
+                  className={`flex h-9 rounded-lg text-xs font-medium transition-colors hover:bg-surface-muted ${draftTransactionType === tx
                     ? activeColor
                     : "bg-surface-muted text-foreground-muted"
                     }`}
                 >
-                  {t === "ALL" ? "Tất cả" : t === "SALE" ? "Bán" : "Cho thuê"}
+                  {tx === "ALL" ? t("all") : tx === "SALE" ? t("sale") : t("rent")}
                 </Button>
               );
             })}
@@ -165,19 +167,19 @@ export function ListingsFilter({
 
         {/* Zone Filter */}
         <div className="flex flex-col gap-2">
-          <Label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Khu vực</Label>
+          <Label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">{t("region")}</Label>
           <Select value={draftSelectedZone} onValueChange={(value) => setDraftSelectedZone(value ?? "")}>
             <SelectTrigger className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-[#072707] focus:outline-none focus:ring-1 focus:ring-[#072707]">
-              <SelectValue placeholder="Tất cả">
+              <SelectValue placeholder={t("all")}>
                 {(value: string) => {
-                  if (!value) return "Tất cả";
+                  if (!value) return t("all");
                   const p = provinces.find((p) => p.id === value);
                   return p?.name || value;
                 }}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="" label="Tất cả">Tất cả</SelectItem>
+              <SelectItem value="" label={t("all")}>{t("all")}</SelectItem>
               {provinces.map((p) => (
                 <SelectItem key={p.id} value={p.id} label={p.name}>
                   {p.name}
@@ -190,14 +192,14 @@ export function ListingsFilter({
         {/* Price Range */}
         <div className="flex flex-col gap-2">
           <Label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-            Mức giá {draftTransactionType === "RENT" ? "(triệu)" : "(tỷ)"}
+            {t("priceRange", { unit: draftTransactionType === "RENT" ? t("priceUnitMillion") : t("priceUnitBillion") })}
           </Label>
           <div className="flex items-center gap-2">
             <Input
               type="text"
               value={draftPriceFrom}
               onChange={(e) => setDraftPriceFrom(e.target.value)}
-              placeholder="Từ"
+              placeholder={t("priceFrom")}
               className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-[#072707] focus:outline-none focus:ring-1 focus:ring-[#072707]"
             />
             <span className="text-foreground-muted">—</span>
@@ -205,7 +207,7 @@ export function ListingsFilter({
               type="text"
               value={draftPriceTo}
               onChange={(e) => setDraftPriceTo(e.target.value)}
-              placeholder="Đến"
+              placeholder={t("priceTo")}
               className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:border-[#072707] focus:outline-none focus:ring-1 focus:ring-[#072707]"
             />
           </div>
@@ -213,7 +215,7 @@ export function ListingsFilter({
 
         {/* Property Type */}
         <div className="flex flex-col gap-2">
-          <Label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">Loại hình</Label>
+          <Label className="text-xs font-semibold uppercase tracking-wide text-foreground-muted">{t("propertyType")}</Label>
           <div className="flex flex-col gap-2">
             {propertyTypes.map((t) => (
               <Label key={t.code} className="flex items-center gap-2 text-sm cursor-pointer">
@@ -230,19 +232,19 @@ export function ListingsFilter({
         </div>
 
         <Button className="w-full bg-[#072707] hover:bg-[#072707]/90" size="lg" onClick={applyFilters}>
-          Áp dụng bộ lọc
+          {t("apply")}
         </Button>
       </div>
 
       {/* Notification Card */}
       <div className="bg-[#072707] rounded-xl p-4 flex flex-col gap-2 text-center items-center justify-center">
         <Bell size={32} className="text-white mb-1" />
-        <h3 className="font-serif text-lg font-medium text-white">Tạo thông báo</h3>
+        <h3 className="font-serif text-lg font-medium text-white">{t("alertTitle")}</h3>
         <p className="text-sm text-white/80">
-          Nhận thông báo khi có bất động sản mới phù hợp với tìm kiếm này.
+          {t("alertDesc")}
         </p>
         <Button className="w-full mt-2 py-2 bg-surface text-[#072707] rounded-lg text-xs font-semibold uppercase tracking-wide hover:bg-surface-muted transition-colors">
-          Đăng ký nhận tin
+          {t("alertSubscribe")}
         </Button>
       </div>
     </div>

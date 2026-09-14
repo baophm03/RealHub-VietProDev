@@ -22,6 +22,7 @@ import {
 import { useTheme } from "@/lib/hooks/use-theme";
 import { usePostApiLogout } from "@/lib/api/endpoints/auth";
 import { usePortalPath } from "@/lib/hooks/use-portal";
+import { NotificationMenu } from "@/components/layout/portal/notification-menu";
 
 export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const user = useUserStore((s) => s.user);
@@ -80,24 +81,16 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
           {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
         </Button>
 
-        {/* <Button
-          variant="ghost"
-          size="icon"
-          className="relative"
-          aria-label="Notifications"
-        >
-          <Bell size={18} />
-          <span className="absolute right-2 top-2 size-2 rounded-full bg-red-500 ring-2 ring-surface" />
-        </Button> */}
+        <NotificationMenu />
 
         <DropdownMenu>
           <DropdownMenuTrigger
             className="flex items-center gap-2 rounded-full p-0 hover:bg-transparent transition-all duration-300"
           >
             <Avatar className="size-10 rounded-full overflow-hidden">
-              {user?.avatarUrl && (
+              {user?.avatarFile?.url && (
                 <AvatarImage
-                  src={user.avatarUrl}
+                  src={user.avatarFile?.url}
                   alt={user?.fullName ?? "User"}
                 />
               )}

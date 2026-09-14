@@ -13,6 +13,7 @@ export interface ReplaceUserDto {
   /** @minLength 10 */
   password: string;
   phone?: string;
-  avatarUrl?: string;
+  /** File ID from uploaded avatar */
+  avatarFileId?: string;
   status: ReplaceUserDtoStatus;
 }

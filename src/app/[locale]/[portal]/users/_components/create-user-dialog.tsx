@@ -35,17 +35,23 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const reset = () => {
     setFullName("");
     setEmail("");
     setPhone("");
     setPassword("");
+    setConfirmPassword("");
   };
 
   const handleSubmit = async () => {
     if (!fullName.trim() || !email.trim() || password.length < 10) {
       toast.error("Vui lòng nhập đủ thông tin (mật khẩu ≥ 10 ký tự)");
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast.error("Xác nhận mật khẩu không khớp");
       return;
     }
     try {
@@ -127,6 +133,17 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
               <p className="text-xs text-foreground-muted">
                 Mật khẩu tạm thời — người dùng nên đổi sau khi đăng nhập.
               </p>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="user-confirm-password">Xác nhận mật khẩu *</Label>
+              <Input
+                id="user-confirm-password"
+                type="password"
+                placeholder="Nhập lại mật khẩu"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
             </div>
           </div>
 

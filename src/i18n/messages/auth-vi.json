@@ -1,0 +1,21 @@
+{
+  "login": "Đăng nhập",
+  "register": "Đăng ký",
+  "forgotPassword": "Quên mật khẩu",
+  "logout": "Đăng xuất",
+  "email": "Email",
+  "password": "Mật khẩu",
+  "confirmPassword": "Xác nhận mật khẩu",
+  "fullName": "Họ và tên",
+  "phone": "Số điện thoại",
+  "rememberMe": "Ghi nhớ đăng nhập",
+  "noAccount": "Chưa có tài khoản?",
+  "haveAccount": "Đã có tài khoản?",
+  "forgotPasswordLink": "Quên mật khẩu?",
+  "loginSuccess": "Đăng nhập thành công",
+  "loginFailed": "Đăng nhập thất bại",
+  "registerSuccess": "Đăng ký thành công",
+  "passwordResetSent": "Đã gửi email hướng dẫn. Vui lòng kiểm tra hộp thư của bạn.",
+  "welcomeBack": "Chào mừng trở lại",
+  "createAccount": "Tạo tài khoản mới"
+}

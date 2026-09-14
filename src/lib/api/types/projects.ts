@@ -53,8 +53,8 @@ export interface Project {
   priceTo: number | null;
   province: { id: string; name: string; code: string } | null;
   district: { id: string; name: string; code: string } | null;
-  creator?: { id: string; fullName: string; avatarUrl: string | null } | null;
-  updater?: { id: string; fullName: string; avatarUrl: string | null } | null;
+  creator?: { id: string; fullName: string; avatarFile: { id: string; name: string; url: string } | null } | null;
+  updater?: { id: string; fullName: string; avatarFile: { id: string; name: string; url: string } | null } | null;
   properties: ProjectProperty[];
   media: ProjectMedia[];
   _count: {

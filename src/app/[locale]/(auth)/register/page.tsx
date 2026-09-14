@@ -12,7 +12,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { usePostApiRegister } from "@/lib/api/endpoints/auth";
 
+const REGISTER_ROLES = [
+  { value: "CUSTOMER", label: "Khách hàng", description: "Tìm mua/thuê BĐS" },
+  { value: "OWNER", label: "Chủ BĐS", description: "Sở hữu BĐS, đăng tin cho thuê/bán" },
+  { value: "SALES", label: "Sales", description: "Nhân viên sale, phụ trách lead/deal" },
+] as const;
+
 const registerSchema = z.object({
+  roleCode: z.enum(["CUSTOMER", "OWNER", "SALES"]),
   fullName: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
   email: z.string().email("Email không hợp lệ"),
   password: z.string().min(10, "Mật khẩu phải có ít nhất 10 ký tự"),
@@ -33,10 +40,15 @@ export default function RegisterPage() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
+    defaultValues: { roleCode: "CUSTOMER" },
   });
+
+  const selectedRole = watch("roleCode");
 
   const { mutate: registerAccount, isPending } = usePostApiRegister({
     mutation: {
@@ -55,158 +67,185 @@ export default function RegisterPage() {
 
     registerAccount({
       data: {
+        roleCode: formData.roleCode,
         fullName: formData.fullName,
         email: formData.email,
         password: formData.password,
-        confirmPassword: formData.confirmPassword,
         phone: formData.phone,
       },
     });
   };
 
   return (
-    <div className="w-full max-w-md">
-      <div className="mb-12 text-center">
-        <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.25em] text-primary">
-          Real Estate Platform
-        </p>
-        <h1 className="font-serif text-4xl font-medium tracking-tight text-foreground">
-          RealHub
-        </h1>
-        <p className="mt-3 text-sm text-foreground-muted leading-relaxed">
-          Nền tảng quản lý bất động sản đa tenant
-        </p>
-      </div>
+    <div className="w-full max-w-3xl">
+
 
       <div className="rounded-[1.5rem] border border-border bg-surface/80 p-8 shadow-[0_20px_60px_-20px_rgba(45,95,63,0.10)] backdrop-blur-xl md:p-10">
         <div className="mb-8">
           <h2 className="text-xl font-semibold tracking-tight">Đăng ký</h2>
           <p className="mt-1 text-sm text-foreground-muted">
-            Điền thông tin để tạo tài khoản
+            Chọn vai trò và điền thông tin để tạo tài khoản
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="fullName" className="text-[13px] font-medium">Họ và tên</Label>
-            <Input
-              id="fullName"
-              type="text"
-              placeholder="Nguyễn Văn An"
-              {...register("fullName")}
-              aria-invalid={!!errors.fullName}
-              aria-describedby={errors.fullName ? "fullName-error" : undefined}
-            />
-            {errors.fullName && (
-              <p id="fullName-error" className="text-xs text-accent-red-text">
-                {errors.fullName.message}
-              </p>
+        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+          {/* ── Cột trái: Chọn vai trò ── */}
+          <div className="flex flex-col gap-3">
+            <Label className="text-[13px] font-medium">Vai trò</Label>
+            <div className="flex flex-col gap-2.5">
+              {REGISTER_ROLES.map((role) => {
+                const isActive = selectedRole === role.value;
+                return (
+                  <button
+                    key={role.value}
+                    type="button"
+                    onClick={() => setValue("roleCode", role.value, { shouldDirty: true })}
+                    className={
+                      "flex flex-col gap-1 rounded-lg border p-4 text-left transition-all duration-300 " +
+                      (isActive
+                        ? "border-primary bg-primary/5 ring-1 ring-primary"
+                        : "border-border bg-surface hover:border-foreground-muted hover:bg-surface-muted/40")
+                    }
+                    aria-pressed={isActive}
+                  >
+                    <span className={"text-sm font-semibold " + (isActive ? "text-primary" : "text-foreground")}>
+                      {role.label}
+                    </span>
+                    <span className="text-[11px] leading-snug text-foreground-muted">
+                      {role.description}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {errors.roleCode && (
+              <p className="text-xs text-accent-red-text">{errors.roleCode.message}</p>
             )}
           </div>
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="email" className="text-[13px] font-medium">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="an.nguyen@example.com"
-              {...register("email")}
-              aria-invalid={!!errors.email}
-              aria-describedby={errors.email ? "email-error" : undefined}
-            />
-            {errors.email && (
-              <p id="email-error" className="text-xs text-accent-red-text">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="phone" className="text-[13px] font-medium">Số điện thoại</Label>
-            <Input
-              id="phone"
-              type="tel"
-              placeholder="0901234567"
-              {...register("phone")}
-              aria-invalid={!!errors.phone}
-              aria-describedby={errors.phone ? "phone-error" : undefined}
-            />
-            {errors.phone && (
-              <p id="phone-error" className="text-xs text-accent-red-text">
-                {errors.phone.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="password" className="text-[13px] font-medium">Mật khẩu</Label>
-            <div className="relative">
+          {/* ── Cột phải: Thông tin đăng ký ── */}
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="fullName" className="text-[13px] font-medium">Họ và tên</Label>
               <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Ít nhất 10 ký tự"
-                className="pr-11"
-                {...register("password")}
-                aria-invalid={!!errors.password}
-                aria-describedby={errors.password ? "password-error" : undefined}
+                id="fullName"
+                type="text"
+                placeholder="Nguyễn Văn An"
+                {...register("fullName")}
+                aria-invalid={!!errors.fullName}
+                aria-describedby={errors.fullName ? "fullName-error" : undefined}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground-muted hover:text-foreground transition-colors duration-300"
-                aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-              >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
+              {errors.fullName && (
+                <p id="fullName-error" className="text-xs text-accent-red-text">
+                  {errors.fullName.message}
+                </p>
+              )}
             </div>
-            {errors.password && (
-              <p id="password-error" className="text-xs text-accent-red-text">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="confirmPassword" className="text-[13px] font-medium">Xác nhận mật khẩu</Label>
-            <div className="relative">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="email" className="text-[13px] font-medium">Email</Label>
               <Input
-                id="confirmPassword"
-                type={showPassword ? "text" : "password"}
-                placeholder="Nhập lại mật khẩu"
-                className="pr-11"
-                {...register("confirmPassword")}
-                aria-invalid={!!errors.confirmPassword}
-                aria-describedby={errors.confirmPassword ? "confirmPassword-error" : undefined}
+                id="email"
+                type="email"
+                placeholder="an.nguyen@example.com"
+                {...register("email")}
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? "email-error" : undefined}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground-muted hover:text-foreground transition-colors duration-300"
-                aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+              {errors.email && (
+                <p id="email-error" className="text-xs text-accent-red-text">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="phone" className="text-[13px] font-medium">Số điện thoại</Label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="0901234567"
+                {...register("phone")}
+                aria-invalid={!!errors.phone}
+                aria-describedby={errors.phone ? "phone-error" : undefined}
+              />
+              {errors.phone && (
+                <p id="phone-error" className="text-xs text-accent-red-text">
+                  {errors.phone.message}
+                </p>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="password" className="text-[13px] font-medium">Mật khẩu</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Ít nhất 10 ký tự"
+                  className="pr-11"
+                  {...register("password")}
+                  aria-invalid={!!errors.password}
+                  aria-describedby={errors.password ? "password-error" : undefined}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground-muted hover:text-foreground transition-colors duration-300"
+                  aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              {errors.password && (
+                <p id="password-error" className="text-xs text-accent-red-text">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="confirmPassword" className="text-[13px] font-medium">Xác nhận mật khẩu</Label>
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Nhập lại mật khẩu"
+                  className="pr-11"
+                  {...register("confirmPassword")}
+                  aria-invalid={!!errors.confirmPassword}
+                  aria-describedby={errors.confirmPassword ? "confirmPassword-error" : undefined}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground-muted hover:text-foreground transition-colors duration-300"
+                  aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              {errors.confirmPassword && (
+                <p id="confirmPassword-error" className="text-xs text-accent-red-text">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
+            </div>
+
+            {error && (
+              <div
+                role="alert"
+                aria-live="polite"
+                className="rounded-lg bg-accent-red/20 px-4 py-3 text-sm text-accent-red-text"
               >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-            {errors.confirmPassword && (
-              <p id="confirmPassword-error" className="text-xs text-accent-red-text">
-                {errors.confirmPassword.message}
-              </p>
+                {error}
+              </div>
             )}
+
+            <Button type="submit" disabled={isPending} className="mt-2 w-full" size="lg">
+              {isPending ? "Đang đăng ký..." : "Đăng ký"}
+            </Button>
           </div>
-
-          {error && (
-            <div
-              role="alert"
-              aria-live="polite"
-              className="rounded-lg bg-accent-red/20 px-4 py-3 text-sm text-accent-red-text"
-            >
-              {error}
-            </div>
-          )}
-
-          <Button type="submit" disabled={isPending} className="mt-2 w-full" size="lg">
-            {isPending ? "Đang đăng ký..." : "Đăng ký"}
-          </Button>
         </form>
       </div>
 

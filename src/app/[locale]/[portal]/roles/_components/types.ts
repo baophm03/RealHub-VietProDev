@@ -58,7 +58,7 @@ export interface RoleUser {
   fullName: string;
   email: string;
   phone: string | null;
-  avatarUrl: string | null;
+  avatarFile: { id: string; name: string; url: string } | null;
   userStatus: string;
   roleCode: string;
   assignedAt: string;
@@ -76,7 +76,7 @@ export interface TenantUser {
   email: string;
   phone: string | null;
   phoneNormalized: string | null;
-  avatarUrl: string | null;
+  avatarFile: { id: string; name: string; url: string } | null;
   status: string;
   lastLoginAt: string | null;
   createdAt: string;

@@ -1,0 +1,13 @@
+{
+  "title": "Appointments",
+  "addNew": "Create Appointment",
+  "editTitle": "Edit Appointment",
+  "customer": "Customer",
+  "property": "Property",
+  "date": "Date",
+  "time": "Time",
+  "type": "Appointment Type",
+  "status": "Status",
+  "notes": "Notes",
+  "agent": "Agent"
+}

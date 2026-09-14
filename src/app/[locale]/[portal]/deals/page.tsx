@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePortalPath } from "@/lib/hooks/use-portal";
 import { List as ListIcon, Plus, SquareKanban, Trash2 } from "lucide-react";
 import { formatPrice } from "@/utils";
@@ -17,6 +18,7 @@ import {
   useGetApiDeals,
   usePatchApiDeal,
   useDeleteApiDeal,
+  getGetApiDealsQueryKey,
 } from "@/lib/api/endpoints/deals-reservations";
 import type { GetApiDealsStatus } from "@/lib/api/models/getApiDealsStatus";
 import type { UpdateDealDtoStatus } from "@/lib/api/models/updateDealDtoStatus";
@@ -96,11 +98,12 @@ const statusFilters: { value: GetApiDealsStatus | "ALL"; label: string }[] = [
 export default function DealsPage() {
   const router = useRouter();
   const portalPath = usePortalPath();
+  const queryClient = useQueryClient();
   const [view, setView] = useState<"kanban" | "list">("kanban");
   const [statusFilter, setStatusFilter] = useState<GetApiDealsStatus | "ALL">("ALL");
   const [deleteTarget, setDeleteTarget] = useState<Deal | null>(null);
 
-  const { data: dealsData, isLoading, refetch } = useGetApiDeals({
+  const { data: dealsData, isLoading } = useGetApiDeals({
     status: statusFilter === "ALL" ? undefined : (statusFilter as GetApiDealsStatus),
     limit: "50",
     offset: "0",
@@ -116,7 +119,7 @@ export default function DealsPage() {
     try {
       await updateDeal({ id: deal.id, data: { status: targetStatus as UpdateDealDtoStatus } });
       toast.success(`Đã chuyển giao dịch sang "${statusLabel[targetStatus] ?? targetStatus}"`);
-      refetch();
+      void queryClient.invalidateQueries({ queryKey: getGetApiDealsQueryKey() });
       router.refresh();
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Cập nhật trạng thái giao dịch thất bại");
@@ -130,7 +133,7 @@ export default function DealsPage() {
       await deleteDeal({ id: deleteTarget.id });
       toast.success(`Đã xóa giao dịch "${deleteTarget.dealCode}"`);
       setDeleteTarget(null);
-      refetch();
+      void queryClient.invalidateQueries({ queryKey: getGetApiDealsQueryKey() });
       router.refresh();
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Xóa giao dịch thất bại");

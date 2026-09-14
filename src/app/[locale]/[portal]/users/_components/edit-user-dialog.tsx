@@ -36,7 +36,7 @@ export interface MembershipUser {
   fullName: string;
   email: string;
   phone?: string | null;
-  avatarUrl?: string | null;
+  avatar?: { id: string; name: string; url: string } | null;
   status: string;
   lastLoginAt?: string | null;
   createdAt: string;

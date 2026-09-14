@@ -418,6 +418,199 @@ export const prefetchGetApiDashboardRecentLeadsQuery = async <TData = Awaited<Re
 
 
 /**
+ * @summary Get dashboard chart data
+ */
+export const getApiDashboardCharts = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/api/dashboard/charts`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiDashboardChartsInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/dashboard/charts`
+    ] as const;
+    }
+
+export const getGetApiDashboardChartsQueryKey = () => {
+    return [
+    `/api/dashboard/charts`
+    ] as const;
+    }
+
+    
+export const getGetApiDashboardChartsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardCharts>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardCharts>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiDashboardChartsInfiniteQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiDashboardCharts>>> = ({ signal }) => getApiDashboardCharts(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardCharts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiDashboardChartsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiDashboardCharts>>>
+export type GetApiDashboardChartsInfiniteQueryError = unknown
+
+
+export function useGetApiDashboardChartsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardCharts>>>, TError = unknown>(
+  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardCharts>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDashboardCharts>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDashboardCharts>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDashboardChartsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardCharts>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardCharts>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDashboardCharts>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDashboardCharts>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDashboardChartsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardCharts>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardCharts>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get dashboard chart data
+ */
+
+export function useGetApiDashboardChartsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiDashboardCharts>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardCharts>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiDashboardChartsInfiniteQueryOptions(options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get dashboard chart data
+ */
+export const prefetchGetApiDashboardChartsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiDashboardCharts>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiDashboardCharts>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiDashboardChartsInfiniteQueryOptions(options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiDashboardChartsQueryOptions = <TData = Awaited<ReturnType<typeof getApiDashboardCharts>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardCharts>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiDashboardChartsQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiDashboardCharts>>> = ({ signal }) => getApiDashboardCharts(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardCharts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiDashboardChartsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiDashboardCharts>>>
+export type GetApiDashboardChartsQueryError = unknown
+
+
+export function useGetApiDashboardCharts<TData = Awaited<ReturnType<typeof getApiDashboardCharts>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardCharts>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDashboardCharts>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDashboardCharts>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDashboardCharts<TData = Awaited<ReturnType<typeof getApiDashboardCharts>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardCharts>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiDashboardCharts>>,
+          TError,
+          Awaited<ReturnType<typeof getApiDashboardCharts>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiDashboardCharts<TData = Awaited<ReturnType<typeof getApiDashboardCharts>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardCharts>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get dashboard chart data
+ */
+
+export function useGetApiDashboardCharts<TData = Awaited<ReturnType<typeof getApiDashboardCharts>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardCharts>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiDashboardChartsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get dashboard chart data
+ */
+export const prefetchGetApiDashboardChartsQuery = async <TData = Awaited<ReturnType<typeof getApiDashboardCharts>>, TError = unknown>(
+ queryClient: QueryClient,  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiDashboardCharts>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiDashboardChartsQueryOptions(options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * @summary Get public stats for marketing home page
  */
 export const getApiDashboardPublicStats = (

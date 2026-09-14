@@ -13,43 +13,47 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { RevealSection } from "@/components/shared/reveal-section";
 import { PageBanner } from "@/components/shared/page-banner";
 import { cn } from "@/lib/utils";
 
-const milestones = [
-  { year: "2023", title: "Khởi đầu", desc: "Ý tưởng RealHub ra đời từ nhu cầu số hóa ngành bất động sản." },
-  { year: "2024", title: "Ra mắt MVP", desc: "Phát hành phiên bản đầu tiên với 5 module cốt lõi." },
-  { year: "2025", title: "Mở rộng", desc: "Hơn 45+ agency tin dùng, phủ sóng toàn quốc." },
-  { year: "2026", title: "Vươn tầm", desc: "Mục tiêu trở thành nền tảng BĐS số 1 Đông Nam Á." },
-];
-
-const values = [
-  { icon: Users, title: "Con người là trọng tâm", desc: "Mỗi tính năng đều được thiết kế cho người dùng — từ khách hàng đến sales, từ owner đến admin." },
-  { icon: Handshake, title: "Minh bạch & Tin cậy", desc: "Mọi giao dịch, hoa hồng, phân bổ lead đều có audit log rõ ràng, không mập mờ." },
-  { icon: Shield, title: "Bảo mật & An toàn", desc: "Dữ liệu đa tenant được cách ly chặt chẽ, phân quyền chi tiết đến từng vai trò." },
-  { icon: Zap, title: "Hiệu suất cao", desc: "Hệ thống tối ưu cho thao tác nhanh, tải trang tức thì, đồng bộ thời gian thực." },
-  { icon: Sparkles, title: "Trải nghiệm tinh tế", desc: "Giao diện Editorial Luxury — đẹp, dễ dùng, chuyên nghiệp trên mọi thiết bị." },
-  { icon: LineChart, title: "Phát triển bền vững", desc: "Kiến trúc mở, dễ tích hợp, sẵn sàng mở rộng quy mô và tính năng mới." },
-];
-
-const stats = [
-  { value: "45+", label: "Agency tin dùng", icon: Building2 },
-  { value: "10K+", label: "Giao dịch thành công", icon: Handshake },
-  { value: "50K+", label: "Khách hàng kết nối", icon: Users },
-  { value: "99.9%", label: "Uptime đảm bảo", icon: LineChart },
-];
-
 export default function AboutPage() {
+  const t = useTranslations("public.about");
+  const tc = useTranslations("public.common");
+
+  const milestones = [
+    { year: "2023", title: t("t1Title"), desc: t("t1Desc") },
+    { year: "2024", title: t("t2Title"), desc: t("t2Desc") },
+    { year: "2025", title: t("t3Title"), desc: t("t3Desc") },
+    { year: "2026", title: t("t4Title"), desc: t("t4Desc") },
+  ];
+
+  const values = [
+    { icon: Users, title: t("v1Title"), desc: t("v1Desc") },
+    { icon: Handshake, title: t("v2Title"), desc: t("v2Desc") },
+    { icon: Shield, title: t("v3Title"), desc: t("v3Desc") },
+    { icon: Zap, title: t("v4Title"), desc: t("v4Desc") },
+    { icon: Sparkles, title: t("v5Title"), desc: t("v5Desc") },
+    { icon: LineChart, title: t("v6Title"), desc: t("v6Desc") },
+  ];
+
+  const stats = [
+    { value: "45+", label: t("statsAgency"), icon: Building2 },
+    { value: "10K+", label: t("statsDeals"), icon: Handshake },
+    { value: "50K+", label: t("statsCustomers"), icon: Users },
+    { value: "99.9%", label: t("statsUptime"), icon: LineChart },
+  ];
+
   return (
     <>
       <PageBanner
-        title="Nền tảng kết nối"
-        description="RealHub - trung tâm kết nối giữa khách hàng và chủ đầu tư."
+        title={t("bannerTitle")}
+        description={t("bannerDesc")}
         backgroundImage="/background/about.jpg"
-        breadcrumbs={[{ label: "Trang chủ", href: "/" }, { label: "Về chúng tôi" }]}
+        breadcrumbs={[{ label: tc("home"), href: "/" }, { label: tc("aboutUs") }]}
       />
 
       {/* Stats Bar */}
@@ -99,20 +103,18 @@ export default function AboutPage() {
               <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
                 <Target size={24} className="text-primary" />
               </div>
-              <h2 className="font-serif text-2xl font-semibold">Sứ mệnh</h2>
+              <h2 className="font-serif text-2xl font-semibold">{t("mission")}</h2>
               <p className="text-base leading-relaxed text-foreground-muted">
-                Democratize công nghệ bất động sản — giúp mọi agency, từ nhỏ đến lớn,
-                vận hành chuyên nghiệp với công cụ mạnh mẽ nhưng dễ sử dụng.
+                {t("missionDesc")}
               </p>
             </div>
             <div className="flex flex-col gap-4 rounded-xl border border-border bg-surface p-8 transition-shadow hover:shadow-[0_8px_32px_-12px_rgba(0,0,0,0.08)]">
               <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
                 <Eye size={24} className="text-primary" />
               </div>
-              <h2 className="font-serif text-2xl font-semibold">Tầm nhìn</h2>
+              <h2 className="font-serif text-2xl font-semibold">{t("vision")}</h2>
               <p className="text-base leading-relaxed text-foreground-muted">
-                Trở thành nền tảng bất động sản số 1 Đông Nam Á,
-                nơi mọi giao dịch đều minh bạch, hiệu quả và dễ dàng.
+                {t("visionDesc")}
               </p>
             </div>
           </div>
@@ -122,9 +124,9 @@ export default function AboutPage() {
         <RevealSection className="mb-20">
           <div>
             <div className="mb-8 flex flex-col gap-2">
-              <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-primary">Giá trị cốt lõi</span>
+              <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-primary">{t("valuesEyebrow")}</span>
               <h2 className="font-serif text-3xl font-semibold tracking-tight md:text-4xl">
-                Những nguyên tắc định hình RealHub
+                {t("valuesTitle")}
               </h2>
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -148,9 +150,9 @@ export default function AboutPage() {
         <RevealSection className="mb-20">
           <div>
             <div className="mb-8 flex flex-col gap-2">
-              <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-primary">Hành trình</span>
+              <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-primary">{t("journeyEyebrow")}</span>
               <h2 className="font-serif text-3xl font-semibold tracking-tight md:text-4xl">
-                Cột mốc phát triển
+                {t("journeyTitle")}
               </h2>
             </div>
             <div className="relative grid gap-6 md:grid-cols-4">
@@ -188,15 +190,15 @@ export default function AboutPage() {
               className="flex flex-col items-center justify-center gap-8 px-6 text-center md:px-8"
             >
               <span className="w-fit rounded-full bg-white/10 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-white/60">
-                Tham gia cùng chúng tôi
+                {t("joinEyebrow")}
               </span>
 
               <h2 className="max-w-[20ch] font-serif text-3xl font-semibold leading-[1.1] tracking-tighter text-balance text-white md:text-5xl">
-                Trở thành một phần của hệ sinh thái RealHub
+                {t("joinTitle")}
               </h2>
 
               <p className="max-w-[44ch] text-base leading-relaxed text-white/60">
-                Kết nối sản phẩm, khách hàng và giao dịch của bạn trên một nền tảng duy nhất.
+                {t("joinDesc")}
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
@@ -210,7 +212,7 @@ export default function AboutPage() {
                     </span>
                   }
                 >
-                  Tham gia ngay
+                  {t("joinNow")}
                 </Button>
                 <Button
                   variant="outline"
@@ -218,7 +220,7 @@ export default function AboutPage() {
                   className="bg-white text-[#1E2220] hover:bg-white/90"
                   render={<Link href="/contact" />}
                 >
-                  Liên hệ tư vấn
+                  {t("contactAdvisory")}
                 </Button>
               </div>
             </motion.div>

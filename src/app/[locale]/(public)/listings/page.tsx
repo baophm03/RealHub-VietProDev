@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ListingsFilterSection } from "./_components/listings-filter-section";
 import { ListingsContentSection } from "./_components/listings-content-section";
 import {
@@ -16,9 +16,10 @@ type Props = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("public.listings");
   return generateSeoMetadata("PROPERTY_LISTING", buildPropertyListContext(), {
-    title: "Danh sách bất động sản - RealHub",
-    description: "Khám phá danh sách bất động sản bán và cho thuê từ RealHub.",
+    title: t("metaTitle"),
+    description: t("metaDesc"),
   });
 }
 

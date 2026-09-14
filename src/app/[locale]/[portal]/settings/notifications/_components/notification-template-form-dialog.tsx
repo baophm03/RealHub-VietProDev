@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ import {
 import {
   usePostApiNotificationTemplate,
   usePatchApiNotificationTemplate,
+  getGetApiNotificationTemplatesQueryKey,
 } from "@/lib/api/endpoints/notifications";
 import type { CreateNotificationTemplateDto } from "@/lib/api/models/createNotificationTemplateDto";
 import type { UpdateNotificationTemplateDto } from "@/lib/api/models/updateNotificationTemplateDto";
@@ -41,6 +43,7 @@ interface Props {
 }
 
 export function NotificationTemplateFormDialog({ open, onOpenChange, editing }: Props) {
+  const queryClient = useQueryClient();
   const [code, setCode] = useState("");
   const [titleTemplate, setTitleTemplate] = useState("");
   const [bodyTemplate, setBodyTemplate] = useState("");
@@ -52,6 +55,7 @@ export function NotificationTemplateFormDialog({ open, onOpenChange, editing }: 
     mutation: {
       onSuccess: () => {
         toast.success("Tạo template thành công");
+        queryClient.invalidateQueries({ queryKey: getGetApiNotificationTemplatesQueryKey() });
         onOpenChange(false);
       },
       onError: (e: any) =>
@@ -63,6 +67,7 @@ export function NotificationTemplateFormDialog({ open, onOpenChange, editing }: 
     mutation: {
       onSuccess: () => {
         toast.success("Cập nhật template thành công");
+        queryClient.invalidateQueries({ queryKey: getGetApiNotificationTemplatesQueryKey() });
         onOpenChange(false);
       },
       onError: (e: any) =>
@@ -143,7 +148,7 @@ export function NotificationTemplateFormDialog({ open, onOpenChange, editing }: 
                   Channel
                 </label>
                 <Select value={channel} onValueChange={(v) => setChannel((v as string) ?? "IN_APP")}>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Chọn channel">
                       {(value: string) =>
                         channelOptions.find((o) => o.value === value)?.label ?? value

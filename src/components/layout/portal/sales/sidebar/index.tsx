@@ -27,44 +27,49 @@ export function Sidebar() {
       </Link>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4">
-        {navGroups.map((group) => (
-          <div key={group.label} className="mb-6">
-            <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-foreground-muted/60">
-              {group.label}
-            </p>
-            <ul className="flex flex-col gap-0.5">
-              {group.items.map((item) => {
-                const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
-                const hasAccess = !item.permission || ability.can(item.permission.action, item.permission.subject);
-                if (!hasAccess) return null;
+        {navGroups.map((group) => {
+          const visibleItems = group.items.filter(
+            (item) => !item.permission || ability.can(item.permission.action, item.permission.subject),
+          );
+          if (visibleItems.length === 0) return null;
 
-                const Icon = item.icon;
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={cn(
-                        "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]",
-                        isActive
-                          ? "bg-primary/10 text-primary"
-                          : "text-foreground-muted hover:bg-surface-muted/60 hover:text-foreground"
-                      )}
-                    >
-                      <Icon
-                        size={18}
+          return (
+            <div key={group.label} className="mb-6">
+              <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-foreground-muted/60">
+                {group.label}
+              </p>
+              <ul className="flex flex-col gap-0.5">
+                {visibleItems.map((item) => {
+                  const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+
+                  const Icon = item.icon;
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
                         className={cn(
-                          "transition-transform duration-300",
-                          isActive ? "" : "group-hover:scale-110"
+                          "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]",
+                          isActive
+                            ? "bg-primary/10 text-primary"
+                            : "text-foreground-muted hover:bg-surface-muted/60 hover:text-foreground"
                         )}
-                      />
-                      <span>{item.label}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+                      >
+                        <Icon
+                          size={18}
+                          className={cn(
+                            "transition-transform duration-300",
+                            isActive ? "" : "group-hover:scale-110"
+                          )}
+                        />
+                        <span>{item.label}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
       </nav>
     </aside>
   );

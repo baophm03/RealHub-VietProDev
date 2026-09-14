@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
   getApiPropertyCode,
   getApiProperties,
@@ -33,20 +33,20 @@ type Props = {
   params: Promise<{ locale: string; propertyCode: string }>;
 };
 
-export const dynamic = "force-static";
 export const revalidate = 1800;
 
 export async function generateMetadata({
   params,
 }: Props): Promise<Metadata> {
   const { propertyCode } = await params;
+  const t = await getTranslations("public.listingDetail");
   try {
     const propertyRes = await getApiPropertyCode(propertyCode);
     const property = (propertyRes as unknown as GetPropertyItemResponse)?.data;
     if (!property) {
       return generateSeoMetadata("PROPERTY_DETAIL", {}, {
-        title: "Chi tiết bất động sản - RealHub",
-        description: "Xem chi tiết bất động sản trên RealHub.",
+        title: t("metaTitle"),
+        description: t("metaDesc"),
       });
     }
     const context = buildPropertyDetailContext(property);
@@ -56,8 +56,8 @@ export async function generateMetadata({
     });
   } catch {
     return generateSeoMetadata("PROPERTY_DETAIL", {}, {
-      title: "Chi tiết bất động sản - RealHub",
-      description: "Xem chi tiết bất động sản trên RealHub.",
+      title: t("metaTitle"),
+      description: t("metaDesc"),
     });
   }
 }
@@ -75,21 +75,6 @@ export async function generateStaticParams() {
   );
 }
 
-const txLabel: Record<string, string> = {
-  SALE: "Bán",
-  RENT: "Cho thuê",
-  TRANSFER: "Chuyển nhượng",
-  INVESTMENT: "Đầu tư",
-};
-
-const statusLabel: Record<string, string> = {
-  AVAILABLE: "Sẵn có",
-  RESERVED: "Đặt cọc",
-  SOLD: "Đã bán",
-  RENTED: "Đã thuê",
-  OFF_MARKET: "Ngừng bán",
-};
-
 function extractFirstImageUrlFromMedia(media: PropertyMedia[] | undefined): string | null {
   if (!media || media.length === 0) return null;
   const imageItem = media
@@ -101,6 +86,10 @@ function extractFirstImageUrlFromMedia(media: PropertyMedia[] | undefined): stri
 export default async function ListingDetailPage({ params }: Props) {
   const { locale, propertyCode } = await params;
   setRequestLocale(locale);
+
+  const t = await getTranslations("public.listingDetail");
+  const tp = await getTranslations("public");
+  const tprops = await getTranslations("properties");
 
   const [propertyRes, schemaRes] = await Promise.all([
     getApiPropertyCode(propertyCode),
@@ -133,11 +122,11 @@ export default async function ListingDetailPage({ params }: Props) {
     return (
       <div className="mx-auto max-w-[1280px] px-6 py-8 md:px-8">
         <Link href="/listings" className="hover:text-foreground transition-colors text-sm text-foreground-muted">
-          Bất động sản
+          {tprops("title")}
         </Link>
         <div className="mx-auto max-w-3xl py-20 text-center">
-          <h1 className="mb-2 font-serif text-2xl font-semibold">Không tìm thấy bất động sản</h1>
-          <p className="text-sm text-foreground-muted">Bất động sản bạn tìm kiếm không tồn tại hoặc đã bị xoá.</p>
+          <h1 className="mb-2 font-serif text-2xl font-semibold">{t("notFound")}</h1>
+          <p className="text-sm text-foreground-muted">{t("notFoundDesc")}</p>
         </div>
       </div>
     );
@@ -163,9 +152,9 @@ export default async function ListingDetailPage({ params }: Props) {
     <div className="container">
       {/* Breadcrumbs */}
       <div className="flex items-center gap-2 text-sm text-foreground-muted mb-4">
-        <Link href="/listings" className="hover:text-foreground transition-colors">Bất động sản</Link>
+        <Link href="/listings" className="hover:text-foreground transition-colors">{tprops("title")}</Link>
         <ChevronRight size={14} className="text-foreground-muted" />
-        <span>{property.propertyType?.name ?? "Bất động sản"}</span>
+        <span>{property.propertyType?.name ?? tprops("title")}</span>
         <ChevronRight size={14} className="text-foreground-muted" />
         <span className="truncate">{property.title}</span>
       </div>
@@ -178,10 +167,10 @@ export default async function ListingDetailPage({ params }: Props) {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className={`rounded-lg px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${property.transactionType === "SALE" ? "bg-[#FCEAEB] text-[#C57B7A]" : "bg-accent-blue text-accent-blue-text"}`}>
-                {txLabel[property.transactionType] ?? property.transactionType}
+                {tp(`enums.transaction.${property.transactionType}`) ?? property.transactionType}
               </span>
               <span className={`rounded-lg px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${property.businessStatus === "AVAILABLE" ? "bg-accent-green text-accent-green-text" : property.businessStatus === "RESERVED" ? "bg-accent-yellow text-accent-yellow-text" : property.businessStatus === "SOLD" ? "bg-accent-red text-accent-red-text" : "bg-surface-muted text-foreground-muted"}`}>
-                {statusLabel[property.businessStatus ?? ""] ?? property.businessStatus}
+                {property.businessStatus ? tp(`enums.businessStatus.${property.businessStatus}`) : property.businessStatus}
               </span>
             </div>
             <h1 className="font-serif text-3xl font-semibold tracking-tight text-black md:text-4xl">
@@ -189,7 +178,7 @@ export default async function ListingDetailPage({ params }: Props) {
             </h1>
             <p className="mt-1 flex items-center gap-1.5 text-base text-foreground-muted">
               <MapPin size={16} className="text-black" />
-              {[property.district?.name, property.province?.name].filter(Boolean).join(", ") || "Đang cập nhật vị trí"}
+              {[property.district?.name, property.province?.name].filter(Boolean).join(", ") || t("updatingLocation")}
             </p>
             <div className="mt-4 flex flex-col gap-0.5">
               <div className="font-serif text-xl font-semibold text-black md:text-3xl">
@@ -217,9 +206,9 @@ export default async function ListingDetailPage({ params }: Props) {
       {similarProperties.length > 0 && (
         <section className="pt-8 border-t border-border mt-8">
           <div className="mb-6 flex flex-col gap-2">
-            <h2 className="font-serif text-2xl font-semibold tracking-tight text-primary">Bất động sản tương tự</h2>
+            <h2 className="font-serif text-2xl font-semibold tracking-tight text-primary">{t("similarTitle")}</h2>
             <p className="text-sm text-foreground-muted">
-              Những bất động sản cùng loại có thể phù hợp với bạn.
+              {t("similarDesc")}
             </p>
           </div>
           <FeaturedPropertiesCarousel properties={similarProperties} imageMap={similarImageMap} />

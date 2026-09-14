@@ -10,6 +10,7 @@ import type { CreateNotificationRuleDtoChannel } from './createNotificationRuleD
 
 export interface CreateNotificationRuleDto {
   eventCode: string;
+  /** Role code thật trong hệ thống (SALES, TEAM_LEADER, AGENCY_ADMIN, OWNER, CUSTOMER, COLLABORATOR, OPERATOR, SUPER_ADMIN) hoặc ALL_USERS / ASSIGNED_USER */
   receiverType: CreateNotificationRuleDtoReceiverType;
   channel?: CreateNotificationRuleDtoChannel;
   templateId?: string;

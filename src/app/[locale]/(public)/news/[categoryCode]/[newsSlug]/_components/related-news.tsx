@@ -1,19 +1,7 @@
 import { ArrowRight, Calendar, ImageIcon, User } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import type { News } from "@/lib/api/types/news";
-
-function formatDate(iso: string): string {
-  if (!iso) return "";
-  try {
-    return new Date(iso).toLocaleDateString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  } catch {
-    return iso;
-  }
-}
+import { getFormatter, getTranslations } from "next-intl/server";
 
 function NewsImage({
   url,
@@ -43,7 +31,23 @@ interface RelatedNewsProps {
   categoryCode: string;
 }
 
-export function RelatedNews({ news, categoryCode }: RelatedNewsProps) {
+export async function RelatedNews({ news, categoryCode }: RelatedNewsProps) {
+  const t = await getTranslations("public.news");
+  const format = await getFormatter();
+
+  const formatDate = (iso: string): string => {
+    if (!iso) return "";
+    try {
+      return format.dateTime(new Date(iso), {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      });
+    } catch {
+      return iso;
+    }
+  };
+
   if (news.length === 0) return null;
 
   return (
@@ -52,7 +56,7 @@ export function RelatedNews({ news, categoryCode }: RelatedNewsProps) {
         <div className="mb-5 flex items-center gap-3">
           <div className="h-5 w-1 rounded-full bg-primary" />
           <h2 className="font-serif text-lg font-semibold tracking-tight">
-            Bài viết liên quan
+            {t("relatedTitle")}
           </h2>
         </div>
 

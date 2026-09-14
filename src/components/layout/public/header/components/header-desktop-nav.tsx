@@ -20,10 +20,10 @@ export interface HeaderDesktopNavProps {
 export function useNavLinks() {
   const t = useTranslations("public");
   return [
-    { label: t("projects"), href: "/projects" },
-    { label: t("news"), href: "/news/all" },
-    { label: t("about"), href: "/about" },
-    { label: t("contact"), href: "/contact" },
+    { label: t("nav.projects"), href: "/projects" },
+    { label: t("nav.news"), href: "/news/all" },
+    { label: t("nav.about"), href: "/about" },
+    { label: t("nav.contact"), href: "/contact" },
   ];
 }
 
@@ -71,7 +71,7 @@ export function HeaderDesktopNav({ isActive, isListingsActive }: HeaderDesktopNa
           <div className="absolute left-1/2 top-full mt-2 w-[480px] -translate-x-1/2 overflow-hidden rounded-lg border border-border bg-white shadow-[0_16px_48px_-12px_rgba(0,0,0,0.12)]">
             <div className="border-b border-border px-5 py-3">
               <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-black/60">
-                Khám phá theo loại
+                {t("header.exploreByType")}
               </span>
             </div>
             <div className="grid grid-cols-1">
@@ -102,7 +102,7 @@ export function HeaderDesktopNav({ isActive, isListingsActive }: HeaderDesktopNa
                 onClick={() => setMegaOpen(false)}
                 className="flex items-center justify-between text-sm font-medium text-[#092909] transition-colors hover:text-[#092909]/80"
               >
-                Xem tất cả bất động sản
+                {t("header.viewAllProperties")}
                 <ArrowUpRight size={14} />
               </Link>
             </div>

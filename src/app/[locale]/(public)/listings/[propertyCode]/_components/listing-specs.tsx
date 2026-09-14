@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import {
   findPropertyIcon,
   findFieldValue,
@@ -9,7 +10,8 @@ interface ListingSpecsProps {
   schemas: any[];
 }
 
-export function ListingSpecs({ property, schemas }: ListingSpecsProps) {
+export async function ListingSpecs({ property, schemas }: ListingSpecsProps) {
+  const t = await getTranslations("public.listingDetail");
   const dynamicValues = property?.dynamicValuesJson as Record<string, unknown> | undefined;
   const areaNum = property?.area ?? 0;
 
@@ -18,12 +20,14 @@ export function ListingSpecs({ property, schemas }: ListingSpecsProps) {
   const legalStatus = findFieldValue(schemas, dynamicValues, ["legal", "phap_ly", "pháp lý", "ownership"]);
 
   const staticSpecs = [
-    { icon: findPropertyIcon("diện tích").icon, label: "Diện tích", value: property?.area ? `${areaNum} m²` : "—" },
-    { icon: findPropertyIcon("phòng ngủ").icon, label: "Phòng ngủ", value: bedrooms ?? "—" },
-    { icon: findPropertyIcon("phòng tắm").icon, label: "Phòng tắm", value: bathrooms ?? "—" },
-    { icon: findPropertyIcon("pháp lý").icon, label: "Pháp lý", value: legalStatus ?? "—" },
+    { icon: findPropertyIcon("diện tích").icon, label: t("specArea"), value: property?.area ? `${areaNum} m²` : "—" },
+    { icon: findPropertyIcon("phòng ngủ").icon, label: t("specBedrooms"), value: bedrooms ?? "—" },
+    { icon: findPropertyIcon("phòng tắm").icon, label: t("specBathrooms"), value: bathrooms ?? "—" },
+    { icon: findPropertyIcon("pháp lý").icon, label: t("specLegal"), value: legalStatus ?? "—" },
   ];
 
+  // Dedup by label — dynamic field labels come from the API (Vietnamese), so compare
+  // against the original Vietnamese labels rather than the translated display labels
   const staticSpecLabels = new Set(["Diện tích", "Phòng ngủ", "Phòng tắm", "Pháp lý"]);
   const basicInfoFields = getFieldsByGroupCode(schemas, dynamicValues, "basic_info");
   const dynamicSpecs = basicInfoFields

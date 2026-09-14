@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { generateSeoMetadata } from "@/lib/seo";
 import { buildStaticContext } from "@/lib/seo-context";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("public.about");
   return generateSeoMetadata("ABOUT", buildStaticContext(), {
-    title: "Giới thiệu - RealHub",
-    description: "Tìm hiểu về RealHub - nền tảng hệ sinh thái bất động sản đa tenant.",
+    title: t("metaTitle"),
+    description: t("metaDesc"),
   });
 }
 

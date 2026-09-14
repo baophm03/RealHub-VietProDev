@@ -73,12 +73,12 @@ export default function NotificationsSettingsPage() {
   const { data: rulesRaw, isLoading: rulesLoading } = useGetApiNotificationRules(
     ruleEventFilter ? { eventCode: ruleEventFilter } : undefined,
   );
-  const rules: NotificationRule[] = Array.isArray(rulesRaw) ? rulesRaw : [];
+  const rules: NotificationRule[] = (rulesRaw as any)?.data ?? [];
 
   const { data: templatesRaw, isLoading: templatesLoading } = useGetApiNotificationTemplates(
     templateChannelFilter ? { channel: templateChannelFilter as any } : undefined,
   );
-  const templates: NotificationTemplate[] = Array.isArray(templatesRaw) ? templatesRaw : [];
+  const templates: NotificationTemplate[] = (templatesRaw as any)?.data ?? [];
 
   // ── Mutations ──
   const { mutateAsync: deleteRule, isPending: isDeletingRule } = useDeleteApiNotificationRule({
@@ -337,7 +337,7 @@ export default function NotificationsSettingsPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         eyebrow="Cài đặt"
-        title="Notification rules & templates"
+        title="Cấu hình thông báo & mẫu"
         description="Cấu hình thông báo tự động theo event và template nội dung"
         actions={
           <Can I="CREATE" a="SETTING">

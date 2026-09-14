@@ -17,72 +17,70 @@ export function PublicFooter() {
               </p>
             </div>
             <p className="mt-3 max-w-[40ch] text-sm leading-relaxed text-foreground-muted">
-              {t("tagline") === "tagline"
-                ? "Nền tảng bất động sản chuyên nghiệp hàng đầu Việt Nam. Cập nhật các thông tin dự án, bất động sản mới nhất, chính xác nhất cho khách hàng."
-                : t("tagline")}
+              {t("tagline")}
             </p>
           </div>
 
           <div className="col-span-6 md:col-span-2 flex flex-col gap-3">
             <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
-              Mua bán
+              {t("footer.sale")}
             </p>
             <Link href="/listings?types=APARTMENT&transactionType=SALE" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
-              Căn hộ
+              {t("footer.apartment")}
             </Link>
             <Link href="/listings?types=VILLA&transactionType=SALE" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
-              Biệt thự
+              {t("footer.villa")}
             </Link>
             <Link href="/listings?types=HOUSE,SHOPHOUSE&transactionType=SALE" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
-              Nhà phố
+              {t("footer.townhouse")}
             </Link>
             <Link href="/listings?types=LAND&transactionType=SALE" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
-              Đất nền
+              {t("footer.land")}
             </Link>
             <Link href="/listings?types=OFFICE,WAREHOUSE,SHOP&transactionType=SALE" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
-              Mặt bằng
+              {t("footer.commercial")}
             </Link>
           </div>
 
           <div className="col-span-6 md:col-span-2 flex flex-col gap-3">
             <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
-              Cho thuê
+              {t("footer.rent")}
             </p>
             <Link href="/listings?types=APARTMENT&transactionType=RENT" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
-              Căn hộ
+              {t("footer.apartment")}
             </Link>
             <Link href="/listings?types=VILLA&transactionType=RENT" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
-              Biệt thự
+              {t("footer.villa")}
             </Link>
             <Link href="/listings?types=HOUSE,SHOPHOUSE&transactionType=RENT" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
-              Nhà phố
+              {t("footer.townhouse")}
             </Link>
             <Link href="/listings?types=LAND&transactionType=RENT" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
-              Đất nền
+              {t("footer.land")}
             </Link>
             <Link href="/listings?types=OFFICE,WAREHOUSE,SHOP&transactionType=RENT" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
-              Mặt bằng
+              {t("footer.commercial")}
             </Link>
           </div>
 
           <div className="col-span-6 md:col-span-2 flex flex-col gap-3">
             <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
-              Khám phá
+              {t("footer.explore")}
             </p>
             <Link href="/projects" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
-              Dự án
+              {t("nav.projects")}
             </Link>
             <Link href="/news/all" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
-              Tin tức
+              {t("nav.news")}
             </Link>
             <Link href="/about" className="text-sm text-foreground-muted transition-colors hover:text-foreground">
-              {t("about")}
+              {t("nav.about")}
             </Link>
           </div>
 
           <div className="col-span-6 md:col-span-2 flex flex-col gap-3">
             <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
-              Liên hệ
+              {t("footer.contactCol")}
             </p>
             <div className="flex items-center gap-2 text-sm text-foreground-muted">
               <Phone size={14} className="shrink-0 text-primary" />
@@ -107,20 +105,20 @@ export function PublicFooter() {
 
         <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 md:flex-row md:items-center">
           <p className="text-xs text-foreground-muted">
-            © {new Date().getFullYear()} RealHub. All rights reserved.
+            {t("footer.rights", { year: new Date().getFullYear() })}
           </p>
           <div className="flex items-center gap-6">
             <Link
               href="/about"
               className="text-xs text-foreground-muted transition-colors hover:text-foreground"
             >
-              Điều khoản
+              {t("footer.terms")}
             </Link>
             <Link
               href="/about"
               className="text-xs text-foreground-muted transition-colors hover:text-foreground"
             >
-              Bảo mật
+              {t("footer.privacy")}
             </Link>
           </div>
         </div>

@@ -217,6 +217,7 @@ export * from './postApiFileUploadMultipleBody';
 export * from './postApiFileUploadMultipleBodyVisibility';
 export * from './postApiTempUploadBody';
 export * from './registerDto';
+export * from './registerDtoRoleCode';
 export * from './reorderMediaItemDto';
 export * from './reorderProjectMediaDto';
 export * from './reorderProjectMediaItemDto';

@@ -33,8 +33,8 @@ export interface Lead {
   metadata: Record<string, unknown> | null;
   createdAt: string;
   updatedAt: string;
-  creator?: { id: string; fullName: string; avatarUrl: string | null } | null;
-  updater?: { id: string; fullName: string; avatarUrl: string | null } | null;
+  creator?: { id: string; fullName: string; avatarFile: { id: string; name: string; url: string } | null } | null;
+  updater?: { id: string; fullName: string; avatarFile: { id: string; name: string; url: string } | null } | null;
   customer: { id: string; fullName: string; phone: string } | null;
   property: { id: string; title: string; propertyCode: string } | null;
   assignedSales: { id: string; fullName: string } | null;

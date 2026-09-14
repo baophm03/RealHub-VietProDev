@@ -1,0 +1,7 @@
+{
+  "somethingWentWrong": "Something went wrong",
+  "notFound": "Page not found",
+  "unauthorized": "You are not authorized",
+  "forbidden": "Access forbidden",
+  "serverError": "Server error"
+}

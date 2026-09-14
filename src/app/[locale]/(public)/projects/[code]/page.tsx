@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getApiProjectCode, getApiProjects } from "@/lib/api/endpoints/projects";
 import type {
   GetProjectItemResponse,
@@ -35,31 +35,31 @@ type Props = {
   params: Promise<{ locale: string; code: string }>;
 };
 
-export const dynamic = "force-static";
 export const revalidate = 1800;
 
 export async function generateMetadata({
   params,
 }: Props): Promise<Metadata> {
-  const { code } = await params;
+  const { locale, code } = await params;
+  const t = await getTranslations({ locale, namespace: "public.projectDetail" });
   try {
     const projectRes = await getApiProjectCode(code);
     const project = (projectRes as unknown as GetProjectItemResponse)?.data;
     if (!project) {
       return generateSeoMetadata("PROPERTY_DETAIL", {}, {
-        title: "Chi tiết dự án - RealHub",
-        description: "Xem chi tiết dự án bất động sản trên RealHub.",
+        title: t("metaTitle"),
+        description: t("metaDesc"),
       });
     }
     const context = buildProjectDetailContext(project);
     return generateSeoMetadata("PROPERTY_DETAIL", context, {
       title: `${project.name} - RealHub`,
-      description: `${project.name} - ${project.developer ?? "Dự án bất động sản"}`,
+      description: `${project.name} - ${project.developer ?? t("fallbackDeveloper")}`,
     });
   } catch {
     return generateSeoMetadata("PROPERTY_DETAIL", {}, {
-      title: "Chi tiết dự án - RealHub",
-      description: "Xem chi tiết dự án bất động sản trên RealHub.",
+      title: t("metaTitle"),
+      description: t("metaDesc"),
     });
   }
 }
@@ -72,30 +72,10 @@ export async function generateStaticParams() {
   );
 }
 
-const projectStatusLabels: Record<string, string> = {
-  ACTIVE: "Đang hoạt động",
-  INACTIVE: "Ngừng hoạt động",
-};
-
 const buttonBase =
   "inline-flex shrink-0 items-center justify-center rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none select-none gap-1.5 h-10 px-2.5 w-full";
 const buttonPrimary = `${buttonBase} bg-primary text-primary-foreground hover:bg-primary/80`;
 const buttonOutline = `${buttonBase} border border-border bg-background shadow-xs hover:bg-muted hover:text-foreground`;
-
-const businessStatusBadge: Record<string, { label: string; class: string }> = {
-  AVAILABLE: { label: "Sẵn có", class: "bg-accent-green text-accent-green-text" },
-  RESERVED: { label: "Đặt cọc", class: "bg-accent-yellow text-accent-yellow-text" },
-  SOLD: { label: "Đã bán", class: "bg-accent-red text-accent-red-text" },
-  RENTED: { label: "Đã thuê", class: "bg-accent-blue text-accent-blue-text" },
-  OFF_MARKET: { label: "Ngừng bán", class: "bg-surface-muted text-foreground-muted" },
-};
-
-const txLabel: Record<string, string> = {
-  SALE: "Bán",
-  RENT: "Cho thuê",
-  TRANSFER: "Chuyển nhượng",
-  INVESTMENT: "Đầu tư",
-};
 
 const propertyBadgeBase =
   "inline-flex h-6 min-w-[3.25rem] items-center justify-center px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide rounded-md shadow-sm whitespace-nowrap";
@@ -106,6 +86,23 @@ const BATHROOM_KEYS = ["bathroom_count", "bathrooms", "baths", "pathroom_count",
 export default async function ProjectDetailPage({ params }: Props) {
   const { locale, code } = await params;
   setRequestLocale(locale);
+
+  const t = await getTranslations("public.projectDetail");
+  const tc = await getTranslations("public.common");
+  const tp = await getTranslations("public");
+
+  const businessStatusBadgeClasses: Record<string, string> = {
+    AVAILABLE: "bg-accent-green text-accent-green-text",
+    RESERVED: "bg-accent-yellow text-accent-yellow-text",
+    SOLD: "bg-accent-red text-accent-red-text",
+    RENTED: "bg-accent-blue text-accent-blue-text",
+    OFF_MARKET: "bg-surface-muted text-foreground-muted",
+  };
+
+  const enumLabel = (prefix: string, code: string): string => {
+    const key = `${prefix}.${code}` as never;
+    return tp.has(key) ? tp(key) : code;
+  };
 
   const [projectRes, projectsRes] = await Promise.all([
     getApiProjectCode(code),
@@ -126,17 +123,17 @@ export default async function ProjectDetailPage({ params }: Props) {
           href="/projects"
           className="mb-6 inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
         >
-          <ArrowLeft size={16} /> Quay lại danh sách dự án
+          <ArrowLeft size={16} /> {t("backToList")}
         </Link>
         <div className="mx-auto max-w-3xl py-20 text-center">
-          <h1 className="mb-2 font-serif text-2xl font-semibold">Không tìm thấy dự án</h1>
-          <p className="text-sm text-foreground-muted">Dự án bạn tìm kiếm không tồn tại hoặc đã bị xoá.</p>
+          <h1 className="mb-2 font-serif text-2xl font-semibold">{t("notFound")}</h1>
+          <p className="text-sm text-foreground-muted">{t("notFoundDesc")}</p>
         </div>
       </div>
     );
   }
 
-  const location = formatLocationShort(project, "Đang cập nhật");
+  const location = formatLocationShort(project, t("updatingLocation"));
   const scale = getProjectScale(project);
   const projectImages = getProjectImages(project);
   const heroImage = projectImages[0]?.url || null;
@@ -147,7 +144,7 @@ export default async function ProjectDetailPage({ params }: Props) {
         href="/projects"
         className="mb-6 inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
       >
-        <ArrowLeft size={16} /> Quay lại danh sách dự án
+        <ArrowLeft size={16} /> {t("backToList")}
       </Link>
 
       {/* Hero */}
@@ -163,14 +160,14 @@ export default async function ProjectDetailPage({ params }: Props) {
           <div className="absolute inset-0 flex items-center justify-center bg-surface-muted">
             <div className="flex flex-col items-center gap-2 text-foreground-muted">
               <Camera size={32} />
-              <span className="text-sm">Chưa có hình ảnh cho dự án này</span>
+              <span className="text-sm">{t("noImages")}</span>
             </div>
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
           <span className="mb-3 inline-block rounded-full bg-primary px-3 py-1 text-[10px] font-medium uppercase tracking-wide text-primary-foreground">
-            {projectStatusLabels[project.status] ?? project.status}
+            {enumLabel("enums.projectStatus", project.status)}
           </span>
           <h1 className="font-serif text-3xl font-semibold tracking-tight text-white md:text-4xl">
             {project.name}
@@ -202,31 +199,31 @@ export default async function ProjectDetailPage({ params }: Props) {
         <div className="flex flex-col gap-8 lg:col-span-8">
           {/* Description */}
           <div>
-            <h2 className="mb-3 font-serif text-xl font-semibold">Giới thiệu dự án</h2>
+            <h2 className="mb-3 font-serif text-xl font-semibold">{t("introTitle")}</h2>
             {project.description ? (
               <p className="whitespace-pre-line text-base leading-relaxed text-foreground-muted">{project.description}</p>
             ) : (
-              <p className="text-base leading-relaxed text-foreground-muted">Đang cập nhật thông tin giới thiệu cho dự án {project.name}.</p>
+              <p className="text-base leading-relaxed text-foreground-muted">{t("introFallback", { name: project.name })}</p>
             )}
           </div>
 
           <div>
-            <h2 className="mb-4 font-serif text-xl font-semibold">Thông tin chi tiết</h2>
+            <h2 className="mb-4 font-serif text-xl font-semibold">{t("detailsTitle")}</h2>
             <div className="rounded-xl border border-border bg-white p-6 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
               <div className="grid grid-cols-2 divide-y divide-border md:grid-cols-2 md:divide-y-0">
                 {[
-                  { label: "Tên dự án", value: project.name, icon: Building2 },
-                  { label: "Mã dự án", value: project.code, icon: Hash },
-                  { label: "Vị trí", value: location, icon: MapPin },
-                  { label: "Chủ đầu tư", value: project.developer ?? "Đang cập nhật", icon: Building2 },
-                  { label: "Quy mô", value: scale, icon: Ruler },
+                  { label: t("detailName"), value: project.name, icon: Building2 },
+                  { label: t("detailCode"), value: project.code, icon: Hash },
+                  { label: t("detailLocation"), value: location, icon: MapPin },
+                  { label: t("detailDeveloper"), value: project.developer ?? tc("updating"), icon: Building2 },
+                  { label: t("detailScale"), value: scale, icon: Ruler },
                   {
-                    label: "Trạng thái",
-                    value: projectStatusLabels[project.status] ?? project.status,
+                    label: t("detailStatus"),
+                    value: enumLabel("enums.projectStatus", project.status),
                     icon: Tag,
                   },
-                  { label: "Loại hình", value: "Đang cập nhật", icon: Home },
-                  { label: "Bàn giao", value: project.handoverDate ?? "Đang cập nhật", icon: Calendar },
+                  { label: t("detailType"), value: tc("updating"), icon: Home },
+                  { label: t("detailHandover"), value: project.handoverDate ?? tc("updating"), icon: Calendar },
                 ].map(({ label, value, icon: Icon }, i) => (
                   <div
                     key={label}
@@ -253,7 +250,7 @@ export default async function ProjectDetailPage({ params }: Props) {
         <aside className="lg:col-span-4 lg:sticky lg:top-24 lg:self-start">
           <div className="flex flex-col gap-5 rounded-lg border border-border bg-surface p-6">
             <div>
-              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Khoảng giá</span>
+              <span className="text-xs font-medium uppercase tracking-wide text-foreground-muted">{t("priceRange")}</span>
               <p className="text-2xl font-semibold text-primary">{getProjectPriceRange(project)}</p>
             </div>
 
@@ -262,11 +259,11 @@ export default async function ProjectDetailPage({ params }: Props) {
             <div className="flex flex-col gap-3">
               <button type="button" className={buttonPrimary}>
                 <Phone size={16} />
-                Liên hệ ngay
+                {t("contactNow")}
               </button>
               <button type="button" className={buttonOutline}>
                 <Calendar size={16} />
-                Đặt lịch xem dự án
+                {t("scheduleViewing")}
               </button>
             </div>
           </div>
@@ -275,10 +272,11 @@ export default async function ProjectDetailPage({ params }: Props) {
 
       {properties.length > 0 && (
         <div className="mt-10">
-          <h2 className="mb-4 font-serif text-xl font-semibold">Bất động sản thuộc dự án</h2>
+          <h2 className="mb-4 font-serif text-xl font-semibold">{t("propertiesTitle")}</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
             {properties.map((property) => {
-              const badge = businessStatusBadge[property.businessStatus ?? ""];
+              const badgeClass = businessStatusBadgeClasses[property.businessStatus ?? ""];
+              const badgeLabel = property.businessStatus ? enumLabel("enums.businessStatus", property.businessStatus) : null;
               const imageUrl = getPropertyImageUrl(property);
               const bedrooms = pickDynamicValue(property.dynamicValuesJson, BEDROOM_KEYS);
               const bathrooms = pickDynamicValue(property.dynamicValuesJson, BATHROOM_KEYS);
@@ -300,12 +298,12 @@ export default async function ProjectDetailPage({ params }: Props) {
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-surface-muted">
-                        <span className="text-xs text-foreground-muted">Không có hình ảnh</span>
+                        <span className="text-xs text-foreground-muted">{tc("noImage")}</span>
                       </div>
                     )}
-                    {badge && (
+                    {badgeClass && badgeLabel && (
                       <div className="absolute top-3 right-3 z-10">
-                        <span className={`${propertyBadgeBase} ${badge.class}`}>{badge.label}</span>
+                        <span className={`${propertyBadgeBase} ${badgeClass}`}>{badgeLabel}</span>
                       </div>
                     )}
                     <div className="absolute top-3 left-3 z-10">
@@ -315,7 +313,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                           : "bg-accent-blue text-accent-blue-text"
                           }`}
                       >
-                        {txLabel[tx] ?? tx}
+                        {enumLabel("enums.transaction", tx)}
                       </span>
                     </div>
                   </div>
@@ -329,8 +327,8 @@ export default async function ProjectDetailPage({ params }: Props) {
                     <p className="text-sm text-foreground-muted flex items-center gap-1">
                       <MapPin size={16} />
                       <span>
-                        {property?.district?.name ?? "Đang cập nhật"},{" "}
-                        {property?.province?.name ?? "Đang cập nhật"}
+                        {property?.district?.name ?? tc("updating")},{" "}
+                        {property?.province?.name ?? tc("updating")}
                       </span>
                     </p>
 
@@ -355,14 +353,14 @@ export default async function ProjectDetailPage({ params }: Props) {
                         <span className="flex items-center gap-1">
                           <BedDouble size={13} className="shrink-0" />
                           <span className="tabular-nums">{bedrooms}</span>
-                          <span>PN</span>
+                          <span>{tc("bedroom")}</span>
                         </span>
                       )}
                       {bathrooms && (
                         <span className="flex items-center gap-1">
                           <Bath size={13} className="shrink-0" />
                           <span className="tabular-nums">{bathrooms}</span>
-                          <span>WC</span>
+                          <span>{tc("bathroom")}</span>
                         </span>
                       )}
                       {property.area != null && (
@@ -371,14 +369,14 @@ export default async function ProjectDetailPage({ params }: Props) {
                           <span className="tabular-nums">
                             {property.area.toLocaleString("vi-VN")}
                           </span>
-                          <span>m²</span>
+                          <span>{tc("sqm")}</span>
                         </span>
                       )}
                     </div>
 
                     {/* Xem chi tiết */}
                     <div className="flex items-center gap-1 pt-2 text-xs font-medium text-primary">
-                      Xem chi tiết
+                      {tc("viewDetail")}
                       <ArrowRight size={13} className="shrink-0" />
                     </div>
                   </div>
@@ -393,12 +391,12 @@ export default async function ProjectDetailPage({ params }: Props) {
       {relatedProjects.length > 0 && (
         <div className="mt-16">
           <div className="mb-6 flex items-center justify-between">
-            <h2 className="font-serif text-2xl font-semibold tracking-tight">Dự án liên quan</h2>
+            <h2 className="font-serif text-2xl font-semibold tracking-tight">{t("relatedTitle")}</h2>
             <Link
               href="/projects"
               className="group flex items-center gap-2 text-sm font-medium text-foreground-muted transition-colors hover:text-foreground"
             >
-              Xem tất cả
+              {tc("viewAll")}
               <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>

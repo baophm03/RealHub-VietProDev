@@ -23,7 +23,6 @@ import { useGetApiPropertiesAdmin } from "@/lib/api/endpoints/properties";
 import { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
 import { usePagination } from "@/lib/hooks/use-pagination";
 import { PaginationBar } from "@/components/shared/pagination-bar";
-import { SubmitVerificationDialog } from "./_components/submit-verification-dialog";
 import { DeletePropertyDialog } from "./_components/delete-property-dialog";
 
 const statusVariant: Record<string, "green" | "yellow" | "red" | "blue" | "default"> = {
@@ -70,7 +69,6 @@ export default function PropertiesPage() {
   const router = useRouter();
   const portalPath = usePortalPath();
   const [search, setSearch] = useState("");
-  const [pendingSubmit, setPendingSubmit] = useState<Property | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Property | null>(null);
 
   const pagination = usePagination(10);
@@ -161,23 +159,11 @@ export default function PropertiesPage() {
       id: "actions",
       header: "Hành động",
       cell: ({ row }) => {
-        const vStatus = getVerificationStatus(row.original);
-        const canSubmit = vStatus === "DRAFT" || vStatus === "REJECTED";
         return (
           <div
             onClick={(e) => e.stopPropagation()}
             className="flex items-center justify-start gap-2"
           >
-            {canSubmit ? (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPendingSubmit(row.original)}
-              >
-                <Send size={14} />
-                Gửi duyệt
-              </Button>
-            ) : null}
             <Can I="DELETE_OWN" a="PROPERTY">
               <Button
                 variant="ghost"
@@ -255,13 +241,6 @@ export default function PropertiesPage() {
           />
         )}
       </div>
-
-      <SubmitVerificationDialog
-        property={pendingSubmit}
-        open={!!pendingSubmit}
-        onOpenChange={(open) => !open && setPendingSubmit(null)}
-        onRefresh={() => { refetch(); router.refresh(); }}
-      />
       <DeletePropertyDialog
         property={pendingDelete}
         open={!!pendingDelete}

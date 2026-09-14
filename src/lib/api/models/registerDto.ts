@@ -5,13 +5,14 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { RegisterDtoRoleCode } from './registerDtoRoleCode';
 
 export interface RegisterDto {
   fullName: string;
   email: string;
   /** @minLength 10 */
   password: string;
-  /** @minLength 10 */
-  confirmPassword: string;
   phone?: string;
+  /** Role to assign on registration. Defaults to CUSTOMER. Allowed: CUSTOMER | OWNER | SALES */
+  roleCode?: RegisterDtoRoleCode;
 }

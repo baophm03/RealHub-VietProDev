@@ -1,0 +1,26 @@
+{
+  "transaction": {
+    "SALE": "For Sale",
+    "RENT": "For Rent",
+    "TRANSFER": "Transfer",
+    "INVESTMENT": "Investment"
+  },
+  "businessStatus": {
+    "AVAILABLE": "Available",
+    "RESERVED": "Reserved",
+    "SOLD": "Sold",
+    "RENTED": "Rented",
+    "OFF_MARKET": "Off Market"
+  },
+  "sellingMode": {
+    "SELF_SELL": "Self Sell",
+    "SALES_DISTRIBUTION": "Sales Distribution",
+    "HYBRID": "Hybrid",
+    "AGENCY_DISTRIBUTION": "Agency Distribution",
+    "INTERNAL_ONLY": "Internal Only"
+  },
+  "projectStatus": {
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive"
+  }
+}

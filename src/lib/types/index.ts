@@ -86,12 +86,18 @@ export interface Role {
   permissions: RolePermission[];
 }
 
+export interface Avatar {
+  id: string;
+  name: string;
+  url: string;
+}
+
 export interface User {
   id: string;
   email: string;
   fullName: string;
   phone?: string | null;
-  avatarUrl?: string | null;
+  avatarFile?: Avatar | null;
   status: string;
   roles: Role[];
   lastLoginAt?: string | null;

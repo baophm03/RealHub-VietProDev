@@ -33,10 +33,10 @@ export interface NotificationTemplate {
 }
 
 export const receiverTypeLabel: Record<string, string> = {
-  SALES_AGENT: "Sales agent",
-  SALES_MANAGER: "Sales manager",
-  TEAM_LEAD: "Team leader",
-  ALL_USERS: "Tất cả user",
+  SALES_AGENT: "Nhân viên Sale",
+  SALES_MANAGER: "Quản lý Sale",
+  TEAM_LEAD: "Trưởng nhóm",
+  ALL_USERS: "Tất cả người dùng",
 };
 
 export const receiverTypeOptions = Object.keys(receiverTypeLabel).map((k) => ({
@@ -48,7 +48,7 @@ export const channelLabel: Record<string, string> = {
   EMAIL: "Email",
   SMS: "SMS",
   PUSH: "Push",
-  IN_APP: "In-app",
+  IN_APP: "Trong App",
 };
 
 export const channelOptions = Object.keys(channelLabel).map((k) => ({
@@ -64,14 +64,14 @@ export const channelIcon: Record<string, typeof Mail> = {
 };
 
 export const eventCodeOptions: { value: string; label: string }[] = [
-  { value: "LEAD_ASSIGNED", label: "Lead được gán" },
-  { value: "LEAD_CREATED", label: "Lead mới tạo" },
-  { value: "LEAD_STATUS_CHANGED", label: "Lead đổi trạng thái" },
+  { value: "LEAD_ASSIGNED", label: "Khách hàng tiềm năng được gán" },
+  { value: "LEAD_CREATED", label: "Khách hàng tiềm năng mới tạo" },
+  { value: "LEAD_STATUS_CHANGED", label: "KHTN chuyển trạng thái" },
   { value: "APPOINTMENT_REMINDER", label: "Nhắc lịch hẹn" },
   { value: "APPOINTMENT_CREATED", label: "Lịch hẹn mới" },
   { value: "APPOINTMENT_CANCELLED", label: "Lịch hẹn bị hủy" },
   { value: "DEAL_CREATED", label: "Giao dịch mới" },
-  { value: "DEAL_STATUS_CHANGED", label: "Giao dịch đổi trạng thái" },
+  { value: "DEAL_STATUS_CHANGED", label: "Giao dịch chuyển trạng thái" },
   { value: "DEAL_WON", label: "Giao dịch thắng" },
   { value: "DEAL_LOST", label: "Giao dịch thua" },
   { value: "PROPERTY_SUBMITTED", label: "BĐS gửi duyệt" },

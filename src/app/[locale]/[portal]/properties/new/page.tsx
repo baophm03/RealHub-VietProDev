@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,13 +20,14 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { usePostApiProperty, useGetApiPropertyTypes } from "@/lib/api/endpoints/properties";
+import { usePostApiProperty, useGetApiPropertyTypes, getGetApiPropertiesAdminQueryKey } from "@/lib/api/endpoints/properties";
 import { useGetApiProjects } from "@/lib/api/endpoints/projects";
 import { toast } from "sonner";
 import { useGetApiLocations } from "@/lib/api/endpoints/locations";
 import type { Location } from "@/lib/api/types/locations";
 import { GetProjectsResponse } from "@/lib/api/types/projects";
 import { DynamicFieldsSection } from "@/components/shared/dynamic-fields-section";
+import { slugify } from "@/utils";
 
 type PropertyType = {
   id: string;
@@ -102,10 +104,12 @@ function PropertyFormContent() {
   const router = useRouter();
   const portalPath = usePortalPath();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedProvinceId, setSelectedProvinceId] = useState<string | undefined>(undefined);
   const [dynamicValues, setDynamicValues] = useState<Record<string, unknown>>({});
+  const [slugTouched, setSlugTouched] = useState(false);
 
   const projectIdFromUrl = searchParams.get("projectId");
 
@@ -156,6 +160,13 @@ function PropertyFormContent() {
   const watchedProvinceId = watch("provinceId");
   const watchedDistrictId = watch("districtId");
   const watchedProjectId = watch("projectId");
+  const watchedTitle = watch("title");
+
+  useEffect(() => {
+    if (!slugTouched) {
+      setValue("slug", slugify(watchedTitle ?? ""));
+    }
+  }, [watchedTitle, slugTouched, setValue]);
 
   useEffect(() => {
     if (projectIdFromUrl) {
@@ -169,6 +180,7 @@ function PropertyFormContent() {
     try {
       const result = await createProperty({ data: { ...data, dynamicValuesJson: Object.keys(dynamicValues).length > 0 ? dynamicValues : undefined } as any });
       const newId = (result as any)?.id || (result as any)?.data?.id;
+      void queryClient.invalidateQueries({ queryKey: getGetApiPropertiesAdminQueryKey() });
       toast.success("Tạo bất động sản thành công");
       if (newId) {
         router.refresh();
@@ -216,7 +228,15 @@ function PropertyFormContent() {
               <Input id="title" placeholder="Vinhomes Central Park - 2PN" {...register("title")} />
             </FormField>
             <FormField label="Slug" htmlFor="slug" required error={errors.slug?.message}>
-              <Input id="slug" placeholder="vinhomes-central-park-2pn" {...register("slug")} />
+              <Input
+                id="slug"
+                placeholder="vinhomes-central-park-2pn"
+                {...register("slug")}
+                onChange={(e) => {
+                  setSlugTouched(true);
+                  setValue("slug", e.target.value);
+                }}
+              />
             </FormField>
           </div>
 

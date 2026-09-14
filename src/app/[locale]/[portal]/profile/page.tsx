@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Camera, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,16 +14,27 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormField } from "@/components/shared/form-section";
 import { useUserStore } from "@/lib/stores/user-store";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { usePatchApiMe, usePatchApiPassword } from "@/lib/api/endpoints/auth";
+import { useGetApiMe, usePatchApiMe, usePatchApiPassword } from "@/lib/api/endpoints/auth";
+import { usePostApiFileUpload } from "@/lib/api/endpoints/files";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useRouter } from "next/navigation";
+
+interface AvatarData {
+  id: string;
+  name: string;
+  url: string;
+}
 
 interface MeData {
   id: string;
   fullName: string;
   email: string;
   phone?: string | null;
-  avatarUrl?: string | null;
+  avatarFile?: AvatarData | null;
+  status: string;
+  roles?: { code: string; name: string; description: string | null; permissions: { module: string; action: string }[] }[];
+  lastLoginAt?: string | null;
+  createdAt?: string;
 }
 
 interface MeResponse {
@@ -32,10 +43,15 @@ interface MeResponse {
   timestamp: string;
 }
 
+interface FileUploadResponse {
+  success: boolean;
+  data: { id: string; url: string; original: string };
+  timestamp: string;
+}
+
 const profileSchema = z.object({
   fullName: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
   phone: z.string().optional().or(z.literal("")),
-  avatarUrl: z.string().url("URL không hợp lệ").optional().or(z.literal("")),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -62,9 +78,41 @@ export default function ProfilePage() {
   const [savingProfile, setSavingProfile] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
-
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [previewAvatarUrl, setPreviewAvatarUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { mutateAsync: updateProfile } = usePatchApiMe();
   const { mutateAsync: changePassword, isPending: changingPassword } = usePatchApiPassword();
+  const { mutateAsync: uploadFile } = usePostApiFileUpload();
+  const { refetch: getProfile } = useGetApiMe({
+    query: { enabled: false },
+  });
+
+  const syncProfile = async () => {
+    const result = await getProfile();
+    const profileData = (result as any)?.data?.data as MeData | undefined;
+    if (profileData) {
+      setUser({
+        id: profileData.id,
+        email: profileData.email,
+        fullName: profileData.fullName,
+        phone: profileData.phone,
+        avatarFile: profileData.avatarFile,
+        status: profileData.status,
+        roles: (profileData.roles ?? []).map((r: any) => ({
+          code: r.code,
+          name: r.name,
+          description: r.description,
+          permissions: (r.permissions ?? []).map((p: any) => ({
+            module: p.module,
+            action: p.action,
+          })),
+        })),
+        lastLoginAt: profileData.lastLoginAt,
+        createdAt: profileData.createdAt,
+      });
+    }
+  };
 
   const {
     register: registerProfile,
@@ -76,7 +124,6 @@ export default function ProfilePage() {
     defaultValues: {
       fullName: user?.fullName ?? "",
       phone: user?.phone ?? "",
-      avatarUrl: user?.avatarUrl ?? "",
     },
   });
 
@@ -95,10 +142,16 @@ export default function ProfilePage() {
       resetProfile({
         fullName: user.fullName ?? "",
         phone: user.phone ?? "",
-        avatarUrl: user.avatarUrl ?? "",
       });
     }
   }, [user, resetProfile]);
+
+  // Fetch profile on mount and sync to store
+  useEffect(() => {
+    syncProfile().catch((err) => console.error("Failed to fetch profile:", err));
+  }, []);
+
+  const currentAvatarUrl = previewAvatarUrl ?? user?.avatarFile?.url ?? null;
 
   const initials =
     user?.fullName
@@ -108,13 +161,39 @@ export default function ProfilePage() {
       .join("")
       .toUpperCase() ?? "U";
 
+  const handleAvatarSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Preview locally
+    setPreviewAvatarUrl(URL.createObjectURL(file));
+    setUploadingAvatar(true);
+    try {
+      const result = await uploadFile({ data: { file, ownerType: "USER", ownerId: user?.id } });
+      const uploaded = (result as unknown as FileUploadResponse)?.data;
+      if (!uploaded?.id) throw new Error("Upload failed");
+      // Auto-save avatar immediately
+      await updateProfile({
+        data: { avatarFileId: uploaded.id },
+      });
+      await syncProfile();
+      setPreviewAvatarUrl(null);
+      toast.success("Đã cập nhật ảnh đại diện");
+    } catch (err) {
+      toast.error("Tải ảnh lên thất bại");
+      console.error(err);
+      setPreviewAvatarUrl(null);
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
   const onPasswordSubmit = async (data: PasswordFormData) => {
     try {
       await changePassword({
         data: {
           currentPassword: data.currentPassword,
           newPassword: data.newPassword,
-          confirmPassword: data.confirmPassword,
         },
       });
       toast.success("Đổi mật khẩu thành công. Vui lòng đăng nhập lại.");
@@ -134,23 +213,13 @@ export default function ProfilePage() {
   const onProfileSubmit = async (data: ProfileFormData) => {
     setSavingProfile(true);
     try {
-      const result = await updateProfile({
+      await updateProfile({
         data: {
           fullName: data.fullName,
           phone: data.phone || undefined,
-          avatarUrl: data.avatarUrl || undefined,
         },
       });
-      const updated = (result as unknown as MeResponse)?.data ?? null;
-
-      if (updated && user) {
-        setUser({
-          ...user,
-          fullName: updated.fullName,
-          phone: updated.phone,
-          avatarUrl: updated.avatarUrl,
-        });
-      }
+      await syncProfile();
       toast.success("Đã cập nhật hồ sơ");
     } catch (err) {
       toast.error(
@@ -179,14 +248,36 @@ export default function ProfilePage() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-6">
-            <Avatar className="size-20 rounded-full overflow-hidden">
-              {user.avatarUrl && (
-                <AvatarImage src={user.avatarUrl} alt={user.fullName ?? "User"} />
-              )}
-              <AvatarFallback className="flex size-20 items-center justify-center rounded-full bg-surface-muted text-xl font-medium">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
+            <div className="relative group">
+              <Avatar className="size-20 rounded-full overflow-hidden">
+                {currentAvatarUrl && (
+                  <AvatarImage src={currentAvatarUrl} alt={user.fullName ?? "User"} />
+                )}
+                <AvatarFallback className="flex size-20 items-center justify-center rounded-full bg-surface-muted text-xl font-medium">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingAvatar}
+                className="absolute inset-0 flex size-20 items-center justify-center rounded-full bg-black/40 text-white opacity-0 transition-opacity group-hover:opacity-100 disabled:cursor-not-allowed"
+                aria-label="Đổi ảnh đại diện"
+              >
+                {uploadingAvatar ? (
+                  <Loader2 size={20} className="animate-spin" />
+                ) : (
+                  <Camera size={20} />
+                )}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarSelect}
+                className="hidden"
+              />
+            </div>
             <div className="text-center">
               <p className="text-sm font-medium">{user.fullName ?? "User"}</p>
               <p className="text-xs text-foreground-muted">{user.email}</p>
@@ -215,12 +306,9 @@ export default function ProfilePage() {
                 <FormField label="Số điện thoại" htmlFor="phone" error={profileErrors.phone?.message}>
                   <Input id="phone" placeholder="0901234567" {...registerProfile("phone")} />
                 </FormField>
-                <FormField label="Ảnh đại diện URL" htmlFor="avatarUrl" error={profileErrors.avatarUrl?.message}>
-                  <Input id="avatarUrl" placeholder="https://..." {...registerProfile("avatarUrl")} />
-                </FormField>
               </div>
               <div className="flex justify-end">
-                <Button type="submit" disabled={savingProfile}>
+                <Button type="submit" disabled={savingProfile || uploadingAvatar}>
                   {savingProfile ? "Đang lưu..." : "Lưu thay đổi"}
                 </Button>
               </div>

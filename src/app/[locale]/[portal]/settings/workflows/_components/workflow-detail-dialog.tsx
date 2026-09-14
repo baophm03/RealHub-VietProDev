@@ -10,7 +10,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { useGetApiWorkflowEntityStatusFields } from "@/lib/api/endpoints/workflow";
-import { entityTypeConfig, statusConfig, type WorkflowDefinition } from "./types";
+import { useGetApiRoles } from "@/lib/api/endpoints/roles";
+import { entityTypeConfig, roleLabel, statusConfig, type WorkflowDefinition } from "./types";
 
 interface StatusFieldValue {
   code: string;
@@ -22,6 +23,13 @@ interface StatusField {
   fieldKey: string;
   label: string;
   values: StatusFieldValue[];
+}
+
+interface RoleItem {
+  id: string;
+  code: string;
+  name: string;
+  status?: string;
 }
 
 export function WorkflowDetailDialog({
@@ -39,6 +47,15 @@ export function WorkflowDetailDialog({
   );
   const raw = statusFieldsData as any;
   const statusFields: StatusField[] = Array.isArray(raw) ? raw : (raw?.data ?? []);
+
+  // Fetch tenant roles for label lookup
+  const { data: rolesRaw } = useGetApiRoles(undefined, {
+    query: { enabled: !!workflow },
+  });
+  const rolesData = (rolesRaw as any)?.data ?? (Array.isArray(rolesRaw) ? rolesRaw : []);
+  for (const r of rolesData as RoleItem[]) {
+    if (r?.code) roleLabel[r.code] = r.name || r.code;
+  }
 
   // Build label lookups
   const fieldLabelMap = new Map<string, string>();
@@ -164,6 +181,18 @@ export function WorkflowDetailDialog({
                         </Badge>
                       )}
                     </div>
+                    {Array.isArray(t.requiredRoleJson) && (t.requiredRoleJson as string[]).length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1 sm:col-span-2">
+                        <span className="text-[10px] uppercase tracking-wide text-foreground-muted">
+                          Role:
+                        </span>
+                        {(t.requiredRoleJson as string[]).map((r) => (
+                          <Badge key={r} variant="blue" className="text-[10px]">
+                            {roleLabel[r] ?? r}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

@@ -6,3 +6,5 @@ export {
 } from "./price";
 
 export { formatLocation, formatLocationShort } from "./location";
+
+export { slugify } from "./slugify";
