@@ -2,6 +2,7 @@
 
 import type { Property } from "@/lib/api/types/properties";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { MapPin, Square, BedDouble, Bath, ArrowRight } from "lucide-react";
 import { formatPriceWithTransaction as formatPrice } from "@/utils";
 import { cn } from "@/lib/utils";
@@ -46,6 +47,7 @@ export function PropertyCard({
   bathrooms,
   className,
 }: PropertyCardProps) {
+  const t = useTranslations("public");
   const badge = propertyStatusBadgeMap[property.businessStatus ?? ""];
   const resolvedImageUrl = imageUrl ?? extractFirstImageUrlFromMedia(property.media);
   const resolvedBedrooms = bedrooms !== undefined ? bedrooms : getPropertyBedrooms(property);
@@ -92,7 +94,9 @@ export function PropertyCard({
                 : "bg-accent-blue text-accent-blue-text",
             )}
           >
-            {transactionLabelMap[property.transactionType] ?? property.transactionType}
+            {transactionLabelMap[property.transactionType]
+              ? t(transactionLabelMap[property.transactionType])
+              : property.transactionType}
           </span>
         </div>
       </div>
@@ -131,28 +135,28 @@ export function PropertyCard({
             <span className="flex items-center gap-1">
               <BedDouble size={13} className="shrink-0" />
               <span className="tabular-nums">{resolvedBedrooms}</span>
-              <span>PN</span>
+              <span>{t("common.bedroom")}</span>
             </span>
           )}
           {resolvedBathrooms && (
             <span className="flex items-center gap-1">
               <Bath size={13} className="shrink-0" />
               <span className="tabular-nums">{resolvedBathrooms}</span>
-              <span>WC</span>
+              <span>{t("common.bathroom")}</span>
             </span>
           )}
           {property.area != null && (
             <span className="flex items-center gap-1">
               <Square size={13} className="shrink-0" />
               <span className="tabular-nums">{property.area.toLocaleString("vi-VN")}</span>
-              <span>m²</span>
+              <span>{t("common.sqm")}</span>
             </span>
           )}
         </div>
 
         {/* Xem chi tiết */}
         <div className="flex items-center gap-1 pt-2 text-xs font-medium text-primary">
-          Xem chi tiết
+          {t("common.viewDetail")}
           <ArrowRight size={13} className="shrink-0" />
         </div>
       </div>

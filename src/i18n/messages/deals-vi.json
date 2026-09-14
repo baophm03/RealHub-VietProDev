@@ -1,0 +1,12 @@
+{
+  "title": "Giao dịch",
+  "addNew": "Tạo giao dịch",
+  "editTitle": "Chỉnh sửa giao dịch",
+  "property": "Bất động sản",
+  "customer": "Khách hàng",
+  "agent": "Người phụ trách",
+  "price": "Giá giao dịch",
+  "status": "Trạng thái",
+  "commission": "Hoa hồng",
+  "closedDate": "Ngày đóng"
+}

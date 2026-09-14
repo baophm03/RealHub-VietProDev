@@ -1,0 +1,14 @@
+{
+  "title": "Customers",
+  "addNew": "Add Customer",
+  "editTitle": "Edit Customer",
+  "name": "Full Name",
+  "phone": "Phone Number",
+  "email": "Email",
+  "type": "Customer Type",
+  "status": "Status",
+  "needs": "Needs",
+  "budget": "Budget",
+  "assignedTo": "Assigned To",
+  "notes": "Notes"
+}

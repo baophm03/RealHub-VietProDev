@@ -52,7 +52,7 @@ function extractNotificationItems(value: unknown): NotificationItem[] {
         ? value.items
         : isRecord(value) && isRecord(value.data) && Array.isArray(value.data.items)
           ? value.data.items
-        : [];
+          : [];
 
   return list.flatMap((item) => {
     if (!isRecord(item) || typeof item.id !== "string") return [];
@@ -159,7 +159,7 @@ export function NotificationMenu() {
         {unreadCount > 0 && (
           <span
             aria-hidden="true"
-            className="absolute right-1.5 top-1.5 flex size-4 items-center justify-center rounded-full bg-accent-red text-[9px] font-semibold tabular-nums text-accent-red-text ring-2 ring-surface"
+            className="absolute -right-0.5 -top-0.5 flex min-w-4 h-4 px-1 items-center justify-center rounded-full bg-accent-red text-[10px] font-semibold tabular-nums text-accent-red-text ring-2 ring-surface"
           >
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>

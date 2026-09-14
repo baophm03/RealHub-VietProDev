@@ -73,7 +73,7 @@ export const navGroups: NavGroup[] = [
         label: "Dự án",
         href: `/${entryPortal?.slug}/projects`,
         icon: Building2,
-        permission: { action: "VIEW", subject: "PROPERTY" },
+        permission: { action: "VIEW", subject: "PROJECTS" },
       },
       {
         label: "Tư vấn",

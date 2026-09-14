@@ -1,0 +1,14 @@
+{
+  "title": "Leads",
+  "addNew": "Thêm lead",
+  "editTitle": "Chỉnh sửa lead",
+  "name": "Họ và tên",
+  "phone": "Số điện thoại",
+  "email": "Email",
+  "source": "Nguồn",
+  "status": "Trạng thái",
+  "interest": "Mức độ quan tâm",
+  "assignedTo": "Người phụ trách",
+  "notes": "Ghi chú",
+  "convertToCustomer": "Chuyển thành khách hàng"
+}

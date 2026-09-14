@@ -1,25 +1,29 @@
 import { Calendar, User } from "lucide-react";
 import type { News } from "@/lib/api/types/news";
-
-function formatDate(iso: string): string {
-  if (!iso) return "";
-  try {
-    return new Date(iso).toLocaleDateString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  } catch {
-    return iso;
-  }
-}
+import { getFormatter, getTranslations } from "next-intl/server";
 
 interface NewsContentProps {
   article: News;
   renderContent: (content: string) => React.ReactNode;
 }
 
-export function NewsContent({ article, renderContent }: NewsContentProps) {
+export async function NewsContent({ article, renderContent }: NewsContentProps) {
+  const t = await getTranslations("public.news");
+  const format = await getFormatter();
+
+  const formatDate = (iso: string): string => {
+    if (!iso) return "";
+    try {
+      return format.dateTime(new Date(iso), {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      });
+    } catch {
+      return iso;
+    }
+  };
+
   return (
     <div className="rounded-[1rem] border border-border bg-white p-6 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] md:p-8">
       {/* Header */}
@@ -58,7 +62,7 @@ export function NewsContent({ article, renderContent }: NewsContentProps) {
       {article.content ? (
         <div className="mb-12 text-base text-black/80">{renderContent(article.content)}</div>
       ) : (
-        <div className="mb-12 text-base text-black/80">Nội dung đang được cập nhật.</div>
+        <div className="mb-12 text-base text-black/80">{t("contentUpdating")}</div>
       )}
     </div>
   );

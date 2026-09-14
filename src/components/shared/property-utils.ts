@@ -2,19 +2,19 @@ import type { Property, PropertyMedia } from "@/lib/api/types/properties";
 
 // ── Constants ─────────────────────────────────────────────
 
-export const propertyStatusBadgeMap: Record<string, { className: string; label: string }> = {
-  AVAILABLE: { className: "bg-accent-green text-accent-green-text", label: "Sẵn có" },
-  RESERVED: { className: "bg-accent-yellow text-accent-yellow-text", label: "Đặt cọc" },
-  SOLD: { className: "bg-accent-red text-accent-red-text", label: "Đã bán" },
-  RENTED: { className: "bg-accent-blue text-accent-blue-text", label: "Đã thuê" },
-  OFF_MARKET: { className: "bg-surface-muted text-foreground-muted", label: "Ngừng bán" },
+export const propertyStatusBadgeMap: Record<string, { className: string }> = {
+  AVAILABLE: { className: "bg-accent-green text-accent-green-text" },
+  RESERVED: { className: "bg-accent-yellow text-accent-yellow-text" },
+  SOLD: { className: "bg-accent-red text-accent-red-text" },
+  RENTED: { className: "bg-accent-blue text-accent-blue-text" },
+  OFF_MARKET: { className: "bg-surface-muted text-foreground-muted" },
 };
 
 export const transactionLabelMap: Record<string, string> = {
-  SALE: "Bán",
-  RENT: "Cho thuê",
-  TRANSFER: "Chuyển nhượng",
-  INVESTMENT: "Đầu tư",
+  SALE: "enums.transaction.SALE",
+  RENT: "enums.transaction.RENT",
+  TRANSFER: "enums.transaction.TRANSFER",
+  INVESTMENT: "enums.transaction.INVESTMENT",
 };
 
 export const propertyBadgeBase =

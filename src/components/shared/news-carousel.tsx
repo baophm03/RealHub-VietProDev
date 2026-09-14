@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import { User } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import type { News } from "@/lib/api/types/news";
 import { formatNewsDate } from "@/components/shared/news-card";
 
@@ -15,6 +16,7 @@ interface NewsCarouselProps {
 }
 
 export function NewsCarousel({ newsList }: NewsCarouselProps) {
+  const t = useTranslations("public");
   if (newsList.length === 0) return null;
 
   return (
@@ -90,7 +92,7 @@ export function NewsCarousel({ newsList }: NewsCarouselProps) {
                   )}
                   <div className="flex flex-col">
                     <span className="text-sm font-medium text-foreground">
-                      {news.creator?.fullName ?? "Ẩn danh"}
+                      {news.creator?.fullName ?? t("common.anonymous")}
                     </span>
                     {news.creator?.role?.name && (
                       <span className="text-xs text-foreground-muted">

@@ -1,0 +1,26 @@
+{
+  "transaction": {
+    "SALE": "Bán",
+    "RENT": "Cho thuê",
+    "TRANSFER": "Chuyển nhượng",
+    "INVESTMENT": "Đầu tư"
+  },
+  "businessStatus": {
+    "AVAILABLE": "Sẵn có",
+    "RESERVED": "Đặt cọc",
+    "SOLD": "Đã bán",
+    "RENTED": "Đã thuê",
+    "OFF_MARKET": "Ngừng bán"
+  },
+  "sellingMode": {
+    "SELF_SELL": "Tự bán",
+    "SALES_DISTRIBUTION": "Phân phối sales",
+    "HYBRID": "Kết hợp",
+    "AGENCY_DISTRIBUTION": "Sàn công khai",
+    "INTERNAL_ONLY": "Nội bộ"
+  },
+  "projectStatus": {
+    "ACTIVE": "Đang hoạt động",
+    "INACTIVE": "Ngừng hoạt động"
+  }
+}

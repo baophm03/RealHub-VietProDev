@@ -2,6 +2,7 @@
 
 import type { News } from "@/lib/api/types/news";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { ArrowRight, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +25,7 @@ interface NewsCardProps {
 }
 
 export function NewsCard({ article, className }: NewsCardProps) {
+  const t = useTranslations("public");
   const imageUrl = article.thumbnail?.url ?? null;
 
   return (
@@ -88,10 +90,10 @@ export function NewsCard({ article, className }: NewsCardProps) {
         <div className="flex items-center justify-between gap-2 mt-auto pt-3 border-t border-border">
           <span className="flex items-center gap-1.5 text-[13px] text-foreground-muted truncate">
             <User size={14} className="shrink-0" />
-            {article.creator?.fullName ?? "Ẩn danh"}
+            {article.creator?.fullName ?? t("common.anonymous")}
           </span>
           <span className="flex shrink-0 items-center gap-1 text-[13px] font-semibold text-primary transition-colors group-hover:text-primary/80">
-            Đọc tiếp
+            {t("common.readMore")}
             <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
           </span>
         </div>

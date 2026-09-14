@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
   ArrowLeft,
@@ -32,6 +33,8 @@ import {
   usePostApiReservation,
   usePatchApiApproveReservation,
   usePatchApiRejectReservation,
+  getGetApiDealsQueryKey,
+  getGetApiDealIdQueryKey,
 } from "@/lib/api/endpoints/deals-reservations";
 import type { UpdateDealDtoStatus } from "@/lib/api/models/updateDealDtoStatus";
 import { DeleteDealDialog } from "./_components/delete-deal-dialog";
@@ -232,6 +235,7 @@ export default function DealDetailPage() {
   const params = useParams();
   const router = useRouter();
   const portalPath = usePortalPath();
+  const queryClient = useQueryClient();
   const id = params.id as string;
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [activityType, setActivityType] = useState("NOTE");
@@ -263,6 +267,8 @@ export default function DealDetailPage() {
     try {
       await updateDeal({ id, data: { status: newStatus as UpdateDealDtoStatus } });
       toast.success("Đã cập nhật trạng thái");
+      void queryClient.invalidateQueries({ queryKey: getGetApiDealIdQueryKey(id) });
+      void queryClient.invalidateQueries({ queryKey: getGetApiDealsQueryKey() });
       refetch();
     } catch (err) {
       toast.error((err as any)?.response?.data?.error?.message?.[0] || "Cập nhật trạng thái thất bại");
@@ -274,6 +280,7 @@ export default function DealDetailPage() {
     try {
       await deleteDeal({ id });
       toast.success(`Đã xóa giao dịch "${deal?.dealCode}"`);
+      void queryClient.invalidateQueries({ queryKey: getGetApiDealsQueryKey() });
       router.refresh();
       router.push(portalPath("/deals"));
     } catch (err) {

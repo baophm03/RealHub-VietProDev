@@ -17,6 +17,7 @@ import {
 import {
   usePostApiPropertyTransition,
   getGetApiPropertiesQueryKey,
+  getGetApiPropertiesAdminQueryKey,
 } from "@/lib/api/endpoints/properties";
 import { Property } from "@/lib/api/types/properties";
 import type { UpdatePropertyDtoVerificationStatus } from "@/lib/api/models";
@@ -73,7 +74,7 @@ export function VerificationActionDialog({
     if (!target) return;
     const { property, status, transitionId } = target;
     if (!transitionId) {
-      toast.error("Thiếu transitionId. Vui lòng chọn lại từ menu.");
+      toast.error("Có lỗi xảy ra vui lòng thử lại sau.");
       return;
     }
     setConfirming(true);
@@ -84,6 +85,9 @@ export function VerificationActionDialog({
       });
       await queryClient.invalidateQueries({
         queryKey: getGetApiPropertiesQueryKey(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: getGetApiPropertiesAdminQueryKey(),
       });
       router.refresh();
       toast.success(

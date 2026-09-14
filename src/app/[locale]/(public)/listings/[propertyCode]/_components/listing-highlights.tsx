@@ -1,4 +1,5 @@
 import { Star } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import {
   findPropertyIcon,
   getFieldsByGroupCode,
@@ -10,7 +11,9 @@ interface ListingHighlightsProps {
   title?: string;
 }
 
-export function ListingHighlights({ property, schemas, title = "Đặc điểm nổi bật" }: ListingHighlightsProps) {
+export async function ListingHighlights({ property, schemas, title }: ListingHighlightsProps) {
+  const t = await getTranslations("public.listingDetail");
+  const resolvedTitle = title ?? t("highlights");
   const dynamicValues = property?.dynamicValuesJson as Record<string, unknown> | undefined;
   const specialFields = getFieldsByGroupCode(schemas, dynamicValues, "special");
   const highlights = specialFields.map((f) => ({
@@ -23,7 +26,7 @@ export function ListingHighlights({ property, schemas, title = "Đặc điểm n
 
   return (
     <section className="space-y-4">
-      <h2 className="font-serif text-xl font-semibold text-primary border-b border-border pb-2">{title}</h2>
+      <h2 className="font-serif text-xl font-semibold text-primary border-b border-border pb-2">{resolvedTitle}</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {highlights.map((item) => {
           const Icon = item.icon ?? Star;

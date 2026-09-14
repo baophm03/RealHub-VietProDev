@@ -36,7 +36,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             "radial-gradient(circle at 15% 25%, var(--surface-muted) 0%, transparent 45%), radial-gradient(circle at 85% 75%, var(--surface-muted) 0%, transparent 50%)",
         }}
       />
-      <div className="relative z-10 w-full max-w-md animate-fade-up">
+      <div className="relative z-10 flex w-full justify-center animate-fade-up">
         {children}
       </div>
     </div>

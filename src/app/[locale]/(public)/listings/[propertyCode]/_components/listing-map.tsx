@@ -1,12 +1,16 @@
+import { getTranslations } from "next-intl/server";
+
 interface ListingMapProps {
   property: any;
   title?: string;
 }
 
-export function ListingMap({ property, title = "Vị trí" }: ListingMapProps) {
+export async function ListingMap({ property, title }: ListingMapProps) {
+  const t = await getTranslations("public.listingDetail");
+  const resolvedTitle = title ?? t("location");
   return (
     <section className="space-y-4">
-      <h2 className="font-serif text-xl font-semibold text-primary border-b border-border pb-2">{title}</h2>
+      <h2 className="font-serif text-xl font-semibold text-primary border-b border-border pb-2">{resolvedTitle}</h2>
       <iframe
         width="100%"
         height="400"

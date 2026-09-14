@@ -1,18 +1,20 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 
-const popularTerms = [
-  "Căn hộ Quận 1",
-  "Biệt thự Thủ Đức",
-  "Đất nền Bình Dương",
-  "Nhà phố Tân Bình",
-];
-
 export function HeaderSearch() {
+  const t = useTranslations("public");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  const popularTerms = [
+    t("header.searchTerm1"),
+    t("header.searchTerm2"),
+    t("header.searchTerm3"),
+    t("header.searchTerm4"),
+  ];
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -38,7 +40,7 @@ export function HeaderSearch() {
             <input
               autoFocus
               type="text"
-              placeholder="Tìm kiếm bất động sản..."
+              placeholder={t("header.searchPlaceholder")}
               className="flex-1 bg-transparent text-sm text-foreground placeholder:text-foreground-muted/50 focus:outline-none"
             />
             <kbd className="rounded border border-border bg-surface-muted px-1.5 py-0.5 font-mono text-[10px] text-foreground-muted">
@@ -47,7 +49,7 @@ export function HeaderSearch() {
           </div>
           <div className="px-4 py-3">
             <span className="mb-2 block text-[10px] font-medium uppercase tracking-[0.2em] text-foreground-muted">
-              Tìm kiếm phổ biến
+              {t("header.popularSearches")}
             </span>
             <div className="flex flex-wrap gap-1.5">
               {popularTerms.map((term) => (

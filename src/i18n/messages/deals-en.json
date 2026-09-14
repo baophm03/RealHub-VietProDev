@@ -1,0 +1,12 @@
+{
+  "title": "Deals",
+  "addNew": "Create Deal",
+  "editTitle": "Edit Deal",
+  "property": "Property",
+  "customer": "Customer",
+  "agent": "Agent",
+  "price": "Deal Price",
+  "status": "Status",
+  "commission": "Commission",
+  "closedDate": "Closed Date"
+}

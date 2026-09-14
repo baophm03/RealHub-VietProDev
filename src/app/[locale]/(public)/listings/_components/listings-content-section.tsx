@@ -1,4 +1,5 @@
 import { Link } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 import { getApiProperties } from "@/lib/api/endpoints/properties";
 import { getApiFormSchemas } from "@/lib/api/endpoints/dynamic-fields";
 import type {
@@ -62,6 +63,7 @@ export async function ListingsContentSection({
   maxPrice,
   sort,
 }: ListingsContentSectionProps) {
+  const t = await getTranslations("public.listings");
   const apiParams: Record<string, string> = {
     verificationStatus: "VERIFIED",
     publicationStatus: "PUBLIC",
@@ -133,9 +135,9 @@ export async function ListingsContentSection({
 
       {result.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-          <p className="text-base text-foreground-muted">Không tìm thấy BĐS phù hợp bộ lọc.</p>
+          <p className="text-base text-foreground-muted">{t("noResults")}</p>
           <Link href="/listings" className="text-sm font-medium text-primary hover:underline">
-            Xóa tất cả bộ lọc
+            {t("clearAllFilters")}
           </Link>
         </div>
       ) : (

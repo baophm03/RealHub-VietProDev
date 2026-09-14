@@ -1,0 +1,15 @@
+{
+  "dashboard": "Dashboard",
+  "properties": "Properties",
+  "customers": "Customers",
+  "leads": "Leads",
+  "appointments": "Appointments",
+  "deals": "Deals",
+  "commission": "Commission",
+  "files": "Files",
+  "settings": "Settings",
+  "profile": "Profile",
+  "overview": "Overview",
+  "business": "Business",
+  "system": "System"
+}

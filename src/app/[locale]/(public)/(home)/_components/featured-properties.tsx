@@ -2,6 +2,7 @@ import { getApiProperties, getApiPropertyMedia } from "@/lib/api/endpoints/prope
 import type { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { FeaturedPropertiesCarousel } from "@/components/shared/featured-properties-carousel";
 
 function extractFirstImageUrl(mediaRes: unknown): string | null {
@@ -15,6 +16,8 @@ function extractFirstImageUrl(mediaRes: unknown): string | null {
 }
 
 export async function FeaturedProperties() {
+  const t = await getTranslations("public.home");
+  const tc = await getTranslations("public.common");
   let properties: Property[] = [];
   let propertyImageMap = new Map<string, string | null>();
 
@@ -48,20 +51,20 @@ export async function FeaturedProperties() {
         <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="flex flex-col gap-4">
             <span className="w-fit rounded-full bg-primary/8 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-primary">
-              Bất động sản
+              {t("featuredEyebrow")}
             </span>
             <h2 className="font-serif text-3xl font-semibold tracking-tighter md:text-5xl">
-              Sản phẩm nổi bật
+              {t("featuredTitle")}
             </h2>
             <p className="max-w-[48ch] text-sm leading-relaxed text-foreground-muted">
-              Tuyển chọn những bất động sản tốt nhất từ các agency và chủ đầu tư trên toàn hệ sinh thái.
+              {t("featuredDesc")}
             </p>
           </div>
           <Link
             href="/listings"
             className="group inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-foreground-muted transition-colors hover:text-foreground"
           >
-            Xem tất cả
+            {tc("viewAll")}
             <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
@@ -74,7 +77,7 @@ export async function FeaturedProperties() {
         {/* Empty state */}
         {properties.length === 0 && (
           <div className="flex items-center justify-center py-20 text-center">
-            <p className="text-sm text-foreground-muted">Chưa có bất động sản nào.</p>
+            <p className="text-sm text-foreground-muted">{t("noProperties")}</p>
           </div>
         )}
       </div>

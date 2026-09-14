@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations, getFormatter } from "next-intl/server";
 import {
   getApiNews,
   getApiNewsSlug,
@@ -20,20 +20,20 @@ type Props = {
   params: Promise<{ locale: string; categoryCode: string; newsSlug: string }>;
 };
 
-export const dynamic = "force-static";
 export const revalidate = 1800;
 
 export async function generateMetadata({
   params,
 }: Props): Promise<Metadata> {
-  const { newsSlug } = await params;
+  const { locale, newsSlug } = await params;
+  const t = await getTranslations({ locale, namespace: "public.news" });
   try {
     const newsRes = await getApiNewsSlug(newsSlug);
     const news = (newsRes as unknown as GetNewsItemResponse)?.data;
     if (!news) {
       return generateSeoMetadata("BLOG_DETAIL", {}, {
-        title: "Tin tức - RealHub",
-        description: "Tin tức bất động sản từ RealHub.",
+        title: t("articleMetaTitle"),
+        description: t("articleMetaDesc"),
       });
     }
     const context = buildBlogDetailContext(news, newsSlug);
@@ -43,8 +43,8 @@ export async function generateMetadata({
     });
   } catch {
     return generateSeoMetadata("BLOG_DETAIL", {}, {
-      title: "Tin tức - RealHub",
-      description: "Tin tức bất động sản từ RealHub.",
+      title: t("articleMetaTitle"),
+      description: t("articleMetaDesc"),
     });
   }
 }
@@ -67,10 +67,10 @@ export async function generateStaticParams() {
   );
 }
 
-function formatDate(iso: string): string {
+function formatDate(iso: string, format: Awaited<ReturnType<typeof getFormatter>>): string {
   if (!iso) return "";
   try {
-    return new Date(iso).toLocaleDateString("vi-VN", {
+    return format.dateTime(new Date(iso), {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
@@ -117,6 +117,8 @@ export default async function NewsDetailPage({ params }: Props) {
   const { locale, categoryCode, newsSlug } = await params;
   setRequestLocale(locale);
 
+  const t = await getTranslations("public.news");
+
   const [articleRes, relatedRes] = await Promise.all([
     getApiNewsSlug(newsSlug),
     getApiNews({ limit: "4" }),
@@ -134,11 +136,11 @@ export default async function NewsDetailPage({ params }: Props) {
           href={`/news/${categoryCode}`}
           className="mb-6 inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
         >
-          <ArrowLeft size={16} /> Quay lại tin tức
+          <ArrowLeft size={16} /> {t("backToNews")}
         </Link>
         <div className="mx-auto max-w-3xl py-20 text-center">
-          <h1 className="mb-2 font-serif text-2xl font-semibold">Không tìm thấy bài viết</h1>
-          <p className="text-sm text-foreground-muted">Bài viết bạn tìm kiếm không tồn tại hoặc đã bị xoá.</p>
+          <h1 className="mb-2 font-serif text-2xl font-semibold">{t("notFound")}</h1>
+          <p className="text-sm text-foreground-muted">{t("notFoundDesc")}</p>
         </div>
       </div>
     );
@@ -169,7 +171,7 @@ export default async function NewsDetailPage({ params }: Props) {
           href={`/news/${categoryCode}`}
           className="mb-6 inline-flex items-center gap-2 text-sm text-white transition-colors hover:text-white/80"
         >
-          <ArrowLeft size={16} /> Quay lại tin tức
+          <ArrowLeft size={16} /> {t("backToNews")}
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

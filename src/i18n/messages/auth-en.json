@@ -1,0 +1,21 @@
+{
+  "login": "Sign In",
+  "register": "Sign Up",
+  "forgotPassword": "Forgot Password",
+  "logout": "Sign Out",
+  "email": "Email",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+  "fullName": "Full Name",
+  "phone": "Phone Number",
+  "rememberMe": "Remember me",
+  "noAccount": "Don't have an account?",
+  "haveAccount": "Already have an account?",
+  "forgotPasswordLink": "Forgot password?",
+  "loginSuccess": "Login successful",
+  "loginFailed": "Login failed",
+  "registerSuccess": "Registration successful",
+  "passwordResetSent": "Password reset instructions have been sent to your email.",
+  "welcomeBack": "Welcome back",
+  "createAccount": "Create a new account"
+}

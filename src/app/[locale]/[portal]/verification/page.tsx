@@ -14,7 +14,7 @@ import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PaginationBar } from "@/components/shared/pagination-bar";
 import { PageHeader } from "@/components/shared/page-header";
-import { useGetApiProperties } from "@/lib/api/endpoints/properties";
+import { useGetApiPropertiesAdmin } from "@/lib/api/endpoints/properties";
 import { GetPropertiesResponse, Property } from "@/lib/api/types/properties";
 import type { UpdatePropertyDtoVerificationStatus } from "@/lib/api/models";
 import { VerificationActionDialog, type VerificationActionTarget } from "./_components/verification-action-dialog";
@@ -55,11 +55,11 @@ export default function VerificationPage() {
     "PENDING",
   );
 
-  const { data: allData } = useGetApiProperties();
+  const { data: allData } = useGetApiPropertiesAdmin();
   const allProperties = ((allData as unknown as GetPropertiesResponse)?.data) || [];
 
   const pagination = usePagination(10);
-  const { data: filteredData, isLoading } = useGetApiProperties({
+  const { data: filteredData, isLoading } = useGetApiPropertiesAdmin({
     verificationStatus:
       statusFilter !== "ALL" ? (statusFilter as VerificationStatus) : undefined,
     search: search || undefined,

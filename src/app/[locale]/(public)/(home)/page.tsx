@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Hero } from "./_components/hero";
 import { StatsBar } from "./_components/stats-bar";
 import { FeaturedPropertiesSection } from "./_components/featured-properties-section";
@@ -14,19 +14,20 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export const dynamic = "force-static";
 export const revalidate = 1800;
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("public.home");
   return generateSeoMetadata("HOME", buildStaticContext(), {
-    title: "RealHub - Nền tảng bất động sản",
-    description: "Hệ thống mua bán quản lý bất động sản cho đa người dùng",
+    title: t("metaTitle"),
+    description: t("metaDesc"),
   });
 }
 
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("public.home");
 
   return (
     <>
@@ -37,18 +38,18 @@ export default async function HomePage({ params }: Props) {
       <RevealSection>
         <FeaturedPropertiesSection
           transactionType="SALE"
-          eyebrow="Bán"
-          title="Bất động sản bán"
-          description="Những bất động sản đang bán tốt nhất từ các chủ đầu tư trong hệ sinh thái."
+          eyebrow={t("saleEyebrow")}
+          title={t("saleTitle")}
+          description={t("saleDesc")}
           sectionClassName="bg-white"
         />
       </RevealSection>
       <RevealSection>
         <FeaturedPropertiesSection
           transactionType="RENT"
-          eyebrow="Cho thuê"
-          title="Bất động sản cho thuê"
-          description="Những bất động sản đang cho thuê tốt nhất từ các chủ đầu tư trong hệ sinh thái."
+          eyebrow={t("rentEyebrow")}
+          title={t("rentTitle")}
+          description={t("rentDesc")}
           sectionClassName="bg-surface-muted/30"
         />
       </RevealSection>

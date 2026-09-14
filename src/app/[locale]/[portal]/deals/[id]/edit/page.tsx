@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormSection, FormField } from "@/components/shared/form-section";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { useGetApiDealId, usePatchApiDeal } from "@/lib/api/endpoints/deals-reservations";
+import { useGetApiDealId, usePatchApiDeal, getGetApiDealsQueryKey, getGetApiDealIdQueryKey } from "@/lib/api/endpoints/deals-reservations";
 import { useGetApiPropertiesAdmin } from "@/lib/api/endpoints/properties";
 import { useUserStore } from "@/lib/stores/user-store";
 import type { UpdateDealDtoStatus } from "@/lib/api/models/updateDealDtoStatus";
@@ -54,6 +55,7 @@ export default function DealEditPage() {
   const params = useParams();
   const router = useRouter();
   const portalPath = usePortalPath();
+  const queryClient = useQueryClient();
   const id = params.id as string;
   const [loading, setLoading] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("SOFT_RESERVED");
@@ -107,6 +109,8 @@ export default function DealEditPage() {
         },
       });
       toast.success("Đã cập nhật giao dịch");
+      void queryClient.invalidateQueries({ queryKey: getGetApiDealIdQueryKey(id) });
+      void queryClient.invalidateQueries({ queryKey: getGetApiDealsQueryKey() });
       router.refresh();
       router.push(portalPath(`/deals/${id}`));
     } catch (err) {

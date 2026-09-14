@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ChevronDown, Home, Map, Search, Wallet, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,25 +22,32 @@ type PropertyType = {
   group?: string | null;
 };
 
-const priceRanges = [
-  { label: "Tất cả mức giá", from: "", to: "" },
-  { label: "Dưới 1 tỷ", from: "0", to: "1" },
-  { label: "1 - 3 tỷ", from: "1", to: "3" },
-  { label: "3 - 5 tỷ", from: "3", to: "5" },
-  { label: "5 - 10 tỷ", from: "5", to: "10" },
-  { label: "10 - 20 tỷ", from: "10", to: "20" },
-  { label: "Trên 20 tỷ", from: "20", to: "" },
-  { label: "Dưới 10 triệu/tháng", from: "0", to: "10" },
-  { label: "10 - 30 triệu/tháng", from: "10", to: "30" },
-  { label: "Trên 30 triệu/tháng", from: "30", to: "" },
-];
+type PriceRange = {
+  label: string;
+  from: string;
+  to: string;
+};
 
 export function Hero() {
   const router = useRouter();
+  const t = useTranslations("public.home");
 
   const [selectedProvince, setSelectedProvince] = useState<Location | null>(null);
   const [selectedType, setSelectedType] = useState<PropertyType | null>(null);
-  const [selectedPriceRange, setSelectedPriceRange] = useState<(typeof priceRanges)[number] | null>(null);
+  const [selectedPriceRange, setSelectedPriceRange] = useState<PriceRange | null>(null);
+
+  const priceRanges: PriceRange[] = [
+    { label: t("priceAll"), from: "", to: "" },
+    { label: t("priceUnder1B"), from: "0", to: "1" },
+    { label: t("price1to3B"), from: "1", to: "3" },
+    { label: t("price3to5B"), from: "3", to: "5" },
+    { label: t("price5to10B"), from: "5", to: "10" },
+    { label: t("price10to20B"), from: "10", to: "20" },
+    { label: t("priceOver20B"), from: "20", to: "" },
+    { label: t("rentUnder10M"), from: "0", to: "10" },
+    { label: t("rent10to30M"), from: "10", to: "30" },
+    { label: t("rentOver30M"), from: "30", to: "" },
+  ];
 
   const { data: provincesData } = useGetApiLocations({ type: "PROVINCE" as any, limit: 100 } as any);
   const provinces: Location[] = ((provincesData as any)?.data as Location[]) || [];
@@ -82,10 +90,10 @@ export function Hero() {
       <div className="relative z-10 flex min-h-[90vh] flex-col items-center justify-center gap-8 px-6 py-16 text-center">
         <div className="flex flex-col items-center justify-center gap-3">
           <h1 className="font-serif text-3xl capitalize font-semibold tracking-tight text-white drop-shadow-lg md:text-5xl lg:text-6xl">
-            Tìm ngay ngôi nhà trong mơ
+            {t("heroTitle")}
           </h1>
           <p className="mx-auto max-w-2xl text-sm text-white/90 drop-shadow-md md:text-base lg:text-lg">
-            Hàng ngàn bất động sản từ các chủ đầu tư uy tín nơi mỗi căn nhà kể một câu chuyện riêng của bạn.
+            {t("heroSubtitle")}
           </p>
         </div>
         <div className="flex w-full max-w-3xl flex-col gap-2 rounded-xl border border-border bg-surface/95 p-3 shadow-lg backdrop-blur-sm md:flex-row md:items-center">
@@ -99,7 +107,7 @@ export function Hero() {
                 >
                   <Map size={22} className="shrink-0 text-foreground-muted" />
                   <span className={`flex-1 truncate ${selectedProvince ? "text-foreground font-medium" : "text-foreground-muted"}`}>
-                    {selectedProvince ? selectedProvince.name : "Tất cả khu vực"}
+                    {selectedProvince ? selectedProvince.name : t("allRegions")}
                   </span>
                   <ChevronDown size={16} className="shrink-0 text-foreground-muted" />
                 </button>
@@ -111,7 +119,7 @@ export function Hero() {
                 onClick={() => setSelectedProvince(null)}
                 className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-surface-muted ${!selectedProvince ? "bg-primary/10 text-primary font-medium" : "text-foreground"}`}
               >
-                Tất cả khu vực
+                {t("allRegions")}
               </button>
               {provinces.map((p) => (
                 <button
@@ -138,7 +146,7 @@ export function Hero() {
                 >
                   <Home size={22} className="shrink-0 text-foreground-muted" />
                   <span className={`flex-1 truncate ${selectedType ? "text-foreground font-medium" : "text-foreground-muted"}`}>
-                    {selectedType ? selectedType.name : "Tất cả loại hình"}
+                    {selectedType ? selectedType.name : t("allTypes")}
                   </span>
                   <ChevronDown size={16} className="shrink-0 text-foreground-muted" />
                 </button>
@@ -150,7 +158,7 @@ export function Hero() {
                 onClick={() => setSelectedType(null)}
                 className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-surface-muted ${!selectedType ? "bg-primary/10 text-primary font-medium" : "text-foreground"}`}
               >
-                Tất cả loại hình
+                {t("allTypes")}
               </button>
               {propertyTypes.map((t) => (
                 <button
@@ -177,7 +185,7 @@ export function Hero() {
                 >
                   <Wallet size={22} className="shrink-0 text-foreground-muted" />
                   <span className={`flex-1 truncate ${selectedPriceRange ? "text-foreground font-medium" : "text-foreground-muted"}`}>
-                    {selectedPriceRange ? selectedPriceRange.label : "Tất cả mức giá"}
+                    {selectedPriceRange ? selectedPriceRange.label : t("priceAll")}
                   </span>
                   <ChevronDown size={16} className="shrink-0 text-foreground-muted" />
                 </button>
@@ -237,7 +245,7 @@ export function Hero() {
               onClick={handleClear}
               className="text-xs font-medium text-white/70 underline-offset-2 hover:text-white hover:underline"
             >
-              Xóa tất cả
+              {t("clearAll")}
             </button>
           </div>
         )}

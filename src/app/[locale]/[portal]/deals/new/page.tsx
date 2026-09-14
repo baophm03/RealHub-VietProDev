@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePortalPath } from "@/lib/hooks/use-portal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormSection, FormField } from "@/components/shared/form-section";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { usePostApiDeal } from "@/lib/api/endpoints/deals-reservations";
+import { usePostApiDeal, getGetApiDealsQueryKey } from "@/lib/api/endpoints/deals-reservations";
 import { useGetApiLeadsAdmin } from "@/lib/api/endpoints/leads";
 import { useUserStore } from "@/lib/stores/user-store";
 import type { GetLeadsResponse, Lead } from "@/lib/api/types/leads";
@@ -35,6 +36,7 @@ type DealFormData = z.infer<typeof dealSchema>;
 export default function DealFormPage() {
   const router = useRouter();
   const portalPath = usePortalPath();
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [selectedTx, setSelectedTx] = useState("SALE");
   const [selectedLeadId, setSelectedLeadId] = useState("");
@@ -91,6 +93,7 @@ export default function DealFormPage() {
         } as any,
       });
       toast.success("Đã tạo giao dịch mới");
+      void queryClient.invalidateQueries({ queryKey: getGetApiDealsQueryKey() });
       router.refresh();
       router.push(portalPath("/deals"));
     } catch (err) {

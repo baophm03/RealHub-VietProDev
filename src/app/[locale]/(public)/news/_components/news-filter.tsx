@@ -1,12 +1,15 @@
 import type { NewsCategory } from "@/lib/api/types/news";
 import { Link } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 
 type Props = {
   categories: NewsCategory[];
   activeCategory?: string;
 };
 
-export function NewsFilter({ categories, activeCategory }: Props) {
+export async function NewsFilter({ categories, activeCategory }: Props) {
+  const t = await getTranslations("public.news");
+
   return (
     <div className="mb-8 flex flex-wrap items-center gap-2">
       <Link
@@ -16,7 +19,7 @@ export function NewsFilter({ categories, activeCategory }: Props) {
           : "bg-surface-muted text-foreground-muted hover:bg-border/40"
           }`}
       >
-        Tất cả
+        {t("allCategories")}
       </Link>
       {categories.map((cat) => (
         <Link

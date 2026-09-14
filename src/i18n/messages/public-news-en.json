@@ -1,0 +1,15 @@
+{
+  "categoryMetaTitle": "News",
+  "categoryMetaDesc": "Real Estate News - {category}",
+  "defaultTitle": "Real Estate News",
+  "defaultDesc": "Latest trends and market analysis.",
+  "allCategories": "All",
+  "noArticles": "No articles available.",
+  "articleMetaTitle": "News - RealHub",
+  "articleMetaDesc": "Real estate news from RealHub.",
+  "backToNews": "Back to news",
+  "notFound": "Article Not Found",
+  "notFoundDesc": "The article you are looking for does not exist or has been removed.",
+  "contentUpdating": "Content is being updated.",
+  "relatedTitle": "Related Articles"
+}

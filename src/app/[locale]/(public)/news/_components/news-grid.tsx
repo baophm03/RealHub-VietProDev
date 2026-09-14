@@ -1,8 +1,11 @@
 import type { News } from "@/lib/api/types/news";
 import { Newspaper } from "lucide-react";
 import { NewsCard } from "@/components/shared/news-card";
+import { getTranslations } from "next-intl/server";
 
-export function NewsGrid({ news }: { news: News[] }) {
+export async function NewsGrid({ news }: { news: News[] }) {
+  const t = await getTranslations("public.news");
+
   const sorted = [...news].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
@@ -11,7 +14,7 @@ export function NewsGrid({ news }: { news: News[] }) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
         <Newspaper size={32} className="text-foreground-muted" />
-        <p className="text-base text-foreground-muted">Chưa có bài viết nào.</p>
+        <p className="text-base text-foreground-muted">{t("noArticles")}</p>
       </div>
     );
   }

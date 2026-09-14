@@ -1,0 +1,7 @@
+{
+  "somethingWentWrong": "Đã có lỗi xảy ra",
+  "notFound": "Không tìm thấy trang",
+  "unauthorized": "Bạn không có quyền truy cập",
+  "forbidden": "Truy cập bị từ chối",
+  "serverError": "Lỗi máy chủ"
+}

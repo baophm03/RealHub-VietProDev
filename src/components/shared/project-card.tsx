@@ -2,6 +2,7 @@
 
 import type { Project } from "@/lib/api/types/projects";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { MapPin } from "lucide-react";
 import { getProjectScale, getProjectImage, getProjectPriceRange } from "@/utils/project-helpers";
 import { formatLocationShort } from "@/utils";
@@ -14,6 +15,7 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, className }: ProjectCardProps) {
+  const t = useTranslations("public");
   const imageUrl = getProjectImage(project);
 
   return (
@@ -52,7 +54,7 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
 
         <p className="flex items-center gap-1.5 text-sm text-foreground-muted">
           <MapPin size={14} className="shrink-0 mt-0.5" />
-          <span className="line-clamp-2">{formatLocationShort(project, "Đang cập nhật")}</span>
+          <span className="line-clamp-2">{formatLocationShort(project, t("common.updating"))}</span>
         </p>
 
         <div className="flex flex-col gap-2 border-t border-border pt-3 text-sm">
@@ -66,11 +68,11 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
           </div>
           <div className="flex items-center justify-between">
             <span className="text-foreground-muted">Chủ đầu tư</span>
-            <span className="font-medium text-foreground">{project.developer ?? "Đang cập nhật"}</span>
+            <span className="font-medium text-foreground">{project.developer ?? t("common.updating")}</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-foreground-muted">Bàn giao</span>
-            <span className="font-medium text-foreground">{project.handoverDate ?? "Đang cập nhật"}</span>
+            <span className="font-medium text-foreground">{project.handoverDate ?? t("common.updating")}</span>
           </div>
         </div>
       </div>

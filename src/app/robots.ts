@@ -17,7 +17,7 @@ export default function robots(): MetadataRoute.Robots {
           "/leads",
           "/appointments",
           "/deals",
-          "/commission",
+          "/commission/deals",
           "/files",
           "/profile",
           "/settings",

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getApiNewsCategories } from "@/lib/api/endpoints/news-categories";
 import { getApiNews, getApiNewsCategoryCode } from "@/lib/api/endpoints/news";
 import type {
@@ -22,20 +22,20 @@ type Props = {
   params: Promise<{ locale: string; categoryCode: string }>;
 };
 
-export const dynamic = "force-static";
 export const revalidate = 1800;
 
 export async function generateMetadata({
   params,
 }: Props): Promise<Metadata> {
-  const { categoryCode } = await params;
-  const categoryName = categoryCode === ALL_SLUG ? "Tin tức" : categoryCode;
+  const { locale, categoryCode } = await params;
+  const t = await getTranslations({ locale, namespace: "public.news" });
+  const categoryName = categoryCode === ALL_SLUG ? t("categoryMetaTitle") : categoryCode;
   return generateSeoMetadata(
     "BLOG_LIST",
     buildBlogListContext(categoryName),
     {
       title: `${categoryName} - RealHub`,
-      description: `Tin tức bất động sản - ${categoryName}`,
+      description: t("categoryMetaDesc", { category: categoryName }),
     },
   );
 }
@@ -54,6 +54,9 @@ export default async function NewsListPage({ params }: Props) {
   const { locale, categoryCode } = await params;
   setRequestLocale(locale);
 
+  const t = await getTranslations("public.news");
+  const tc = await getTranslations("public.common");
+
   const isAll = categoryCode === ALL_SLUG;
 
   const [newsRes, categoriesRes] = await Promise.all([
@@ -71,10 +74,10 @@ export default async function NewsListPage({ params }: Props) {
   return (
     <>
       <PageBanner
-        title={active ? active.name : "Tin tức bất động sản"}
-        description="Cập nhật xu hướng, phân tích thị trường."
+        title={active ? active.name : t("defaultTitle")}
+        description={t("defaultDesc")}
         backgroundImage="/background/news.jpg"
-        breadcrumbs={[{ label: "Trang chủ", href: "/" }, { label: active ? active.name : "Tin tức" }]}
+        breadcrumbs={[{ label: tc("home"), href: "/" }, { label: active ? active.name : t("categoryMetaTitle") }]}
       />
 
       <div className="container py-12 md:py-16">

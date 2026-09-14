@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ import {
   usePostApiNotificationRule,
   usePatchApiNotificationRule,
   useGetApiNotificationTemplates,
+  getGetApiNotificationRulesQueryKey,
 } from "@/lib/api/endpoints/notifications";
 import type { CreateNotificationRuleDto } from "@/lib/api/models/createNotificationRuleDto";
 import type { UpdateNotificationRuleDto } from "@/lib/api/models/updateNotificationRuleDto";
@@ -45,6 +47,7 @@ interface Props {
 }
 
 export function NotificationRuleFormDialog({ open, onOpenChange, editing }: Props) {
+  const queryClient = useQueryClient();
   const [eventCode, setEventCode] = useState("LEAD_ASSIGNED");
   const [receiverType, setReceiverType] = useState<string>("SALES_AGENT");
   const [channel, setChannel] = useState<string>("IN_APP");
@@ -62,6 +65,7 @@ export function NotificationRuleFormDialog({ open, onOpenChange, editing }: Prop
     mutation: {
       onSuccess: () => {
         toast.success("Tạo rule thành công");
+        queryClient.invalidateQueries({ queryKey: getGetApiNotificationRulesQueryKey() });
         onOpenChange(false);
       },
       onError: (e: any) =>
@@ -73,6 +77,7 @@ export function NotificationRuleFormDialog({ open, onOpenChange, editing }: Prop
     mutation: {
       onSuccess: () => {
         toast.success("Cập nhật rule thành công");
+        queryClient.invalidateQueries({ queryKey: getGetApiNotificationRulesQueryKey() });
         onOpenChange(false);
       },
       onError: (e: any) =>

@@ -33,10 +33,10 @@ export interface NotificationTemplate {
 }
 
 export const receiverTypeLabel: Record<string, string> = {
-  SALES_AGENT: "Sales agent",
-  SALES_MANAGER: "Sales manager",
-  TEAM_LEAD: "Team leader",
-  ALL_USERS: "Tất cả user",
+  SALES_AGENT: "Nhân viên Sale",
+  SALES_MANAGER: "Quản lý Sale",
+  TEAM_LEAD: "Trưởng nhóm",
+  ALL_USERS: "Tất cả người dùng",
 };
 
 export const receiverTypeOptions = Object.keys(receiverTypeLabel).map((k) => ({

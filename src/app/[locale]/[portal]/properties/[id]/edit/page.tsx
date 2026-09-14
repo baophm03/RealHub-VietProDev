@@ -19,7 +19,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useGetApiPropertyId, usePatchApiProperty, useGetApiPropertyTypes, getGetApiPropertyIdQueryKey } from "@/lib/api/endpoints/properties";
+import { useGetApiPropertyId, usePatchApiProperty, useGetApiPropertyTypes, getGetApiPropertyIdQueryKey, getGetApiPropertiesAdminQueryKey } from "@/lib/api/endpoints/properties";
 import { useGetApiProjects } from "@/lib/api/endpoints/projects";
 import { toast } from "sonner";
 import { useGetApiLocations } from "@/lib/api/endpoints/locations";
@@ -29,6 +29,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { Location } from "@/lib/api/types/locations";
 import { DynamicFieldsSection } from "@/components/shared/dynamic-fields-section";
 import { PropertyMediaManager } from "@/components/shared/property-media-manager";
+import { slugify } from "@/utils";
 
 type PropertyType = {
   id: string;
@@ -86,6 +87,7 @@ export default function PropertyEditPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedProvinceId, setSelectedProvinceId] = useState<string | undefined>(undefined);
   const [dynamicValues, setDynamicValues] = useState<Record<string, unknown>>({});
+  const [slugTouched, setSlugTouched] = useState(false);
 
   const { data: propertyData, isLoading } = useGetApiPropertyId(id);
   const property = (propertyData as unknown as { data: Property })?.data;
@@ -136,6 +138,13 @@ export default function PropertyEditPage() {
   const watchedProvinceId = watch("provinceId");
   const watchedDistrictId = watch("districtId");
   const watchedProjectId = watch("projectId");
+  const watchedTitle = watch("title");
+
+  useEffect(() => {
+    if (!slugTouched) {
+      setValue("slug", slugify(watchedTitle ?? ""));
+    }
+  }, [watchedTitle, slugTouched, setValue]);
 
   useEffect(() => {
     if (property) {
@@ -167,6 +176,7 @@ export default function PropertyEditPage() {
     try {
       await updateProperty({ id, data: { ...data, dynamicValuesJson: Object.keys(dynamicValues).length > 0 ? dynamicValues : undefined } as any });
       await queryClient.invalidateQueries({ queryKey: getGetApiPropertyIdQueryKey(id) });
+      void queryClient.invalidateQueries({ queryKey: getGetApiPropertiesAdminQueryKey() });
       toast.success("Cập nhật bất động sản thành công");
       router.refresh();
       router.push(portalPath(`/properties/${id}`));
@@ -221,7 +231,15 @@ export default function PropertyEditPage() {
               <Input id="title" placeholder="Vinhomes Central Park - 2PN" {...register("title")} />
             </FormField>
             <FormField label="Slug" htmlFor="slug" error={errors.slug?.message}>
-              <Input id="slug" placeholder="vinhomes-central-park-2pn" {...register("slug")} />
+              <Input
+                id="slug"
+                placeholder="vinhomes-central-park-2pn"
+                {...register("slug")}
+                onChange={(e) => {
+                  setSlugTouched(true);
+                  setValue("slug", e.target.value);
+                }}
+              />
             </FormField>
           </div>
 

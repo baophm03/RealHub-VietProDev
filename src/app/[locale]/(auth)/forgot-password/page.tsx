@@ -22,28 +22,22 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="w-full max-w-md">
-      <div className="mb-10 text-center">
-        <span className="font-serif text-3xl font-semibold tracking-tight">
-          RealHub
-        </span>
-      </div>
-
       <div className="rounded-2xl border border-border bg-surface p-8 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)]">
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold tracking-tight">Quen mat khau</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Quên mật khẩu</h1>
           <p className="mt-1 text-sm text-foreground-muted">
-            Nhap email de nhan huong dan dat lai mat khau
+            Nhập email để tiếp tục
           </p>
         </div>
 
         {sent ? (
           <div className="flex flex-col gap-4">
             <div className="rounded-md bg-accent-green/10 px-4 py-3 text-sm text-accent-green-text">
-              Da gui email huong dan. Vui long kiem tra hop thu cua ban.
+              Vui lòng kiểm tra hộp thư của bạn.
             </div>
             <Link href="/login">
               <Button variant="secondary" className="w-full">
-                Quay lai dang nhap
+                Quay lại đăng nhập
               </Button>
             </Link>
           </div>
@@ -61,7 +55,7 @@ export default function ForgotPasswordPage() {
               />
             </div>
             <Button type="submit" disabled={loading} className="mt-2 w-full">
-              {loading ? "Dang gui..." : "Gui yeu cau"}
+              {loading ? "Đang gửi..." : "Gửi yêu cầu"}
             </Button>
           </form>
         )}
@@ -73,7 +67,7 @@ export default function ForgotPasswordPage() {
           className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-foreground"
         >
           <ArrowLeft size={14} />
-          <span>Quay lai dang nhap</span>
+          <span>Quay lại đăng nhập</span>
         </Link>
       </div>
     </div>

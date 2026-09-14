@@ -19,13 +19,6 @@ import type { UpdatePropertyDtoVerificationStatus } from "@/lib/api/models";
 
 type VerificationStatus = UpdatePropertyDtoVerificationStatus;
 
-const statusLabel: Record<VerificationStatus, string> = {
-  DRAFT: "Nháp",
-  PENDING: "Chờ duyệt",
-  VERIFIED: "Đã duyệt",
-  REJECTED: "Từ chối",
-};
-
 const statusIcon: Record<VerificationStatus, typeof ChevronDown> = {
   DRAFT: Pencil,
   PENDING: Clock,
@@ -70,7 +63,7 @@ export function VerificationActions({ property, onPick }: Props) {
             Thao tác
             <ChevronDown size={12} className="ml-1" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" sideOffset={4} className="min-w-[240px]">
+          <DropdownMenuContent align="end" sideOffset={4} className="min-w-[180px]">
             <DropdownMenuGroup>
               <DropdownMenuLabel>Chuyển trạng thái</DropdownMenuLabel>
             </DropdownMenuGroup>
@@ -78,7 +71,7 @@ export function VerificationActions({ property, onPick }: Props) {
             <DropdownMenuGroup>
               {(() => {
                 const eligible = transitions.filter(
-                  (t) => t.toStateName === "VERIFIED" || t.toStateName === "REJECTED",
+                  (t) => t.actionCode === "APPROVE" || t.actionCode === "REJECT",
                 );
                 if (eligible.length === 0) {
                   return (
@@ -102,11 +95,8 @@ export function VerificationActions({ property, onPick }: Props) {
                       }
                     >
                       <Icon size={14} className={statusColor[status] ?? "text-foreground-muted"} />
-                      <span className="text-sm font-medium">
-                        {statusLabel[status] ?? status}
-                      </span>
                       {t.actionLabel && (
-                        <span className="ml-1 text-xs text-foreground-muted">
+                        <span className="ml-1 text-xs font-medium text-foreground">
                           {t.actionLabel}
                         </span>
                       )}

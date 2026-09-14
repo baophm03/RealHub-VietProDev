@@ -1,0 +1,14 @@
+{
+  "title": "Khách hàng",
+  "addNew": "Thêm khách hàng",
+  "editTitle": "Chỉnh sửa khách hàng",
+  "name": "Họ và tên",
+  "phone": "Số điện thoại",
+  "email": "Email",
+  "type": "Loại khách hàng",
+  "status": "Trạng thái",
+  "needs": "Nhu cầu",
+  "budget": "Ngân sách",
+  "assignedTo": "Người phụ trách",
+  "notes": "Ghi chú"
+}

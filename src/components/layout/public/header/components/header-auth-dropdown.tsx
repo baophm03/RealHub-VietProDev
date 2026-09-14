@@ -11,7 +11,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getPortalEntry } from "@/config/portal-entry";
@@ -22,6 +21,7 @@ export interface HeaderAuthDropdownProps {
 }
 
 export function HeaderAuthDropdown({ initials }: HeaderAuthDropdownProps) {
+  const t = useTranslations("public");
   const router = useRouter();
   const user = useUserStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
@@ -45,19 +45,19 @@ export function HeaderAuthDropdown({ initials }: HeaderAuthDropdownProps) {
             {initials}
           </AvatarFallback>
         </Avatar>
-        <span className="hidden text-sm font-medium text-[#092909] md:block">
-          {user?.fullName ?? "User"}
+        <span className="hidden flex-col items-start leading-tight md:flex">
+          <span className="text-sm font-medium text-[#092909]">
+            {user?.fullName ?? "User"}
+          </span>
+          {user?.email && (
+            <span className="text-xs text-[#092909]/60">{user.email}</span>
+          )}
         </span>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
         className="z-30 mt-2 min-w-[220px] rounded-2xl border border-border bg-surface p-1.5 shadow-[0_12px_40px_-12px_rgba(26,22,20,0.12)]"
       >
-        <div className="px-3 py-2.5">
-          <p className="text-sm font-medium text-foreground">{user?.fullName ?? "User"}</p>
-          <p className="text-xs text-foreground-muted">{user?.email}</p>
-        </div>
-        <DropdownMenuSeparator className="my-1 border-border" />
         {(() => {
           const codes = user?.roles?.map((r) => r.code) ?? [];
           const entry = getPortalEntry(codes);
@@ -78,7 +78,7 @@ export function HeaderAuthDropdown({ initials }: HeaderAuthDropdownProps) {
           className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-accent-red-text hover:bg-accent-red/10 cursor-pointer outline-none transition-colors"
         >
           <LogOut size={16} />
-          <span>Đăng xuất</span>
+          <span>{t("header.logout")}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

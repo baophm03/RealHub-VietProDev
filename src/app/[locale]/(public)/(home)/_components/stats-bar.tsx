@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Building2, Handshake, Users, Home } from "lucide-react";
 import { useGetApiDashboardPublicStats } from "@/lib/api/endpoints/dashboard";
 import { cn } from "@/lib/utils";
@@ -12,11 +13,13 @@ type PublicStats = {
   agencies: number;
 };
 
-const labels: { key: keyof PublicStats; label: string; icon: typeof Home; color: string; bg: string }[] = [
-  { key: "propertiesForSale", label: "BĐS đang bán", icon: Home, color: "text-emerald-600", bg: "bg-emerald-50" },
-  { key: "customers", label: "Khách hàng", icon: Users, color: "text-sky-600", bg: "bg-sky-50" },
-  { key: "deals", label: "Giao dịch", icon: Handshake, color: "text-violet-600", bg: "bg-violet-50" },
-  { key: "agencies", label: "Agency", icon: Building2, color: "text-amber-600", bg: "bg-amber-50" },
+type StatsLabel = { key: keyof PublicStats; labelKey: "statsProperties" | "statsCustomers" | "statsDeals" | "statsAgency"; icon: typeof Home; color: string; bg: string };
+
+const labels: StatsLabel[] = [
+  { key: "propertiesForSale", labelKey: "statsProperties", icon: Home, color: "text-emerald-600", bg: "bg-emerald-50" },
+  { key: "customers", labelKey: "statsCustomers", icon: Users, color: "text-sky-600", bg: "bg-sky-50" },
+  { key: "deals", labelKey: "statsDeals", icon: Handshake, color: "text-violet-600", bg: "bg-violet-50" },
+  { key: "agencies", labelKey: "statsAgency", icon: Building2, color: "text-amber-600", bg: "bg-amber-50" },
 ];
 
 const FALLBACK_STATS: PublicStats = {
@@ -31,6 +34,7 @@ function formatNumber(value: number): string {
 }
 
 export function StatsBar() {
+  const t = useTranslations("public.home");
   const { data: res } = useGetApiDashboardPublicStats();
   const stats = ((res as any)?.data as PublicStats | undefined) ?? FALLBACK_STATS;
 
@@ -69,7 +73,7 @@ export function StatsBar() {
                 {formatNumber(stats[item.key])}+
               </span>
               <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-foreground-muted">
-                {item.label}
+                {t(item.labelKey)}
               </span>
             </motion.div>
           ))}

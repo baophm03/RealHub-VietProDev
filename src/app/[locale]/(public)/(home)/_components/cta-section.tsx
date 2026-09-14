@@ -1,11 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 export function CtaSection() {
+  const t = useTranslations("public.home");
   return (
     <section className="bg-[#0B2A0B] py-16 md:py-24">
       <motion.div
@@ -16,16 +18,15 @@ export function CtaSection() {
         className="flex flex-col items-center justify-center gap-8 px-6 text-center md:px-8"
       >
         <span className="w-fit rounded-full bg-white/10 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-white/60">
-          Bắt đầu ngay
+          {t("ctaEyebrow")}
         </span>
 
         <h2 className="max-w-[20ch] font-serif text-3xl font-semibold leading-[1.1] tracking-tighter text-balance text-white md:text-5xl">
-          Kết nối bất động sản của bạn với hệ sinh thái RealHub
+          {t("ctaTitle")}
         </h2>
 
         <p className="max-w-[44ch] text-base leading-relaxed text-white/60">
-          Đăng ký miễn phí để bắt đầu quản lý sản phẩm, khách hàng và giao dịch
-          trên một nền tảng duy nhất.
+          {t("ctaDesc")}
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
@@ -39,7 +40,7 @@ export function CtaSection() {
               </span>
             }
           >
-            Tham gia ngay
+            {t("ctaJoin")}
           </Button>
           <Button
             variant="outline"
@@ -47,7 +48,7 @@ export function CtaSection() {
             className="bg-white text-[#1E2220] hover:bg-white/90"
             render={<Link href="/contact" />}
           >
-            Liên hệ tư vấn
+            {t("ctaContact")}
           </Button>
         </div>
       </motion.div>
