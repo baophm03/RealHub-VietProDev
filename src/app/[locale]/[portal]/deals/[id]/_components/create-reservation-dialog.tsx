@@ -66,21 +66,21 @@ export function CreateReservationDialog({
         <DialogOverlay />
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Tạo reservation</DialogTitle>
+            <DialogTitle>Tạo đặt cọc</DialogTitle>
             <DialogDescription>
               Đặt giữ BĐS cho giao dịch này.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold tracking-wide text-foreground-muted">Loại reservation</label>
+              <label className="text-xs font-semibold tracking-wide text-foreground-muted">Loại đặt cọc</label>
               <Select
                 value={resvType}
                 items={{ SOFT: "Cọc mềm", HARD: "Cọc cứng" }}
                 onValueChange={(v) => v && setResvType(v)}
               >
                 <SelectTrigger className="h-9 w-full">
-                  <SelectValue placeholder="Chọn loại reservation" />
+                  <SelectValue placeholder="Chọn loại đặt cọc" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="SOFT" label="Cọc mềm">Cọc mềm</SelectItem>
@@ -121,7 +121,7 @@ export function CreateReservationDialog({
               disabled={isCreating || !resvStartsAt || !resvExpiresAt}
               onClick={handleSubmit}
             >
-              {isCreating ? "Đang lưu..." : "Tạo reservation"}
+              {isCreating ? "Đang lưu..." : "Tạo đặt cọc"}
             </Button>
           </div>
         </DialogContent>

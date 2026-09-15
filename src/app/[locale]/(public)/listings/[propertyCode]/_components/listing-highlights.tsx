@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import {
   findPropertyIcon,
   getFieldsByGroupCode,
+  type IconColor,
 } from "@/constants/property-icons";
 
 interface ListingHighlightsProps {
@@ -11,16 +12,28 @@ interface ListingHighlightsProps {
   title?: string;
 }
 
+const iconColorClasses: Record<IconColor, string> = {
+  blue: "bg-accent-blue text-accent-blue-text",
+  purple: "bg-accent-purple text-accent-purple-text",
+  green: "bg-accent-green text-accent-green-text",
+  yellow: "bg-accent-yellow text-accent-yellow-text",
+  red: "bg-accent-red text-accent-red-text",
+};
+
 export async function ListingHighlights({ property, schemas, title }: ListingHighlightsProps) {
   const t = await getTranslations("public.listingDetail");
   const resolvedTitle = title ?? t("highlights");
   const dynamicValues = property?.dynamicValuesJson as Record<string, unknown> | undefined;
   const specialFields = getFieldsByGroupCode(schemas, dynamicValues, "special");
-  const highlights = specialFields.map((f) => ({
-    icon: findPropertyIcon(f.label).icon,
-    title: f.label,
-    desc: f.value,
-  }));
+  const highlights = specialFields.map((f) => {
+    const { icon, color } = findPropertyIcon(f.label);
+    return {
+      icon: icon,
+      color: color as IconColor,
+      title: f.label,
+      desc: f.value,
+    };
+  });
 
   if (highlights.length === 0) return null;
 
@@ -32,7 +45,7 @@ export async function ListingHighlights({ property, schemas, title }: ListingHig
           const Icon = item.icon ?? Star;
           return (
             <div key={item.title} className="flex items-center gap-3 p-4 bg-surface rounded-lg border border-border">
-              <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <div className={`flex size-10 items-center justify-center rounded-full ${iconColorClasses[item.color]}`}>
                 <Icon size={20} />
               </div>
               <div className="flex flex-col gap-0.5">

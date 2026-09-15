@@ -10,6 +10,8 @@ import type { CreateLeadDtoStatus } from './createLeadDtoStatus';
 import type { CreateLeadDtoMetadata } from './createLeadDtoMetadata';
 
 export interface CreateLeadDto {
+  /** Auto-generated as LD-DDMMyy-NNN if omitted */
+  leadCode?: string;
   customerId?: string;
   customerNeedId?: string;
   propertyId?: string;

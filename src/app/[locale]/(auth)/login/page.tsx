@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Eye, EyeOff } from "lucide-react";
+import { ArrowUpRight, Eye, EyeOff, MailCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { usePostApiLogin } from "@/lib/api/endpoints/auth";
 import { useGetApiMe } from "@/lib/api/endpoints/auth";
 import { GetAuthMeResponse } from "@/lib/api/types/auth-me";
+import { AuthCard } from "../_components/auth-card";
 
 interface LoginFormData {
   email: string;
@@ -21,6 +22,7 @@ interface LoginFormData {
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [needsVerification, setNeedsVerification] = useState(false);
 
   // store
   const setAuth = useAuthStore((s) => s.setAuth);
@@ -33,13 +35,9 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    defaultValues: {
-      email: "admin@demo.realhub.local",
-      password: "Admin@123456",
-    },
-  });
+  } = useForm<LoginFormData>();
 
   // mutation
   const { mutate: login, isPending } = usePostApiLogin({
@@ -83,16 +81,25 @@ export default function LoginPage() {
       onError: (err: any) => {
         const apiError = err?.response?.data?.error;
         const messages = apiError?.message;
+        const isPendingVerification = Array.isArray(messages)
+          ? messages.includes("Please verify your email first")
+          : messages === "Please verify your email first";
         const errorMessage = Array.isArray(messages)
           ? messages[0]
           : messages || "Đã có lỗi xảy ra vui lòng thử lại";
-        setError(errorMessage);
+        setError(
+          isPendingVerification
+            ? "Tài khoản chưa được xác thực email. Vui lòng nhập mã OTP được gửi đến email của bạn."
+            : errorMessage
+        );
+        setNeedsVerification(isPendingVerification);
       }
     },
   });
 
   const onSubmit = async (formData: LoginFormData) => {
     setError(null);
+    setNeedsVerification(false);
 
     login({
       data: {
@@ -103,86 +110,93 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full max-w-md">
-
-
-      <div className="rounded-[1.5rem] border border-border bg-surface/80 p-8 shadow-[0_20px_60px_-20px_rgba(45,95,63,0.10)] backdrop-blur-xl md:p-10">
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold tracking-tight">Đăng nhập</h2>
-          <p className="mt-1 text-sm text-foreground-muted">
-            Nhập thông tin tài khoản để tiếp tục
-          </p>
+    <AuthCard
+      title="Đăng nhập"
+      subtitle="Nhập thông tin tài khoản để tiếp tục"
+      className="max-w-md"
+    >
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="email" className="text-[13px] font-medium">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="Nhập email của bạn"
+            autoComplete="email"
+            {...register("email")}
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? "email-error" : undefined}
+          />
+          {errors.email && (
+            <p id="email-error" className="text-xs text-accent-red-text">
+              {errors.email.message}
+            </p>
+          )}
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="email" className="text-[13px] font-medium">Email</Label>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="password" className="text-[13px] font-medium">Mật khẩu</Label>
+          <div className="relative">
             <Input
-              id="email"
-              type="email"
-              placeholder="admin@demo.realhub.local"
-              {...register("email")}
-              aria-invalid={!!errors.email}
-              aria-describedby={errors.email ? "email-error" : undefined}
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Nhập mật khẩu"
+              autoComplete="current-password"
+              className="pr-11"
+              {...register("password")}
+              aria-invalid={!!errors.password}
+              aria-describedby={errors.password ? "password-error" : undefined}
             />
-            {errors.email && (
-              <p id="email-error" className="text-xs text-accent-red-text">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="password" className="text-[13px] font-medium">Mật khẩu</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Nhập mật khẩu"
-                  className="pr-11"
-                  {...register("password")}
-                  aria-invalid={!!errors.password}
-                  aria-describedby={errors.password ? "password-error" : undefined}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground-muted hover:text-foreground transition-colors duration-300"
-                  aria-label={showPassword ? "An mat khau" : "Hien mat khau"}
-                >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-              {errors.password && (
-                <p id="password-error" className="text-xs text-accent-red-text">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
-            <Link
-              href="/forgot-password"
-              className="mt-6 text-xs text-foreground-muted transition-colors hover:text-primary"
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground-muted transition-colors duration-300 hover:text-foreground"
+              aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
             >
-              Quên mật khẩu?
-            </Link>
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
           </div>
-
-          {error && (
-            <div
-              role="alert"
-              aria-live="polite"
-              className="rounded-lg bg-accent-red/20 px-4 py-3 text-sm text-accent-red-text"
-            >
-              {error}
-            </div>
+          {errors.password && (
+            <p id="password-error" className="text-xs text-accent-red-text">
+              {errors.password.message}
+            </p>
           )}
+        </div>
 
-          <Button type="submit" disabled={isPending} className="mt-2 w-full" size="lg">
-            {isPending ? "Đang đăng nhập..." : "Đăng nhập"}
-          </Button>
-        </form>
-      </div>
+        {/* Forgot password — đặt ngay dưới field, căn phải */}
+        <div className="-mt-2 flex justify-end">
+          <Link
+            href="/forgot-password"
+            className="text-xs font-medium text-foreground-muted underline-offset-4 transition-colors hover:text-primary hover:underline"
+          >
+            Quên mật khẩu?
+          </Link>
+        </div>
+
+        {error && (
+          <div
+            role="alert"
+            aria-live="polite"
+            className="rounded-lg bg-accent-red/20 px-4 py-3 text-sm text-accent-red-text"
+          >
+            {error}
+          </div>
+        )}
+
+        {needsVerification && (
+          <Link
+            href={`/verify-otp?email=${encodeURIComponent(watch("email"))}`}
+            className="flex items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+          >
+            <MailCheck size={16} />
+            Xác thực email ngay
+          </Link>
+        )}
+
+        <Button type="submit" disabled={isPending} className="mt-1 w-full" size="lg">
+          {isPending ? "Đang đăng nhập..." : "Đăng nhập"}
+        </Button>
+      </form>
 
       <div className="mt-8 text-center">
         <Link
@@ -195,6 +209,6 @@ export default function LoginPage() {
           </span>
         </Link>
       </div>
-    </div>
+    </AuthCard>
   );
 }

@@ -34,7 +34,9 @@ import type {
   LoginDto,
   RegisterDto,
   ReplaceProfileDto,
-  UpdateProfileDto
+  ResendOtpDto,
+  UpdateProfileDto,
+  VerifyOtpDto
 } from '../models';
 
 import { customInstance } from '../mutator/custom-instance';
@@ -44,7 +46,7 @@ import { customInstance } from '../mutator/custom-instance';
 
 
 /**
- * @summary Register a new user account
+ * @summary Register a new user account (sends OTP for email verification)
  */
 export const postApiRegister = (
     registerDto: RegisterDto,
@@ -92,7 +94,7 @@ const {mutation: mutationOptions} = options ?
     export type PostApiRegisterMutationError = unknown
 
     /**
- * @summary Register a new user account
+ * @summary Register a new user account (sends OTP for email verification)
  */
 export const usePostApiRegister = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRegister>>, TError,{data: RegisterDto}, TContext>, }
@@ -104,6 +106,134 @@ export const usePostApiRegister = <TError = unknown,
       > => {
 
       const mutationOptions = getPostApiRegisterMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Verify email with OTP code
+ */
+export const postApiVerifyOtp = (
+    verifyOtpDto: VerifyOtpDto,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/auth/verify-otp`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: verifyOtpDto, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiVerifyOtpMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVerifyOtp>>, TError,{data: VerifyOtpDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiVerifyOtp>>, TError,{data: VerifyOtpDto}, TContext> => {
+
+const mutationKey = ['postApiVerifyOtp'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiVerifyOtp>>, {data: VerifyOtpDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiVerifyOtp(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiVerifyOtpMutationResult = NonNullable<Awaited<ReturnType<typeof postApiVerifyOtp>>>
+    export type PostApiVerifyOtpMutationBody = VerifyOtpDto
+    export type PostApiVerifyOtpMutationError = unknown
+
+    /**
+ * @summary Verify email with OTP code
+ */
+export const usePostApiVerifyOtp = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVerifyOtp>>, TError,{data: VerifyOtpDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiVerifyOtp>>,
+        TError,
+        {data: VerifyOtpDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiVerifyOtpMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Resend OTP to email
+ */
+export const postApiResendOtp = (
+    resendOtpDto: ResendOtpDto,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<unknown>(
+      {url: `/api/auth/resend-otp`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: resendOtpDto, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiResendOtpMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiResendOtp>>, TError,{data: ResendOtpDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiResendOtp>>, TError,{data: ResendOtpDto}, TContext> => {
+
+const mutationKey = ['postApiResendOtp'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiResendOtp>>, {data: ResendOtpDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiResendOtp(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiResendOtpMutationResult = NonNullable<Awaited<ReturnType<typeof postApiResendOtp>>>
+    export type PostApiResendOtpMutationBody = ResendOtpDto
+    export type PostApiResendOtpMutationError = unknown
+
+    /**
+ * @summary Resend OTP to email
+ */
+export const usePostApiResendOtp = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiResendOtp>>, TError,{data: ResendOtpDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiResendOtp>>,
+        TError,
+        {data: ResendOtpDto},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiResendOtpMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

@@ -7,7 +7,9 @@ import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
   ArrowLeft,
   Clock,
+  FileText,
   House,
+  Layers,
   MessageSquare,
   Pencil,
   Plus,
@@ -60,6 +62,12 @@ interface DealActivity {
   activityType: string;
   content?: string;
   createdAt: string;
+  user?: { id: string; fullName: string };
+  metadataJson?: {
+    actionLabel?: string;
+    oldStatus?: string;
+    newStatus?: string;
+  } | null;
 }
 interface Reservation {
   id: string;
@@ -102,6 +110,15 @@ const statusVariant: Record<string, "blue" | "yellow" | "purple" | "default" | "
   FAILED: "red",
   CANCELLED: "default",
   DISPUTED: "purple",
+};
+
+const statusBorderClass: Record<string, string> = {
+  blue: "border-l-accent-blue-text",
+  yellow: "border-l-accent-yellow-text",
+  purple: "border-l-accent-purple-text",
+  green: "border-l-accent-green-text",
+  red: "border-l-accent-red-text",
+  default: "border-l-foreground-muted",
 };
 
 const statusLabel: Record<string, string> = {
@@ -188,14 +205,16 @@ function DealCommissionsSection({ dealId }: { dealId: string }) {
           <h3 className="text-sm font-semibold">Hoa hồng</h3>
           <Badge variant="default" className="text-[10px]">{dcs.length}</Badge>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => router.push(portalPath(`/commission/deals/new?dealId=${dealId}`))}
-        >
-          <Plus size={14} className="mr-1" />
-          Tạo ước tính
-        </Button>
+        <Can I="CREATE" a="COMMISSION">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push(portalPath(`/commission/deals/new?dealId=${dealId}`))}
+          >
+            <Plus size={14} className="mr-1" />
+            Tạo ước tính
+          </Button>
+        </Can>
       </div>
 
       {isLoading ? (
@@ -327,11 +346,11 @@ export default function DealDetailPage() {
           note: data.note || undefined,
         },
       });
-      toast.success("Đã tạo reservation");
+      toast.success("Đã tạo đặt cọc");
       setResvOpen(false);
       refetchReservations();
     } catch (err) {
-      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Tạo reservation thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Tạo đặt cọc thất bại");
       console.error(err);
     }
   };
@@ -339,10 +358,10 @@ export default function DealDetailPage() {
   const handleApprove = async (resvId: string) => {
     try {
       await approveReservation({ id: resvId });
-      toast.success("Đã duyệt reservation");
+      toast.success("Đã duyệt đặt cọc");
       refetchReservations();
     } catch (err) {
-      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Duyệt reservation thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Duyệt đặt cọc thất bại");
       console.error(err);
     }
   };
@@ -350,10 +369,10 @@ export default function DealDetailPage() {
   const handleReject = async (resvId: string) => {
     try {
       await rejectReservation({ id: resvId });
-      toast.success("Đã từ chối reservation");
+      toast.success("Đã từ chối đặt cọc");
       refetchReservations();
     } catch (err) {
-      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Từ chối reservation thất bại");
+      toast.error((err as any)?.response?.data?.error?.message?.[0] || "Từ chối đặt cọc thất bại");
       console.error(err);
     }
   };
@@ -528,12 +547,12 @@ export default function DealDetailPage() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <SquareKanban size={16} className="text-foreground-muted" />
-                <h3 className="text-sm font-semibold">Reservations</h3>
+                <h3 className="text-sm font-semibold">Đặt cọc</h3>
                 <Badge variant="secondary">{reservations.length}</Badge>
               </div>
               <Can I="CREATE" a="DEAL">
                 <Button size="sm" variant="outline" onClick={() => setResvOpen(true)}>
-                  Thêm reservation
+                  Thêm đặt cọc
                 </Button>
               </Can>
             </div>
@@ -575,7 +594,7 @@ export default function DealDetailPage() {
                 })}
               </div>
             ) : (
-              <p className="text-sm text-foreground-muted">Chưa có reservation nào</p>
+              <p className="text-sm text-foreground-muted">Chưa có đặt cọc nào</p>
             )}
           </div>
 
@@ -625,22 +644,45 @@ export default function DealDetailPage() {
 
             {activities.length > 0 ? (
               <div className="flex flex-col gap-2">
-                {activities.map((act) => (
-                  <div
-                    key={act.id}
-                    className="flex flex-col gap-1 rounded-lg border border-border bg-surface-muted/40 p-3"
-                  >
-                    <div className="flex items-center justify-between">
-                      <Badge variant="default" className="text-[10px]">
-                        {activityTypeLabel[act.activityType] ?? act.activityType}
-                      </Badge>
-                      <span className="text-xs tabular-nums text-foreground-muted">
-                        {new Date(act.createdAt).toLocaleString("vi-VN")}
-                      </span>
+                {activities.map((act) => {
+                  const isStatusChange = act.activityType === "STATUS_CHANGE";
+                  const meta = act.metadataJson;
+                  const oldLabel = isStatusChange && meta ? (statusLabel[meta.oldStatus ?? ""] ?? meta.oldStatus ?? "—") : null;
+                  const newLabel = isStatusChange && meta ? (statusLabel[meta.newStatus ?? ""] ?? meta.newStatus ?? "—") : null;
+                  return (
+                    <div
+                      key={act.id}
+                      className="flex flex-col gap-2 rounded-lg border border-border bg-surface-muted/40 p-3"
+                    >
+                      <div className="flex items-center justify-between">
+                        <Badge variant="default" className="text-[10px]">
+                          {activityTypeLabel[act.activityType] ?? act.activityType}
+                        </Badge>
+                        <span className="flex items-center gap-1 text-xs tabular-nums text-foreground-muted">
+                          <Clock size={12} />
+                          {new Date(act.createdAt).toLocaleString("vi-VN")}
+                        </span>
+                      </div>
+                      {isStatusChange && oldLabel && newLabel ? (
+                        <div className={`rounded-md border border-border border-l-2 ${statusBorderClass[statusVariant[meta?.newStatus ?? ""] ?? "default"]} bg-surface-muted/40 px-3 py-2 text-sm`}>
+                          <span className="text-foreground-muted">{oldLabel}</span>
+                          <span className="mx-1.5 text-foreground-muted">→</span>
+                          <span className="font-medium text-primary">{newLabel}</span>
+                        </div>
+                      ) : act.content ? (
+                        <div className="rounded-md border border-border bg-surface px-3 py-2 text-sm">
+                          <p className="whitespace-pre-wrap">{act.content}</p>
+                        </div>
+                      ) : null}
+                      {act.user && (
+                        <span className="flex items-center gap-1 text-xs text-foreground-muted">
+                          <User size={11} />
+                          {act.user.fullName}
+                        </span>
+                      )}
                     </div>
-                    {act.content && <p className="text-sm whitespace-pre-wrap">{act.content}</p>}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <p className="text-sm text-foreground-muted">Chưa có hoạt động nào</p>
@@ -649,22 +691,50 @@ export default function DealDetailPage() {
         </div>
 
         {/* Commissions for this deal */}
-        <DealCommissionsSection dealId={id} />
+        <Can I="READ" a="COMMISSION">
+          <DealCommissionsSection dealId={id} />
+        </Can>
 
         {/* Sidebar */}
         <div className="flex flex-col gap-4">
           <DealWorkflowActions dealId={id} />
-          <div className="rounded-lg border border-border bg-surface p-6">
-            <h3 className="text-sm font-semibold mb-4">Thông tin liên quan</h3>
-            <div className="flex flex-col gap-4 text-sm">
-              <div className="flex items-start gap-2">
-                <SquareKanban size={16} className="text-foreground-muted shrink-0 mt-0.5" />
-                <div className="flex flex-col">
+          <div className="rounded-lg border border-border bg-surface overflow-hidden">
+            <div className="flex items-center gap-2 border-b border-border bg-surface-muted/30 px-4 py-3">
+              <Layers size={14} className="text-foreground-muted" />
+              <h3 className="text-sm font-semibold">Thông tin liên quan</h3>
+            </div>
+            <div className="flex flex-col divide-y divide-border">
+              <div className="flex items-center justify-between px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <SquareKanban size={14} className="text-foreground-muted" />
                   <span className="text-xs text-foreground-muted">Workflow state</span>
-                  <span className="text-sm font-medium">
-                    {deal.currentWorkflowState ?? "—"}
-                  </span>
                 </div>
+                {deal.currentWorkflowState ? (
+                  <Badge variant="blue" className="text-[10px]">{deal.currentWorkflowState}</Badge>
+                ) : (
+                  <span className="text-xs text-foreground-muted">—</span>
+                )}
+              </div>
+              <div className="grid grid-cols-2 divide-x divide-border">
+                <div className="flex flex-col items-center gap-1 px-3 py-3">
+                  <MessageSquare size={14} className="text-foreground-muted" />
+                  <span className="text-[10px] uppercase tracking-wide text-foreground-muted">Hoạt động</span>
+                  <span className="text-sm font-semibold tabular-nums">{activities.length}</span>
+                </div>
+                <div className="flex flex-col items-center gap-1 px-3 py-3">
+                  <FileText size={14} className="text-foreground-muted" />
+                  <span className="text-[10px] uppercase tracking-wide text-foreground-muted">Đặt cọc</span>
+                  <span className="text-sm font-semibold tabular-nums">{reservations.length}</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <Clock size={14} className="text-foreground-muted" />
+                  <span className="text-xs text-foreground-muted">Ngày tạo</span>
+                </div>
+                <span className="text-xs font-medium tabular-nums">
+                  {deal.createdAt ? new Date(deal.createdAt).toLocaleDateString("vi-VN") : "—"}
+                </span>
               </div>
             </div>
           </div>

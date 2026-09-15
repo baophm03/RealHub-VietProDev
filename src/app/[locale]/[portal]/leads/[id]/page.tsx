@@ -6,11 +6,14 @@ import { usePortalPath } from "@/lib/hooks/use-portal";
 import {
   ArrowLeft,
   Clock,
+  FileText,
   House,
+  Layers,
   MessageSquare,
   Pencil,
   Phone,
   SquareKanban,
+  Tag,
   Trash2,
   User,
 } from "lucide-react";
@@ -54,6 +57,11 @@ interface LeadActivity {
   content?: string;
   createdAt: string;
   user?: { id: string; fullName: string };
+  metadataJson?: {
+    actionLabel?: string;
+    oldStatus?: string;
+    newStatus?: string;
+  } | null;
 }
 
 interface Lead {
@@ -80,6 +88,15 @@ const statusVariant: Record<string, "blue" | "yellow" | "purple" | "default" | "
   CONVERTED: "green",
   LOST: "red",
   RECYCLED: "default",
+};
+
+const statusBorderClass: Record<string, string> = {
+  blue: "border-l-accent-blue-text",
+  yellow: "border-l-accent-yellow-text",
+  purple: "border-l-accent-purple-text",
+  green: "border-l-accent-green-text",
+  red: "border-l-accent-red-text",
+  default: "border-l-foreground-muted",
 };
 
 const statusLabel: Record<string, string> = {
@@ -374,7 +391,8 @@ export default function LeadDetailPage() {
                 placeholder="Nội dung ghi chú / cuộc gọi..."
                 value={activityContent}
                 onChange={(e) => setActivityContent(e.target.value)}
-                className="min-h-16"
+                rows={5}
+                className="bg-surface [field-sizing:none] min-h-[120px]"
               />
               <div className="flex justify-end">
                 <Button
@@ -389,25 +407,45 @@ export default function LeadDetailPage() {
 
             {activities.length > 0 ? (
               <div className="flex flex-col gap-2">
-                {activities.map((act) => (
-                  <div
-                    key={act.id}
-                    className="flex flex-col gap-1 rounded-lg border border-border bg-surface-muted/40 p-3"
-                  >
-                    <div className="flex items-center justify-between">
-                      <Badge variant="default" className="text-[10px]">
-                        {activityTypeLabel[act.activityType] ?? act.activityType}
-                      </Badge>
-                      <span className="text-xs tabular-nums text-foreground-muted">
-                        {new Date(act.createdAt).toLocaleString("vi-VN")}
-                      </span>
+                {activities.map((act) => {
+                  const isStatusChange = act.activityType === "STATUS_CHANGE";
+                  const meta = act.metadataJson;
+                  const oldLabel = isStatusChange && meta ? (statusLabel[meta.oldStatus ?? ""] ?? meta.oldStatus ?? "—") : null;
+                  const newLabel = isStatusChange && meta ? (statusLabel[meta.newStatus ?? ""] ?? meta.newStatus ?? "—") : null;
+                  return (
+                    <div
+                      key={act.id}
+                      className="flex flex-col gap-2 rounded-lg border border-border bg-surface-muted/40 p-3"
+                    >
+                      <div className="flex items-center justify-between">
+                        <Badge variant="default" className="text-[10px]">
+                          {activityTypeLabel[act.activityType] ?? act.activityType}
+                        </Badge>
+                        <span className="flex items-center gap-1 text-xs tabular-nums text-foreground-muted">
+                          <Clock size={12} />
+                          {new Date(act.createdAt).toLocaleString("vi-VN")}
+                        </span>
+                      </div>
+                      {isStatusChange && oldLabel && newLabel ? (
+                        <div className={`rounded-md border border-border border-l-2 ${statusBorderClass[statusVariant[meta?.newStatus ?? ""] ?? "default"]} bg-surface-muted/40 px-3 py-2 text-sm`}>
+                          <span className="text-foreground-muted">{oldLabel}</span>
+                          <span className="mx-1.5 text-foreground-muted">→</span>
+                          <span className="font-medium text-primary">{newLabel}</span>
+                        </div>
+                      ) : act.content ? (
+                        <div className="rounded-md border border-border bg-surface px-3 py-2 text-sm">
+                          <p className="whitespace-pre-wrap">{act.content}</p>
+                        </div>
+                      ) : null}
+                      {act.user && (
+                        <span className="flex items-center gap-1 text-xs text-foreground-muted">
+                          <User size={11} />
+                          {act.user.fullName}
+                        </span>
+                      )}
                     </div>
-                    {act.content && <p className="text-sm whitespace-pre-wrap">{act.content}</p>}
-                    {act.user && (
-                      <span className="text-xs text-foreground-muted">— {act.user.fullName}</span>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <p className="text-sm text-foreground-muted">Chưa có hoạt động nào</p>
@@ -418,15 +456,54 @@ export default function LeadDetailPage() {
         {/* Sidebar */}
         <div className="flex flex-col gap-4">
           <LeadWorkflowActions leadId={id} />
-          <div className="rounded-lg border border-border bg-surface p-6">
-            <h3 className="text-sm font-semibold mb-4">Thông tin liên quan</h3>
-            <div className="flex flex-col gap-4 text-sm">
-              <div className="flex items-start gap-2">
-                <SquareKanban size={16} className="text-foreground-muted shrink-0 mt-0.5" />
-                <div className="flex flex-col">
-                  <span className="text-xs text-foreground-muted">Mã KHTN</span>
-                  <span className="text-sm font-medium tabular-nums">{lead.leadCode}</span>
+          <div className="rounded-lg border border-border bg-surface overflow-hidden">
+            <div className="flex items-center gap-2 border-b border-border bg-surface-muted/30 px-4 py-3">
+              <Layers size={14} className="text-foreground-muted" />
+              <h3 className="text-sm font-semibold">Thông tin liên quan</h3>
+            </div>
+            <div className="flex flex-col divide-y divide-border">
+              <div className="flex items-center justify-between px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <SquareKanban size={14} className="text-foreground-muted" />
+                  <span className="text-xs text-foreground-muted">Mã định danh</span>
                 </div>
+                <span className="text-xs font-medium tabular-nums">{lead.leadCode}</span>
+              </div>
+              <div className="flex items-center justify-between px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <Tag size={14} className="text-foreground-muted" />
+                  <span className="text-xs text-foreground-muted">Trạng thái</span>
+                </div>
+                <Badge variant={statusVariant[lead.status] ?? "default"} className="text-[10px]">
+                  {statusLabel[lead.status] ?? lead.status}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <FileText size={14} className="text-foreground-muted" />
+                  <span className="text-xs text-foreground-muted">Nguồn</span>
+                </div>
+                <Badge variant="blue" className="text-[10px]">
+                  {sourceLabel[lead.source] ?? lead.source}
+                </Badge>
+              </div>
+              <div className="grid grid-cols-1 divide-y divide-border">
+                <div className="flex items-center justify-between px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare size={14} className="text-foreground-muted" />
+                    <span className="text-xs text-foreground-muted">Hoạt động</span>
+                  </div>
+                  <span className="text-sm font-semibold tabular-nums">{activities.length}</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <Clock size={14} className="text-foreground-muted" />
+                  <span className="text-xs text-foreground-muted">Ngày tạo</span>
+                </div>
+                <span className="text-xs font-medium tabular-nums">
+                  {lead.createdAt ? new Date(lead.createdAt).toLocaleDateString("vi-VN") : "—"}
+                </span>
               </div>
             </div>
           </div>
