@@ -64,7 +64,9 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
       await createUser({ data: dto });
       await queryClient.invalidateQueries({ queryKey: getGetApiMembershipsQueryKey() });
       router.refresh();
-      toast.success(`Đã tạo người dùng "${fullName.trim()}"`);
+      toast.success(
+        `Đã tạo người dùng "${fullName.trim()}" — mã OTP đã được gửi đến ${email.trim()} để kích hoạt tài khoản`
+      );
       reset();
       onOpenChange(false);
     } catch (err: any) {
@@ -84,7 +86,8 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
               Thêm người dùng
             </DialogTitle>
             <DialogDescription>
-              Tạo tài khoản mới trong tenant hiện tại.
+              Tạo tài khoản mới trong tenant hiện tại. Người dùng sẽ nhận mã OTP
+              qua email để kích hoạt tài khoản.
             </DialogDescription>
           </DialogHeader>
 

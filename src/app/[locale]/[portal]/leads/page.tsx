@@ -64,6 +64,7 @@ const statusConfig: {
     { id: "NEGOTIATING", title: "Đàm phán", variant: "default" },
     { id: "CONVERTED", title: "Chuyển đổi", variant: "green" },
     { id: "LOST", title: "Mất", variant: "red" },
+    { id: "RECYCLED", title: "Khách cũ", variant: "default" },
   ];
 
 const statusLabel: Record<string, string> = {

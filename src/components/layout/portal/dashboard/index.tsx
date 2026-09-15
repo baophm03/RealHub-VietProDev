@@ -29,7 +29,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       <div className="flex flex-1 flex-col min-w-0">
         <TopBar onMenuClick={() => setMobileSidebarOpen(!mobileSidebarOpen)} />
         <main className="flex-1 overflow-y-auto bg-background">
-          <div className="mx-auto max-w-[1400px] px-4 py-6 md:px-8 md:py-10">
+          <div className="mx-auto max-w-[1800px] px-4 py-6 md:px-8 md:py-10">
             {children}
           </div>
         </main>

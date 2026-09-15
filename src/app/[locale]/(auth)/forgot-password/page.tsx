@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, MailCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AuthCard } from "../_components/auth-card";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -21,55 +22,54 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="w-full max-w-md">
-      <div className="rounded-2xl border border-border bg-surface p-8 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)]">
-        <div className="mb-6">
-          <h1 className="text-2xl font-semibold tracking-tight">Quên mật khẩu</h1>
-          <p className="mt-1 text-sm text-foreground-muted">
-            Nhập email để tiếp tục
-          </p>
-        </div>
-
-        {sent ? (
-          <div className="flex flex-col gap-4">
-            <div className="rounded-md bg-accent-green/10 px-4 py-3 text-sm text-accent-green-text">
-              Vui lòng kiểm tra hộp thư của bạn.
+    <AuthCard
+      title="Quên mật khẩu"
+      subtitle="Nhập email đăng ký, chúng tôi sẽ gửi hướng dẫn đặt lại mật khẩu"
+      className="max-w-md"
+    >
+      {sent ? (
+        <div className="flex flex-col gap-5">
+          <div className="flex items-start gap-3 rounded-xl border border-accent-green/40 bg-accent-green/30 px-4 py-3.5">
+            <MailCheck size={18} className="mt-0.5 shrink-0 text-accent-green-text" />
+            <div className="text-sm leading-relaxed text-accent-green-text">
+              Vui lòng kiểm tra hộp thư của bạn để đặt lại mật khẩu.
             </div>
-            <Link href="/login">
-              <Button variant="secondary" className="w-full">
-                Quay lại đăng nhập
-              </Button>
-            </Link>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="an.nguyen@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <Button type="submit" disabled={loading} className="mt-2 w-full">
-              {loading ? "Đang gửi..." : "Gửi yêu cầu"}
+          <Link href="/login">
+            <Button variant="secondary" className="w-full" size="lg">
+              Quay lại đăng nhập
             </Button>
-          </form>
-        )}
-      </div>
+          </Link>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="email" className="text-[13px] font-medium">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="an.nguyen@example.com"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <Button type="submit" disabled={loading} className="mt-1 w-full" size="lg">
+            {loading ? "Đang gửi..." : "Gửi yêu cầu"}
+          </Button>
+        </form>
+      )}
 
-      <div className="mt-6 text-center">
+      <div className="mt-8 text-center">
         <Link
           href="/login"
-          className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-foreground"
+          className="group inline-flex items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-foreground"
         >
           <ArrowLeft size={14} />
           <span>Quay lại đăng nhập</span>
         </Link>
       </div>
-    </div>
+    </AuthCard>
   );
 }
