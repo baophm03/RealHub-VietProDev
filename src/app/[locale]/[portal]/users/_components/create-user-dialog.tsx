@@ -107,7 +107,7 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
               <Input
                 id="user-email"
                 type="email"
-                placeholder="an.nguyen@example.com"
+                placeholder="Nhập email của bạn"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />

@@ -10,13 +10,27 @@ import { ArrowUpRight, Check, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { usePostApiRegister } from "@/lib/api/endpoints/auth";
+import { LocationSelectWithLabel } from "@/app/[locale]/_components/location-select-with-label";
 import { AuthCard } from "../_components/auth-card";
 
 const REGISTER_ROLES = [
   { value: "CUSTOMER", label: "Khách hàng", description: "Tìm mua / thuê bất động sản" },
   { value: "OWNER", label: "Chủ bất động sản", description: "Chủ sở hữu muốn đăng tin cho thuê / bán" },
   { value: "SALES", label: "Sales", description: "Bạn là nhân viên sale muốn có thêm thu nhập" },
+] as const;
+
+const GENDERS = [
+  { value: "MALE", label: "Nam" },
+  { value: "FEMALE", label: "Nữ" },
+  { value: "OTHER", label: "Khác" },
 ] as const;
 
 const registerSchema = z.object({
@@ -26,6 +40,10 @@ const registerSchema = z.object({
   password: z.string().min(10, "Mật khẩu phải có ít nhất 10 ký tự"),
   confirmPassword: z.string().min(10, "Mật khẩu phải có ít nhất 10 ký tự"),
   phone: z.string().min(10, "Số điện thoại không hợp lệ"),
+  dateOfBirth: z.string().min(1, "Vui lòng chọn ngày sinh"),
+  gender: z.enum(["MALE", "FEMALE", "OTHER"]).optional(),
+  provinceId: z.string().optional().or(z.literal("")),
+  wardId: z.string().optional().or(z.literal("")),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Xác nhận mật khẩu không khớp",
   path: ["confirmPassword"],
@@ -50,6 +68,9 @@ export default function RegisterPage() {
   });
 
   const selectedRole = watch("roleCode");
+  const selectedGender = watch("gender");
+  const selectedProvinceId = watch("provinceId");
+  const selectedWardId = watch("wardId");
 
   const { mutate: registerAccount, isPending } = usePostApiRegister({
     mutation: {
@@ -73,6 +94,10 @@ export default function RegisterPage() {
         email: formData.email,
         password: formData.password,
         phone: formData.phone,
+        dateOfBirth: formData.dateOfBirth,
+        ...(formData.gender ? { gender: formData.gender } : {}),
+        ...(formData.provinceId ? { provinceId: formData.provinceId } : {}),
+        ...(formData.wardId ? { wardId: formData.wardId } : {}),
       },
     });
   };
@@ -81,11 +106,11 @@ export default function RegisterPage() {
     <AuthCard
       title="Đăng ký"
       subtitle="Chọn vai trò và điền thông tin để tạo tài khoản"
-      className="max-w-3xl"
+      className="max-w-5xl"
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {/* ── Cột trái: Chọn vai trò ── */}
-        <div className="flex flex-col gap-3">
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-8 lg:grid-cols-5">
+        {/* ── Cột trái: Chọn vai trò (dọc, có chỗ cho vai trò tương lai) ── */}
+        <div className="flex flex-col gap-3 lg:col-span-2">
           <Label className="text-[13px] font-medium">Bạn là ?</Label>
           <div className="flex flex-col gap-2.5">
             {REGISTER_ROLES.map((role) => {
@@ -131,10 +156,10 @@ export default function RegisterPage() {
           )}
         </div>
 
-        {/* ── Cột phải: Thông tin đăng ký ── */}
-        <div className="flex flex-col gap-5">
+        {/* ── Cột phải: Thông tin đăng ký — grid 2 cột nội bộ để gọn ── */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-3">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="fullName" className="text-[13px] font-medium">Họ và tên</Label>
+            <Label htmlFor="fullName" className="text-[13px] font-medium">Họ và tên <span className="ml-0.5 text-accent-red-text">*</span></Label>
             <Input
               id="fullName"
               type="text"
@@ -152,11 +177,11 @@ export default function RegisterPage() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="email" className="text-[13px] font-medium">Email</Label>
+            <Label htmlFor="email" className="text-[13px] font-medium">Email <span className="ml-0.5 text-accent-red-text">*</span></Label>
             <Input
               id="email"
               type="email"
-              placeholder="an.nguyen@example.com"
+              placeholder="Nhập email của bạn"
               autoComplete="email"
               {...register("email")}
               aria-invalid={!!errors.email}
@@ -170,7 +195,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="phone" className="text-[13px] font-medium">Số điện thoại</Label>
+            <Label htmlFor="phone" className="text-[13px] font-medium">Số điện thoại <span className="ml-0.5 text-accent-red-text">*</span></Label>
             <Input
               id="phone"
               type="tel"
@@ -184,6 +209,46 @@ export default function RegisterPage() {
               <p id="phone-error" className="text-xs text-accent-red-text">
                 {errors.phone.message}
               </p>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="dateOfBirth" className="text-[13px] font-medium">Ngày sinh <span className="ml-0.5 text-accent-red-text">*</span></Label>
+            <Input
+              id="dateOfBirth"
+              type="date"
+              {...register("dateOfBirth")}
+              aria-invalid={!!errors.dateOfBirth}
+              aria-describedby={errors.dateOfBirth ? "dateOfBirth-error" : undefined}
+            />
+            {errors.dateOfBirth && (
+              <p id="dateOfBirth-error" className="text-xs text-accent-red-text">
+                {errors.dateOfBirth.message}
+              </p>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label className="text-[13px] font-medium">Giới tính</Label>
+            <Select
+              value={selectedGender ?? ""}
+              onValueChange={(v) => setValue("gender", v as RegisterFormData["gender"])}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Chọn giới tính">
+                  {GENDERS.find((gender) => gender.value === selectedGender)?.label}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {GENDERS.map((g) => (
+                  <SelectItem key={g.value} value={g.value} label={g.label}>
+                    {g.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.gender && (
+              <p className="text-xs text-accent-red-text">{errors.gender.message}</p>
             )}
           </div>
 
@@ -216,7 +281,20 @@ export default function RegisterPage() {
             )}
           </div>
 
-          <div className="flex flex-col gap-2">
+          {/* Địa chỉ: chiếm trọn 1 hàng, tỉnh + phường nằm ngang */}
+          <div className="flex flex-col gap-2 sm:col-span-2">
+            <Label className="text-[13px] font-medium">Địa chỉ</Label>
+            <LocationSelectWithLabel
+              provinceId={selectedProvinceId || null}
+              wardId={selectedWardId || null}
+              onProvinceChange={(id) => setValue("provinceId", id ?? "")}
+              onWardChange={(id) => setValue("wardId", id ?? "")}
+              wardPlaceholder="Chọn phường/xã"
+              horizontal
+            />
+          </div>
+
+          <div className="flex flex-col gap-2 sm:col-span-2">
             <Label htmlFor="confirmPassword" className="text-[13px] font-medium">Xác nhận mật khẩu</Label>
             <div className="relative">
               <Input
@@ -249,13 +327,13 @@ export default function RegisterPage() {
             <div
               role="alert"
               aria-live="polite"
-              className="rounded-lg bg-accent-red/20 px-4 py-3 text-sm text-accent-red-text"
+              className="rounded-lg bg-accent-red/20 px-4 py-3 text-sm text-accent-red-text sm:col-span-2"
             >
               {error}
             </div>
           )}
 
-          <Button type="submit" disabled={isPending} className="mt-1 w-full" size="lg">
+          <Button type="submit" disabled={isPending} className="mt-1 w-full sm:col-span-2" size="lg">
             {isPending ? "Đang đăng ký..." : "Đăng ký"}
           </Button>
         </div>

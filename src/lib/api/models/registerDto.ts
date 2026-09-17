@@ -6,6 +6,7 @@
  * OpenAPI spec version: v1
  */
 import type { RegisterDtoRoleCode } from './registerDtoRoleCode';
+import type { RegisterDtoGender } from './registerDtoGender';
 
 export interface RegisterDto {
   fullName: string;
@@ -15,4 +16,11 @@ export interface RegisterDto {
   phone?: string;
   /** Role to assign on registration. Defaults to CUSTOMER. Allowed: CUSTOMER | OWNER | SALES */
   roleCode?: RegisterDtoRoleCode;
+  /** ISO date string (YYYY-MM-DD) */
+  dateOfBirth?: string;
+  gender?: RegisterDtoGender;
+  /** Location ID (province level, type=PROVINCE) — from /locations?type=PROVINCE */
+  provinceId?: string;
+  /** Location ID (ward level, type=WARD) — from /locations?type=WARD&parentId=<districtId> */
+  wardId?: string;
 }
