@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useUserStore } from "@/lib/stores/user-store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { propertyCategories } from "@/config/property-categories";
+import { propertyCategories } from "@/constants/property-categories";
 import { getPortalEntry } from "@/config/portal-entry";
 import type { NavLink } from "./header-desktop-nav";
 
@@ -82,7 +82,7 @@ export function HeaderMobileMenu({
                   onClick={onClose}
                   className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm text-primary-foreground/60 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground"
                 >
-                  <cat.icon size={16} />
+                  <cat.icon size={16} className={cat.colorOnDark} />
                   {cat.label}
                 </Link>
               ))}

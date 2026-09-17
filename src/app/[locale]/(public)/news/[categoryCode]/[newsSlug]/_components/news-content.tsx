@@ -1,6 +1,8 @@
 import { Calendar, User } from "lucide-react";
 import type { News } from "@/lib/api/types/news";
 import { getFormatter, getTranslations } from "next-intl/server";
+import { getNewsCategoryColor } from "@/constants/news";
+import { cn } from "@/lib/utils";
 
 interface NewsContentProps {
   article: News;
@@ -29,7 +31,7 @@ export async function NewsContent({ article, renderContent }: NewsContentProps) 
       {/* Header */}
       <div className="mb-8">
         {article.category && (
-          <span className="mb-4 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+          <span className={cn("mb-4 inline-block rounded-full px-3 py-1 text-xs font-medium", getNewsCategoryColor(article.category.code).soft)}>
             {article.category.name}
           </span>
         )}

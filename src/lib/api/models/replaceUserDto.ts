@@ -12,7 +12,7 @@ import type { ReplaceUserDtoStatus } from './replaceUserDtoStatus';
 export interface ReplaceUserDto {
   fullName: string;
   email: string;
-  /** @minLength 10 */
+  /** @minLength 8 */
   password: string;
   phone?: string;
   /** File ID from uploaded avatar */

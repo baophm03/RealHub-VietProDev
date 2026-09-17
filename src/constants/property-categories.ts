@@ -7,6 +7,8 @@ export interface PropertyCategory {
   desc: string;
   href: string;
   types: string;
+  color: string;
+  colorOnDark: string;
 }
 
 export const propertyCategories: PropertyCategory[] = [
@@ -16,6 +18,8 @@ export const propertyCategories: PropertyCategory[] = [
     desc: "Chung cư, studio, penthouse",
     types: "APARTMENT",
     href: "/listings?types=APARTMENT",
+    color: "text-blue-600",
+    colorOnDark: "text-blue-400",
   },
   {
     icon: Building2,
@@ -23,6 +27,8 @@ export const propertyCategories: PropertyCategory[] = [
     desc: "Biệt thự đơn lập, song lập",
     types: "VILLA",
     href: "/listings?types=VILLA",
+    color: "text-violet-600",
+    colorOnDark: "text-violet-400",
   },
   {
     icon: Warehouse,
@@ -30,6 +36,8 @@ export const propertyCategories: PropertyCategory[] = [
     desc: "Nhà phố, nhà mặt tiền",
     types: "HOUSE,SHOPHOUSE",
     href: "/listings?types=HOUSE,SHOPHOUSE",
+    color: "text-emerald-600",
+    colorOnDark: "text-emerald-400",
   },
   {
     icon: Map,
@@ -37,6 +45,8 @@ export const propertyCategories: PropertyCategory[] = [
     desc: "Đất thổ cư, đất dự án",
     types: "LAND",
     href: "/listings?types=LAND",
+    color: "text-amber-600",
+    colorOnDark: "text-amber-400",
   },
   {
     icon: Store,
@@ -44,5 +54,7 @@ export const propertyCategories: PropertyCategory[] = [
     desc: "Văn phòng, shop, kho xưởng",
     types: "OFFICE,WAREHOUSE,SHOP",
     href: "/listings?types=OFFICE,WAREHOUSE,SHOP",
+    color: "text-rose-600",
+    colorOnDark: "text-rose-400",
   },
 ];

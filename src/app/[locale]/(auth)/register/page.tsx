@@ -37,8 +37,8 @@ const registerSchema = z.object({
   roleCode: z.enum(["CUSTOMER", "OWNER", "SALES"]),
   fullName: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
   email: z.string().email("Email không hợp lệ"),
-  password: z.string().min(10, "Mật khẩu phải có ít nhất 10 ký tự"),
-  confirmPassword: z.string().min(10, "Mật khẩu phải có ít nhất 10 ký tự"),
+  password: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
+  confirmPassword: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
   phone: z.string().min(10, "Số điện thoại không hợp lệ"),
   dateOfBirth: z.string().min(1, "Vui lòng chọn ngày sinh"),
   gender: z.enum(["MALE", "FEMALE", "OTHER"]).optional(),
@@ -258,7 +258,7 @@ export default function RegisterPage() {
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="Ít nhất 10 ký tự"
+                placeholder="Ít nhất 8 ký tự"
                 autoComplete="new-password"
                 className="pr-11"
                 {...register("password")}

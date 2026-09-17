@@ -46,8 +46,8 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
   };
 
   const handleSubmit = async () => {
-    if (!fullName.trim() || !email.trim() || password.length < 10) {
-      toast.error("Vui lòng nhập đủ thông tin (mật khẩu ≥ 10 ký tự)");
+    if (!fullName.trim() || !email.trim() || password.length < 8) {
+      toast.error("Vui lòng nhập đủ thông tin (mật khẩu ≥ 8 ký tự)");
       return;
     }
     if (password !== confirmPassword) {
@@ -129,7 +129,7 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
               <Input
                 id="user-password"
                 type="password"
-                placeholder="Ít nhất 10 ký tự"
+                placeholder="Ít nhất 8 ký tự"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />

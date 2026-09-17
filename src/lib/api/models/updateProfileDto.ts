@@ -5,7 +5,6 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
-import type { UpdateProfileDtoDateOfBirth } from './updateProfileDtoDateOfBirth';
 import type { UpdateProfileDtoGender } from './updateProfileDtoGender';
 
 export interface UpdateProfileDto {
@@ -13,12 +12,16 @@ export interface UpdateProfileDto {
    * @minLength 2
    * @maxLength 100
    */
-  fullName?: string;
-  phone?: string;
+  fullName: string;
+  /**
+   * @minLength 10
+   * @maxLength 20
+   */
+  phone: string;
   /** File ID from uploaded avatar */
   avatarFileId?: string;
   /** ISO date string (YYYY-MM-DD) */
-  dateOfBirth?: UpdateProfileDtoDateOfBirth;
+  dateOfBirth: string;
   gender?: UpdateProfileDtoGender;
   /** Location ID (province level, type=PROVINCE) — from /locations?type=PROVINCE */
   provinceId?: string;

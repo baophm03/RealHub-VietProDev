@@ -11,13 +11,17 @@ import type { RegisterDtoGender } from './registerDtoGender';
 export interface RegisterDto {
   fullName: string;
   email: string;
-  /** @minLength 10 */
+  /** @minLength 8 */
   password: string;
-  phone?: string;
+  /**
+   * @minLength 10
+   * @maxLength 20
+   */
+  phone: string;
   /** Role to assign on registration. Defaults to CUSTOMER. Allowed: CUSTOMER | OWNER | SALES */
   roleCode?: RegisterDtoRoleCode;
   /** ISO date string (YYYY-MM-DD) */
-  dateOfBirth?: string;
+  dateOfBirth: string;
   gender?: RegisterDtoGender;
   /** Location ID (province level, type=PROVINCE) — from /locations?type=PROVINCE */
   provinceId?: string;

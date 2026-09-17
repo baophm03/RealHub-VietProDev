@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { ArrowRight, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getNewsCategoryColor } from "@/constants/news";
 
 export function formatNewsDate(iso: string): string {
   if (!iso) return "";
@@ -65,7 +66,7 @@ export function NewsCard({ article, className }: NewsCardProps) {
         {/* Badge + Date */}
         <div className="flex items-center gap-2 pb-3 flex-wrap">
           {article.category?.name && (
-            <span className="rounded-md bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">
+            <span className={cn("rounded-md px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide", getNewsCategoryColor(article.category.code).solid)}>
               {article.category.name}
             </span>
           )}

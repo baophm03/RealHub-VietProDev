@@ -6,7 +6,6 @@
  * OpenAPI spec version: v1
  */
 
-/**
- * ISO date string (YYYY-MM-DD)
- */
-export type UpdateProfileDtoDateOfBirth = { [key: string]: unknown };
+export interface ForgotPasswordDto {
+  email: string;
+}

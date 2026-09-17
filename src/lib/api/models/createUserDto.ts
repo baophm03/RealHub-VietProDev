@@ -10,7 +10,7 @@ import type { CreateUserDtoGender } from './createUserDtoGender';
 export interface CreateUserDto {
   fullName: string;
   email: string;
-  /** @minLength 10 */
+  /** @minLength 8 */
   password: string;
   phone?: string;
   /** ISO date string (YYYY-MM-DD) */

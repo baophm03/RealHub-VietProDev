@@ -90,8 +90,8 @@ type ProfileFormData = z.infer<typeof profileSchema>;
 
 const passwordSchema = z.object({
   currentPassword: z.string().min(1, "Vui lòng nhập mật khẩu hiện tại"),
-  newPassword: z.string().min(10, "Mật khẩu phải có ít nhất 10 ký tự"),
-  confirmPassword: z.string().min(10, "Mật khẩu phải có ít nhất 10 ký tự"),
+  newPassword: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
+  confirmPassword: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
 }).refine((data) => data.newPassword === data.confirmPassword, {
   message: "Xác nhận mật khẩu không khớp",
   path: ["confirmPassword"],
@@ -445,7 +445,7 @@ export default function ProfilePage() {
                   <Input
                     id="newPassword"
                     type={showNewPassword ? "text" : "password"}
-                    placeholder="Ít nhất 10 ký tự"
+                    placeholder="Ít nhất 8 ký tự"
                     className="pr-11"
                     {...registerPassword("newPassword")}
                   />
