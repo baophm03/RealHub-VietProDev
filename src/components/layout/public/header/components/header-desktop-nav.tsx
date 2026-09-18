@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { propertyCategories } from "@/config/property-categories";
+import { propertyCategories } from "@/constants/property-categories";
 
 export interface NavLink {
   label: string;
@@ -82,8 +82,8 @@ export function HeaderDesktopNav({ isActive, isListingsActive }: HeaderDesktopNa
                   onClick={() => setMegaOpen(false)}
                   className="group flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-surface-muted"
                 >
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#092909]/8 text-[#092909] transition-transform duration-300 group-hover:scale-110">
-                    <cat.icon size={20} />
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-surface-muted transition-transform duration-300 group-hover:scale-110">
+                    <cat.icon size={20} className={cat.color} />
                   </span>
                   <div className="flex flex-col gap-0.5">
                     <span className="text-sm font-medium text-foreground">{cat.label}</span>

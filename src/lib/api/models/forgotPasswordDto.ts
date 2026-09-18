@@ -6,8 +6,6 @@
  * OpenAPI spec version: v1
  */
 
-export interface ChangePasswordDto {
-  currentPassword: string;
-  /** @minLength 8 */
-  newPassword: string;
+export interface ForgotPasswordDto {
+  email: string;
 }

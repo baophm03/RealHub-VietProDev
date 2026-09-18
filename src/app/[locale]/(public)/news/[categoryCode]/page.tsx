@@ -77,7 +77,11 @@ export default async function NewsListPage({ params }: Props) {
         title={active ? active.name : t("defaultTitle")}
         description={t("defaultDesc")}
         backgroundImage="/background/news.jpg"
-        breadcrumbs={[{ label: tc("home"), href: "/" }, { label: active ? active.name : t("categoryMetaTitle") }]}
+        breadcrumbs={[
+          { label: tc("home"), href: "/" },
+          ...(active ? [{ label: t("categoryMetaTitle"), href: "/news/all" }] : []),
+          { label: active ? active.name : t("categoryMetaTitle") },
+        ]}
       />
 
       <div className="container py-12 md:py-16">

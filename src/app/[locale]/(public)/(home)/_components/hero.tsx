@@ -14,6 +14,16 @@ import {
 import { useGetApiLocations } from "@/lib/api/endpoints/locations";
 import { useGetApiPropertyTypes } from "@/lib/api/endpoints/properties";
 import type { Location } from "@/lib/api/types/locations";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, EffectFade } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/effect-fade";
+
+const HERO_BACKGROUNDS = [
+  "/background/home/home1.jpg",
+  "/background/home/home2.jpg",
+];
 
 type PropertyType = {
   id: string;
@@ -78,14 +88,31 @@ export function Hero() {
 
   return (
     <section className="relative bg-background pt-15 -mt-20 lg:-mt-28">
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url(/background/home.jpg)",
-        }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+      <div className="absolute inset-0">
+        <Swiper
+          modules={[Autoplay, EffectFade]}
+          effect="fade"
+          speed={1000}
+          slidesPerView={1}
+          loop
+          autoplay={{
+            delay: 10000,
+            disableOnInteraction: false,
+          }}
+          allowTouchMove={false}
+          className="h-full w-full"
+        >
+          {HERO_BACKGROUNDS.map((src) => (
+            <SwiperSlide key={src}>
+              <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url(${src})` }}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+      <div className="absolute inset-0 z-[2] bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
 
       <div className="relative z-10 flex min-h-[90vh] flex-col items-center justify-center gap-8 px-6 py-16 text-center">
         <div className="flex flex-col items-center justify-center gap-3">

@@ -6,8 +6,7 @@
  * OpenAPI spec version: v1
  */
 
-export interface ChangePasswordDto {
-  currentPassword: string;
-  /** @minLength 8 */
-  newPassword: string;
-}
+/**
+ * ISO date string (YYYY-MM-DD)
+ */
+export type UpdateUserDtoDateOfBirth = { [key: string]: unknown };

@@ -1,3 +1,5 @@
+export type LocationType = "COUNTRY" | "PROVINCE" | "DISTRICT" | "WARD" | "STREET";
+
 export interface GetLocationsMeta {
   total: number;
   limit: number;

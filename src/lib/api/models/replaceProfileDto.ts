@@ -5,6 +5,8 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { ReplaceProfileDtoDateOfBirth } from './replaceProfileDtoDateOfBirth';
+import type { ReplaceProfileDtoGender } from './replaceProfileDtoGender';
 
 export interface ReplaceProfileDto {
   /**
@@ -15,4 +17,11 @@ export interface ReplaceProfileDto {
   phone?: string;
   /** File ID from uploaded avatar */
   avatarFileId?: string;
+  /** ISO date string (YYYY-MM-DD) */
+  dateOfBirth?: ReplaceProfileDtoDateOfBirth;
+  gender?: ReplaceProfileDtoGender;
+  /** Location ID (province level, type=PROVINCE) — from /locations?type=PROVINCE */
+  provinceId?: string;
+  /** Location ID (ward level, type=WARD) — from /locations?type=WARD&parentId=<districtId> */
+  wardId?: string;
 }

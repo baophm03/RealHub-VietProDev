@@ -12,8 +12,16 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormField } from "@/components/shared/form-section";
+import { LocationSelectWithLabel } from "@/app/[locale]/_components/location-select-with-label";
 import { useUserStore } from "@/lib/stores/user-store";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { useGetApiMe, usePatchApiMe, usePatchApiPassword } from "@/lib/api/endpoints/auth";
 import { usePostApiFileUpload } from "@/lib/api/endpoints/files";
 import { useAuthStore } from "@/lib/stores/auth-store";
@@ -25,12 +33,26 @@ interface AvatarData {
   url: string;
 }
 
+interface UserLocationData {
+  id: string;
+  name: string;
+  code: string;
+  slug: string | null;
+  fullPath: string | null;
+  type: string;
+  level: number;
+}
+
 interface MeData {
   id: string;
   fullName: string;
   email: string;
   phone?: string | null;
   avatarFile?: AvatarData | null;
+  dateOfBirth?: string | null;
+  gender?: string | null;
+  province?: UserLocationData | null;
+  ward?: UserLocationData | null;
   status: string;
   roles?: { code: string; name: string; description: string | null; permissions: { module: string; action: string }[] }[];
   lastLoginAt?: string | null;
@@ -49,17 +71,27 @@ interface FileUploadResponse {
   timestamp: string;
 }
 
+const GENDERS = [
+  { value: "MALE", label: "Nam" },
+  { value: "FEMALE", label: "Nữ" },
+  { value: "OTHER", label: "Khác" },
+] as const;
+
 const profileSchema = z.object({
   fullName: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
-  phone: z.string().optional().or(z.literal("")),
+  phone: z.string().min(10, "Số điện thoại không hợp lệ"),
+  dateOfBirth: z.string().min(1, "Vui lòng chọn ngày sinh"),
+  gender: z.enum(["MALE", "FEMALE", "OTHER"]).optional().or(z.literal("")),
+  provinceId: z.string().optional().or(z.literal("")),
+  wardId: z.string().optional().or(z.literal("")),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
 const passwordSchema = z.object({
   currentPassword: z.string().min(1, "Vui lòng nhập mật khẩu hiện tại"),
-  newPassword: z.string().min(10, "Mật khẩu phải có ít nhất 10 ký tự"),
-  confirmPassword: z.string().min(10, "Mật khẩu phải có ít nhất 10 ký tự"),
+  newPassword: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
+  confirmPassword: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
 }).refine((data) => data.newPassword === data.confirmPassword, {
   message: "Xác nhận mật khẩu không khớp",
   path: ["confirmPassword"],
@@ -98,6 +130,10 @@ export default function ProfilePage() {
         fullName: profileData.fullName,
         phone: profileData.phone,
         avatarFile: profileData.avatarFile,
+        dateOfBirth: profileData.dateOfBirth,
+        gender: profileData.gender as any,
+        province: profileData.province,
+        ward: profileData.ward,
         status: profileData.status,
         roles: (profileData.roles ?? []).map((r: any) => ({
           code: r.code,
@@ -118,12 +154,18 @@ export default function ProfilePage() {
     register: registerProfile,
     handleSubmit: handleProfileSubmit,
     reset: resetProfile,
+    setValue: setProfileValue,
+    watch: watchProfile,
     formState: { errors: profileErrors },
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       fullName: user?.fullName ?? "",
       phone: user?.phone ?? "",
+      dateOfBirth: user?.dateOfBirth ? user.dateOfBirth.split("T")[0] : "",
+      gender: (user?.gender as any) ?? "",
+      provinceId: user?.province?.id ?? "",
+      wardId: user?.ward?.id ?? "",
     },
   });
 
@@ -137,11 +179,19 @@ export default function ProfilePage() {
     defaultValues: { currentPassword: "", newPassword: "", confirmPassword: "" },
   });
 
+  const watchedGender = watchProfile("gender");
+  const watchedProvinceId = watchProfile("provinceId");
+  const watchedWardId = watchProfile("wardId");
+
   useEffect(() => {
     if (user) {
       resetProfile({
         fullName: user.fullName ?? "",
         phone: user.phone ?? "",
+        dateOfBirth: user.dateOfBirth ? user.dateOfBirth.split("T")[0] : "",
+        gender: (user.gender as any) ?? "",
+        provinceId: user.province?.id ?? "",
+        wardId: user.ward?.id ?? "",
       });
     }
   }, [user, resetProfile]);
@@ -172,9 +222,13 @@ export default function ProfilePage() {
       const result = await uploadFile({ data: { file, ownerType: "USER", ownerId: user?.id } });
       const uploaded = (result as unknown as FileUploadResponse)?.data;
       if (!uploaded?.id) throw new Error("Upload failed");
-      // Auto-save avatar immediately
       await updateProfile({
-        data: { avatarFileId: uploaded.id },
+        data: {
+          avatarFileId: uploaded.id,
+          fullName: user!.fullName,
+          phone: user!.phone ?? "",
+          dateOfBirth: (user!.dateOfBirth ? user!.dateOfBirth.split("T")[0] : "") as any,
+        },
       });
       await syncProfile();
       setPreviewAvatarUrl(null);
@@ -216,7 +270,11 @@ export default function ProfilePage() {
       await updateProfile({
         data: {
           fullName: data.fullName,
-          phone: data.phone || undefined,
+          phone: data.phone,
+          dateOfBirth: data.dateOfBirth as any,
+          ...(data.gender ? { gender: data.gender } : {}),
+          ...(data.provinceId ? { provinceId: data.provinceId } : {}),
+          ...(data.wardId ? { wardId: data.wardId } : {}),
         },
       });
       await syncProfile();
@@ -303,8 +361,49 @@ export default function ProfilePage() {
                 <FormField label="Email" htmlFor="email">
                   <Input id="email" defaultValue={user.email ?? ""} disabled />
                 </FormField>
-                <FormField label="Số điện thoại" htmlFor="phone" error={profileErrors.phone?.message}>
+                <FormField label="Số điện thoại" htmlFor="phone" required error={profileErrors.phone?.message}>
                   <Input id="phone" placeholder="0901234567" {...registerProfile("phone")} />
+                </FormField>
+                <FormField label="Ngày sinh" htmlFor="dateOfBirth" required error={profileErrors.dateOfBirth?.message}>
+                  <Input
+                    id="dateOfBirth"
+                    type="date"
+                    {...registerProfile("dateOfBirth")}
+                  />
+                </FormField>
+                <FormField label="Giới tính" error={profileErrors.gender?.message}>
+                  <Select
+                    value={watchedGender ?? ""}
+                    onValueChange={(v) => setProfileValue("gender", v as ProfileFormData["gender"])}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Chọn giới tính">
+                        {GENDERS.find((gender) => gender.value === watchedGender)?.label}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {GENDERS.map((g) => (
+                        <SelectItem key={g.value} value={g.value} label={g.label}>
+                          {g.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormField>
+              </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FormField
+                  label="Địa chỉ"
+                  error={profileErrors.provinceId?.message}
+                  className="col-span-1 md:col-span-2"
+                >
+                  <LocationSelectWithLabel
+                    provinceId={watchedProvinceId || null}
+                    wardId={watchedWardId || null}
+                    onProvinceChange={(id) => setProfileValue("provinceId", id ?? "")}
+                    onWardChange={(id) => setProfileValue("wardId", id ?? "")}
+                    horizontal
+                  />
                 </FormField>
               </div>
               <div className="flex justify-end">
@@ -346,7 +445,7 @@ export default function ProfilePage() {
                   <Input
                     id="newPassword"
                     type={showNewPassword ? "text" : "password"}
-                    placeholder="Ít nhất 10 ký tự"
+                    placeholder="Ít nhất 8 ký tự"
                     className="pr-11"
                     {...registerPassword("newPassword")}
                   />
