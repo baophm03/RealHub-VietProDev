@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { News } from "@/lib/api/types/news";
 import { formatNewsDate } from "@/components/shared/news-card";
-import { getNewsCategoryColor } from "@/utils";
+import { getNewsCategoryColor } from "@/constants/news";
 import { cn } from "@/lib/utils";
 
 import "swiper/css";
