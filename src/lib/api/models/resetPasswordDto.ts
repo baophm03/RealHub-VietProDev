@@ -6,8 +6,12 @@
  * OpenAPI spec version: v1
  */
 
-export interface ChangePasswordDto {
-  currentPassword: string;
+export interface ResetPasswordDto {
+  /**
+   * @minLength 6
+   * @maxLength 6
+   */
+  code: string;
   /** @minLength 8 */
   newPassword: string;
 }

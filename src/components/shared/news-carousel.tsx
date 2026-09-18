@@ -7,6 +7,8 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import type { News } from "@/lib/api/types/news";
 import { formatNewsDate } from "@/components/shared/news-card";
+import { getNewsCategoryColor } from "@/constants/news";
+import { cn } from "@/lib/utils";
 
 import "swiper/css";
 import "swiper/css/pagination";
@@ -58,7 +60,7 @@ export function NewsCarousel({ newsList }: NewsCarouselProps) {
               <div className="flex flex-1 flex-col gap-4 p-10">
                 <div className="flex flex-wrap items-center gap-2 pb-3">
                   {news.category?.name && (
-                    <span className="rounded-md bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">
+                    <span className={cn("rounded-md px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide", getNewsCategoryColor(news.category.code).solid)}>
                       {news.category.name}
                     </span>
                   )}

@@ -5,15 +5,24 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { UpdateUserDtoDateOfBirth } from './updateUserDtoDateOfBirth';
+import type { UpdateUserDtoGender } from './updateUserDtoGender';
 import type { UpdateUserDtoStatus } from './updateUserDtoStatus';
 
 export interface UpdateUserDto {
   fullName?: string;
   email?: string;
-  /** @minLength 10 */
+  /** @minLength 8 */
   password?: string;
   phone?: string;
   /** File ID from uploaded avatar */
   avatarFileId?: string;
+  /** ISO date string (YYYY-MM-DD) */
+  dateOfBirth?: UpdateUserDtoDateOfBirth;
+  gender?: UpdateUserDtoGender;
+  /** Location ID (province level, type=PROVINCE) — from /locations?type=PROVINCE */
+  provinceId?: string;
+  /** Location ID (ward level, type=WARD) — from /locations?type=WARD&parentId=<districtId> */
+  wardId?: string;
   status?: UpdateUserDtoStatus;
 }

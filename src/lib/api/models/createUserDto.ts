@@ -5,11 +5,19 @@
  * Multi-tenant Real Estate Platform API
  * OpenAPI spec version: v1
  */
+import type { CreateUserDtoGender } from './createUserDtoGender';
 
 export interface CreateUserDto {
   fullName: string;
   email: string;
-  /** @minLength 10 */
+  /** @minLength 8 */
   password: string;
   phone?: string;
+  /** ISO date string (YYYY-MM-DD) */
+  dateOfBirth?: string;
+  gender?: CreateUserDtoGender;
+  /** Location ID (province level, type=PROVINCE) — from /locations?type=PROVINCE */
+  provinceId?: string;
+  /** Location ID (ward level, type=WARD) — from /locations?type=WARD&parentId=<districtId> */
+  wardId?: string;
 }

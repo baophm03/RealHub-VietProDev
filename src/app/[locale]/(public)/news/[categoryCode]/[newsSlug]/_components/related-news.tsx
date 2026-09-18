@@ -2,6 +2,8 @@ import { ArrowRight, Calendar, ImageIcon, User } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import type { News } from "@/lib/api/types/news";
 import { getFormatter, getTranslations } from "next-intl/server";
+import { getNewsCategoryColor } from "@/constants/news";
+import { cn } from "@/lib/utils";
 
 function NewsImage({
   url,
@@ -83,7 +85,7 @@ export async function RelatedNews({ news, categoryCode }: RelatedNewsProps) {
                 {/* Content */}
                 <div className="flex flex-1 flex-col gap-1 min-w-0">
                   {n.category && (
-                    <span className="text-[10px] font-medium uppercase tracking-wide text-primary">
+                    <span className={cn("text-[10px] font-medium uppercase tracking-wide", getNewsCategoryColor(n.category.code).text)}>
                       {n.category.name}
                     </span>
                   )}

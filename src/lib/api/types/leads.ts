@@ -1,3 +1,23 @@
+export type LeadStatus =
+  | "NEW"
+  | "CONTACTED"
+  | "INTERESTED"
+  | "NEGOTIATING"
+  | "CONVERTED"
+  | "LOST"
+  | "RECYCLED";
+
+export type LeadSource =
+  | "WEBSITE"
+  | "PROPERTY_DETAIL"
+  | "OWNER_PAGE"
+  | "SALES_LINK"
+  | "CTV_LINK"
+  | "AGENCY_MARKETING"
+  | "MANUAL_INPUT"
+  | "LEAD_POOL"
+  | "IMPORT";
+
 export interface GetLeadsResponse {
   success: boolean;
   data: Lead[];

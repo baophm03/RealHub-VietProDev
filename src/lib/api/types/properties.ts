@@ -1,3 +1,14 @@
+export type TransactionType = "SALE" | "RENT" | "TRANSFER" | "INVESTMENT";
+
+export type BusinessStatus =
+  | "AVAILABLE"
+  | "RESERVED"
+  | "SOLD"
+  | "RENTED"
+  | "OFF_MARKET";
+
+export type PublicationStatus = "PRIVATE" | "PUBLIC" | "ARCHIVED";
+
 export interface GetPropertiesResponse {
   success: boolean;
   data: Property[];

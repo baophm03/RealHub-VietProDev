@@ -1,5 +1,5 @@
 import { Building2, LayoutDashboard, Store } from "lucide-react";
-import type { UserRole } from "@/lib/types";
+import type { UserRole } from "@/lib/api/types/users";
 
 export const dashboardRoles: UserRole[] = ["SUPER_ADMIN", "OPERATOR", "AGENCY_ADMIN", "TEAM_LEADER"];
 export const salesRoles: UserRole[] = ["SALES", "COLLABORATOR"];
